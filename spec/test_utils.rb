@@ -19,6 +19,32 @@ def zz_api_body(data)
   JSON.fast_generate(data)
 end
 
+# wrapper around post that preps for api call
+# if expect_ok is set we also return the response
+# in json form
+def zz_api_post(path, body, expect_ok = true)
+  post build_full_path(path), zz_api_body(body), zz_api_headers
+  zz_api_response(response) if expect_ok
+end
+
+# wrapper around get that preps for api call
+# if expect_ok is set we also return the response
+# in json form
+def zz_api_get(path, expect_ok = true)
+  get build_full_path(path), nil, zz_api_headers
+  zz_api_response(response) if expect_ok
+end
+
+
+# form the json from the response
+# converting keys to symbols
+def zz_api_response(response)
+  j = Hash.recursively_symbolize_graph!(JSON.parse(response.body))
+  response.status.should eql(200)
+  #puts JSON.pretty_generate(j)
+  j
+end
+
 # safe wrapper for turning on or off loopback mode
 # for resque jobs - this works in a nested fashion
 # by fetching the existing filters and then applying

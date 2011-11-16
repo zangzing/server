@@ -22,6 +22,7 @@ describe "ZZ API" do
       response.status.should eql(200)
       login_info = JSON.parse(response.body).recursively_symbolize_keys!
       uid = login_info[:user_id]
+      uid.should_not == nil
     end
   end
 
@@ -58,7 +59,7 @@ describe "ZZ API" do
       t2a1.should_not == nil
 
       # and fetch the list of photos in an album
-      path = build_full_path(zz_api_album_photos_json_path(t2a1[:id]) + "?ver=#{t2a1[:cache_version]}")
+      path = build_full_path(zz_api_photos_path(t2a1[:id]) + "?ver=#{t2a1[:cache_version]}")
       path.should_not == nil
       get path, nil, zz_api_headers
       response.status.should eql(200)

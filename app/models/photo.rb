@@ -307,7 +307,7 @@ class Photo < ActiveRecord::Base
     data = PhotoInfo.get_image_metadata(self.source_path)
     self.photo_info = PhotoInfo.factory(data)
     if exif = data['EXIF']
-      val =  exif['DateTimeOriginal'] || self.capture_date # if nil keep the existing one, otherwise update
+      val =  exif['DateTimeOriginal']
       self.capture_date = (DateTime.parse(val) rescue nil) unless val.nil?
       val = exif['Orientation']
       self.orientation = decode_orientation(val) unless val.nil?
@@ -839,8 +839,6 @@ class Photo < ActiveRecord::Base
           self.source_path = file_path
           self.image_file_size = File.size(file_path)
 
-          no_previous_capture_date = capture_date.nil?
-
           # gather and set the image metadata based on this file
           # also sets content_type
           set_image_metadata
@@ -849,7 +847,7 @@ class Photo < ActiveRecord::Base
           verify_file_type
 
           # if non ordered and did not previously have a capture date, set position now
-          if upload_batch.nil? == false && upload_batch.custom_order_offset == 0 && no_previous_capture_date
+          if upload_batch.nil? == false && upload_batch.custom_order_offset == 0
             set_default_position
           end
 
@@ -952,11 +950,8 @@ class Photo < ActiveRecord::Base
     }
   end
 
-  def self.to_json_lite(photos)
-    # since the to_json method of an active record cannot take advantage of the much faster
-    # JSON.fast_generate, we pull the object apart into a hash and generate from there.
-    # In benchmarks I found that the generate method is 10x faster, so for instance the
-    # difference between 10000/sec and 1000/sec
+  # Create a hash of all photos suitable for api use
+  def self.hash_all_photos(photos)
 
     if photos.is_a?(Array) == false
       hashed_photos = hash_one_photo(photos)
@@ -967,8 +962,16 @@ class Photo < ActiveRecord::Base
         hashed_photos << hashed_photo
       end
     end
+    return hashed_photos
+  end
 
-    json = JSON.fast_generate(hashed_photos)
+  def self.to_json_lite(photos)
+    # since the to_json method of an active record cannot take advantage of the much faster
+    # JSON.fast_generate, we pull the object apart into a hash and generate from there.
+    # In benchmarks I found that the generate method is 10x faster, so for instance the
+    # difference between 10000/sec and 1000/sec
+
+    json = JSON.fast_generate(hash_all_photos(photos))
 
     return json
   end

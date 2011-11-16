@@ -27,6 +27,7 @@ class AsyncResponse
 
     # exception can be passed as nil, in which
     # case you must supply message and code
+    # message can be either a string, array of strings or a hash
     def build_error_json(exception, message = nil, code = nil)
       info = {
         :exception => exception.nil? ? false : true,

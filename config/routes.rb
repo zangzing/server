@@ -65,24 +65,24 @@ Server::Application.routes.draw do
     put    '/users/:user_id/invalidate_cache' => 'albums#invalidate_cache',    :as => :invalidate_user_album_cache
     get    '/users/:user_id/albums/new'      => 'albums#new',                 :as => :new_user_album
     post   '/users/:user_id/albums'          => 'albums#create',              :as => :create_user_album
-    get    '/albums/:id/name_album'          => 'albums#name_album',          :as => :name_album
-    get    '/albums/:id/preview_album_email' => "albums#preview_album_email", :as => :preview_album_email
-    get    '/albums/:id/privacy'             => 'albums#privacy',             :as => :privacy
-    get    '/albums/:id/download'            => 'albums#download',            :as => :download_album
-#    get    '/albums/:id'                     => 'albums#show',                :as => :album
-#    get    '/albums/:id/edit'                => 'albums#edit',                :as => :edit_album
-    get    '/albums/:id/close_batch'         => 'albums#close_batch',         :as => :close_batch
-    put    '/albums/:id'                     => 'albums#update',              :as => :update_album
-    delete '/albums/:id'                     => 'albums#destroy',             :as => :delete_album
-    get    'albums/:id/pwd_dialog'           => 'albums#pwd_dialog',          :as => :album_pwd_dialog
-    post   'albums/:id/request_access'       => 'albums#request_access',      :as => :request_album_access
-    get    '/albums/:id/edit_group'          => 'albums#edit_group'
+    get    '/albums/:album_id/name_album'          => 'albums#name_album',          :as => :name_album
+    get    '/albums/:album_id/preview_album_email' => "albums#preview_album_email", :as => :preview_album_email
+    get    '/albums/:album_id/privacy'             => 'albums#privacy',             :as => :privacy
+    get    '/albums/:album_id/download'            => 'albums#download',            :as => :download_album
+#    get    '/albums/:album_id'                     => 'albums#show',                :as => :album
+#    get    '/albums/:album_id/edit'                => 'albums#edit',                :as => :edit_album
+    get    '/albums/:album_id/close_batch'         => 'albums#close_batch',         :as => :close_batch
+    put    '/albums/:album_id'                     => 'albums#update',              :as => :update_album
+    delete '/albums/:album_id'                     => 'albums#destroy',             :as => :delete_album
+    get    'albums/:album_id/pwd_dialog'           => 'albums#pwd_dialog',          :as => :album_pwd_dialog
+    post   'albums/:album_id/request_access'       => 'albums#request_access',      :as => :request_album_access
+    get    '/albums/:album_id/edit_group'          => 'albums#edit_group'
 
     #todo: these are not very REST-ful
-    post   '/albums/:id/add_group_members'   => 'albums#add_group_members'
-    put    '/albums/:id/update_group_member' => 'albums#update_group_member'
-    delete '/albums/:id/delete_group_member' => 'albums#delete_group_member'
-    get    '/albums/:id/group_members'       => 'albums#group_members'
+    post   '/albums/:album_id/add_group_members'   => 'albums#add_group_members'
+    put    '/albums/:album_id/update_group_member' => 'albums#update_group_member'
+    delete '/albums/:album_id/delete_group_member' => 'albums#delete_group_member'
+    get    '/albums/:album_id/group_members'       => 'albums#group_members'
 
     #shares
     get '/albums/:album_id/shares'          => 'shares#index',      :as => :album_shares
@@ -390,26 +390,29 @@ Server::Application.routes.draw do
   }
 
   # ====================================================================================================
-  # ============================================= ZZ_API  ==========================================
+  # ============================================= ZZ_API  ==============================================
   # ====================================================================================================
   scope  '/zz_api', :defaults => { :format => 'json' } do
     post  '/login'                 => 'user_sessions#zz_api_create',    :as => :zz_api_login
     match '/logout'                => 'user_sessions#zz_api_destroy',   :as => :zz_api_logout
 
     #albums
-    get    '/users/:user_id/albums' => 'albums#zz_api_albums',                  :as => :zz_api_albums
-    get    '/users/:user_id/my_albums_json'                 => 'albums#zz_api_my_albums_json',                 :as => :zz_api_my_albums_json
-    get    '/users/:user_id/my_albums_public_json'          => 'albums#zz_api_my_albums_public_json',          :as => :zz_api_my_albums_public_json
-    get    '/users/:user_id/liked_albums_json'              => 'albums#zz_api_liked_albums_json',              :as => :zz_api_liked_albums_json
-    get    '/users/:user_id/liked_albums_public_json'       => 'albums#zz_api_liked_albums_public_json',       :as => :zz_api_liked_albums_public_json
-    get    '/users/:user_id/liked_users_public_albums_json' => 'albums#zz_api_liked_users_public_albums_json', :as => :zz_api_liked_users_public_albums_json
-    get    '/users/:user_id/invited_albums_json'            => 'albums#zz_api_invited_albums_json',            :as => :zz_api_invited_albums_json
+    get    '/users/:user_id/albums'                    => 'albums#zz_api_albums',                    :as => :zz_api_albums
+    get    '/users/:user_id/my_albums'                 => 'albums#zz_api_my_albums',                 :as => :zz_api_my_albums
+    get    '/users/:user_id/my_albums_public'          => 'albums#zz_api_my_albums_public',          :as => :zz_api_my_albums_public
+    get    '/users/:user_id/liked_albums'              => 'albums#zz_api_liked_albums',              :as => :zz_api_liked_albums
+    get    '/users/:user_id/liked_albums_public'       => 'albums#zz_api_liked_albums_public',       :as => :zz_api_liked_albums_public
+    get    '/users/:user_id/liked_users_public_albums' => 'albums#zz_api_liked_users_public_albums', :as => :zz_api_liked_users_public_albums
+    get    '/users/:user_id/invited_albums'            => 'albums#zz_api_invited_albums',            :as => :zz_api_invited_albums
 
     #photos
-    get    '/albums/:album_id/photos_json'                  => 'photos#zz_api_photos_json',                    :as => :zz_api_album_photos_json
+    get    '/albums/:album_id/photos'                  => 'photos#zz_api_photos',                    :as => :zz_api_photos
+    post   '/albums/:album_id/photos/create_photos'    => 'photos#zz_api_create_photos',             :as => :zz_api_create_photos
+    get    '/photos/:agent_id/pending_uploads'         => 'photos#zz_api_pending_uploads',           :as => :zz_api_pending_uploads
+    put    '/photos/:id/upload_fast'                   => 'photos#upload_fast',                      :as => :zz_api_upload_photo_fast
 
     #users
-    get    '/users/:user_id/info' => 'users#zz_api_user_info',                  :as => :zz_api_user_info
+    get    '/users/:user_id/info'                      => 'users#zz_api_user_info',                  :as => :zz_api_user_info
   end
 
 

@@ -3,103 +3,137 @@ require "zz_env_helpers"
 
 class PhotosController < ApplicationController
   ssl_allowed :agent_create, :agent_index
-
   skip_before_filter :verify_authenticity_token,  :only =>   [ :agent_index, :agent_create, :upload_fast, :simple_upload_fast]
-
-  
-  before_filter :require_user,                    :only =>   [ :destroy, :update, :position, :async_edit, :async_rotate_left, :async_rotate_right, :download ]  #for interactive users
-  before_filter :oauth_required,                  :only =>   [ :agent_create, :agent_index ]   #for agent
-  # oauthenticate :strategies => :two_legged, :interactive => false, :only =>   [ :upload_fast ]
-
-  before_filter :require_album,                   :only =>   [ :agent_create, :index, :show, :movie, :zz_api_photos_json, :photos_json, :photos_json_invalidate ]
-  before_filter :require_photo,                   :only =>   [ :destroy, :update, :position, :async_edit, :async_rotate_left, :async_rotate_right, :download ]
-
-  before_filter :require_album_admin_role,                :only =>   [ :update, :position ]
-  before_filter :require_photo_owner_or_album_admin_role, :only =>   [ :destroy, :async_edit, :async_rotate_left, :async_rotate_right ]
-  before_filter :require_album_contributor_role,          :only =>   [ :agent_create  ]
-  before_filter :require_album_viewer_role,               :only =>   [ :index, :show, :movie, :zz_api_photos_json, :photos_json  ]
-
 
   # Used by the agent to create photos duh?
   # logged in via oauth
   # @album set by require_album
   def agent_create
-start_time = Time.now
-    if params[:source_guid].nil?
-      render :json => "source_guid parameter required. Unable to create photos", :status=>400 and return
-    end
+    return unless oauth_required && require_user && require_album(true) && require_album_contributor_role
+    begin
+      user_id           = current_user.id
+      album_id          = @album.id
+      agent_id          = params[:agent_id]
+      source_guid_map   = params[:source_guid]
+      photo_count       = source_guid_map.length
+      caption_map       = params[:caption]
+      file_size_map     = params[:size]
+      capture_date_map  = params[:capture_date]
+      source_map        = params[:source]
+      rotate_to_map     = params[:rotate_to]    # optional initial rotation leave null to use rotation in file
+      rotate_to_map = rotate_to_map ? rotate_to_map : {}
 
-    user_id           = current_user.id
-    album_id          = @album.id
-    agent_id          = params[:agent_id]
-    photos            = []
-    source_guid_map   = params[:source_guid]
-    photo_count       = source_guid_map.length
-    caption_map       = params[:caption]
-    file_size_map     = params[:size]
-    capture_date_map  = params[:capture_date]
-    source_map        = params[:source]
-    rotate_to         = params[:rotate_to]    # optional initial rotation leave null to use rotation in file
-
-    # optimize by ensuring we have the number of ids we need up front
-    current_id = Photo.get_next_id(photo_count)
-    current_batch = UploadBatch.get_current_and_touch( user_id, album_id )
-    batch_id = current_batch.id
-
-    (0...photo_count).each do |index|
-      i_s = index.to_s
-      capture_date = Integer(capture_date_map[i_s]) rescue nil
-      capture_date = nil if capture_date == 0 # treat 0 as nil since no way to pass real NULL value using post
-      capture_date = (Time.at(max_safe_epoch_time(capture_date)) rescue nil) unless capture_date.nil?
-      photo = Photo.new_for_batch(current_batch,  {
-                                    :id                =>   current_id,
-                                    :album_id          =>   album_id,
-                                    :user_id           =>   user_id,
-                                    :upload_batch_id   =>   batch_id,
-                                    :agent_id          =>   agent_id,
-                                    :source_thumb_url  =>   Photo.make_agent_source('thumb', current_id, album_id),
-                                    :source_screen_url =>   Photo.make_agent_source('screen', current_id, album_id),
-                                    :source_guid       =>   source_guid_map[i_s],
-                                    :source            =>   safe_hash_default(source_map, i_s, nil),
-                                    :rotate_to         =>   rotate_to,
-                                    :caption           =>   safe_hash_default(caption_map, i_s, ""),
-                                    :image_file_size   =>   file_size_map[i_s],
-                                    :capture_date      =>   capture_date
-                                    }
-                                    )
-      current_id += 1
-      photos << photo
-    end
-
-    if (photos.count > 0)
-      results = Photo.batch_insert(photos)
-
-      # the results above tells you if validations failed, not if the actual call failed
-      if results.failed_instances.count > 0
-        failed_photo = results.failed_instances[0]
-        render :json => failed_photo.errors, :status=>500 and return
+      # transform the params into the api form
+      create_photos = []
+      (0...photo_count).each do |index|
+        i_s = index.to_s
+        create_photo = {
+            :source_guid => source_guid_map[i_s],
+            :caption => caption_map[i_s],
+            :size => file_size_map[i_s],
+            :capture_date => capture_date_map[i_s],
+            :source => source_map[i_s],
+            :rotate_to => rotate_to_map[i_s]
+        }
+        create_photos << create_photo
       end
+      args = {
+          :agent_id => agent_id,
+          :photos => create_photos
+      }
+      # all prepped let the low level api do the real work
+      photos = batch_photo_create(user_id, album_id, true, args)
+    rescue ArgumentError => ex
+      render :json => "source_guid parameter required. Unable to create photos", :status=>400
+      return
     end
 
     json_str = Photo.to_json_lite(photos)
-
-end_time = Time.now
-puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
-
-    logger.debug json_str
-
     render :json => json_str
   end
 
+  # The batch photo creation process for the zz_api.
+  # This is very similar to how the agent operates where
+  # we first create placeholder photos and then
+  # populate them later with the upload method.
+  #
+  # This is called as:
+  #
+  # /zz_api/albums/:album_id/photos/create_photos
+  #
+  # Where :album_id is the album you are creating the photos in
+  # :user_id is derived from your current account session.
+  #
+  # You must have permission to add photos to this album.  This means that you are either the owner (your user id matches
+  # that of the album), a contributor (checking your role on the album as being Contrib or Admin),
+  # or the all_can_contrib flag in the albums is set to true.
+  #
+  # the expected parameters are:
+  #
+  # {
+  # :agent_id => unique string generated by the calling client that
+  #           represents a unique single instance of that app
+  # :photos => array of photos to create with the following params
+  #   [
+  #     {
+  #     :source_guid => identifies this unique photo
+  #     :caption => the caption for this photo
+  #     :size => expected size for this file when uploaded
+  #     :capture_date => date file was captured in epoch secs, should use create date if not known
+  #     :source => identifier as to the upload source (such as iphone, fs.osx, etc)
+  #     :rotate_to => optional initial rotation - nil if no rotate
+  #     :crop_to => optional initial cropping hash - nil if no cropping
+  #       {
+  #       :top => fractional percent from top (i.e. 0.15 for 15%)
+  #       :left => fraction from left
+  #       :bottom => fraction from top on where to crop (i.e if you want to crop 15% from bottom you would pass 1-.15 or .85)
+  #       :right => fraction from left on where to crop (i.e if you want to crop 20% from right you would pass 1-.20 or .80)
+  #       }
+  #     }
+  #   ...
+  #   ]
+  # }
+  #
+  #
+  # Returns an array of photo objects in the following form:
+  #
+  # [
+  #   {
+  #   :id =>  The photo id
+  #   :user_id => User id that created this photo
+  #   :album_id => The album id this photo belongs to
+  #   :source_guid => The source guid supplied on the create
+  #   }
+  #   ...
+  # ]
+  #
+  #
+  def zz_api_create_photos
+    return unless require_user && require_album(true) && require_album_contributor_role
+    zz_api do
+      user_id           = current_user.id
+      album_id          = @album.id
+      photos = batch_photo_create(user_id, album_id, false, params)
+      hashed_photos = photos.map { |photo| {
+          :id => photo.id,
+          :user_id => photo.user_id,
+          :album_id => photo.album_id,
+          :source_guid => photo.source_guid,
+      } }
+      hashed_photos = Photo.hash_all_photos(photos)
+    end
+  end
+
+
+  def pending_photos
+    Photo.all(:conditions => ["user_id = ? AND agent_id = ? AND state = ?", current_user.id, params[:agent_id], 'assigned'])
+  end
 
   def agent_index
+    return unless oauth_required && require_user
     begin
-      @photos = Photo.all(:conditions => ["agent_id = ? AND state = ?", params[:agent_id], 'assigned'])
+      @photos = pending_photos
       render :json => @photos.to_json(:only =>[:id, :agent_id, :state, :album_id])
-
-    rescue ActiveRecord::StatementInvalid => ex
-      #this seems to mean connection issue with database
-      render :json => ex.to_s, :status=>500
 
     rescue Exception => ex
       render :json => ex.to_s, :status=>500
@@ -107,7 +141,36 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
     end
   end
 
+  #
+  # returns the photos that are pending upload
+  # this returns a very minimal set of data to
+  # the caller.  Called with:
+  #
+  # /zz_api/photos/:agent_id/pending_uploads
+  #
+  # where :agent_id is a unique id tied to that instance
+  # of your application
+  #
+  # returns results as an array of:
+  # [
+  #   {
+  #   :id => photo id
+  #   :album_id => album id this photo belongs to
+  #   }
+  #   ...
+  # ]
+  #
+  def zz_api_pending_uploads
+    return unless require_user
+    zz_api do
+      photos = pending_photos
+      hashed_photos = photos.map { |photo| {:id => photo.id, :album_id => photo.album_id} }
+    end
+  end
+
+
   def simple_upload_fast
+    return unless require_album(true)
     persistence_token = params[:user_credentials].split('::')[0]
     user = User.find_all_by_persistence_token(persistence_token)
     if user
@@ -117,7 +180,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
       return
     end
 
-    album = Album.find(params[:album_id])
+    album = @album
 
     current_batch = UploadBatch.get_current_and_touch( user.id, album.id )
 
@@ -137,12 +200,43 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
 
   end
 
-
+  # Upload a file for a given photo id -
+  # Called in the form:
+  #
+  # /service/photos/:photo_id/upload - for the agent
+  # /zz_api/photos/:photo_id/upload - for the zz_api
+  #
+  # For zz_api, the field name used to specify the attachment should be in the form:
+  # photo[:photo_id] (i.e. photo[12345]) - this is not strictly a requirement but
+  # this should be used since we may expand to multiple file uploads at some point.
+  #
+  # An example test upload using curl would be:
+  # curl --form photo[169911144848]=@/myphotos/test.jpg http://localhost/zz_api/photos/169911144848/upload
+  #
+  # When called by the standard agent interface we return direct json with:
+  # {
+  # :id => the photo id we just updated
+  # :agent_id => the agent we were called by
+  # :state => the current state (uploading, ready, etc)
+  # }
+  # When called via zz_api we return with:
+  # {
+  # :id => the photo id we just updated
+  # :state => the current state (uploading, ready, etc)
+  # }
+  #
+  # if an error occurs, we return a direct json string in the agent case
+  # and if called via zz_api we return the standard json error form with a status of
+  # 509 and the json containing the real error status - the data can either be a single
+  # string with the error message or an array of strings
+  #
+  # a real error code of 500 means the error is temporary and you should retry the upload
+  # later - an error code in the 400 range means a non recoverable error
   def upload_fast
-    #nginx add params so it breaks oauth. use this validation to ensure it is coming from nginx
+    return unless require_nothing
+    #nginx adds params so it breaks oauth. use this validation to ensure it is coming from nginx
     #currently we only handle one photo attachment but the input is structured to send multiple
     #as is done with the sendgrid#import_fast
-
     if params[:fast_upload_secret] == "this-is-a-key-from-nginx" && (attachments = params[:fast_local_image]) && attachments.count == 1
       begin
         @photo = Photo.find(params[:id])
@@ -150,34 +244,46 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
         fast_local_image = attachments[0] # extract only the first one
         @photo.file_to_upload = fast_local_image['filepath']
         if @photo.save
-          render :json => @photo.to_json(:only =>[:id, :agent_id, :state]), :status => 200 and return
+          json = zz_api_call? ? @photo.to_json(:only =>[:id, :state]) : @photo.to_json(:only =>[:id, :agent_id, :state])
+          render :json => json, :status => 200
+          return
         else
-          render :json => @photo.errors, :status=>400
+          error = @photo.errors
+          status = 400
         end
 
       rescue ActiveRecord::StatementInvalid => ex
         #this seems to mean connection issue with database
         #give the agent a chance  to retry
-        render :json => ex.to_s, :status=>500
+        error = ex.to_s
+        status = 500
         logger.info small_back_trace(ex)
 
       rescue Exception => ex
         # a status in the 400 range tells the agent to stop trying
         # our default if we don't explicitly expect the error is to not
         # try again
-        render :json => ex.to_s, :status=>400
+        error = ex.to_s
+        status = 400
         logger.info small_back_trace(ex)
       end
     else
       # call did not come through remapped upload via nginx so reject it
-      render :json => "Invalid upload_fast arguments.", :status=>400
+      error = "Invalid upload_fast arguments."
+      status = 400
     end
 
+    if zz_api_call?
+      render_json_error(nil, error, status)
+    else
+      render :json => error, :status => status
+    end
   end
 
   #deletes a photo
   #@photo & @album are set by require_photo beofre filter
   def destroy
+    return unless require_user && require_photo && require_photo_owner_or_album_admin_role
     cover_id = @album.cover_photo_id
     if cover_id == @photo.id
       @album.cover_photo_id = nil
@@ -200,6 +306,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   end
 
   def index
+    return unless require_album(true) && require_album_viewer_role
     if(!params[:user_id])
       redirect_to album_pretty_url(@album)
     else
@@ -228,6 +335,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
 
   # redirects to single picture view
   def show
+    return unless require_album(true) && require_album_viewer_role
     photo = @album.photos.find(params[:photo_id])
     if(params[:show_comments])
       set_show_comments_cookie
@@ -238,6 +346,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   # returns the  movie view
   # @album is set by before_filter require_album
   def movie
+    return unless require_album(true) && require_album_viewer_role
     @photos = @album.photos
     render 'movie', :layout => false
   end
@@ -287,10 +396,12 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   end
 
   def photos_json
+    return unless require_album(true) && require_album_viewer_role
     photos_loader
   end
 
-  def zz_api_photos_json
+  def zz_api_photos
+    return unless require_album(true) && require_album_viewer_role
     zz_api_self_render do
       photos_loader
     end
@@ -300,6 +411,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   # we need this hack because we have seen corrupt json data being returned
   # from the cache so either issue with ruby,gzip, or memcached
   def photos_json_invalidate
+    return unless require_album(true) && require_album_viewer_role
     Album.change_cache_version(@album.id)
     render :json => ''
   end
@@ -308,6 +420,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   # updates photo attributes
   # @photo is set in require_photo before filter
   def update
+    return unless require_user && require_photo && require_album_admin_role
     if @photo && @photo.update_attributes( params[:photo] )
       flash[:notice] = "Photo Updated!"
       render :text => 'Success Updating Photo', :status => 200, :layout => false
@@ -321,6 +434,7 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   # expects params[ :before_id ] and params[ :after_id ]
   # @photo is set by require_photo before_filter
   def position
+    return unless require_user && require_photo && require_album_admin_role
     @photo.position_between( params[:before_id], params[:after_id])
     render :nothing => true
   end
@@ -336,6 +450,8 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   # rotation via the photos.json
   #
   def async_edit
+    return unless require_user && require_photo && require_photo_owner_or_album_admin_role
+
     begin
       rotate_to = params[:rotate_to]
       crop = params[:crop]
@@ -349,6 +465,8 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
   end
 
   def async_rotate_left
+    # passes control to async_rotate which does the proper requires
+
     rotate_to = @photo.rotate_to.to_i - 90
     if(rotate_to == -90)
       rotate_to = 270
@@ -361,6 +479,8 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
 
 
   def async_rotate_right
+    # passes control to async_rotate which does the proper requires
+
     rotate_to = @photo.rotate_to.to_i + 90
     if(rotate_to == 360)
       rotate_to = 0
@@ -373,11 +493,10 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
 
 
 
-
-
-
   # @photo and @album are  set by require_photo before_filter
   def download
+    return unless require_photo
+
     unless  @album.can_user_download?( current_user )
       flash.now[:error] = "Only Authorized Album Group Members can download photos"
       if request.xhr?
@@ -411,73 +530,69 @@ puts "Time in agent_create with #{photo_count} photos: #{end_time - start_time}"
 
 
   private
+
+  # the low level code to create a batch of photos for agent_create or api
+  # takes a hash in the form specified for the zz_api_create_photos call
   #
-  # To be run as a before_filter
-  # sets @photo to be Photo.find( params[:id ])
-  # set @album ot @photo.album
-  # params[:id] required, must be present and be a valid photo_id.
-  def require_photo
-    begin
-      @photo = Photo.find( params[:id ])  #will trhow exception if params[:id] is not defined or photo not found
-      @album = @photo.album
-    rescue ActiveRecord::RecordNotFound => e
-      flash.now[:error] = "This operation requires a photo, we could not find one because: "+e.message
-      if request.xhr?
-        head :not_found
-      else
-        render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
-      end
-      return false
+  def batch_photo_create(user_id, album_id, make_source_urls, args)
+start_time = Time.now
+    agent_id          = args[:agent_id]
+    create_photos     = args[:photos]
+    photo_count       = args.length
+    photos            = []
+    # optimize by ensuring we have the number of ids we need up front
+    current_id = Photo.get_next_id(photo_count)
+    current_batch = UploadBatch.get_current_and_touch( user_id, album_id )
+    batch_id = current_batch.id
+
+    # now batch create all the photos
+    create_photos.each do |create_photo|
+      source_guid       = create_photo[:source_guid]
+      raise ArgumentError.new("source_guid parameter required. Unable to create photos") if source_guid.nil?
+
+      caption           = create_photo[:caption]
+      file_size         = create_photo[:size]
+
+      capture_date      = create_photo[:capture_date]
+      capture_date = (Time.at(max_safe_epoch_time(Integer(capture_date))) rescue nil) unless capture_date.nil?
+
+      source            = create_photo[:source]
+      rotate_to         = create_photo[:rotate_to]    # optional initial rotation leave null to use rotation in file
+      crop_to           = create_photo[:crop_to]      # optional initial cropping
+      crop_json = crop_to ? JSON.fast_generate(crop_to) : nil
+
+      photo = Photo.new_for_batch(current_batch,  {
+                                    :id                =>   current_id,
+                                    :album_id          =>   album_id,
+                                    :user_id           =>   user_id,
+                                    :upload_batch_id   =>   batch_id,
+                                    :agent_id          =>   agent_id,
+                                    :source_thumb_url  =>   make_source_urls ? Photo.make_agent_source('thumb', current_id, album_id) : nil,
+                                    :source_screen_url =>   make_source_urls ? Photo.make_agent_source('screen', current_id, album_id) : nil,
+                                    :source_guid       =>   source_guid,
+                                    :source            =>   source,
+                                    :rotate_to         =>   rotate_to,
+                                    :crop_json         =>   crop_json,
+                                    :caption           =>   caption ? caption : '',
+                                    :image_file_size   =>   file_size,
+                                    :capture_date      =>   capture_date
+                                    }
+                                    )
+      current_id += 1
+      photos << photo
+
+      # log the input photo, helpful when we want to see args used to create a photo in loggly
+      logger.debug create_photo.inspect
     end
-  end
 
-  #
-  # To be run as a before_filter
-  # sets @album
-  # params[:album_id] required, it must be present and be a valid album_id.
-  # params[:user_id]  optional, if present it will be used as a :scope for the finder
-  # Throws ActiveRecord:RecordNotFound exception if params[:id] is not present or the album is not found
-  def require_album
-    begin
-      #will trhow exception if params[:album_id] is not defined or album not found
-      if params[:user_id]
-        @album = User.find( params[:user_id] ).albums.find(params[:album_id] )
-      else
-        @album = Album.find( params[:album_id] )
-      end
-    rescue ActiveRecord::RecordNotFound => e
-      flash.now[:error] = "This operation requires an album, we could not find one because: "+e.message
-      if request.xhr?
-        head :not_found
-      else
-        if params[:user_id]
-          album_not_found_redirect_to_owners_homepage(params[:user_id])
-        else
-          render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
-        end
-
-      end
-      return false
+    if (photos.count > 0)
+      results = Photo.batch_insert(photos)
     end
-  end
 
-  #
-  # To be run as a before_filter
-  # Requires
-  # @photo is the photo to be acted upon
-  # current_user is the user we are evaluating
-  def require_photo_owner_or_album_admin_role
-    unless  @photo.user.id == current_user.id || @photo.album.admin?( current_user.id ) || current_user.support_hero?
-      flash.now[:error] = "Only Photo Owners or Album Admins can perform this operation"
-      response.headers['X-Errors'] = flash[:error]
-      if request.xhr?
-        head :not_found
-      else
-        render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
-      end
-      return false
-    end
-  end
+end_time = Time.now
+puts "Time in batch_photo_create with #{photo_count} photos: #{end_time - start_time}"
 
+    photos
+  end
 
 end

@@ -84,21 +84,40 @@ module ZZ
         render :status => 509, :json => error_json
       end
 
+      # checks to see if we were called via the zz_api, impacts
+      # how we form error responses
+      def zz_api_call?
+        ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER]) || request.path.index("/zz_api/") == 0
+      end
+
+      # just used as a placeholder in code to make it clear
+      # that the proper requires have been coded
+      def require_nothing
+        true
+      end
+
+      # used to enforce invoked via zz api style call
+      def require_zz_api
+        zz_api_call?
+      end
+
       # Filter for methods that require a log in
       def require_user
         unless current_user
-          if ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER])
-            # this is the standard api error response format
-            render_json_error(nil, "You must be logged in", 401)
+          msg = "You must be logged in to access this page"
+          if zz_api_call?
+            render_json_error(nil, msg, 401)
           elsif request.xhr?
-            flash.now[:error] = "You must be logged in to access this page"
+            flash.now[:error] = msg
             head :status => 401
           else
-            flash[:error] = "You must be logged in to access this page"
+            flash[:error] = msg
             store_location
             redirect_to new_user_session_url
           end
+          return false
         end
+        return true
       end
 
 
@@ -111,12 +130,12 @@ module ZZ
       # json message that may or may not be used.
       def require_user_json
         unless current_user
-          if ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER_RAILS])
-            # this is the standard api error response format
-            render_json_error(nil, "You must be logged in", 401)
+          msg = "You must be logged in to call this url"
+          if zz_api_call?
+            render_json_error(nil, msg, 401)
           else
             session[:return_to] = request.referer
-            render :json => "You must be logged in to call this url", :status => 401
+            render :json => msg, :status => 401
           end
           return false
         end
@@ -131,8 +150,7 @@ module ZZ
         # if we pass the first test, verify we are the user we want info on
         if current_user.id != user_id && current_user.support_hero? == false
           msg = "You do not have permissions to access this data, you can only access your own data"
-          if ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER_RAILS])
-            # this is the standard api error response format
+          if zz_api_call?
             render_json_error(nil, msg, 401)
           else
             session[:return_to] = request.referer
@@ -146,10 +164,17 @@ module ZZ
       # Filter for methods that require NO USER like sign in
       def require_no_user
         if current_user
-          store_location
-          flash[:notice] = "You must be logged out to access this page"
-          redirect_back_or_default root_path
+          msg = "You must be logged out to access this page"
+          if zz_api_call?
+            render_json_error(nil, msg, 401)
+          else
+            store_location
+            flash[:notice] = msg
+            redirect_back_or_default root_path
+          end
+          return false
         end
+        return true
       end
 
       #
@@ -200,19 +225,57 @@ module ZZ
 
       #
       # To be run as a before_filter
+      # sets @album
+      # params[:album_id] required, it must be present and be a valid album_id.
+      # params[:user_id]  optional, if present it will be used as a :scope for the finder
+      # If scoped is set, will check user_id if present
+      # Throws ActiveRecord:RecordNotFound exception if params[:album_id] is not present or the album is not found
+      def require_album(user_scoped = false)
+        begin
+          #will throw an exception if params[:album_id] is not defined or album not found
+          if user_scoped && params[:user_id]
+            @album = User.find( params[:user_id] ).albums.find(params[:album_id] )
+          else
+            @album = Album.find( params[:album_id] )
+          end
+        rescue ActiveRecord::RecordNotFound => e
+          msg = "This operation requires an album, we could not find one because: "+e.message
+          if zz_api_call?
+            render_json_error(nil, msg, 404)
+          elsif request.xhr?
+            flash.now[:error] = msg
+            head   :not_found
+          else
+            flash.now[:error] = msg
+            if user_scoped && params[:user_id]
+              album_not_found_redirect_to_owners_homepage(params[:user_id])
+            else
+              render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
+            end
+          end
+          return false
+        end
+        return true
+      end
 
       # Assumes @album is the album in question and current_user is the user we are evaluating
       def require_album_admin_role
         unless  @album.admin?( current_user.id ) || current_user.support_hero?
-          flash.now[:error] = "Only Album admins can perform this operation"
-          response.headers['X-Errors'] = flash[:error]
-          if request.xhr?
+          msg = "Only Album admins can perform this operation"
+          if zz_api_call?
+            render_json_error(nil, msg, 401)
+          elsif request.xhr?
+            flash.now[:error] = msg
+            response.headers['X-Errors'] = flash[:error]
             head :status => 401
           else
+            flash.now[:error] = msg
+            response.headers['X-Errors'] = flash[:error]
             render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
           end
           return false
         end
+        return true
       end
 
       #
@@ -222,26 +285,34 @@ module ZZ
       # ( Album not private )
       def require_album_viewer_role
         if @album.private?
+          msg = "You have asked to see a password protected album. Please login so we know who you are."
           unless current_user
-            if request.xhr?
-              flash.now[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
-              head :status => 401 and return
+            if zz_api_call?
+              render_json_error(nil, msg, 401)
+            elsif request.xhr?
+              flash.now[:notice] = msg
+              head :status => 401
             else
-              flash[:notice] = "You have asked to see a password protected album. Please login so we know who you are."
+              flash[:notice] = msg
               store_location
-              redirect_to new_user_session_url and return
+              redirect_to new_user_session_url
             end
+            return false
           end
           unless @album.viewer?( current_user.id ) || current_user.moderator?
-            if request.xhr?
-              flash[:notice] = "You have asked to see a password protected album. You do not have enough privileges to see it"
+            if zz_api_call?
+              render_json_error(nil, msg, 401)
+            elsif request.xhr?
+              flash[:notice] = msg
               head :status => 401
             else
               session[:client_dialog] = album_pwd_dialog_url( @album )
-              redirect_to user_url( @album.user ) and return
+              redirect_to user_url( @album.user )
             end
+            return false
           end
         end
+        return true
       end
 
       #
@@ -249,27 +320,104 @@ module ZZ
       # Assumes @album is the album in question and current_user is the user we are evaluating
       def require_album_contributor_role
         unless  @album.contributor?( current_user.id ) || current_user.support_hero? || @album.everyone_can_contribute?
-          flash.now[:error] = "Only Contributors admins can perform this operation"
-          render_401
+          msg = "Only Contributors admins can perform this operation"
+          if zz_api_call?
+            render_json_error(nil, msg, 401)
+          else
+            flash.now[:error] = msg
+            render_401
+          end
+          return false
         end
+        return true
       end
+
+
+      #
+      # To be run as a before_filter
+      # sets @photo to be Photo.find( params[:id ])
+      # set @album ot @photo.album
+      # params[:id] required, must be present and be a valid photo_id.
+      def require_photo
+        begin
+          @photo = Photo.find( params[:id ])  #will throw exception if params[:id] is not defined or photo not found
+          @album = @photo.album
+        rescue ActiveRecord::RecordNotFound => e
+          msg = "This operation requires a photo, we could not find one because: "+e.message
+          if zz_api_call?
+            render_json_error(nil, msg, 404)
+          elsif request.xhr?
+            flash.now[:error] = msg
+            head :not_found
+          else
+            flash.now[:error] = msg
+            render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404
+          end
+          return false
+        end
+        return true
+      end
+
+
+      #
+      # To be run as a before_filter
+      # Requires
+      # @photo is the photo to be acted upon
+      # current_user is the user we are evaluating
+      def require_photo_owner_or_album_admin_role
+        unless  @photo.user.id == current_user.id || @photo.album.admin?( current_user.id ) || current_user.support_hero?
+          msg = "Only Photo Owners or Album Admins can perform this operation"
+          if zz_api_call?
+            render_json_error(nil, msg, 401)
+          else
+            flash.now[:error] = msg
+            response.headers['X-Errors'] = flash[:error]
+            if request.xhr?
+              head :not_found
+            else
+              render :file => "#{Rails.root}/public/401.html", :layout => false, :status => 401
+            end
+          end
+          return false
+        end
+        return true
+      end
+
+
+
+
+
 
       # To be run as a before_filter
       # Will render a 401 page if the currently logged in user is not an admin
       def require_admin
         unless current_user.admin?
-          flash.now[:error] = "Administrator privileges required for this operation"
-          render_401
+          msg = "Administrator privileges required for this operation"
+          if zz_api_call?
+            render_json_error(nil, msg, 401)
+          else
+            flash.now[:error] = msg
+            render_401
+          end
+          return false
         end
+        return true
       end
 
       # To be run as a before_filter
       # Will render a 401 page if the currently logged in user is not an admin
       def require_moderator
-         unless current_user.moderator?
-          flash.now[:error] = "Moderator privileges required for this operation"
-          render_401
+        unless current_user.moderator?
+          msg = "Moderator privileges required for this operation"
+          if zz_api_call?
+            render_json_error(nil, msg, 401)
+          else
+            flash.now[:error] = msg
+            render_401
+          end
+          return false
         end
+        return true
       end
 
 
