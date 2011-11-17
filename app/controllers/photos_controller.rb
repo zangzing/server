@@ -170,7 +170,7 @@ class PhotosController < ApplicationController
 
 
   def simple_upload_fast
-    return unless require_album(true)
+    return unless require_album(true) && require_album_contributor_role
     persistence_token = params[:user_credentials].split('::')[0]
     user = User.find_all_by_persistence_token(persistence_token)
     if user
