@@ -56,6 +56,10 @@ module ZZ
         @current_user = current_user_session && current_user_session.user
       end
 
+      def current_user=(user)
+        @current_user = user
+      end
+
       # True if a user is signed in. Left in place for backwards compatibility
       # better to use if current_user ......
       alias_method :signed_in?, :current_user
