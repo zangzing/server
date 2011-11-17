@@ -190,6 +190,12 @@ class Admin::EmailTemplatesController < Admin::AdminController
       Notifier.order_shipped( order.shipment.id, template_id)
   end
 
+  def test_request_access( template_id )
+        Notifier.request_access( sender.id, album.id, message, template_id)
+    end
+
+
+
   def user_or_not_user_email_address
     if rand(2) <= 0
       current_user.email
