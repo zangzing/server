@@ -469,7 +469,7 @@ class AlbumsController < ApplicationController
 # we also have a watchdog sweeper that will
 # close batches with no new add activity after a 5 minute window
   def close_batch
-    return unless require_user && require_album && require_album_admin_role
+    return unless require_user && require_album && require_album_contributor_role
     album_id = @album.id
     if album_id
       UploadBatch.close_batch( current_user.id, album_id)
