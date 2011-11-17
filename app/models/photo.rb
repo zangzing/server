@@ -713,7 +713,7 @@ class Photo < ActiveRecord::Base
     full_type = safe_file_type
     extension = extension_from_type(full_type)
     name = self.caption.blank? ? no_caption_filler(append_info) : self.caption
-    name = name[0..230] # limit to allow room for making unique
+    name = name.gsub(/\.#{extension}$/i, '')[0..230] # strip extension and limit to allow room for making unique
     pre_filt_name = name
     if dup_filter.include?(name.downcase)
       name = "#{pre_filt_name}-#{append_info}"
