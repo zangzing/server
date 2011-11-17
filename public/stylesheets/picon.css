@@ -70,4 +70,18 @@
 .picon .stacked-image .button-bar .buttons .delete-button{ background: url(/images/album_toolbar_delete.png) no-repeat scroll 6px -19px transparent; }
 .picon .stacked-image .button-bar .buttons .delete-button:hover{ background-position: 6px 0px; }
 
+/*  Info Button
+ *************************************/
+.picon .stacked-image .button-bar .buttons .info-button{
+    top:0px;
+    height:17px;
+    background: url(/images/album_toolbar_info.png) no-repeat scroll 6px -19px transparent;
+}
+
+.picon .stacked-image .button-bar .buttons .info-button:hover{
+    background-position: 6px -1px;
+}
+
+
+
 

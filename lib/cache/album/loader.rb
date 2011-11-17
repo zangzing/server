@@ -311,8 +311,9 @@ module Cache
               :photos_ready_count => album.photos_ready_count,
               :cache_version => album.cache_version_key,
               :updated_at => album.updated_at.to_i,
+              :my_role => album.my_role, # valid values are Viewer, Contrib, Admin
               :all_can_contrib => album.everyone_can_contribute?,
-              :my_role => album.my_role # valid values are Viewer, Contrib, Admin (this is populated by the invited_album_loader)
+              :who_can_download => album.who_can_download #Valid values are viewers, owner, everyone
           }
           fast_albums << hash_album
         end

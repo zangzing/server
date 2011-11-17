@@ -90,6 +90,7 @@ zz.homepage = {
                 container.append(clone);
 
                 clone.zz_picon({
+                    album:   album,
                     caption: album.name,
                     coverUrl: album.c_url,
                     albumId: album.id,
@@ -103,15 +104,7 @@ zz.homepage = {
                     onLike: function() {
                         alert('This feature is still under construction. It will allow you to like an album.');
                     },
-                    onDelete: function() {
-                        if (confirm('Are you sure you want to delete this album?')) {
-                            clone.find('.picon').hide('scale', {}, 300, function() {
-                                clone.remove();
-                            });
-                            zz.routes.call_delete_album(album.id);
-                        }
-                    },
-                    allowDelete: !album.profile_album && album.user_id == zz.session.current_user_id
+                    infoMenuTemplateResolver: zz.homepage.infomenu_template_resolver
                 });
                 wanted_subjects[album.id] = 'album';
             });
@@ -141,6 +134,42 @@ zz.homepage = {
 
         $('#article').touchScrollY();
 
-    }
+    },
 
+
+    infomenu_template_resolver: function(album) {
+       if( typeof( zz.homepage.infomenu_template_matrix ) == 'undefined' ){
+           zz.homepage.infomenu_template_matrix = [
+                [ null, zz.infomenu.download_template ],
+                [ zz.infomenu.delete_template, zz.infomenu.download_delete_template]
+            ];
+        }
+
+        var del = 0,
+            download = 0;
+
+        //delete
+        if(  !album.profile_album && album.user_id == zz.session.current_user_id ){
+            del = 1;
+        } 
+        //download
+        if( album.c_url ){
+            switch( album.who_can_download ){
+                case 'everyone':
+                    download = 1;
+                    break;
+                case 'viewers': // group
+                    if( album.id in zz.session.current_user_membership ){
+                        download = 1;
+                    }
+                    break;
+                case 'owner':
+                    if( album.user_id == zz.session.current_user_id ){
+                        download = 1;
+                    }
+                    break;
+            }
+        }
+        return zz.homepage.infomenu_template_matrix[del][download];
+    }
 };

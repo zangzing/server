@@ -117,7 +117,7 @@ Server::Application.routes.draw do
     put   '/albums/:album_id/upload_fast'   => 'photos#simple_upload_fast',    :as => :simple_upload_photo_fast
     get    '/agents/:agent_id/photos'       => 'photos#agent_index',                :as => :agent_photos
     post   '/albums/:album_id/photos/agent_create.:format' => 'photos#agent_create',:as => :agent_create
-    get    '/photos/download/:id'           => 'photos#download',                   :as => :download_photo
+    get    '/photos/:id/download'           => 'photos#download',                   :as => :download_photo
     put    '/photos/:id'                    => 'photos#update',                     :as => :update_photo
     put    '/photos/:id/position'           => 'photos#position',                   :as => :photo_position
     put    '/photos/:id/async_edit'         => 'photos#async_edit',                 :as => :photo_async_edit
