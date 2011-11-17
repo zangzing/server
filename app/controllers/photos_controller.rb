@@ -170,15 +170,14 @@ class PhotosController < ApplicationController
 
 
   def simple_upload_fast
-    return unless require_album(true) && require_album_contributor_role
+    # because we are called via flash we don't get the user_credentials cookie set
+    # and instead it gets passed as part of the posted data so we manually extract
+    # it and then set it up as current_user
     persistence_token = params[:user_credentials].split('::')[0]
     user = User.find_all_by_persistence_token(persistence_token)
-    if user
-      user = user[0]
-    else
-      render :text=>'unauthorized', :status=>401
-      return
-    end
+    user = user[0] if user
+    self.current_user = user
+    return unless require_user && require_album(true) && require_album_contributor_role
 
     album = @album
 
@@ -233,7 +232,12 @@ class PhotosController < ApplicationController
   # a real error code of 500 means the error is temporary and you should retry the upload
   # later - an error code in the 400 range means a non recoverable error
   def upload_fast
-    return unless require_user && require_photo && require_album_contributor_role
+    # this is a cheat to get the current user since nginx prevents us from getting it via oauth
+    # we grab the photo passed which has the user which we then set to current_user so the
+    # rest of the calls that require current_user work as expected
+    return unless require_photo
+    self.current_user = @photo.user
+    return unless require_user && require_album_contributor_role
 
     #nginx adds params so it breaks oauth. use this validation to ensure it is coming from nginx
     #currently we only handle one photo attachment but the input is structured to send multiple
