@@ -146,7 +146,6 @@ class ApplicationController < ActionController::Base
   # return with preparation for a album zip
   def nginx_zip_mod(filename, contents)
     filename = ZZUtils.build_safe_filename(filename, 'zip')
-    response.headers['Content-Type'] = "application/octet-stream"
     # Set a binary Content-Transfer-Encoding, or ActionController::AbstractResponse#assign_default_content_type_and_charset!
     # will set a charset to the Content-Type header.
     response.headers['Content-Transfer-Encoding'] = 'binary'
@@ -154,7 +153,7 @@ class ApplicationController < ActionController::Base
         ( browser.chrome? ? "attachment; filename=#{filename}" : "attachment; filename=\"#{filename}\"" )
     response.headers['X-Archive-Files'] = 'zip'
     Rails.logger.info "Sending zipped album #{filename} to client"
-    render :text => contents
+    render :content_type => "application/octet-stream", :text => contents
   end
 
 
