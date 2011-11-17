@@ -47,7 +47,7 @@ class ZZUtils
       filename = name
     end
     # get rid of any invalid chars
-    filename.gsub(/^\.|[\\\/:\*\?"<>|]/, '-')
+    filename.gsub(/^\.|[\\\/:\*\?"<>|\x00-\x1f]/, '-')
   end
 
 end
