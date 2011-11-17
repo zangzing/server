@@ -713,6 +713,11 @@ class Photo < ActiveRecord::Base
     full_type = safe_file_type
     extension = extension_from_type(full_type)
     name = self.caption.blank? ? no_caption_filler(append_info) : self.caption
+
+    # make sure we will fit in 255 chars
+    limit = 254 - (extension.length + 1)  # leave room for .extension
+    name = name[0..limit]
+
     # ok, now see if the name already has an extension that matches this extension, if so don't append
     if (name =~ /\.#{extension}$/i) == nil
       filename = "#{name}.#{extension}"
@@ -720,7 +725,7 @@ class Photo < ActiveRecord::Base
       filename = name
     end
     # get rid of any invalid chars
-    filename = filename.gsub(/[\\\/:\*\?"<>|]/, '-')
+    filename = filename.gsub(/^.|[\\\/:\*\?"<>|]/, '-')
   end
 
   def no_caption_filler(append_info)
