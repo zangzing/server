@@ -233,14 +233,13 @@ class PhotosController < ApplicationController
   # a real error code of 500 means the error is temporary and you should retry the upload
   # later - an error code in the 400 range means a non recoverable error
   def upload_fast
-    return unless require_nothing
+    return unless require_user && require_photo && require_album_contributor_role
+
     #nginx adds params so it breaks oauth. use this validation to ensure it is coming from nginx
     #currently we only handle one photo attachment but the input is structured to send multiple
     #as is done with the sendgrid#import_fast
     if params[:fast_upload_secret] == "this-is-a-key-from-nginx" && (attachments = params[:fast_local_image]) && attachments.count == 1
       begin
-        @photo = Photo.find(params[:id])
-        @album = @photo.album
         fast_local_image = attachments[0] # extract only the first one
         @photo.file_to_upload = fast_local_image['filepath']
         if @photo.save
