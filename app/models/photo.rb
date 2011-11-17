@@ -909,7 +909,7 @@ class Photo < ActiveRecord::Base
   # we invalidate the browsers cache for
   # old items.
   def self.hash_schema_version
-    'v5'
+    'v6'
   end
 
   # this method packages up the fields
@@ -930,6 +930,7 @@ class Photo < ActiveRecord::Base
     end
     hashed_photo = {
       :id => photo.id,
+      :agent_id => photo.agent_id,
       :caption => photo.caption,
       :state => photo.state,
       :rotate_to => photo.rotate_to.nil? ? 0 : photo.rotate_to,
