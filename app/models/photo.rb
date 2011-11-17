@@ -719,7 +719,8 @@ class Photo < ActiveRecord::Base
     else
       filename = name
     end
-    filename
+    # get rid of any invalid chars
+    filename = filename.gsub(/[\\\/:\*\?"<>|]/, '-')
   end
 
   def no_caption_filler(append_info)
