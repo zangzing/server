@@ -87,7 +87,11 @@ var zz = zz || {};
             import_all_from_service: function(service_name, callback){
                 var url = '/service/' + service_name + '/folders/import_all.json'
                 zz.async_ajax.call(url, 'get', callback, callback);
+            },
+            request_access: function(album_id, message, success, error){
+                do_post('/service/albums/' +album_id+'/request_access', {message: message}, success, error);
             }
+
         },
 
         identities: {
@@ -164,6 +168,7 @@ var zz = zz || {};
 
             }
         },
+
 
         edit_user_path: function(username) {
             return '/:username/settings'.replace(':username', username);

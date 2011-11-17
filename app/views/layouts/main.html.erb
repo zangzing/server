@@ -173,11 +173,6 @@
           <% end %>
 
 
-          <% if session[:client_dialog] %>
-          zz.client_dialog.show( '<%=raw session[:client_dialog] %>' );
-          <%   session[:client_dialog] = nil %>
-          <% end %>
-
 
           <% if session[:flash_dialog] %>
           zz.dialog.show_flash_dialog('<%=flash[:notice] %>')
@@ -215,6 +210,10 @@
     <%   # Pull in generated javascript for the page -%>
     <%= yield :page_javascript %>
 
+    <% if session[:show_request_access_dialog]  %>
+        <%= render :partial => 'albums/pwd_dialog', :locals => {:album_id => session[:show_request_access_dialog]}%>
+        <% session.delete(:show_request_access_dialog)%>
+    <% end %>
 
   </body>
 </html>
