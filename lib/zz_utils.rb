@@ -33,4 +33,21 @@ class ZZUtils
     return false if val == false || val == 'false' || val == 0 || val == '0'
     false # catch all for any non true or false value
   end
+
+  # returns a safely filtered filename for mac an windows
+  # by limiting length and filtering invalid chars
+  def self.build_safe_filename(name, extension)
+    limit = 254 - (extension.length + 1)  # leave room for .extension
+    name = name[0..limit]
+
+    # ok, now see if the name already has an extension that matches this extension, if so don't append
+    if (name =~ /\.#{extension}$/i) == nil
+      filename = "#{name}.#{extension}"
+    else
+      filename = name
+    end
+    # get rid of any invalid chars
+    filename.gsub(/^\.|[\\\/:\*\?"<>|]/, '-')
+  end
+
 end

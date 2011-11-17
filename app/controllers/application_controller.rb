@@ -145,7 +145,7 @@ class ApplicationController < ActionController::Base
 
   # return with preparation for a album zip
   def nginx_zip_mod(filename, contents)
-    filename += '.zip'
+    filename = ZZUtils.build_safe_filename(filename, 'zip')
     response.headers['Content-Type'] = "application/octet-stream"
     # Set a binary Content-Transfer-Encoding, or ActionController::AbstractResponse#assign_default_content_type_and_charset!
     # will set a charset to the Content-Type header.

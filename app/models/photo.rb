@@ -709,23 +709,23 @@ class Photo < ActiveRecord::Base
   # return filename with extension
   # derived from the caption
   # append_info if set will be appended to the no_caption case
-  def file_name_with_extention(append_info = nil)
+  def file_name_with_extension(dup_filter = Set.new, append_info = nil)
     full_type = safe_file_type
     extension = extension_from_type(full_type)
     name = self.caption.blank? ? no_caption_filler(append_info) : self.caption
-
-    # make sure we will fit in 255 chars
-    limit = 254 - (extension.length + 1)  # leave room for .extension
-    name = name[0..limit]
-
-    # ok, now see if the name already has an extension that matches this extension, if so don't append
-    if (name =~ /\.#{extension}$/i) == nil
-      filename = "#{name}.#{extension}"
-    else
-      filename = name
+    name = name[0..230] # limit to allow room for making unique
+    pre_filt_name = name
+    if dup_filter.include?(name.downcase)
+      name = "#{pre_filt_name}-#{append_info}"
+      # ok, see if still a dup, this time use random number till good
+      max_tries = 100   # keep from looping forever, just accept a duplicate after trying this many times
+      while (dup_filter.include?(name.downcase) && max_tries > 0)
+        name = "#{pre_filt_name}-#{append_info}-#{rand(99999)}"
+        max_tries -= 1
+      end
     end
-    # get rid of any invalid chars
-    filename = filename.gsub(/^.|[\\\/:\*\?"<>|]/, '-')
+    dup_filter.add(name.downcase)
+    filename = ZZUtils.build_safe_filename(name, extension)
   end
 
   def no_caption_filler(append_info)

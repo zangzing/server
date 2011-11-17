@@ -516,12 +516,13 @@ class AlbumsController < ApplicationController
     #
     files = ""
     i = 0
+    dup_filter = Set.new
     @album.photos.each do |photo|
       i += 1
       image_path = photo.image_path
       image_file_size = photo.image_file_size.nil? ? 0 : photo.image_file_size.to_i
       if image_path && image_file_size > 0
-        full_name = photo.file_name_with_extention(i)
+        full_name = photo.file_name_with_extension(dup_filter, i)
         escaped_url = URI::escape(image_path.to_s)
         uri = URI.parse(escaped_url)
         query = uri.query.blank? ? '' : "?#{uri.query}"

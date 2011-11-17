@@ -509,7 +509,7 @@ class PhotosController < ApplicationController
 
     if @photo && @photo.ready?
       type = @photo.safe_file_type
-      filename = @photo.file_name_with_extention
+      filename = @photo.file_name_with_extension
       #url = @photo.original_url.split('?')[0]
       url = @photo.original_url
       zza.track_event("photos.download.original")
