@@ -74,7 +74,6 @@ Server::Application.routes.draw do
     get    '/albums/:album_id/close_batch'         => 'albums#close_batch',         :as => :close_batch
     put    '/albums/:album_id'                     => 'albums#update',              :as => :update_album
     delete '/albums/:album_id'                     => 'albums#destroy',             :as => :delete_album
-    get    'albums/:album_id/pwd_dialog'           => 'albums#pwd_dialog',          :as => :album_pwd_dialog
     post   'albums/:album_id/request_access'       => 'albums#request_access',      :as => :request_album_access
     get    '/albums/:album_id/edit_group'          => 'albums#edit_group'
 

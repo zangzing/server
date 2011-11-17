@@ -164,6 +164,15 @@ class Notifier < ActionMailer::Base
   end
 
 
+  def request_access( user_id, album_id,  message,template_id = nil )
+    @user      = User.find( user_id )
+    @album     = Album.find( album_id )
+    @recipient = @album.user
+    @message   = message
+
+    create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
+  end
+
 
 
   def activation_instructions(user_id)

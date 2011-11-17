@@ -306,7 +306,8 @@ module ZZ
               flash[:notice] = msg
               head :status => 401
             else
-              session[:client_dialog] = album_pwd_dialog_url( @album )
+              session[:show_request_access_dialog] = @album.id
+              #session[:client_dialog] = album_pwd_dialog_url( @album )
               redirect_to user_url( @album.user )
             end
             return false

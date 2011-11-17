@@ -477,16 +477,11 @@ class AlbumsController < ApplicationController
     render :nothing => true
   end
 
-#displays the "You have reached a password protected album, request access" dialog
-  def pwd_dialog
-    return unless require_user && require_album
-    render :layout => false
-  end
-
 # Receives and processes a user's request for access into a password protected album
   def request_access
     return unless require_user && require_album
-    #TODO: Receive and process current_users request for access into the current album
+    ZZ::Async::Email.enqueue( :request_access, current_user.id, @album.id,  params[:message] )
+    head :ok and return
   end
 
   # @album is set by require_album before_filter
