@@ -521,7 +521,7 @@ class AlbumsController < ApplicationController
       i += 1
       image_path = photo.image_path
       image_file_size = photo.image_file_size.nil? ? 0 : photo.image_file_size.to_i
-      if image_path && image_file_size > 0
+      if (photo.ready? || photo.loaded?) && image_path && image_file_size > 0
         full_name = photo.file_name_with_extension(dup_filter, i)
         escaped_url = URI::escape(image_path.to_s)
         uri = URI.parse(escaped_url)
@@ -537,7 +537,13 @@ class AlbumsController < ApplicationController
     else
       zza.track_event("albums.download.full")
       Rails.logger.debug("Full album download: #{@album.name}")
-      nginx_zip_mod(@album.name, files) and return
+      if params[:test]
+        response.headers['Content-Disposition'] = "attachment; filename=testfile.txt"
+        render :content_type => "application/octet-stream", :text => files
+      else
+        nginx_zip_mod(@album.name, files)
+      end
+      return
     end
   end
 
