@@ -6,7 +6,7 @@ var zz = zz || {};
 
 zz.homepage = {
 
-    render: function(current_users_home_page, my_albums_path, session_user_liked_albums_path, liked_albums_path, liked_users_albums_path, invited_albums_path, session_user_invited_albums_path) {
+    render: function(current_users_home_page, my_albums_path, session_user_liked_albums_path, liked_albums_path, liked_users_albums_path, invited_albums_path, session_user_invited_albums_path, current_user_membership) {
         var cell = $('<div class="album-cell"></div>');
 
         var call_and_merge = function(urls, callback) {
@@ -104,7 +104,40 @@ zz.homepage = {
                     onLike: function() {
                         alert('This feature is still under construction. It will allow you to like an album.');
                     },
-                    infoMenuTemplateResolver: zz.homepage.infomenu_template_resolver
+                    infoMenuTemplateResolver: function(album){
+                        var infomenu_template_matrix = [
+                             [ null, zz.infomenu.download_template ],
+                             [ zz.infomenu.delete_template, zz.infomenu.download_delete_template]
+                         ];
+
+                         var del = 0,
+                             download = 0;
+
+                         //delete
+                         if(  !album.profile_album && album.user_id == zz.session.current_user_id ){
+                             del = 1;
+                         }
+                         //download
+                         if( album.c_url ){
+                             switch( album.who_can_download ){
+                                 case 'everyone':
+                                     download = 1;
+                                     break;
+                                 case 'viewers': // group
+                                     if( album.id in current_user_membership ){
+                                         download = 1;
+                                     }
+                                     break;
+                                 case 'owner':
+                                     if( album.user_id == zz.session.current_user_id ){
+                                         download = 1;
+                                     }
+                                     break;
+                             }
+                         }
+                         return infomenu_template_matrix[del][download];
+
+                    }
                 });
                 wanted_subjects[album.id] = 'album';
             });
@@ -134,42 +167,5 @@ zz.homepage = {
 
         $('#article').touchScrollY();
 
-    },
-
-
-    infomenu_template_resolver: function(album) {
-       if( typeof( zz.homepage.infomenu_template_matrix ) == 'undefined' ){
-           zz.homepage.infomenu_template_matrix = [
-                [ null, zz.infomenu.download_template ],
-                [ zz.infomenu.delete_template, zz.infomenu.download_delete_template]
-            ];
-        }
-
-        var del = 0,
-            download = 0;
-
-        //delete
-        if(  !album.profile_album && album.user_id == zz.session.current_user_id ){
-            del = 1;
-        } 
-        //download
-        if( album.c_url ){
-            switch( album.who_can_download ){
-                case 'everyone':
-                    download = 1;
-                    break;
-                case 'viewers': // group
-                    if( album.id in zz.session.current_user_membership ){
-                        download = 1;
-                    }
-                    break;
-                case 'owner':
-                    if( album.user_id == zz.session.current_user_id ){
-                        download = 1;
-                    }
-                    break;
-            }
-        }
-        return zz.homepage.infomenu_template_matrix[del][download];
     }
 };
