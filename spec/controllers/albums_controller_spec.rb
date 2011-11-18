@@ -164,7 +164,36 @@ describe AlbumsController do
 
   end
 
-  
+  describe 'Request Access: When requesting a private album that I have NOT been invited to' do
+    render_views
+    
+    before(:each) do
+      ActionMailer::Base.delivery_method = :test
+      ActionMailer::Base.perform_deliveries = true
+      ActionMailer::Base.deliveries = []
+      @privateAlbum = Factory.create(:album)
+      @privateAlbum.privacy = Album::PASSWORD
+      @privateAlbum.save!
+      login            
+    end
+
+    it 'should display request access dialog when session[:show_request_access_dialog].should is set' do
+      session[:show_request_access_dialog]= @privateAlbum.id
+      get :index, :user_id=>@privateAlbum.user.username
+      response.code.should == '200'
+      response.body.should include 'like to request access'
+    end
+
+    it 'The request access dialog should send an email to the album owner that includes my message' do
+      resque_jobs(:except => [ZZ::Async::MailingListSync]) do
+        xhr :post, :request_access, { :id => @privateAlbum.id, :message => "Please let me see your PRIVATE-ALBUM"}
+        response.status.should be(200)
+        ActionMailer::Base.deliveries.count.should == 1
+        ActionMailer::Base.deliveries[0].header['X-SMTPAPI'].value.should include "email.requestaccess"
+        ActionMailer::Base.deliveries[0].body.parts[1].body.should include "PRIVATE-ALBUM"
+      end
+    end
+  end
 
 
 end

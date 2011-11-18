@@ -66,7 +66,7 @@ zz.dialog = {
         var content = $("<div id='flash-dialog'><div><div id='flash'></div><a id='ok' class='newgreen-button'><span>OK</span></a></div></div>");
         content.find('#flash').text(message);
 
-        var dialog = zz.dialog.show_dialog(content, {});
+        var dialog = zz.dialog.show_dialog(content, {cancelButton: false});
 
         content.find('#ok').click(function() {
            dialog.close();
