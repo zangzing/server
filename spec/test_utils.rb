@@ -15,8 +15,8 @@ def zz_api_headers
 end
 
 # given a hash convert to a JSON string
-def zz_api_body(data)
-  JSON.fast_generate(data)
+def zz_api_body(data, debug = false)
+  debug ? JSON.pretty_generate(data) : JSON.fast_generate(data)
 end
 
 def build_full_path_if_needed(path, secure)
@@ -26,25 +26,26 @@ end
 # wrapper around post that preps for api call
 # if expect_ok is set we also return the response
 # in json form
-def zz_api_post(path, body, expect_code = 200, secure = false)
-  body = body.nil? ? nil : zz_api_body(body)
+def zz_api_post(path, body, expect_code = 200, secure = false, debug = false)
+  body = body.nil? ? nil : zz_api_body(body, debug)
+  puts "zz_api_post body: \n#{body}" if debug
   post build_full_path_if_needed(path, secure), body, zz_api_headers
-  zz_api_response(response, expect_code)
+  zz_api_response(response, expect_code, debug)
 end
 
 # wrapper around get that preps for api call
 # if expect_ok is set we also return the response
 # in json form
-def zz_api_get(path, expect_code = 200, secure = false)
+def zz_api_get(path, expect_code = 200, secure = false, debug = false)
   get build_full_path_if_needed(path, secure), nil, zz_api_headers
-  zz_api_response(response, expect_code)
+  zz_api_response(response, expect_code, debug)
 end
 
 
 # form the json from the response
 # converting keys to symbols
-def zz_api_response(response, expect_code)
-  j = response.body.length <= 1 ? {} : Hash.recursively_symbolize_graph!(JSON.parse(response.body))
+def zz_api_response(response, expect_code, debug)
+  j = response.body.length <= 1 ? {} : Hash.recursively_symbolize_graph!(zz_api_response_parse(response.body, debug))
 
   if expect_code == 200
     response.status.should eql(200)
@@ -54,6 +55,11 @@ def zz_api_response(response, expect_code)
   j
 end
 
+def zz_api_response_parse(body, debug)
+  result = JSON.parse(body)
+  puts "zz_api_response: \n#{JSON.pretty_generate(result)}" if debug
+  result
+end
 # safe wrapper for turning on or off loopback mode
 # for resque jobs - this works in a nested fashion
 # by fetching the existing filters and then applying

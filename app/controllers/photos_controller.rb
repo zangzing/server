@@ -78,7 +78,7 @@ class PhotosController < ApplicationController
   #     {
   #     :source_guid => identifies this unique photo
   #     :caption => the caption for this photo
-  #     :size => expected size for this file when uploaded
+  #     :file_size => expected size for this file when uploaded
   #     :capture_date => date file was captured in epoch secs, should use create date if not known
   #     :source => identifier as to the upload source (such as iphone, fs.osx, etc)
   #     :rotate_to => optional initial rotation - nil if no rotate
@@ -120,7 +120,6 @@ class PhotosController < ApplicationController
           :album_id => photo.album_id,
           :source_guid => photo.source_guid,
       } }
-      hashed_photos = Photo.hash_all_photos(photos)
     end
   end
 

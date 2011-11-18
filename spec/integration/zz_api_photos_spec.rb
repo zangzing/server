@@ -18,21 +18,22 @@ describe "ZZ API" do
       # build up a couple of photos to create
       now = Time.now.to_i
       photos = []
-      wanted_photo_count = 10
+      wanted_photo_count = 2
       wanted_photo_count.times do |i|
         photo = {
             :source_guid => "guid:#{i}-#{agent_id}",
             :caption => "#{i}-something",
-            :file_size => 99999,
+            :size => 99999,
             :capture_date => now,
             :file_create_date => now,
             :source => "rpsec test",
             :rotate_to => 90,
+            :crop_to => nil
         }
         photos << photo
       end
 
-      ret_photos = zz_api_post zz_api_create_photos_path(album.id), { :agent_id => agent_id, :photos => photos }
+      ret_photos = zz_api_post zz_api_create_photos_path(album.id), { :agent_id => agent_id, :photos => photos }, 200, false, true
       ret_photos.length.should == wanted_photo_count
 
       photo1 = ret_photos[0]
