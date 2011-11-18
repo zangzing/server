@@ -127,8 +127,7 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
   end
 
   def import_all
-    #fire_async_response('import_all_albums')
-    render :json => self.class.import_all_albums(connector, params.merge(:identity => service_identity))
+    fire_async_response('import_all_albums')
   end
 
 
