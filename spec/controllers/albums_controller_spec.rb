@@ -181,12 +181,12 @@ describe AlbumsController do
       session[:show_request_access_dialog]= @privateAlbum.id
       get :index, :user_id=>@privateAlbum.user.username
       response.code.should == '200'
-      response.body.should include 'like to request access'
+      response.body.should include 'request_access_form'
     end
 
     it 'The request access dialog should send an email to the album owner that includes my message' do
       resque_jobs(:except => [ZZ::Async::MailingListSync]) do
-        xhr :post, :request_access, { :id => @privateAlbum.id, :message => "Please let me see your PRIVATE-ALBUM"}
+        xhr :post, :request_access, { :album_id => @privateAlbum.id, :message => "Please let me see your PRIVATE-ALBUM"}
         response.status.should be(200)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries[0].header['X-SMTPAPI'].value.should include "email.requestaccess"

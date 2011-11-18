@@ -1,15 +1,14 @@
 class ActivitiesController < ApplicationController
-  before_filter :require_album,             :only => [ :album_index ]
-  before_filter :require_album_viewer_role, :only => [ :album_index ]
-
 
   # The activities view for an album
   # @album is set by the require_album before_filter
   def album_index
+    return unless require_album(true) && require_album_viewer_role
     @activities = @album.activities
   end
 
   def user_index
+    return unless require_nothing
     begin
       @user = User.find(params[:user_id])
       @activities = @user.activities
@@ -23,18 +22,4 @@ class ActivitiesController < ApplicationController
 
 private
 
-  # To be run as a before_filter
-  # sets @album
-  def require_album
-    begin
-      if params[:user_id]
-        @album =  User.find(params[:user_id]).albums.find(params[:album_id])
-      else
-        @album = Album.find( params[:album_id] )
-      end
-    rescue ActiveRecord::RecordNotFound => e
-      album_not_found_redirect_to_owners_homepage(params[:user_id])
-      return
-    end
-  end
 end

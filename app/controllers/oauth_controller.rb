@@ -178,8 +178,14 @@ class OauthController < ApplicationController
 
   def invalid_oauth_response(code=401,message="Invalid OAuth Request")
     render :text => message, :status => code
+    false
   end
 
+  # override this in your controller
+  def access_denied
+    head 401
+    false
+  end
 
   # Implement this for your own application using app-specific models
   def verify_oauth_signature
