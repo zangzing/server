@@ -111,7 +111,8 @@ zz.homepage = {
                             zz.routes.call_delete_album(album.id);
                         }
                     },
-                    allowDelete: !album.profile_album && album.user_id == zz.session.current_user_id
+                    allowDelete      : !album.profile_album && album.user_id == zz.session.current_user_id,
+                    allowEditCaption : !album.profile_album && album.user_id == zz.session.current_user_id
                 });
                 wanted_subjects[album.id] = 'album';
             });

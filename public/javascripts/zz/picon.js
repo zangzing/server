@@ -14,6 +14,8 @@
             onLike: $.noop,
             onDelete: $.noop,
             allowDelete: false,
+            onChangeCaption: $.noop,
+            allowEditCaption: true,
             maxCoverWidth: 180,
             maxCoverHeight: 150,
             captionHeight: 80,
@@ -30,7 +32,8 @@
                     o = self.options;
 
             self.template = $('<div class="picon">');
-            var caption = $('<div class="caption">'),
+            self.captionElement = $('<div class="photo-caption ellipsis multiline">');
+            var     caption = self.captionElement,
                     stacked_image_0 = $('<div class="stacked-image">'),
                     stacked_image_1 = $('<div class="stacked-image">'),
                     cover_photo = $('<img class="cover-photo" src="' + zz.routes.image_url('/images/photo_placeholder.png') + '">'),
@@ -60,6 +63,8 @@
 
             //set caption
             caption.text(o.caption);
+            caption.ellipsis();
+            self._setupCaptionEditing();
 
             //wire click
             cover_photo.click(function() {
@@ -112,7 +117,7 @@
             };
 
             var checkCloseToolbar = function() {
-                if (!menuOpen && !hover) {
+                if (!menuOpen && !hover ) {
                     self.topOfStack.css({height: height});
                     button_bar.hide();
                 }
@@ -173,6 +178,102 @@
                              height: self.element.height() - (self.options.captionHeight + 40)
                          });
         },
+
+        _setupCaptionEditing: function(){
+                    //edit caption
+                    var self = this;
+                    var o = self.options;
+                    self.isEditingCaption = false;
+                    if (o.allowEditCaption) {
+                        self.captionElement.unbind('click');
+                        self.captionElement.click(function(event) {
+                            self.editCaption();
+                        });
+                    }
+
+        },
+
+        editCaption: function() {
+            var self = this;
+
+            if (!self.isEditingCaption) {
+                self.isEditingCaption = true;
+
+
+
+                var captionEditor = $('<div class="edit-caption-border"><input type="text"><div class="caption-ok-button"></div></div>');
+                self.captionElement.html(captionEditor);
+                self.element.trigger('mouseout');
+
+                var textBoxElement = captionEditor.find('input');
+
+                var commitChanges = function() {
+                    var newCaption = textBoxElement.val();
+                    if (newCaption !== self.options.caption) {
+                        self.options.caption = newCaption;
+                        self.options.onChangeCaption(newCaption);
+                    }
+                    self.captionElement.text(newCaption);
+                    self.captionElement.ellipsis();
+
+                    // for some reason, the .ellipsis() call messes up the caption click handler on IE
+                    // so we need to set up again...
+                    self._setupCaptionEditing();
+                    self.isEditingCaption = false;
+                }
+
+
+                textBoxElement.val(self.options.caption);
+                textBoxElement.focus();
+                textBoxElement.select();
+                textBoxElement.blur(function() {
+                    commitChanges();
+                });
+
+                textBoxElement.keydown(function(event) {
+
+                    if (event.which == 13) {  //enter key
+                        commitChanges();
+                        return false;
+                    }
+                    else if (event.which == 9) { //tab key
+                        if (event.shiftKey) {
+                            textBoxElement.blur();
+
+                            if (self.element.prev().length !== 0) {
+                                self.element.prev().data().zz_photo.editCaption();
+                            }
+                            else {
+                                self.element.parent().children().last().data().zz_photo.editCaption();
+                            }
+                        }
+                        else {
+                            textBoxElement.blur();
+                            if (self.element.next().length !== 0) {
+                                self.element.next().data().zz_photo.editCaption();
+                            }
+                            else {
+                                self.element.parent().children().first().data().zz_photo.editCaption();
+                            }
+                        }
+                        event.stopPropagation();
+                        return false;
+                    }
+                });
+
+
+                var okButton = captionEditor.find('.caption-ok-button');
+                okButton.click(function(event) {
+                    commitChanges();
+                    event.stopPropagation();
+                    return false;
+                });
+
+
+            }
+
+        },
+
 
         destroy: function() {
             $.Widget.prototype.destroy.apply(this, arguments);

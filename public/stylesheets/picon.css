@@ -40,16 +40,28 @@
     display:inline-block;
 }
 
-.picon .caption{
+.picon .photo-caption{
     position: absolute;
-    bottom:15px;
+    bottom: 0px;
     left:5px;
     right:5px;
     text-align:center;
     font-size:13px;
     color: #636363;
     text-shadow: white 1px 1px 0;
+    padding: 0 0 0 0;
+    height: 26px;
 }
+
+.picon .photo-caption .edit-caption-border{
+    top:-2px;
+}
+
+.picon .photo-caption input{
+}
+
+
+
 
 .picon .button{
     float:left;

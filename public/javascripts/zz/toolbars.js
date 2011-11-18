@@ -396,7 +396,7 @@ zz.toolbars = {
 
     _init_album_title:function(){
         var title = $('#album-header-title');
-        if( title ){
+        if(  zz.session.current_user_id && !zz.page.profile_album && zz.page.displayed_user_id == zz.session.current_user_id && title ){
 
             title.click(function(){
                 var edit = $('<div id="edit-album-title"><input id="album-title-input" class="album-title-input" type="text" name="album_title" value="'+ zz.page.album_name +'"><div class="title-ok-button"></div>');
