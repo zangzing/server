@@ -76,8 +76,8 @@
     position: absolute;
     top:70px;
     left:0px;
-    right:0px;
-    bottom:50px;
+    right:1px;
+    bottom:46px;
     /*border:1px solid blue;*/
 }
 
@@ -165,9 +165,9 @@
 
 .photochooser .photochooser-footer{
     position:absolute;
-    bottom:5px;
-    right:0px;
-    left:0px;
+    bottom:0px;
+    right:1px;
+    left:-1px;
     /*border:1px solid green;*/
     background-image:url(/images/bg-picture-tray.png);
     height:46px;
