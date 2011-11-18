@@ -1,6 +1,6 @@
 class Connector::MobilemeFoldersController < Connector::MobilemeController
 
-    def self.list_albums(api, params)
+  def self.list_albums(api, params)
     album_list = call_with_error_adapter do
       api.get_albums_list
     end
@@ -12,7 +12,7 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
         :type => 'folder',
         :id  => album_id,
         :open_url => mobileme_photos_path(:mm_album_id => album_id, :action => :photos, :format => :json),
-        :add_url  => mobileme_photos_path(:mm_album_id => album_id, :action => :import_all, :format => :json)
+        :add_url  => mobileme_photos_path(:mm_album_id => album_id, :action => :import_album, :format => :json)
       }
     end
     JSON.fast_generate(folders)
@@ -68,6 +68,22 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
     bulk_insert(photos)
   end
 
+  def self.import_all_albums(api, params)
+    identity = params[:identity]
+    album_list = call_with_error_adapter do
+      api.get_albums_list
+    end
+    zz_albums = []
+    album_list.each do |album|
+      album_id = album.path.match(/\d+$/)[0]
+      zz_album = create_album(identity, album.title)
+      photos = import_dir_photos(api, params.merge(:mm_album_id => album_id, :album_id => zz_album.id))
+      zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
+    end
+    identity.update_attribute(:last_import_all, Time.now)
+    JSON.fast_generate(zz_albums)
+  end
+
   def self.import_certain_photo(api, params)
     identity = params[:identity]
     album_contents = call_with_error_adapter do
@@ -106,8 +122,14 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
     fire_async_response('import_certain_photo')
   end
 
-  def import_all
+  def import_album
     fire_async_response('import_dir_photos')
   end
+
+  def import_all
+    #fire_async_response('import_all_albums')
+    render :json => self.class.import_all_albums(connector, params.merge(:identity => service_identity))
+  end
+
 
 end
