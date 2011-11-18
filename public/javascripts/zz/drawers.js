@@ -60,8 +60,7 @@ zz.drawers = {
         if (typeof(size) != 'undefined' && size < zz.drawer_height) zz.drawer_height = size;
 
         $('div#drawer').animate({ height: zz.drawer_height + 'px', top: '52px' }, time);
-        $('div#drawer-content').animate({ height: (zz.drawer_height - 0) + 'px'}, time);
-//        zz.wizard.resize_scroll_body()
+        $('div#drawer-content').animate({ height: (zz.drawer_height - 14) + 'px'}, time);
 
     },
 
