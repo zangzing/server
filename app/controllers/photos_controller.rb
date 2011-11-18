@@ -540,7 +540,7 @@ class PhotosController < ApplicationController
 start_time = Time.now
     agent_id          = args[:agent_id]
     create_photos     = args[:photos]
-    photo_count       = args.length
+    photo_count       = create_photos.length
     photos            = []
     # optimize by ensuring we have the number of ids we need up front
     current_id = Photo.get_next_id(photo_count)
