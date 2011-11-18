@@ -307,7 +307,7 @@ class Photo < ActiveRecord::Base
     data = PhotoInfo.get_image_metadata(self.source_path)
     self.photo_info = PhotoInfo.factory(data)
     if exif = data['EXIF']
-      val =  exif['DateTimeOriginal'] || self.capture_date # if nil keep the existing one, otherwise update
+      val =  exif['DateTimeOriginal']
       self.capture_date = (DateTime.parse(val) rescue nil) unless val.nil?
       val = exif['Orientation']
       self.orientation = decode_orientation(val) unless val.nil?
@@ -709,17 +709,23 @@ class Photo < ActiveRecord::Base
   # return filename with extension
   # derived from the caption
   # append_info if set will be appended to the no_caption case
-  def file_name_with_extention(append_info = nil)
+  def file_name_with_extension(dup_filter = Set.new, append_info = nil)
     full_type = safe_file_type
     extension = extension_from_type(full_type)
     name = self.caption.blank? ? no_caption_filler(append_info) : self.caption
-    # ok, now see if the name already has an extension that matches this extension, if so don't append
-    if (name =~ /\.#{extension}$/i) == nil
-      filename = "#{name}.#{extension}"
-    else
-      filename = name
+    name = name.gsub(/\.#{extension}$/i, '')[0..230] # strip extension and limit to allow room for making unique
+    pre_filt_name = name
+    if dup_filter.include?(name.downcase)
+      name = "#{pre_filt_name}-#{append_info}"
+      # ok, see if still a dup, this time use random number till good
+      max_tries = 100   # keep from looping forever, just accept a duplicate after trying this many times
+      while (dup_filter.include?(name.downcase) && max_tries > 0)
+        name = "#{pre_filt_name}-#{append_info}-#{rand(99999)}"
+        max_tries -= 1
+      end
     end
-    filename
+    dup_filter.add(name.downcase)
+    filename = ZZUtils.build_safe_filename(name, extension)
   end
 
   def no_caption_filler(append_info)
@@ -839,8 +845,6 @@ class Photo < ActiveRecord::Base
           self.source_path = file_path
           self.image_file_size = File.size(file_path)
 
-          no_previous_capture_date = capture_date.nil?
-
           # gather and set the image metadata based on this file
           # also sets content_type
           set_image_metadata
@@ -849,7 +853,7 @@ class Photo < ActiveRecord::Base
           verify_file_type
 
           # if non ordered and did not previously have a capture date, set position now
-          if upload_batch.nil? == false && upload_batch.custom_order_offset == 0 && no_previous_capture_date
+          if upload_batch.nil? == false && upload_batch.custom_order_offset == 0
             set_default_position
           end
 
@@ -911,7 +915,7 @@ class Photo < ActiveRecord::Base
   # we invalidate the browsers cache for
   # old items.
   def self.hash_schema_version
-    'v5'
+    'v6'
   end
 
   # this method packages up the fields
@@ -932,6 +936,7 @@ class Photo < ActiveRecord::Base
     end
     hashed_photo = {
       :id => photo.id,
+      :agent_id => photo.agent_id,
       :caption => photo.caption,
       :state => photo.state,
       :rotate_to => photo.rotate_to.nil? ? 0 : photo.rotate_to,
@@ -952,11 +957,8 @@ class Photo < ActiveRecord::Base
     }
   end
 
-  def self.to_json_lite(photos)
-    # since the to_json method of an active record cannot take advantage of the much faster
-    # JSON.fast_generate, we pull the object apart into a hash and generate from there.
-    # In benchmarks I found that the generate method is 10x faster, so for instance the
-    # difference between 10000/sec and 1000/sec
+  # Create a hash of all photos suitable for api use
+  def self.hash_all_photos(photos)
 
     if photos.is_a?(Array) == false
       hashed_photos = hash_one_photo(photos)
@@ -967,8 +969,16 @@ class Photo < ActiveRecord::Base
         hashed_photos << hashed_photo
       end
     end
+    return hashed_photos
+  end
 
-    json = JSON.fast_generate(hashed_photos)
+  def self.to_json_lite(photos)
+    # since the to_json method of an active record cannot take advantage of the much faster
+    # JSON.fast_generate, we pull the object apart into a hash and generate from there.
+    # In benchmarks I found that the generate method is 10x faster, so for instance the
+    # difference between 10000/sec and 1000/sec
+
+    json = JSON.fast_generate(hash_all_photos(photos))
 
     return json
   end

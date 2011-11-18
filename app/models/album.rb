@@ -502,7 +502,11 @@ class Album < ActiveRecord::Base
     self.privacy = HIDDEN
   end
 
+  # for private albums we always return false
+  # since invite only is implied - for hidden
+  # and public we check the who_can_upload status
   def everyone_can_contribute?
+    return false if private?
     self.who_can_upload == WHO_EVERYONE
   end
 

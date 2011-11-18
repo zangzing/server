@@ -36,7 +36,7 @@ zz.template_cache = zz.template_cache || {};
             isUploading: false,           //model
             isError: false,               //model
             showButtonBar: false,         //model
-            infoMenuTemplateResololver: null,        // show InfoMenu or not and what style
+            infoMenuTemplateResolver: null,        // show InfoMenu or not and what style
             context: null,                //context -- album-edit, album-grid, album-picture, album-timeline, album-people, chooser-grid, chooser-picture
             type: 'photo',               //photo \ folder \ blank
             captionHeight: 30,
@@ -309,7 +309,7 @@ zz.template_cache = zz.template_cache || {};
 
 
 
-                    // info button and meny
+                    // info button and menu
                     var info_menu_template = null;
                     if (o.infoMenuTemplateResolver) {
                         info_menu_template = o.infoMenuTemplateResolver(o.json);
@@ -319,7 +319,7 @@ zz.template_cache = zz.template_cache || {};
                     if(info_menu_template){
                         info_button.click(function(){
                             menu_open = true;
-                            zz.infomenu.show(info_button, info_menu_template, self, o.photoId, function(){
+                            zz.infomenu.show_in_photo(info_button, info_menu_template, self, o.photoId, function(){
                                 menu_open = false;
                                 check_hide_frame();
                             });
