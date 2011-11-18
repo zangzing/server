@@ -41,7 +41,7 @@ development:
   async_job_timeout: 7200
   remote_job_timeout: 7200
   requires_http_auth: false
-  agent_port: 30777
+  agent_port: 30778
 
 
 perftest:

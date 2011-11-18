@@ -8,7 +8,7 @@ class ZZAPIError
 
   def set(message, code)
     @err_set = true
-    @message = message  # can be string or array of strings
+    @message = message  # can be string or array of strings, or a hash
     @code = code
   end
 end

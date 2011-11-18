@@ -55,128 +55,6 @@ class ApplicationController < ActionController::Base
     session[:send_zza_events_from_client] = events
   end
 
-
-  # change the session cookies, but keep
-  # contents of the session hash
-  def prevent_session_fixation
-    old_session = session.clone
-    reset_session
-
-    old_session.keys.each do |key|
-      session[key.to_sym] = old_session[key]
-    end
-
-  end
-
-
-  # Authentication based on authlogic
-  # returns false or the current user session
-  def current_user_session
-    return @current_user_session if defined?(@current_user_session)
-    @current_user_session = UserSession.find
-  end
-
-  #
-  # Authlogic
-  # returns false or the current user
-  def current_user
-    return @current_user if defined?(@current_user)
-    @current_user = current_user_session && current_user_session.record
-  end
-
-  #
-  # true if the given user is the current user
-  def current_user?(user)
-    user == current_user
-  end
-
-  #
-  # Filter for methods that require a log in
-  def require_user
-    unless current_user
-      if ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER])
-        # this is the standard api error response format
-        render_json_error(nil, "You must be logged in", 401)
-      elsif request.xhr?
-        flash.now[:error] = "You must be logged in to access this page"
-        head :status => 401
-      else
-        flash[:error] = "You must be logged in to access this page"
-        store_location
-        redirect_to new_user_session_url
-      end
-    end
-  end
-
-
-  # This is the json version of require user. Saves the request referer instead of the
-  # resquest fullpath so that the user returns to the page from where the xhr call originated
-  # instead of then json-location. Instead of redirecting, it just returns 401 with an informative
-  # json message that may or may not be used.
-  def require_user_json
-    unless current_user
-      if ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER_RAILS])
-        # this is the standard api error response format
-        render_json_error(nil, "You must be logged in", 401)
-      else
-        session[:return_to] = request.referer
-        render :json => "You must be logged in to call this url", :status => 401
-      end
-      return false
-    end
-    return true
-  end
-
-  # A variation of require_user_json that also requires the user_id param
-  # to be the same user as current user or that the user is a support admin
-  def require_same_user_json
-    user_id = params[:user_id].to_i
-    return false unless require_user_json
-    # if we pass the first test, verify we are the user we want info on
-    if current_user.id != user_id && current_user.support_hero? == false
-      msg = "You do not have permissions to access this data, you can only access your own data"
-      if ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER_RAILS])
-        # this is the standard api error response format
-        render_json_error(nil, msg, 401)
-      else
-        session[:return_to] = request.referer
-        render :json => msg, :status => 401
-      end
-      return false
-    end
-    return true
-  end
-
-
-  # for act_as_authenticated compatibility with oauth plugin
-  def login_required
-    require_user
-  end
-
-  #
-  # Filter for methods that require NO USER like sign in
-  def require_no_user
-    if current_user
-      store_location
-      flash[:notice] = "You must be logged out to access this page"
-      redirect_to root_path
-      return false
-    end
-  end
-
-
-  #
-  #  Stores the intended destination of a rerquest to take the user there after log in
-  def store_location
-
-    # the dont_store_location param can be set by routes
-    # that should not be stored for use after signin
-    # see routes.rb for eaxmples
-    if params[:dont_store_location] != true
-      session[:return_to] = request.fullpath
-    end
-  end
-
   #
   #  these helpers and filters are used to manage the 'all albums' back button
   def store_last_home_page(user_id)
@@ -267,8 +145,7 @@ class ApplicationController < ActionController::Base
 
   # return with preparation for a album zip
   def nginx_zip_mod(filename, contents)
-    filename += '.zip'
-    response.headers['Content-Type'] = "application/octet-stream"
+    filename = ZZUtils.build_safe_filename(filename, 'zip')
     # Set a binary Content-Transfer-Encoding, or ActionController::AbstractResponse#assign_default_content_type_and_charset!
     # will set a charset to the Content-Type header.
     response.headers['Content-Transfer-Encoding'] = 'binary'
@@ -276,7 +153,7 @@ class ApplicationController < ActionController::Base
         ( browser.chrome? ? "attachment; filename=#{filename}" : "attachment; filename=\"#{filename}\"" )
     response.headers['X-Archive-Files'] = 'zip'
     Rails.logger.info "Sending zipped album #{filename} to client"
-    render :text => contents
+    render :content_type => "application/octet-stream", :text => contents
   end
 
 
@@ -350,6 +227,7 @@ class ApplicationController < ActionController::Base
   # return in a block exits out to our caller without
   # coming back to us first
   def zz_api_core(skip_render, block)
+    return unless require_zz_api # anything using these api wrappers enforces require_zz_api
     begin
       custom_err = ZZAPIError.new
       result = block.call(custom_err)
