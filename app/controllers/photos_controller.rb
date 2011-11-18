@@ -554,6 +554,7 @@ start_time = Time.now
 
       caption           = create_photo[:caption]
       file_size         = create_photo[:size]
+      raise ArgumentError.new("size parameter required. Unable to create photos") if file_size.nil? || file_size == 0
 
       capture_date      = create_photo[:capture_date]
       capture_date = (Time.at(max_safe_epoch_time(Integer(capture_date))) rescue nil) unless capture_date.nil?
