@@ -33,6 +33,17 @@ def zz_api_post(path, body, expect_code = 200, secure = false, debug = false)
   zz_api_response(response, expect_code, debug)
 end
 
+# wrapper around post that preps for api call
+# if expect_ok is set we also return the response
+# in json form
+def zz_api_put(path, body, expect_code = 200, secure = false, debug = false)
+  body = body.nil? ? nil : zz_api_body(body, debug)
+  puts "zz_api_post body: \n#{body}" if debug
+  put build_full_path_if_needed(path, secure), body, zz_api_headers
+  zz_api_response(response, expect_code, debug)
+end
+
+
 # wrapper around get that preps for api call
 # if expect_ok is set we also return the response
 # in json form

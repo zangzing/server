@@ -141,8 +141,8 @@ class AlbumsController < ApplicationController
               :name     => @album.name,
               :email    => @album.email,
               :url      => album_pretty_url(@album),
-              :cover_id => @album.cover.id,
-              :c_url    => @album.cover.thumb_url
+              :cover_id => ( @album.cover ? @album.cover.id : nil ),
+              :c_url    => ( @album.cover ? @album.cover.thumb_url : nil)
           }
     end
   end

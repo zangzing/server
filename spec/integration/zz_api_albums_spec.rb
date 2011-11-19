@@ -73,5 +73,37 @@ describe "ZZ API" do
       #puts JSON.pretty_generate(j)
       j[:username].should == 'test1'
     end
+
+    describe "update" do
+      before(:each) do
+        @user = User.find(@user_id)
+        @album = Factory.create(:album, :user => @user, :name => "Some Test Name")
+      end
+
+      it "should update album name with new name" do
+        @album.name.should == "Some Test Name"
+        j = zz_api_put zz_api_update_album_path(@album),  { :name => "New Name" }, 200, false, false
+        puts j
+        j[:name].should == "New Name"
+        @albumcheck = Album.find( @album.id )
+        @albumcheck.name.should == "New Name"
+      end
+
+      it "should NOT update album name with blank name" do
+        @album.name.should == "Some Test Name"
+        j = zz_api_put zz_api_update_album_path(@album),  {  :name => "" }, 509, false, false
+        j[:message].should include "cannot be blank"
+        @album.name.should == "Some Test Name"
+      end
+
+      it "should NOT update album name with existing album name" do
+        @album.name.should == "Some Test Name"
+        @album2 = Factory.create(:album, :user => @user, :name => "Second Album")
+        @album2.name.should == "Second Album"
+        j = zz_api_put zz_api_update_album_path(@album),  {  :name => "Second Album" }, 509, false, false
+        j[:message].should include "already have"
+        @album.name.should == "Some Test Name"
+      end
+    end
   end
 end
