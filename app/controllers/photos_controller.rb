@@ -451,9 +451,7 @@ class PhotosController < ApplicationController
   # rotate 90 more you need to pass 180.  You can obtain the current
   # rotation via the photos.json
   #
-  def async_edit
-    return unless require_user && require_photo && require_photo_owner_or_album_admin_role
-
+  def do_async_edit
     begin
       rotate_to = params[:rotate_to]
       crop = params[:crop]
@@ -466,7 +464,13 @@ class PhotosController < ApplicationController
     render_async_response_json response_id
   end
 
+  def async_edit
+    return unless require_user && require_photo && require_photo_owner_or_album_admin_role
+    do_async_edit
+  end
+
   def async_rotate_left
+    return unless require_user && require_photo && require_photo_owner_or_album_admin_role
     # passes control to async_rotate which does the proper requires
 
     rotate_to = @photo.rotate_to.to_i - 90
@@ -476,11 +480,12 @@ class PhotosController < ApplicationController
 
     params[:rotate_to] = rotate_to
 
-    async_edit
+    do_async_edit
   end
 
 
   def async_rotate_right
+    return unless require_user && require_photo && require_photo_owner_or_album_admin_role
     # passes control to async_rotate which does the proper requires
 
     rotate_to = @photo.rotate_to.to_i + 90
@@ -490,7 +495,7 @@ class PhotosController < ApplicationController
 
     params[:rotate_to] = rotate_to
 
-    async_edit
+    do_async_edit
   end
 
 
