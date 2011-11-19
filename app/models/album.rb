@@ -30,7 +30,7 @@ class Album < ActiveRecord::Base
   has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => ["photos", "shares", 'activities', 'slides_source', 'people', 'activity'], :approximate_ascii => true
 
   validates_presence_of  :user_id
-  validates_presence_of  :name
+  validates_presence_of  :name, :message => "You album name cannot be blank"
   validates_length_of    :name, :maximum => 50
   validates_uniqueness_of :name, :scope => :user_id, :message => "You already have an album named \"%{value}\" please try a different name"
 

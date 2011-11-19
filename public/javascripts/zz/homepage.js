@@ -147,6 +147,17 @@ zz.homepage = {
                          }
                          return infomenu_template_matrix[del][download];
 
+                    },
+                    onChangeCaption: function( newAlbumName, onSuccess, onError ){
+                        // send it to the back end
+                        zz.routes.albums.update( album.id,{'name': newAlbumName },
+                        function(data){
+                            onSuccess( data );
+                        },
+                        function(xhr){
+                            zz.dialog.show_flash_dialog(JSON.parse(xhr.responseText).message, function(){ onError(); } );
+                        });
+
                     }
                 });
                 wanted_subjects[album.id] = 'album';

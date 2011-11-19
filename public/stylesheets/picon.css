@@ -60,6 +60,21 @@
 .picon .photo-caption input{
 }
 
+.picon .photo-caption .caption-ok-button{
+    width:30px;
+    height:28px;
+    background: url(/images/edit-caption-ok-button.png) no-repeat scroll right -30px;
+    line-height: 31px;
+    color:#ffffff ;
+    text-align:center;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-size:  12px;
+    text-shadow: 0 1px 3px #000000;
+    font-weight: 700;
+}
+
+
 
 
 

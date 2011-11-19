@@ -225,77 +225,88 @@
             if (!self.isEditingCaption) {
                 self.isEditingCaption = true;
 
-
-
-                var captionEditor = $('<div class="edit-caption-border"><input type="text"><div class="caption-ok-button"></div></div>');
+                var captionEditor = $('<div class="edit-caption-border"><input type="text"><div id="spin-here" class="caption-ok-button">OK</div></div>');
                 self.captionElement.html(captionEditor);
                 self.element.trigger('mouseout');
 
                 var textBoxElement = captionEditor.find('input');
+                var okButton = captionEditor.find('.caption-ok-button');
 
-                var commitChanges = function() {
-                    var newCaption = textBoxElement.val();
-                    if (newCaption !== self.options.caption) {
-                        self.options.caption = newCaption;
-                        self.options.onChangeCaption(newCaption);
-                    }
-                    self.captionElement.text(newCaption);
+                var resetCaption = function( caption ){
+                    self.captionElement.text(caption);
                     self.captionElement.ellipsis();
-
                     // for some reason, the .ellipsis() call messes up the caption click handler on IE
                     // so we need to set up again...
                     self._setupCaptionEditing();
                     self.isEditingCaption = false;
+                    self.element.trigger('mouseout');
                 }
 
+                var commitChanges = function() {
+                    disarmCaptionEditor();
+                    var newCaption = textBoxElement.val();
+                    if (newCaption !== self.options.caption) {
+                       okButton.empty();
+                       var spinner =   new Spinner({
+                          lines: 10,
+                          length: 4,
+                          width: 3,
+                          radius: 4,
+                          color: '#FFFFFF',
+                          speed: 1,
+                          trail: 60, // Afterglow percentage
+                          shadow: false
+                      }).spin( okButton.get(0) );
+                      self.options.onChangeCaption(newCaption,
+                            function(data){
+                                self.options.caption = newCaption;
+                                resetCaption(self.options.caption);
+                            },
+                            function(){
+                                if( spinner != null){
+                                   spinner.stop();
+                                   spinner = null;
+                                }
+                                okButton.text('OK');
+                                armCaptionEditor();
+                            });
+                    } else {
+                        resetCaption( self.options.caption );
+                    }
+                };
 
-                textBoxElement.val(self.options.caption);
-                textBoxElement.focus();
-                textBoxElement.select();
-                textBoxElement.blur(function() {
-                    commitChanges();
-                });
 
-                textBoxElement.keydown(function(event) {
-
-                    if (event.which == 13) {  //enter key
+                var armCaptionEditor = function(){
+                    textBoxElement.val(self.options.caption);
+                    textBoxElement.focus();
+                    textBoxElement.select();
+                    textBoxElement.blur(function(eventObject) {
+                        if( eventObject.relatedTarget != okButton )
                         commitChanges();
                         return false;
-                    }
-                    else if (event.which == 9) { //tab key
-                        if (event.shiftKey) {
-                            textBoxElement.blur();
+                    });
 
-                            if (self.element.prev().length !== 0) {
-                                self.element.prev().data().zz_photo.editCaption();
-                            }
-                            else {
-                                self.element.parent().children().last().data().zz_photo.editCaption();
-                            }
+                    textBoxElement.keydown(function(event) {
+                        if (event.which == 13 || event.which == 9) {  //enter or tab
+                            commitChanges();
+                            return false;
                         }
-                        else {
-                            textBoxElement.blur();
-                            if (self.element.next().length !== 0) {
-                                self.element.next().data().zz_photo.editCaption();
-                            }
-                            else {
-                                self.element.parent().children().first().data().zz_photo.editCaption();
-                            }
-                        }
+                    });
+
+                    okButton.click(function(event) {
+                        commitChanges();
                         event.stopPropagation();
                         return false;
-                    }
-                });
+                    });
+                }
 
+                var disarmCaptionEditor = function(){
+                    textBoxElement.unbind( 'keydown');
+                    textBoxElement.unbind('blur');
+                    okButton.unbind('click');
+                }
 
-                var okButton = captionEditor.find('.caption-ok-button');
-                okButton.click(function(event) {
-                    commitChanges();
-                    event.stopPropagation();
-                    return false;
-                });
-
-
+                armCaptionEditor();
             }
 
         },

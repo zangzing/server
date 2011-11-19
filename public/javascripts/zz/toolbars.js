@@ -399,34 +399,68 @@ zz.toolbars = {
         if(  zz.session.current_user_id && !zz.page.profile_album && zz.page.displayed_user_id == zz.session.current_user_id && title ){
 
             title.click(function(){
-                var edit = $('<div id="edit-album-title"><input id="album-title-input" class="album-title-input" type="text" name="album_title" value="'+ zz.page.album_name +'"><div class="title-ok-button"></div>');
+                var edit = $('<div id="edit-album-title"><input id="album-title-input" class="album-title-input" type="text" name="album_title" ><div class="title-ok-button">OK</div>');
                 var text_field = edit.find( '#album-title-input');
+                var okButton =  edit.find('.title-ok-button');
                 edit.width( title.width()+32);
                 text_field.width( title.width() );
                 $('#album-name-and-owner').append( edit );
-                text_field.select();
 
                 var commit_title_change = function(evt){
+                    disarm_text_field();
                     var new_title = text_field.val();
-
-                    // send it to the back end
-
-                    zz.page.album_name = new_title;
-                    if( new_title.length > 40){
-                        new_title = new_title.substr(0, 39)+'...';
+                    if( zz.page.album_name != new_title ){
+                       okButton.empty();
+                       var spinner = new Spinner({
+                          lines: 10,
+                          length: 4,
+                          width: 4,
+                          radius: 4,
+                          color: '#FFFFFF',
+                          speed: 1,
+                          trail: 60, // Afterglow percentage
+                          shadow: false
+                      }).spin( okButton.get(0) );
+                        // send it to the back end
+                        zz.routes.albums.update( zz.page.album_id,{'name': new_title },
+                            function(data){
+                                zz.page.album_name = new_title;
+                                if( new_title.length > 40){
+                                    new_title = new_title.substr(0, 39)+'...';
+                                }
+                                title.text( new_title );
+                                edit.remove();
+                            },
+                            function(xhr){
+                                spinner.stop();
+                                zz.dialog.show_flash_dialog(JSON.parse(xhr.responseText).message, function(){arm_text_field();} );
+                            });
+                    }else{
+                        edit.remove();
                     }
-                    title.text( new_title );
-                    edit.remove();
                 };
 
-                edit.find('.title-ok-button').click(commit_title_change);
-                text_field.blur(commit_title_change);
-                text_field.keypress(function(event){
-	                var keycode = (event.keyCode ? event.keyCode : event.which);
-	                if(keycode == '13' || keycode == '9' ){
-                        commit_title_change( event );
-	                }
-                });
+                var arm_text_field = function(){
+                    text_field.val( title.text() );
+                    okButton.text('OK');
+                    okButton.click(commit_title_change);
+                    text_field.blur(commit_title_change);
+                    text_field.keypress(function(event){
+                        var keycode = (event.keyCode ? event.keyCode : event.which);
+                        if(keycode == '13' || keycode == '9' ){
+                            commit_title_change( event );
+                        }
+                    });
+                    text_field.select();
+                };
+
+                var disarm_text_field = function(){
+                     okButton.unbind('click');
+                     text_field.unbind('blur');
+                     text_field.unbind('keypress');
+                };
+
+                arm_text_field();
             });
         }
     }

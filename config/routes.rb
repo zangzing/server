@@ -411,12 +411,14 @@ Server::Application.routes.draw do
     get    '/users/:user_id/liked_albums_public'       => 'albums#zz_api_liked_albums_public',       :as => :zz_api_liked_albums_public
     get    '/users/:user_id/liked_users_public_albums' => 'albums#zz_api_liked_users_public_albums', :as => :zz_api_liked_users_public_albums
     get    '/users/:user_id/invited_albums'            => 'albums#zz_api_invited_albums',            :as => :zz_api_invited_albums
+    put    '/albums/:album_id'                         => 'albums#zz_api_update',                    :as => :zz_api_update_album
 
     #photos
     get    '/albums/:album_id/photos'                  => 'photos#zz_api_photos',                    :as => :zz_api_photos
     post   '/albums/:album_id/photos/create_photos'    => 'photos#zz_api_create_photos',             :as => :zz_api_create_photos
     get    '/photos/:agent_id/pending_uploads'         => 'photos#zz_api_pending_uploads',           :as => :zz_api_pending_uploads
     put    '/photos/:id/upload_fast'                   => 'photos#upload_fast',                      :as => :zz_api_upload_photo_fast
+
 
     #users
     get    '/users/:user_id/info'                      => 'users#zz_api_user_info',                  :as => :zz_api_user_info

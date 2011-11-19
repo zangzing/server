@@ -119,14 +119,33 @@ class AlbumsController < ApplicationController
   end
 
   def zz_api_update
+    return unless require_user && require_album && require_album_admin_role
     zz_api do
-
+      begin
+       updates = {}
+       updates[:name]           = params[:name] if params[:name]
+       updates[:privacy]        = params[:privacy] if params[:privacy]
+       updates[:cover_photo_id] = params[:cover_photo_id] if params[:cover_photo_id]
+       if !@album.update_attributes( updates )
+         # Place the message portion of the first error in an exception
+         # Right now there is only space for one error in the custom error object
+         # when we can pass a hash in the custom error object it will be preferred to
+         # raising a new exception
+         # Take the first error in the array (there is at least one) then take the message (second) not the fieldname
+         raise Exception.new( @album.errors.first.second )
+       end
+      rescue FriendlyId::ReservedError
+        raise Exception.new( "Sorry, \"#{params[:name]}\" is a reserved album name please try a different one" )
+      end
+      album = {
+              :name     => @album.name,
+              :email    => @album.email,
+              :url      => album_pretty_url(@album),
+              :cover_id => @album.cover.id,
+              :c_url    => @album.cover.thumb_url
+          }
     end
   end
-
-
-
-
 
 
   # returns JSON used to populate

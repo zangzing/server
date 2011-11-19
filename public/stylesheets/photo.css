@@ -374,9 +374,7 @@
 }
 
 .photo-caption .caption-ok-button{
-    background-image:url(/images/edit-caption-ok-button.png);
-    background-repeat:no-repeat;
-    background-position:right top;
+    background: url(/images/edit-caption-ok-button.png) no-repeat scroll right top;
     width:30px;
     height:28px;
     display:inline-block;

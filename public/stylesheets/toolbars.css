@@ -127,7 +127,7 @@
 
 #album-name-and-owner .title-ok-button{
     display: inline-block;
-    background:url(/images/edit-caption-ok-button-lrg.png) scroll no-repeat right top;
+    background:url(/images/edit-caption-ok-button-lrg.png) scroll no-repeat right -32px;
     width:33px;
     height:33px;
     margin: 0;
@@ -135,6 +135,15 @@
     right:-6px;
     top: -2px;
     cursor:pointer;
+
+    line-height: 32px;
+    color:#ffffff ;
+    text-align:center;
+    font-family: Arial, sans-serif;
+    font-size:  14px;
+    text-shadow: 0 1px 3px #000000;
+    font-weight: 600;
+
 }
 
 
