@@ -83,7 +83,6 @@ describe "ZZ API" do
       it "should update album name with new name" do
         @album.name.should == "Some Test Name"
         j = zz_api_put zz_api_update_album_path(@album),  { :name => "New Name" }, 200, false, false
-        puts j
         j[:name].should == "New Name"
         @albumcheck = Album.find( @album.id )
         @albumcheck.name.should == "New Name"
