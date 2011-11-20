@@ -110,6 +110,7 @@ class PhotosController < ApplicationController
   #
   def zz_api_create_photos
     return unless require_user && require_album(true) && require_album_contributor_role
+
     zz_api do
       user_id           = current_user.id
       album_id          = @album.id

@@ -65,7 +65,7 @@ class UserSessionsController < ApplicationController
   end
 
   def zz_api_create
-    zz_api do |custom_err|
+    zz_api do
       result = nil
       user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => false)
       if user_session.save
@@ -75,7 +75,7 @@ class UserSessionsController < ApplicationController
             :username => user_session.record.username
         }
       else
-        custom_err.set(user_session.errors.full_messages, 401)
+        raise ZZAPIError.new(user_session.errors.full_messages, 401)
       end
       result
     end

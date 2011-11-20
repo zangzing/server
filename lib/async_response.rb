@@ -31,6 +31,7 @@ class AsyncResponse
     def build_error_json(exception, message = nil, code = nil)
       info = {
         :exception => exception.nil? ? false : true,
+        :exception_name => exception.nil? ? nil : exception.class.name,
         :code => code || case exception.class.name
           when 'InvalidToken' then 401
           when 'HttpCallFail' then 509
