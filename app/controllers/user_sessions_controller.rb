@@ -66,7 +66,6 @@ class UserSessionsController < ApplicationController
 
   def zz_api_create
     zz_api do
-      result = nil
       user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => false)
       if user_session.save
         result = {
