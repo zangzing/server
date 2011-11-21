@@ -7,16 +7,16 @@ zz.import_albums = zz.import_albums || {};
                     '<div class="select-service">' +
                         '<div class="header">Select a service below and import all your albums to ZangZing</div>' +
                         '<div class="services">' +
-                            '<div class="service google" data-name="google">Picasa Web</div>' +
-                            '<div class="service flickr" data-name="flickr">Flickr</div>' +
-                            '<div class="service facebook" data-name="facebook">Facebook</div>' +
-                            '<div class="service smugmug" data-name="smugmug">SmugMug</div>' +
-                            '<div class="service photobucket" data-name="photobucket">Photobucket</div>' +
-                            '<div class="service instagram" data-name="instagram">Instagram</div>' +
-                            '<div class="service dropbox" data-name="dropbox">Dropbox</div>' +
-                            '<div class="service mobileme" data-name="mobileme">MobileMe</div>' +
-                            '<div class="service shutterfly" data-name="shutterfly">Shutterfly</div>' +
-                            '<div class="service kodak" data-name="kodak">Kodak</div>' +
+                            '<div class="service flickr" data-name="flickr"><div/></div>' +
+                            '<div class="service facebook" data-name="facebook"><div/></div>' +
+                            '<div class="service mobileme" data-name="mobileme"><div/></div>' +
+                            '<div class="service google" data-name="google"><div/></div>' +
+                            '<div class="service dropbox" data-name="dropbox"><div/></div>' +
+                            '<div class="service shutterfly" data-name="shutterfly"><div/></div>' +
+                            '<div class="service kodak" data-name="kodak"><div/></div>' +
+                            '<div class="service instagram" data-name="instagram"><div/></div>' +
+                            '<div class="service smugmug" data-name="smugmug"><div/></div>' +
+                            '<div class="service photobucket" data-name="photobucket"><div/></div>' +
                         '</div>' +
                     '</div>' +
                     '<div class="confirm-import">' +
@@ -105,7 +105,7 @@ zz.import_albums = zz.import_albums || {};
                 zz.toolbars.enable_buttons();
             };
 
-            zz.dialog.show_square_dialog(content, {width:600, height:600, on_close: on_close});
+            zz.dialog.show_square_dialog(content, {width:800, height:600, on_close: on_close});
 
         });
     };
