@@ -233,6 +233,7 @@ class AlbumsController < ApplicationController
     @invited_albums_path = invited_albums_path(@loader)
     @session_user_liked_albums_path = @session_loader.nil? ? nil : liked_albums_path(@session_loader)
     @session_user_invited_albums_path = @session_loader.nil? ? nil : invited_albums_path(@session_loader)
+    @is_homepage_view = true
   end
 
 

@@ -1,11 +1,11 @@
-<div id="footer">
+@is_homepage_view@<div id="footer">
   <div id="footer-left"></div>
   <div id="footer-middle"></div>
   <div id="footer-right"></div>
 
 
 
-  <% if @user && (current_user == @user) %>
+  <% if @is_homepage_view && current_user == @user %>
       <div id="new-album-button"><div class='footer-button-label'>New</div></div>
       <div id="import-button"><div class='footer-button-label'>Import</div></div>
   <% end %>
