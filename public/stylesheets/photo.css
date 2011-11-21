@@ -188,16 +188,60 @@
 /*}*/
 
 
-.photo-uploading-icon{
-    position: absolute;
-    bottom: -16px;
-    right: -16px;
+/*.photo-uploading-icon{*/
+    /*position: absolute;*/
+    /*bottom: -16px;*/
+    /*right: -16px;*/
     /*display:none;*/
-    width:32px;
-    height:32px;
-    background-image: url("/images/photo/icon-uploading.png");
+    /*width:32px;*/
+    /*height:32px;*/
+    /*background-image: url("/images/photo/icon-uploading.png");*/
     /*z-index:1000;*/
+/*}*/
+
+/*.photo-error-icon{*/
+    /*position: absolute;*/
+    /*bottom: -16px;*/
+    /*right: -16px;*/
+    /*display:none;*/
+    /*width:32px;*/
+    /*height:32px;*/
+    /*background-image: url("/images/photo/icon-error.png");*/
+    /*z-index:1000;*/
+/*}*/
+
+.photo-status-scrim{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    height: 28px;
+    opacity: .7;
+    filter: alpha(opacity = 70); /* for ie */
+    background-color: white;
 }
+
+.photo-status-bar{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    height: 28px;
+    padding-left: 30px;
+    line-height: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.photo-status-bar.uploading{
+    background: url("/images/photo/icon-uploading.png") no-repeat 7px 2px;
+}
+
+.photo-status-bar.error{
+    background: url("/images/photo/icon-error.png") no-repeat 7px 2px;
+}
+
+
 
 .photo-like-icon{
     position: absolute;
@@ -210,16 +254,6 @@
 }
 
 
-.photo-error-icon{
-    position: absolute;
-    bottom: -16px;
-    right: -16px;
-    /*display:none;*/
-    width:32px;
-    height:32px;
-    background-image: url("/images/photo/icon-error.png");
-    /*z-index:1000;*/
-}
 
 .photo-delete-button{
     position: absolute;
