@@ -95,6 +95,13 @@ describe "ZZ API" do
         @album.name.should == "Some Test Name"
       end
 
+      it "should NOT update album name with symbols only (FriendlyId:BlankError) name" do
+        @album.name.should == "Some Test Name"
+        j = zz_api_put zz_api_update_album_path(@album),  {  :name => "--//--//@@" }, 509, false, false
+        j[:message].should include "at least 1 letter or number"
+        @album.name.should == "Some Test Name"
+      end
+
       it "should NOT update album name with existing album name" do
         @album.name.should == "Some Test Name"
         @album2 = Factory.create(:album, :user => @user, :name => "Second Album")

@@ -446,8 +446,10 @@ zz.toolbars = {
                         text_field.blur(commit_title_change);
                         text_field.keypress(function(event){
                             var keycode = (event.keyCode ? event.keyCode : event.which);
-                            if(keycode == '13' || keycode == '9' ){
+                            if(keycode == 13 || keycode == 9 ){ //enter or tab
                                 commit_title_change( event );
+                            }else if( keycode == 27 ){  //escape
+                                edit.remove();
                             }
                         });
 

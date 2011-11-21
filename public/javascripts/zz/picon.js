@@ -276,10 +276,12 @@
                         return false;
                     });
 
-                    textBoxElement.keydown(function(event) {
-                        if (event.which == 13 || event.which == 9) {  //enter or tab
+                    textBoxElement.keydown(function(e) {
+                        if (e.keyCode == 13 || e.keyCode == 9) {  //enter or tab
                             commitChanges();
                             return false;
+                        } else if( e.keyCode == 27 ){  //escape
+                                resetCaption( self.options.caption );
                         }
                     });
 
