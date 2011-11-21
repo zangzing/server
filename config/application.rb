@@ -10,6 +10,8 @@ require 'rails/all'
 require 'active_record/connection_adapters/mysql2_adapter'
 require 'config/initializers/zangzing_config'
 
+require File.join(File.dirname(__FILE__), '../app/metal/heap_tracker')
+
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env) if defined?(Bundler)
@@ -74,7 +76,7 @@ module Server
         spree_route_paths.each{ |path| app.routes_reloader.paths.delete(path) }
     end
 
-
+    config.middleware.insert_after ActionDispatch::Head, ::HeapTracker
   end
 end
 

@@ -373,6 +373,8 @@ Server::Application.routes.draw do
         put   'users/:id/reset_password'         => 'users#reset_password',       :as => :admin_reset_password
         put   'users/:id/impersonate'            => 'users#impersonate',          :as => :admin_impersonate
 
+        get   'heap'                            => 'heap#index'
+        get   'heap/track'                      => 'heap#track'
     end
 
     #Resque: mount the resque server
