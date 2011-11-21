@@ -67,8 +67,6 @@
 
             //set caption
             caption.text(o.caption);
-            caption.ellipsis();
-            self._setupCaptionEditing();
 
             //wire click
             cover_photo.click(function() {
@@ -80,6 +78,10 @@
 
             //calculate size
             self._resize(o.maxCoverWidth, o.maxCoverHeight);
+
+            // clean and arm caption click
+            caption.ellipsis();
+            self._setupCaptionEditing();
 
 
             var buttonBarWired = false,
@@ -153,7 +155,7 @@
                 hover = true;
 
                 if(! zz.buy.is_buy_mode_active()){
-                    if (!menuOpen) {
+                    if (!menuOpen &&  !self.isEditingCaption) {
                         if (!buttonBarWired) {
                             wire_button_bar();
                             buttonBarWired = true;
@@ -221,7 +223,6 @@
 
         editCaption: function() {
             var self = this;
-
             if (!self.isEditingCaption) {
                 self.isEditingCaption = true;
 
@@ -246,28 +247,12 @@
                     disarmCaptionEditor();
                     var newCaption = textBoxElement.val();
                     if (newCaption !== self.options.caption) {
-                       okButton.empty();
-                       var spinner =   new Spinner({
-                          lines: 10,
-                          length: 4,
-                          width: 3,
-                          radius: 4,
-                          color: '#FFFFFF',
-                          speed: 1,
-                          trail: 60, // Afterglow percentage
-                          shadow: false
-                      }).spin( okButton.get(0) );
                       self.options.onChangeCaption(newCaption,
                             function(data){
                                 self.options.caption = newCaption;
                                 resetCaption(self.options.caption);
                             },
                             function(){
-                                if( spinner != null){
-                                   spinner.stop();
-                                   spinner = null;
-                                }
-                                okButton.text('OK');
                                 armCaptionEditor();
                             });
                     } else {
@@ -278,8 +263,12 @@
 
                 var armCaptionEditor = function(){
                     textBoxElement.val(self.options.caption);
-                    textBoxElement.focus();
-                    textBoxElement.select();
+
+                    okButton.click(function(event) {
+                        commitChanges();
+                        event.stopPropagation();
+                        return false;
+                    });
                     textBoxElement.blur(function(eventObject) {
                         if( eventObject.relatedTarget != okButton )
                         commitChanges();
@@ -293,17 +282,25 @@
                         }
                     });
 
-                    okButton.click(function(event) {
-                        commitChanges();
-                        event.stopPropagation();
-                        return false;
+                    //limit input to 50 chars
+                    textBoxElement.keyup(function(){
+                        var text = $(this).val();
+                        if(text.length > 50 ){
+                            var new_text = text.substr(0, 50);
+                            $(this).val(new_text);
+                            $(this).selectRange( 50,50);
+                        }
                     });
+
+                    textBoxElement.focus();
+                    textBoxElement.select();
                 }
 
                 var disarmCaptionEditor = function(){
-                    textBoxElement.unbind( 'keydown');
-                    textBoxElement.unbind('blur');
                     okButton.unbind('click');
+                    textBoxElement.unbind( 'keydown')
+                        .unbind('keyup')
+                        .unbind('blur');
                 }
 
                 armCaptionEditor();
