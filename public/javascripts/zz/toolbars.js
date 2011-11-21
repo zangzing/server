@@ -278,12 +278,15 @@ zz.toolbars = {
 
         //Bind Each Menu Item
         $('#acct-get-started-btn').click(function() {
-            window.open('/about/getting-started','Getting Started with ZangZing','width=1000,height=1000,scrollbars=1');
+            window.open('/about/getting-started','GettingStarted','width=1000,height=1000,scrollbars=1');
         });
         $('#acct-settings-btn').click(function() {
             zz.toolbars._disable_buttons();
             $('#header #account-badge').removeClass('disabled').addClass('selected');
             document.location.href = zz.routes.edit_user_path(zz.session.current_user_name);
+        });
+        $('#acct-blog-btn').click(function() {
+            window.open('/blog','ZangZing','width=1100,height=1000,scrollbars=1');
         });
         $('#acct-signout-btn').click(function() {
             zz.local_storage.clear();
