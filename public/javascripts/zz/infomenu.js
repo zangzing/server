@@ -69,6 +69,7 @@ zz.infomenu = {
         switch (action) {
             case 'download':
                 var url = zz.routes.path_prefix + '/photos/'+id+'/download';
+                ZZAt.track('infomenu.photodownload.click');
                 if ($.client.os == 'Mac') {
                     document.location.href = url;
                 } else {
@@ -83,24 +84,28 @@ zz.infomenu = {
                 break;
 
             case 'rotatel':
+                ZZAt.track('infomenu.rotatel.click');
                 zz.routes.call_rotate_photo_left(options.subject_id, function(json) {
                     options.zz_photo.changeSrc(json.thumb_url, json.stamp_url);
                 });
                 break;
 
             case 'rotater':
+                ZZAt.track('infomenu.rotater.click');
                 zz.routes.call_rotate_photo_right(options.subject_id, function(json) {
                     options.zz_photo.changeSrc(json.thumb_url, json.stamp_url);
                 });
                 break;
 
             case 'setcover':
+                ZZAt.track('infomenu.setcover.click');
                 zz.routes.call_set_album_cover(zz.page.album_id, id, function() {
                     zz.toolbars.load_album_cover(photo.options.previewSrc);
                 });
                 break;
 
             case 'deletephoto':
+                ZZAt.track('infomenu.photodelete.click');
                 photo.delete_photo();
                 break;
 
@@ -142,6 +147,7 @@ zz.infomenu = {
 
          switch (action) {
            case 'download':
+               ZZAt.track('infomenu.albumdownload.click');
                var url = zz.routes.path_prefix + '/albums/' + id +'/download';
                  if ($.client.os == 'Mac') {
                     document.location.href = url;
@@ -156,6 +162,7 @@ zz.infomenu = {
                 }
                 break;
              case 'deletephoto':
+                 ZZAt.track('infomenu.albumdelete.click');
                  if (confirm('Are you sure you want to delete this album?')) {
                      $(options.picon.element).hide('scale', {}, 300, function() {
                          $(options.picon.element).remove();

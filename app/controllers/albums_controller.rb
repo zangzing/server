@@ -136,6 +136,8 @@ class AlbumsController < ApplicationController
        end
       rescue FriendlyId::ReservedError
         raise Exception.new( "Sorry, \"#{params[:name]}\" is a reserved album name please try a different one" )
+      rescue FriendlyId::BlankError
+        raise Exception.new( "Your album name must contain at least 1 letter or number" )
       end
       album = {
               :name     => @album.name,

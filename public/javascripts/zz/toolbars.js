@@ -278,18 +278,22 @@ zz.toolbars = {
 
         //Bind Each Menu Item
         $('#acct-get-started-btn').click(function() {
+            ZZAt.track('acctmenu.getstarted.click');
             window.open('/about/getting-started','GettingStarted','width=1000,height=1000,scrollbars=1');
         });
         $('#acct-settings-btn').click(function() {
             zz.toolbars._disable_buttons();
+            ZZAt.track('acctmenu.settings.click');
             $('#header #account-badge').removeClass('disabled').addClass('selected');
             document.location.href = zz.routes.edit_user_path(zz.session.current_user_name);
         });
         $('#acct-blog-btn').click(function() {
+            ZZAt.track('acctmenu.blog.click');
             window.open('/blog','ZangZing','width=1100,height=1000,scrollbars=1');
         });
         $('#acct-signout-btn').click(function() {
             zz.local_storage.clear();
+            ZZAt.track('acctmenu.signout.click');
             window.location = zz.routes.path_prefix + '/signout';
         });
 
@@ -414,6 +418,7 @@ zz.toolbars = {
 
                     var commit_title_change = function(evt){
                         disarm_text_field();
+                        ZZAt.track('topnavbar.albumtitle.click');
                         var new_title = text_field.val();
                         if( zz.page.album_name != new_title ){
                             // send it to the back end
