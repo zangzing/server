@@ -15,7 +15,7 @@ class HeapTracker
 	@@request_list = []
 	@@alive_at = nil
 	@@gc_stats_enabled = nil
-  @@tracking_allowed = true
+  @@tracking_allowed = false  # default to off
 	@@config = nil
 
   def initialize(app)
