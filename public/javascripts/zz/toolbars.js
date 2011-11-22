@@ -405,12 +405,7 @@ zz.toolbars = {
         var title = $('#album-header-title');
         if(  zz.session.current_user_id && !zz.page.profile_album && zz.page.displayed_user_id == zz.session.current_user_id && title ){
             title.text(  zz.page.album_name  );
-//            if( title.width() > 295 ){
-//                title.width( '295px');
-//            }else{
-//                title.width( title.width()+'px' );
-//            }
-            title.ellipsis();
+            title.ellipsis(300);
             title.click( function(){ title_edit( title ); } );
 
 
@@ -432,7 +427,7 @@ zz.toolbars = {
                                 function(data){
                                     zz.page.album_name = new_title;
                                     edit.remove();
-                                    title.text( new_title ).ellipsis();
+                                    title.text( new_title ).ellipsis(300);
                                     title.unbind( 'click' ); //rebind click because ellipsis clears it in ie
                                     title.click( function(){ title_edit( title ); } );
                                 },

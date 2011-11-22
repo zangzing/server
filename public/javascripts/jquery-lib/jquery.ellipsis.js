@@ -3,7 +3,7 @@
  */
 
 (function($) {
-    $.fn.ellipsis = function()
+    $.fn.ellipsis = function(maxWidth)
     {
         return this.each(function()
         {
@@ -23,8 +23,11 @@
 
                 el.after(t);
 
-                function height() { return t.height() > el.height(); };
-                function width() { return t.width() > ( el.width()-10); };
+                var height = function(){ return t.height() > el.height(); };
+                var width = function(){ return t.width() >  el.width(); };
+                if( maxWidth ){
+                    width = function(){ return t.width() > ( maxWidth-10); };
+                }
 
                 var func = multiline ? height : width;
 
