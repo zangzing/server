@@ -40,16 +40,44 @@
     display:inline-block;
 }
 
-.picon .caption{
+.picon .photo-caption{
     position: absolute;
-    bottom:15px;
+    bottom: 0px;
     left:5px;
     right:5px;
     text-align:center;
     font-size:13px;
     color: #636363;
     text-shadow: white 1px 1px 0;
+    padding: 0 0 0 0;
+    height: 26px;
+    /*width: 200px;*/
 }
+
+.picon .photo-caption .edit-caption-border{
+    top:-2px;
+}
+
+.picon .photo-caption input{
+}
+
+.picon .photo-caption .caption-ok-button{
+    width:30px;
+    height:28px;
+    background: url(/images/edit-caption-ok-button.png) no-repeat scroll right -30px;
+    line-height: 31px;
+    color:#ffffff ;
+    text-align:center;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-size:  12px;
+    text-shadow: 0 1px 3px #000000;
+    font-weight: 700;
+}
+
+
+
+
 
 .picon .button{
     float:left;

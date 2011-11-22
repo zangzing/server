@@ -24,6 +24,9 @@
             onClick: $.noop,
             onLike: $.noop,
             onDelete: $.noop,
+            allowDelete: false,
+            onChangeCaption: $.noop,
+            allowEditCaption: false,
             maxCoverWidth: 180,
             maxCoverHeight: 150,
             captionHeight: 80,
@@ -36,7 +39,8 @@
                     o = self.options;
 
             self.template = $('<div class="picon">');
-            var caption = $('<div class="caption">'),
+            self.captionElement = $('<div class="photo-caption ellipsis multiline">');
+            var     caption = self.captionElement,
                     stacked_image_0 = $('<div class="stacked-image">'),
                     stacked_image_1 = $('<div class="stacked-image">'),
                     cover_photo = $('<img class="cover-photo" src="' + zz.routes.image_url('/images/photo_placeholder.png') + '">'),
@@ -74,6 +78,10 @@
 
             //calculate size
             self._resize(o.maxCoverWidth, o.maxCoverHeight);
+
+            // clean and arm caption click
+            caption.ellipsis();
+            self._setupCaptionEditing();
 
 
             var buttonBarWired = false,
@@ -141,14 +149,13 @@
                     button_bar.hide();
                 }
               });
-
             };
 
             var mouse_in = function() {
                 hover = true;
 
                 if(! zz.buy.is_buy_mode_active()){
-                    if (!menuOpen) {
+                    if (!menuOpen &&  !self.isEditingCaption) {
                         if (!buttonBarWired) {
                             wire_button_bar();
                             buttonBarWired = true;
@@ -199,6 +206,111 @@
                              height: self.element.height() - (self.options.captionHeight + 40)
                          });
         },
+
+        _setupCaptionEditing: function(){
+                    //edit caption
+                    var self = this;
+                    var o = self.options;
+                    self.isEditingCaption = false;
+                    if (o.allowEditCaption) {
+                        self.captionElement.unbind('click');
+                        self.captionElement.click(function(event) {
+                            self.editCaption();
+                        });
+                    }
+
+        },
+
+        editCaption: function() {
+            var self = this;
+            if (!self.isEditingCaption) {
+                self.isEditingCaption = true;
+
+                var captionEditor = $('<div class="edit-caption-border"><input type="text"><div id="spin-here" class="caption-ok-button">OK</div></div>');
+                self.captionElement.html(captionEditor);
+                self.element.trigger('mouseout');
+
+                var textBoxElement = captionEditor.find('input');
+                var okButton = captionEditor.find('.caption-ok-button');
+
+                var resetCaption = function( caption ){
+                    self.captionElement.text(caption);
+                    self.captionElement.ellipsis();
+                    // for some reason, the .ellipsis() call messes up the caption click handler on IE
+                    // so we need to set up again...
+                    self._setupCaptionEditing();
+                    self.isEditingCaption = false;
+                    self.element.trigger('mouseout');
+                }
+
+                var commitChanges = function() {
+                    disarmCaptionEditor();
+                    ZZAt.track('albumframe.title.click');
+                    var newCaption = textBoxElement.val();
+                    if (newCaption !== self.options.caption) {
+                      self.options.onChangeCaption(newCaption,
+                            function(data){
+                                self.options.caption = newCaption;
+                                resetCaption(self.options.caption);
+                            },
+                            function(){
+                                armCaptionEditor();
+                            });
+                    } else {
+                        resetCaption( self.options.caption );
+                    }
+                };
+
+
+                var armCaptionEditor = function(){
+                    textBoxElement.val(self.options.caption);
+
+                    okButton.click(function(event) {
+                        commitChanges();
+                        event.stopPropagation();
+                        return false;
+                    });
+                    textBoxElement.blur(function(eventObject) {
+                        if( eventObject.relatedTarget != okButton )
+                        commitChanges();
+                        return false;
+                    });
+
+                    textBoxElement.keydown(function(e) {
+                        if (e.keyCode == 13 || e.keyCode == 9) {  //enter or tab
+                            commitChanges();
+                            return false;
+                        } else if( e.keyCode == 27 ){  //escape
+                                resetCaption( self.options.caption );
+                        }
+                    });
+
+                    //limit input to 50 chars
+                    textBoxElement.keyup(function(){
+                        var text = $(this).val();
+                        if(text.length > 50 ){
+                            var new_text = text.substr(0, 50);
+                            $(this).val(new_text);
+                            $(this).selectRange( 50,50);
+                        }
+                    });
+
+                    textBoxElement.focus();
+                    textBoxElement.select();
+                }
+
+                var disarmCaptionEditor = function(){
+                    okButton.unbind('click');
+                    textBoxElement.unbind( 'keydown')
+                        .unbind('keyup')
+                        .unbind('blur');
+                }
+
+                armCaptionEditor();
+            }
+
+        },
+
 
         destroy: function() {
             $.Widget.prototype.destroy.apply(this, arguments);

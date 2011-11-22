@@ -8,51 +8,45 @@
 
   <% if @album %>
       <div id="album-info">
-<%
-    if(!@album.cover)  #no cover photo
-%>
-<%
-    else
-%>
-        <div id="album-cover-border">
+
+        <% if(@album.cover)  #no cover photo%>
+            <div id="album-cover-border">
               <img class="album-cover" style="width:60px; height:40px" src="/images/album-no-cover.png"/>
               <img class="bottom-shadow" style="width:64px;"  src="/images/photo/bottom-full.png"/>
-        </div>
+            </div>
 
-        <% content_for :page_javascript do %>
-            <script type="text/javascript">
-                $(document).ready(function(){
-                    zz.toolbars.load_album_cover( '<%= @album.cover.thumb_url%>');
-                })
-            </script>
-        <% end %>
-<%
-    end
-%>
-
-          <div id='album-name-and-owner'>
-                <h2 id="album-header-title"><%= truncate((@album.name), :length => 50) %></h2>
-                <h3>by <a href="<%= user_pretty_url @album.user %>"><%="#{@album.user.first_name} #{@album.user.last_name}"%></a></h3>
-              <%if !current_user || current_user!=@album.user # do not show like for self%>
-                <div id="owner-follow" class="zzlike zzlike-follow" data-zzid="<%=@album.user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
-              <%end%>
-          </div>
-      </div>
-
-<% else #this is for when you create an album from the user's home page %>
-
-     <div id="album-info" style="display:none">
-       <div id="album-cover-border">
-             <img class="album-cover" style="width:60px; height:40px" src="/images/album-no-cover.png"/>
-             <img class="bottom-shadow" style="width:64px;" src="/images/photo/bottom-full.png"/>
-       </div>
+            <% content_for :page_javascript do %>
+                <script type="text/javascript">
+                    $(document).ready(function(){
+                        zz.toolbars.load_album_cover( '<%= @album.cover.thumb_url%>');
+                    })
+                </script>
+            <% end %>
+        <%end%>
 
         <div id='album-name-and-owner'>
-              <h2 id="album-header-title"></h2>
-              <h3></h3>
+          <h2 id="album-header-title" class="ellipsis"><%= truncate((@album.name), :length => 40) %></h2>
+          <h3>by <a href="<%= user_pretty_url @album.user %>"><%="#{@album.user.first_name} #{@album.user.last_name}"%></a></h3>
+          <%if !current_user || current_user!=@album.user # do not show like for self%>
+              <div id="owner-follow" class="zzlike zzlike-follow" data-zzid="<%=@album.user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
+          <%end%>
         </div>
-    </div>
-<% end %>
+      </div>
+
+  <%else #this is for when you create an album from the user's home page %>
+
+      <div id="album-info" style="display:none">
+        <div id="album-cover-border">
+          <img class="album-cover" style="width:60px; height:40px" src="/images/album-no-cover.png"/>
+          <img class="bottom-shadow" style="width:64px;" src="/images/photo/bottom-full.png"/>
+        </div>
+
+        <div id='album-name-and-owner'>
+          <h2 id="album-header-title"></h2>
+          <h3></h3>
+        </div>
+      </div>
+  <% end %>
 
 <% if @album #this needs to be after album and user info so that it floats on top%>
   <a id="back-button" class="back-button"><span>Back</span></a>
@@ -73,8 +67,6 @@
         </div>
   </div>
 <% end %>
-
-
 
   <% if @album || (@user && /albums|people|activities/.match( @controller.controller_name)) %>
       <ul id="view-buttons">
@@ -105,8 +97,10 @@
       <img id="arrow-image" src="/images/icon-down-arrow-22px.png" />
       <div class="header-button-label">Account</div>
       <ul class="context_menu dropdown" id="acct-dropdown">
+        <li id="acct-get-started-btn" >Getting Started</li>
         <li id="acct-settings-btn">Settings</li>
-        <li id="acct-signout-btn" href=<%=signout_path%>>Signout</li>
+        <li id="acct-blog-btn">Blog</li>
+        <li id="acct-signout-btn">Signout</li>
       </ul>
 
     </div>
