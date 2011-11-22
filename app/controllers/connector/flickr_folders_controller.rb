@@ -97,7 +97,6 @@ class Connector::FlickrFoldersController < Connector::FlickrController
     folders_response.each do |fl_album|
       zz_album = create_album(identity, fl_album.title, params[:privacy])
       zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
-
       fire_async('import_album', params.merge(:album_id => zz_album.id, :set_id => fl_album.id))
     end
 

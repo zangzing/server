@@ -77,8 +77,8 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
     album_list.each do |album|
       album_id = album.path.match(/\d+$/)[0]
       zz_album = create_album(identity, album.title, params[:privacy])
-      photos = import_dir_photos(api, params.merge(:mm_album_id => album_id, :album_id => zz_album.id))
-      zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
+      zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
+      fire_async('import_dir_photos', params.merge(:mm_album_id => album_id, :album_id => zz_album.id))
     end
     identity.update_attribute(:last_import_all, Time.now)
     JSON.fast_generate(zz_albums)

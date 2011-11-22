@@ -57,8 +57,8 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
     end
     album_list.each do |sm_album|
       zz_album = create_album(identity, sm_album[:title], params[:privacy])
-      photos = import_album(api, params.merge(:album_id => zz_album.id, :sm_album_id =>"#{sm_album[:id]}_#{sm_album[:key]}"))
-      zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
+      zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
+      fire_async('import_album', params.merge(:album_id => zz_album.id, :sm_album_id =>"#{sm_album[:id]}_#{sm_album[:key]}"))
     end
 
     identity.last_import_all = Time.now
