@@ -98,7 +98,7 @@
 }
 
 #album-header-title{
-    width: 300px;
+    max-width: 300px;
     height: 30px;
 }
 

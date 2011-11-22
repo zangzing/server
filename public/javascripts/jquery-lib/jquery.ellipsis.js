@@ -24,7 +24,7 @@
                 el.after(t);
 
                 function height() { return t.height() > el.height(); };
-                function width() { return t.width() > el.width(); };
+                function width() { return t.width() > ( el.width()-10); };
 
                 var func = multiline ? height : width;
 
