@@ -119,7 +119,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
     zz_albums = []
     album_list = get_all_albums_paths(api_client)
     album_list.each do |pb_album_path|
-      zz_album = create_album(identity, CGI::unescape(pb_album_path))
+      zz_album = create_album(identity, CGI::unescape(pb_album_path), params[:privacy])
       photos = import_dir_photos(api_client, params.merge(:album_id => zz_album.id, :album_path => pb_album_path))
       zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
     end

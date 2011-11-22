@@ -81,7 +81,7 @@ class Connector::DropboxFoldersController < Connector::DropboxController
 
   def self.import_all_folders(api, params)
     identity = params[:identity]
-    folder_stack = ['/']
+    folder_stack = ['/Photos']
     zz_albums = []
 
     while !folder_stack.empty? do
@@ -98,7 +98,7 @@ class Connector::DropboxFoldersController < Connector::DropboxController
         end
       end
       if photos_count > 1
-        zz_album = create_album(identity, File.split(current_folder).last)
+        zz_album = create_album(identity, File.split(current_folder).last, params[:privacy])
         photos = import_whole_folder(api, params.merge(:path => current_folder, :album_id => zz_album.id))
         zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
       end

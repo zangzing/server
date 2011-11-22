@@ -56,7 +56,7 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
       api.call_method('smugmug.albums.get', :Extras => 'Passworded,PasswordHint,Password')
     end
     album_list.each do |sm_album|
-      zz_album = create_album(identity, sm_album[:title])
+      zz_album = create_album(identity, sm_album[:title], params[:privacy])
       photos = import_album(api, params.merge(:album_id => zz_album.id, :sm_album_id =>"#{sm_album[:id]}_#{sm_album[:key]}"))
       zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
     end
