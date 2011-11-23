@@ -85,7 +85,7 @@ var zz = zz || {};
 
         albums: {
             import_all_from_service: function(service_name, callback){
-                var url = '/service/' + service_name + '/folders/import_all.json'
+                var url = '/service/' + service_name + '/folders/import_all.json?privacy=public'
                 zz.async_ajax.call(url, 'get', callback, callback);
             },
             request_access: function(album_id, message, success, error){
