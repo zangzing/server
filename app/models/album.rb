@@ -498,6 +498,12 @@ class Album < ActiveRecord::Base
     false
   end
 
+  def can_user_contribute?( user )
+    return true  if everyone_can_contribute?
+    return false if user.nil?  #only contributors can download
+    return contributor?( user.id )
+  end
+
   def make_hidden
     self.privacy = HIDDEN
   end

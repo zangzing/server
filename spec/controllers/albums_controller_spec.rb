@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe AlbumsController do
   include ControllerSpecHelper
+  include ResponseActionHelper
 
 
   def get_action_and_cache_version(path)
@@ -177,8 +178,8 @@ describe AlbumsController do
       login            
     end
 
-    it 'should display request access dialog when session[:show_request_access_dialog].should is set' do
-      session[:show_request_access_dialog]= @privateAlbum.id
+    it 'should display request access dialog when adding render action :show_request_access_dialog' do
+      add_render_action( 'show_request_access_dialog', {:album_id => @privateAlbum.id } )
       get :index, :user_id=>@privateAlbum.user.username
       response.code.should == '200'
       response.body.should include 'request_access_form'

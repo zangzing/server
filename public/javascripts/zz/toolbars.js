@@ -171,27 +171,19 @@ zz.toolbars = {
         zz.buy.toggle_visibility_with_buy_mode($('#inline-new-album-button'));
 
 
-
-
-        // only album contributers can do this
+         // only album contributers can do this
+        $('#header #top-add-photos-button').click(function() {
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
+                return;
+            }
+            zz.toolbars._add_photos();
+        });
+         zz.buy.toggle_visibility_with_buy_mode($('#header #top-add-photos-button'));
         $('#footer #add-photos-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
-
-            zz.toolbars._disable_buttons();
-            $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
-
-            if( typeof( zz.page.current_user_can_contribute) != 'undefined' && zz.page.current_user_can_contribute ){
-                zz.photochooser.open_in_dialog(zz.page.album_id, function() {
-                    window.location.reload(false);
-                });
-            } else {
-                // The user is not allowed to download,
-                // direct main window to server for user
-                // validation and sigin/join request access etc...
-                zz.routes.albums.add_photos(zz.page.album_id);
-            }
+            zz.toolbars._add_photos();    
         });
         zz.buy.toggle_visibility_with_buy_mode($('#footer #add-photos-button'));
 
@@ -394,6 +386,7 @@ zz.toolbars = {
 
     _disable_buttons: function() {
         $('#header #back-button').addClass('disabled');
+        $('#header #top-add-photos-button').addClass('disabled');
         $('#header #view-buttons').children().addClass('disabled');
         $('#header #account-badge').addClass('disabled');
         $('#footer #play-button').addClass('disabled');
@@ -500,8 +493,21 @@ zz.toolbars = {
                     arm_text_field();
             };
         }
+    },
+
+    _add_photos: function(){
+            zz.toolbars._disable_buttons();
+            $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
+
+            if( typeof( zz.page.current_user_can_contribute) != 'undefined' && zz.page.current_user_can_contribute ){
+                zz.photochooser.open_in_dialog(zz.page.album_id, function() {
+                    window.location.reload(false);
+                });
+            } else {
+                // The user is not allowed to download,
+                // direct main window to server for user
+                // validation and sigin/join request access etc...
+                zz.routes.albums.add_photos(zz.page.album_id);
+            }
     }
-
-
-
 };
