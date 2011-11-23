@@ -84,7 +84,24 @@ zz.toolbars = {
 
         $('#header #help-button').click(function(event) {
             ZZAt.track('button.help.click');
-            //feedback_widget.show();
+            var user_name = '',
+                user_email = '';
+            if( typeof( zz.session.current_user_name) != 'undefined'){
+                user_name  =  zz.session.current_user_name;
+                user_email =  zz.session.current_user_email;
+            }
+
+            Zenbox.init({
+                    dropboxID:   "14620",
+                    url:         "https://zangzing.zendesk.com",
+                    tabID:       "help",
+                    tabColor:    "black",
+                    requester_name: user_name,
+                    requester_email: user_email,
+                    tabPosition: "Left"
+                  });
+
+
             Zenbox.show(event);
 
             //hack: force zendesk dialog to show scrollbars if screen too small
@@ -165,10 +182,16 @@ zz.toolbars = {
             zz.toolbars._disable_buttons();
             $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
 
-
-            zz.photochooser.open_in_dialog(zz.page.album_id, function() {
-                window.location.reload(false);
-            });
+            if( typeof( zz.page.current_user_can_contribute) != 'undefined' && zz.page.current_user_can_contribute ){
+                zz.photochooser.open_in_dialog(zz.page.album_id, function() {
+                    window.location.reload(false);
+                });
+            } else {
+                // The user is not allowed to download,
+                // direct main window to server for user
+                // validation and sigin/join request access etc...
+                zz.routes.albums.add_photos(zz.page.album_id);
+            }
         });
         zz.buy.toggle_visibility_with_buy_mode($('#footer #add-photos-button'));
 

@@ -134,92 +134,45 @@
 
     <script type="text/javascript">
 
-      var zz = zz || {};
-      zz.session = zz.session || {};
+        var zz = zz || {};
+        zz.session = zz.session || {};
 
-<%  if signed_in?  -%>
-      zz.session.current_user_id = '<%= current_user.id %>';
-      zz.session.current_user_name = '<%= escape_javascript current_user.username %>';
-      zz.session.profile_photo_url = '<%= escape_javascript current_user.profile_photo_url %>';
+        <%  if signed_in?  -%>
+        zz.session.current_user_id       = '<%= current_user.id %>';
+        zz.session.current_user_name     = '<%= escape_javascript current_user.username %>';
+        zz.session.current_user_email    = '<%= escape_javascript current_user.email %>'
+        zz.session.profile_photo_url     = '<%= escape_javascript current_user.profile_photo_url %>';
+        zz.session.has_facebook_token    = <%= !current_user.identity_for_facebook.credentials_valid?.nil? %>;
+        zz.session.has_twitter_token     = <%= !current_user.identity_for_twitter.credentials_valid?.nil? %>;
+        <%  end -%>
+        zz.session.cart_item_count       = <%= current_order ? current_order.cart_count : 0 %>
 
-      zz.session.has_facebook_token = <%= !current_user.identity_for_facebook.credentials_valid?.nil? %>;
-      zz.session.has_twitter_token =  <%= !current_user.identity_for_twitter.credentials_valid?.nil? %>;
+        zz.page = zz.page || {};
+        zz.page.rails_controller_name    = '<%= controller.controller_name %>';
+        zz.page.rails_action_name        = '<%= controller.action_name %>';
+        zz.page.rails_authenticity_token = '<%= form_authenticity_token %>';
 
-<%  end -%>
+        zz.config = zz.config || {};
+        zz.config.win_download_url       = '<%= ZangZingConfig.config[:agent_download_url_win] %>';
+        zz.config.mac_download_url       = '<%= ZangZingConfig.config[:agent_download_url_mac] %>';
+        zz.config.agent_port             = '<%= ZangZingConfig.config[:agent_port] %>';
+        zz.config.rails_asset_id         = '<%= ENV["RAILS_ASSET_ID"] %>';
+        zz.config.rails_asset_host       = '<%= ActionController::Base.asset_host %>';
+        zz.config.facebook_app_id        = '<%=FACEBOOK_API_KEYS[:app_id]%>';
+        zz.config.rails_env              = '<%= ENV["RAILS_ENV"] %>';
 
-      zz.session.cart_item_count = <%= current_order ? current_order.cart_count : 0 %>
-
-      zz.page = zz.page || {};
-      zz.page.rails_controller_name = '<%= controller.controller_name %>';
-      zz.page.rails_action_name = '<%= controller.action_name %>';
-      zz.page.rails_authenticity_token = '<%= form_authenticity_token %>';
-
-      zz.config = zz.config || {};
-      zz.config.win_download_url = '<%= ZangZingConfig.config[:agent_download_url_win] %>';
-      zz.config.mac_download_url = '<%= ZangZingConfig.config[:agent_download_url_mac] %>';
-      zz.config.agent_port = '<%= ZangZingConfig.config[:agent_port] %>';
-      zz.config.rails_asset_id = '<%= ENV["RAILS_ASSET_ID"] %>';
-      zz.config.rails_asset_host = '<%= ActionController::Base.asset_host %>';
-      zz.config.facebook_app_id = '<%=FACEBOOK_API_KEYS[:app_id]%>';
-      zz.config.rails_env = '<%= ENV["RAILS_ENV"] %>';
-
-      $(document).ready(function(){
-
-          zz.init.template();
-
-          <% if session[:show_welcome_dialog] %>
-              zz.welcome.show_welcome_dialog();
-              <% session[:show_welcome_dialog] = nil %>
-          <% end %>
-
-
-
-          <% if session[:flash_dialog] %>
-          zz.dialog.show_flash_dialog('<%=flash[:notice] %>')
-          <%  session[:flash_dialog] = nil %>
-          <% end %>
-
-
-
-          <% if session[:send_zza_events_from_client]
-                session[:send_zza_events_from_client].each do |event| %>
-          ZZAt.track('<%= escape_javascript event.to_s %>');
-          <%   end
-               session[:send_zza_events_from_client] = nil
-          end %>
-
-
-          Zenbox.init({
-            dropboxID:   "14620",
-            url:         "https://zangzing.zendesk.com",
-            tabID:       "help",
-            tabColor:    "black",
-<% if current_user %>
-            requester_name: "<%= escape_javascript current_user.name %>",
-            requester_email: "<%= escape_javascript current_user.email %>",
-<% end %>
-            tabPosition: "Left"
-          });
-
-
-          var html = ""
-          for(var i=0;i<100;i++){
-              html += "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus eu porta lectus. Aenean ipsum nisl, egestas non ultricies varius, tristique nec sem. Proin vel urna et felis ultrices consequat et vel nisl. Ut ultrices elit magna, et consectetur elit. Nunc id ante eu diam varius semper vel ac neque. Quisque luctus euismod lectus sit amet egestas. Ut rutrum arcu hendrerit metus malesuada tristique. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean feugiat tincidunt ullamcorper. Sed bibendum, quam non dictum semper, nunc nisi adipiscing justo, eget vulputate augue ligula ut sapien. Nulla facilisi. Vivamus vitae faucibus est. In mi lorem, tincidunt vitae aliquet vitae, commodo mollis mauris. Sed pellentesque tempor lacus in bibendum. Integer eget scelerisque odio.<br><br>"
-              html += '<img src="http://d.1.zz.s3.amazonaws.com/i/75a38f16-c287-4fa7-b37b-0bdd21dbe64e-t?1314307961" width="180" height="120"><br>'
-          }
-
-          zz.buy.init();
-      });
+        $(document).ready(function(){
+            zz.init.template();
+            <%= perform_javascript_actions %>
+            zz.buy.init();
+        });
 
     </script>
 
     <%   # Pull in generated javascript for the page -%>
     <%= yield :page_javascript %>
 
-    <% if session[:show_request_access_dialog]  %>
-        <%= render :partial => 'albums/pwd_dialog', :locals => {:album_id => session[:show_request_access_dialog]}%>
-        <% session.delete(:show_request_access_dialog)%>
-    <% end %>
+     <%=raw perform_render_actions %>
 
   </body>
 </html>

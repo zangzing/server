@@ -512,7 +512,11 @@ class AlbumsController < ApplicationController
 # Receives and processes a user's request for access into a password protected album
   def request_access
     return unless require_user && require_album
-    ZZ::Async::Email.enqueue( :request_access, current_user.id, @album.id,  params[:message] )
+    if params[:access_type ] && params[:access_type] =="contributor"
+      ZZ::Async::Email.enqueue( :request_contributor, current_user.id, @album.id,  params[:message] )
+    else
+      ZZ::Async::Email.enqueue( :request_access, current_user.id, @album.id,  params[:message] )
+    end
     head :ok and return
   end
 

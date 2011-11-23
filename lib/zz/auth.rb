@@ -310,8 +310,7 @@ module ZZ
               flash[:notice] = msg
               head :status => 401
             else
-              session[:show_request_access_dialog] = @album.id
-              #session[:client_dialog] = album_pwd_dialog_url( @album )
+              add_render_action('show_request_access_dialog', {:album_id => @album.id})
               redirect_to user_url( @album.user )
             end
             return false
@@ -324,19 +323,39 @@ module ZZ
       # To be run as a before_filter
       # Assumes @album is the album in question and current_user is the user we are evaluating
       def require_album_contributor_role
-        unless  @album.contributor?( current_user.id ) || current_user.support_hero? || @album.everyone_can_contribute?
-          msg = "Only Contributors admins can perform this operation"
-          if zz_api_call?
-            render_json_error(nil, msg, 401)
+        unless @album.everyone_can_contribute?
+          msg = "Only Contributors can perform this operation"
+          if current_user
+            if @album.contributor?( current_user.id ) || current_user.support_hero?
+              return true
+            else
+              if zz_api_call?
+                render_json_error(nil, msg, 401)
+              elsif request.xhr?
+                flash.now[:error] = msg
+                render_401
+              else
+                add_render_action('show_request_contributor_dialog', {:album_id => @album.id})
+                redirect_to album_pretty_url( @album )
+              end
+              return false
+            end
           else
-            flash.now[:error] = msg
-            render_401
+             if zz_api_call?
+                render_json_error(nil, msg, 401)
+             elsif request.xhr?
+                flash.now[:notice] = msg
+                head :status => 401
+             else
+                flash[:notice] = msg
+                store_location
+                redirect_to new_user_session_url
+             end
+             return false
           end
-          return false
         end
-        return true
+        true
       end
-
 
       #
       # To be run as a before_filter

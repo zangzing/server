@@ -321,7 +321,7 @@ class PhotosController < ApplicationController
       if params[:show_add_photos_dialog]
         if current_user
           if @album.contributor?(current_user.id)
-            flash[:show_add_photos_dialog] = true
+            add_javascript_action('show_add_photos_dialog' )
           end
           redirect_to album_pretty_url(@album)
           return
@@ -343,6 +343,13 @@ class PhotosController < ApplicationController
       set_show_comments_cookie
     end
     redirect_to photo_pretty_url(photo)
+  end
+
+  # displays the add photos dialog if the current user is allowed
+  def add_photos
+    return unless require_user && require_album(true) && require_album_contributor_role
+    add_javascript_action( 'show_add_photos_dialog' )
+    redirect_to album_pretty_url( @album ) and return
   end
 
   # returns the  movie view

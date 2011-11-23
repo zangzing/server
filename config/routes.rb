@@ -110,6 +110,7 @@ Server::Application.routes.draw do
     get    '/albums/:album_id/photos_json'  => 'photos#photos_json',                :as => :album_photos_json
     put    '/albums/:album_id/photos_json_invalidate'  => 'photos#photos_json_invalidate',  :as => :album_invalidate_photos_json
     get    '/albums/:album_id/photos'       => 'photos#index',                      :as => :album
+    get    '/albums/:album_id/add_photos'   => 'photos#add_photos',                 :as => :album_add_photos
     get    '/albums/:album_id/movie'        => 'photos#movie',                      :as => :album_movie
     delete '/photos/:id'                    => 'photos#destroy',                    :as => :destroy_photo
     put    '/photos/:id/upload_fast'        => 'photos#upload_fast',                :as => :upload_photo_fast
