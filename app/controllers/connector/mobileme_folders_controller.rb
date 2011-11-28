@@ -88,7 +88,7 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
             :source => 'mobileme'
     )
 
-    ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(photo_data, :full), {"Cookie", identity.credentials} )
+    ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(photo_data, :full), {'headers' => {'Cookie' => identity.credentials}} )
 
     Photo.to_json_lite(photo)
   end
