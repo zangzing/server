@@ -15,9 +15,12 @@ module PrettyUrlHelper
   end
 
   def album_pretty_url_show_add_photos_dialog(album, friendly_id = nil)
-    return "#{album_pretty_url(album, friendly_id)}?show_add_photos_dialog=true"
+    return album_add_photos_url( album.id )
   end
 
+  def album_group_tab_pretty_url( album, email='')
+    album_wizard_url( album )+"?step=group&email=#{email}"
+  end
 
   def album_activities_pretty_url( album )
     "#{album_pretty_url( album )}/activities"

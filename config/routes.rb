@@ -77,6 +77,7 @@ Server::Application.routes.draw do
     post   'albums/:album_id/request_access'       => 'albums#request_access',      :as => :request_album_access
     get    '/albums/:album_id/edit_group'          => 'albums#edit_group'
     get    '/albums/:album_id/add_photos'          => 'albums#add_photos',          :as => :album_add_photos
+    get    '/albums/:album_id/wizard'              => 'albums#wizard',              :as => :album_wizard
 
     #todo: these are not very REST-ful
     post   '/albums/:album_id/add_group_members'   => 'albums#add_group_members'

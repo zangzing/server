@@ -93,6 +93,18 @@ describe 'ResponseActionsHelper' do
     end
   end
 
+  describe 'js_show_album_wizard( action )' do
+    it 'should require step argument' do
+      lambda{ helper.js_show_album_wizard( {} )}.should raise_error( Exception, /^.*a wizard step$/)
+    end
+
+    it 'group should produce zz.wizard.open_group_tab directive' do
+      helper.add_javascript_action( 'show_album_wizard', {:step => 'group', :email=>'def@leppard.com'})
+      perform_javascript_actions.should contain( "zz.wizard.open_group_tab")
+      helper.add_javascript_action( 'show_album_wizard', {:step => 'group'})
+      perform_javascript_actions.should contain( "zz.wizard.open_group_tab")
+    end
+  end
 
   describe  'render_show_request_access_dialog( action )' do
     it 'should require album_id argument' do

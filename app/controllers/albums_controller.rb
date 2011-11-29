@@ -583,12 +583,24 @@ class AlbumsController < ApplicationController
     end
   end
 
-   # displays the add photos dialog if the current user is allowed
+  # displays the add photos dialog if the current user is allowed
   def add_photos
     return unless require_album(true) && require_album_contributor_role
     add_javascript_action( 'show_add_photos_dialog' )
     redirect_to album_pretty_url( @album ) and return
   end
+
+  # displays the add photos dialog if the current user is allowed
+  def wizard
+    return unless require_user && require_album(true) && require_album_admin_role
+    raise Exception.new("Wizard Step Must Be Specified") unless params[:step ]
+    args ={}
+    args[:step]  = params[:step]
+    args[:email] = params[:email] if params[:email]
+    add_javascript_action( 'show_album_wizard', args )
+    redirect_to album_pretty_url( @album ) and return
+  end
+
 
   private
 

@@ -67,6 +67,18 @@ module ResponseActionsHelper
     %{ ZZAt.track('#{ escape_javascript action[:event].to_s }'); }
   end
 
+  def js_show_album_wizard( action )
+    raise Exception.new('Must specify a wizard step') unless action[:step]
+    case action[:step]
+      when "group" then
+        mail = (action[:email]? action[:email]:'')
+        s = %{ zz.wizard.open_group_tab('#{escape_javascript mail.to_s }'); }
+      else
+        raise Exception.new("#{action[:step]} not implemented in response actions helper yet")
+    end
+    s
+  end
+
   def render_show_request_access_dialog( action )
     raise Exception.new('raction request_access_dialog  contains no album_id') unless action[:album_id]
     render :partial => 'albums/pwd_dialog',:locals => {:album_id => action[:album_id]}

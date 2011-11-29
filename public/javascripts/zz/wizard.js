@@ -313,6 +313,28 @@ zz.wizard = {
     },
 
 
+    open_group_tab: function( email ){
+         zz.toolbars._disable_buttons();
+         $('#footer #edit-album-button').removeClass('disabled').addClass('selected');
+
+         //This callback will be called when the init sequence for the tab is complete
+         zz.pages.group_tab.init_callback = function(){
+                  //This callback will be called when the init sequence for the add people dialog is complete
+                  zz.pages.group_tab.init_callback = function(){
+                      var type_email = function(){
+                          $('ul.token-input-list-facebook').unbind( 'click',type_email );
+                          if( email.length > 0 ){
+                            $('li.token-input-input-token-facebook input').click().val(email).blur();
+                          }
+                          return false;
+                      };
+                      $('ul.token-input-list-facebook').click( type_email );
+                      $('ul.token-input-list-facebook').click();
+                  };
+                  $('.group-editor div.add-people-button').click();
+         };
+         zz.wizard.open_edit_album_wizard('group');
+    },
 
 
     display_flashes: function(request, delay) {
