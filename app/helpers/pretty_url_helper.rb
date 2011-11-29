@@ -14,9 +14,10 @@ module PrettyUrlHelper
     return "http://#{Server::Application.config.application_host}#{album_pretty_path(album.user.username, friendly_id)}"
   end
 
-  def album_pretty_url_show_add_photos_dialog(album, friendly_id = nil)
+  def album_add_photos_dialog_pretty_url(album, friendly_id = nil)
     return album_add_photos_url( album.id )
   end
+  alias :album_pretty_url_show_add_photos_dialog :album_add_photos_dialog_pretty_url
 
   def album_group_tab_pretty_url( album, email='')
     album_wizard_url( album )+"?step=group&email=#{email}"
