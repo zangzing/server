@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe AlbumsController do
+  include PrettyUrlHelper
   include ControllerSpecHelper
-  include ResponseActionHelper
+  include ResponseActionsHelper
 
 
   def get_action_and_cache_version(path)
@@ -196,6 +197,42 @@ describe AlbumsController do
     end
   end
 
+  describe 'Request Contributor: When trying to add photos into an album for which I am not a contributor' do
+      render_views
+
+      before(:each) do
+        ActionMailer::Base.delivery_method = :test
+        ActionMailer::Base.perform_deliveries = true
+        ActionMailer::Base.deliveries = []
+        @album = Factory.create(:album)
+        @album.who_can_download = Album::WHO_CONTRIBUTORS
+        @album.save!
+        login
+      end
+
+      it 'add_photos should re-direct to album index when trying to add photos' do
+        get :add_photos, :album_id => @album.id
+        response.code.should == '302'
+        response.body.should redirect_to( album_pretty_url( @album ) )
+      end
+
+      it 'should display request contributor dialog when adding render action :show_contributor_access_dialog' do
+        add_render_action( 'show_request_contributor_dialog', {:album_id => @album.id } )
+        get :index, :user_id=>@album.user.username
+        response.code.should == '200'
+        response.body.should include('zz.routes.albums.request_contributor')
+      end
+
+      it 'The request contributor dialog should send an email to the album owner that includes my message' do
+        resque_jobs(:except => [ZZ::Async::MailingListSync]) do
+          xhr :post, :request_access, { :album_id => @album.id, :access_type =>"contributor", :message => "Please let me ADD-PHOTOS-TO-YOUR-ALBUM"}
+          response.status.should be(200)
+          ActionMailer::Base.deliveries.count.should == 1
+          ActionMailer::Base.deliveries[0].header['X-SMTPAPI'].value.should include "email.requestcontributor"
+          ActionMailer::Base.deliveries[0].body.parts[1].body.should include "ADD-PHOTOS-TO-YOUR-ALBUM"
+        end
+      end
+    end
 
 end
 

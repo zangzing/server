@@ -499,7 +499,7 @@ zz.toolbars = {
             zz.toolbars._disable_buttons();
             $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
 
-            if( typeof( zz.page.current_user_can_contribute) != 'undefined' && zz.page.current_user_can_contribute ){
+            if( typeof( zz.session.current_user_id) != 'undefined' && typeof( zz.page.current_user_can_contribute) != 'undefined' && zz.page.current_user_can_contribute ){
                 zz.photochooser.open_in_dialog(zz.page.album_id, function() {
                     window.location.reload(false);
                 });

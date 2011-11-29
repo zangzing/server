@@ -323,9 +323,11 @@ module ZZ
       # To be run as a before_filter
       # Assumes @album is the album in question and current_user is the user we are evaluating
       def require_album_contributor_role
-        unless @album.everyone_can_contribute?
-          msg = "Only Contributors can perform this operation"
-          if current_user
+        msg = "Only album contributors can perform this operation"
+        if current_user
+          if @album.everyone_can_contribute?
+            return true
+          else
             if @album.contributor?( current_user.id ) || current_user.support_hero?
               return true
             else
@@ -340,21 +342,20 @@ module ZZ
               end
               return false
             end
-          else
-             if zz_api_call?
-                render_json_error(nil, msg, 401)
-             elsif request.xhr?
-                flash.now[:notice] = msg
-                head :status => 401
-             else
-                flash[:notice] = msg
-                store_location
-                redirect_to new_user_session_url
-             end
-             return false
           end
+        else
+          if zz_api_call?
+            render_json_error(nil, msg, 401)
+          elsif request.xhr?
+            flash.now[:notice] = msg
+            head :status => 401
+          else
+            flash[:notice] = "You have requested to contribute to this album. Please join/login so we know who you are"
+            store_location
+            redirect_to join_url
+          end
+          false
         end
-        true
       end
 
       #

@@ -192,9 +192,11 @@ class Admin::EmailTemplatesController < Admin::AdminController
 
   def test_request_access( template_id )
         Notifier.request_access( sender.id, album.id, message, template_id)
-    end
+  end
 
-
+  def test_request_contributor( template_id )
+          Notifier.request_contributor( sender.id, album.id, message, template_id)
+  end
 
   def user_or_not_user_email_address
     if rand(2) <= 0

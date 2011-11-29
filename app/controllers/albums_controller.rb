@@ -585,7 +585,7 @@ class AlbumsController < ApplicationController
 
    # displays the add photos dialog if the current user is allowed
   def add_photos
-    return unless require_user && require_album(true) && require_album_contributor_role
+    return unless require_album(true) && require_album_contributor_role
     add_javascript_action( 'show_add_photos_dialog' )
     redirect_to album_pretty_url( @album ) and return
   end

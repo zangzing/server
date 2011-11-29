@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
   include ZZ::Auth
   include ZZ::ZZAController
   include PrettyUrlHelper
-  include ResponseActionHelper
+  include ResponseActionsHelper
   include BuyHelper
   include Spree::CurrentOrder
 

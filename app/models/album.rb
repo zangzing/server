@@ -56,7 +56,7 @@ class Album < ActiveRecord::Base
 
   #constants for Album.who_can_upload and Album.who_can_download
   WHO_EVERYONE      = 'everyone'
-  WHO_VIEWERS       = 'viewers'
+  WHO_VIEWERS       = 'viewers' # not used
   WHO_CONTRIBUTORS  = 'contributors'
   WHO_OWNER         = 'owner'
 
