@@ -95,7 +95,9 @@ protected
   end
 
   def request(http_method, api_path, options = {})
-    conn = Faraday::Connection.new(:url =>  "#{api_path}?webdav-method=truthget&feedfmt=galleryowner&depth=1&synchronize=true&lang=en") do |builder|
+    api_path = "#{api_path}?webdav-method=truthget&feedfmt=galleryowner&depth=1&synchronize=true&lang=en"
+
+    conn = Faraday::Connection.new(:url => api_path) do |builder|
       #builder.use Faraday::Request::UrlEncoded
       #builder.use Faraday::Response::ParseJson
       builder.use Faraday::Adapter::NetHttp
@@ -111,7 +113,7 @@ protected
     end
 
     Rails.logger.debug("mobileme response headers for #{api_path}: #{response.headers.inspect}")
-
+    Rails.logger.debug("mobileme response body for #{api_path}: #{response.body}")
 
     raise MobilemeError.new(403, response.body) if response.body =~ /Error:/
     #begin
