@@ -68,14 +68,8 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
     end
 
     # bulk insert
-    Photo.batch_insert(photos)
+    bulk_insert(photos, :headers => {'Cookie' => api.cookies_as_string})
 
-    # must send after all saved
-    photos.each do |photo|
-      ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url, :headers => {'Cookie' => api.cookies_as_string})
-    end
-
-    Photo.to_json_lite(photos)
   end
 
   def self.import_certain_photo(api, params)
