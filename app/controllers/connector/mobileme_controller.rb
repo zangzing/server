@@ -34,7 +34,8 @@ protected
       when :screen then photo_info.webImageUrl #mediumDerivativeUrl
       when :full then ping_url(photo_info.largeImageUrl) ? photo_info.largeImageUrl : photo_info.webImageUrl
     end
-    url ? url.gsub('https://www.me.com/ro', 'http://gallery.me.com').gsub('/Galleries/', '/') : nil
+    url.gsub!('https://www.me.com/ro', 'http://gallery.me.com').gsub!('/Galleries/', '/') if url && size!=:full
+    url
   end
   
   def self.ping_url(url)
