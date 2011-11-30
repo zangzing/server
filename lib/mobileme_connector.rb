@@ -68,6 +68,10 @@ class MobilemeConnector
     end
   end
 
+  def cookies_as_string
+    @auth_cookies.map{|k,v| "#{k}=#{v}" }.join('; ')
+  end
+
 protected
   def parse_cookies(set_cookie_header)
     set_cookie_header.scan(/([a-z0-9\-_\.]+)=([a-z0-9=:]+);/i).inject({}) do |hsh, kuk|
@@ -76,17 +80,13 @@ protected
     end
   end
 
-  def cookies_as_string
-    @auth_cookies.map{|k,v| "#{k}=#{v}" }.join('; ')
-  end
-
   def extra_login_params
     {
       'service' => 'gallery',
+      'ssoNamespace' => 'appleid',
       'returnURL' => 'aHR0cHM6Ly93d3cubWUuY29tL2dhbGxlcnkv',
       'cancelURL' => 'http://www.me.com/mail',
-      'mailstatus' => '',
-      'ssoNamespace' => 'appleid',
+      '{SSO_ATTRIBUTE_NAME}' => '{SSO_ATTRIBUTE_VALUE}',
       'ssoOpaqueToken' => '',
       'ownerPrsId' => '',
       'formID' => 'loginForm',
@@ -95,7 +95,7 @@ protected
   end
 
   def request(http_method, api_path, options = {})
-    conn = Faraday::Connection.new(:url => api_path) do |builder|
+    conn = Faraday::Connection.new(:url =>  "#{api_path}?webdav-method=truthget&feedfmt=galleryowner&depth=1&synchronize=true&lang=en") do |builder|
       #builder.use Faraday::Request::UrlEncoded
       #builder.use Faraday::Response::ParseJson
       builder.use Faraday::Adapter::NetHttp
@@ -109,9 +109,16 @@ protected
       req.headers['X-Prototype-Version'] = '1.0.3'
       req.headers['X-Requested-With'] = "XMLHttpRequest"
     end
+
+    Rails.logger.debug("mobileme response headers for #{api_path}: #{response.headers.inspect}")
+
+
     raise MobilemeError.new(403, response.body) if response.body =~ /Error:/
     #begin
       json_response = MultiJson.decode(response.body)
+
+
+
     #rescue MultiJson::DecodeError => de
     #  raise MobilemeError.new(401, response.body)
     #end
