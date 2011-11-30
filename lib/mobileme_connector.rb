@@ -68,16 +68,16 @@ class MobilemeConnector
     end
   end
 
+  def cookies_as_string
+    @auth_cookies.map{|k,v| "#{k}=#{v}" }.join('; ')
+  end
+
 protected
   def parse_cookies(set_cookie_header)
     set_cookie_header.scan(/([a-z0-9\-_\.]+)=([a-z0-9=:]+);/i).inject({}) do |hsh, kuk|
       hsh[kuk[0]] = kuk[1]
       hsh
     end
-  end
-
-  def cookies_as_string
-    @auth_cookies.map{|k,v| "#{k}=#{v}" }.join('; ')
   end
 
   def extra_login_params
