@@ -20,7 +20,7 @@ module PrettyUrlHelper
   alias :album_pretty_url_show_add_photos_dialog :album_add_photos_dialog_pretty_url
 
   def album_group_tab_pretty_url( album, email='')
-    album_wizard_url( album )+"/group?email=#{email}"
+    album_wizard_url( album, 'group' )+"?email=#{email}"
   end
 
   def album_activities_pretty_url( album )
