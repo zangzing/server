@@ -208,7 +208,7 @@ class SendgridController < ApplicationController
                 link_name = "join_url"
               elsif route[:controller]=="user_sessions" && route[:action]=="new"
                 link_name = "signin_url"
-              elsif route[:controller]=="albums" && route[:action]=="add_phoitos"
+              elsif route[:controller]=="albums" && route[:action]=="add_photos"
                 link_name = 'album_grid_url_show_add_photos_dialog'
               end
 
