@@ -515,7 +515,7 @@ class Photo < ActiveRecord::Base
     z.track_transaction("photo.upload.resize.start", self.id)
     attached_image.resize_and_upload_photos
     z.track_transaction("photo.upload.resize.done", self.id)
-    z.track_transaction("photo.upload.done", self.id, {:source => self.source}, 1, self.user_id)
+    z.track_transaction("photo.upload.done", self.id, {:photo_source => self.source}, 1, self.user_id)
     # tell the photo object it is good to go
     was_ready = ready?
     mark_ready
