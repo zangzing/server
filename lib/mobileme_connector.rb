@@ -83,10 +83,10 @@ protected
   def extra_login_params
     {
       'service' => 'gallery',
+      'ssoNamespace' => 'appleid',
       'returnURL' => 'aHR0cHM6Ly93d3cubWUuY29tL2dhbGxlcnkv',
       'cancelURL' => 'http://www.me.com/mail',
-      'mailstatus' => '',
-      'ssoNamespace' => 'appleid',
+      '{SSO_ATTRIBUTE_NAME}' => '{SSO_ATTRIBUTE_VALUE}',
       'ssoOpaqueToken' => '',
       'ownerPrsId' => '',
       'formID' => 'loginForm',
