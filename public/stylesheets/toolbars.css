@@ -441,6 +441,7 @@
     top:1px;
     background: url("/images/embed/toolbars/btn-footer-import.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
+    display: none;
 }
 #footer #import-button:hover    { background-position: 0 -55px;  }
 #footer #import-button.selected { background-position: 0 -110px; }

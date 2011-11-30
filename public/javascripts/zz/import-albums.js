@@ -2,6 +2,14 @@ var zz = zz || {};
 zz.import_albums = zz.import_albums || {};
 
 (function(){
+
+    var BETA_LIST = [
+
+    ];
+
+
+
+
     function SELECT_SERVICE_TEMPLATE(){
         return '<div class="import-all">' +
                     '<div class="select-service">' +
@@ -34,6 +42,16 @@ zz.import_albums = zz.import_albums || {};
     }
 
 
+
+    zz.import_albums.init = function(){
+        var show_import = (zz.config.rails_env!='photo_production' || _.find(BETA_LIST, function(id){
+            return id == zz.session.current_user_id;
+        }));
+
+        if(show_import){
+            $('#import-button').show();
+        }
+    };
 
     zz.import_albums.show_import_dialog = function(){
         zz.routes.identities.get_identities(function(identities){
