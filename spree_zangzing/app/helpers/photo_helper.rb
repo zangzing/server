@@ -1,6 +1,8 @@
 module PhotoHelper
 
-  STACK_ANGLES=[['-8', '-4'],['-4', '4'],['8', '4'] ]
+  unless defined? STACK_ANGLES
+    STACK_ANGLES=[['-8', '-4'],['-4', '4'],['8', '4'] ].freeze
+  end
 
   def framed_photo_tag( photo, targetw, targeth )
 

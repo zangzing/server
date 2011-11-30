@@ -62,15 +62,23 @@ zz.dialog = {
 
     },
 
-    show_flash_dialog: function(message) {
+    show_flash_dialog: function(message, onClose) {
         var content = $("<div id='flash-dialog'><div><div id='flash'></div><a id='ok' class='newgreen-button'><span>OK</span></a></div></div>");
         content.find('#flash').text(message);
-
-        var dialog = zz.dialog.show_dialog(content, {cancelButton: false});
-
         content.find('#ok').click(function() {
-           dialog.close();
-        });
+                   dialog.close();
+                });
+                content.find('#ok').keypress(function(event){
+                                var keycode = (event.keyCode ? event.keyCode : event.which);
+                                if(keycode == '13'){
+                                    dialog.close();
+                                    event.stopPropagation();
+                                }
+                                return false;
+                            });
+        var dialog = zz.dialog.show_dialog(content, {cancelButton: false, close: onClose});
+        content.find('#ok').focus();
+        return dialog;
     },
 
 

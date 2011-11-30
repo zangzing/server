@@ -70,13 +70,13 @@ class Connector::ConnectorController < ApplicationController
       raise "api_from_identity for #{self.name.to_s} is not implemented!"
     end
 
-    def bulk_insert(photos)
+    def bulk_insert(photos, options = {})
       # bulk insert
       Photo.batch_insert(photos)
 
       # must send after all saved
       photos.each do |photo|
-        ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url )
+        ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url, options )
       end
 
       Photo.to_json_lite(photos)

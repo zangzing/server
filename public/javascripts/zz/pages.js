@@ -31,9 +31,7 @@ zz.pages.album_name_tab = {
     original_album_name: '',
     init: function(container, callback) {
         var url = zz.routes.path_prefix + '/albums/' + zz.page.album_id + '/name_album';
-
         ZZAt.track('album.name_tab.view');
-
 
         var album_email_call_lock = 0;
 
@@ -43,8 +41,8 @@ zz.pages.album_name_tab = {
 
 
             //save album name and set header album name
-            zz.pages.album_name_tab.original_album_name = $('#album_name').val();
-            $('#album-header-title').text(zz.pages.album_name_tab.original_album_name);
+            //zz.pages.album_name_tab.original_album_name = $('#album_name').val();
+            //$('#album-header-title').text(zz.pages.album_name_tab.original_album_name);
 
             //change header album name as you type new album name
             $('#album_name').keypress(function() {
@@ -72,12 +70,13 @@ zz.pages.album_name_tab = {
                             },
                             error: function() {
                                 $('#album_name').addClass('error');
-                                $('#album_name').val(zz.pages.album_name_tab.original_album_name);
-                                $('h2#album-header-title').text(zz.pages.album_name_tab.original_album_name);
+                                $('#album_name').val(zz.pages.album_name);
+                                $('h2#album-header-title').text(zz.pages.album_name);
                             }
                         });
                     }
                 }, 1200);
+
             });
 
             zz.routes.photos.get_album_photos_json(zz.page.album_id, 0, function(json){
@@ -126,7 +125,8 @@ zz.pages.album_name_tab = {
                     }
                 });
             });
-
+            //disable click-editing of album name when this tab is displayed
+            $('h2#album-header-title').unbind('click');
             callback();
         });
 
@@ -137,12 +137,18 @@ zz.pages.album_name_tab = {
         $.ajax({ type: 'POST',
             url: zz.routes.path_prefix + '/albums/' + zz.page.album_id,
             data: $('.edit_album').serialize(),
-            success: success,
+            success: function(){
+                zz.page.album_name = $('#album_name').val();
+                $('h2#album-header-title').text(zz.pages.album_name);
+                $('h2#album-header-title').ellipsis();
+                 zz.toolbars._init_album_title();
+                success();
+            },
             error: function() {
                 //restore name and header to valid value
-                $('#album_name').val(zz.pages.album_name_tab.original_album_name);
-                $('h2#album-header-title').text(zz.pages.album_name_tab.original_album_name);
-                $('#album_name').keypress();
+                $('#album_name').val(zz.pages.album_name);
+                $('h2#album-header-title').text(zz.pages.album_name);
+                $('h2#album-header-title').ellipsis();
             }
         });
     }

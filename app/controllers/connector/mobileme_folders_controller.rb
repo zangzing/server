@@ -1,5 +1,7 @@
 class Connector::MobilemeFoldersController < Connector::MobilemeController
 
+  PWD_PROTECTED_STATIC_ICON = '/images/password-protected-view-after-import.png'
+
   def self.list_albums(api, params)
     album_list = call_with_error_adapter do
       api.get_albums_list
@@ -29,8 +31,8 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
         :name => photo_data.title,
         :id   => photo_data.guid,
         :type => 'photo',
-        :thumb_url => get_photo_url(photo_data, :thumb),
-        :screen_url => get_photo_url(photo_data, :screen),
+        :thumb_url => password_protected?(album_contents) ? PWD_PROTECTED_STATIC_ICON : get_photo_url(photo_data, :thumb),
+        :screen_url => password_protected?(album_contents) ? PWD_PROTECTED_STATIC_ICON : get_photo_url(photo_data, :screen),
         :add_url => mobileme_photos_path(:mm_album_id => params[:mm_album_id], :action => :import_photo, :photo_id => photo_data.guid, :format => :json),
         :source_guid => make_source_guid(photo_data)
       }
@@ -56,8 +58,8 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
               :upload_batch_id => current_batch.id,
               :capture_date => (DateTime.parse(photo_data.photoDate) rescue nil),
               :source_guid => make_source_guid(photo_data),
-              :source_thumb_url => get_photo_url(photo_data, :thumb),
-              :source_screen_url => get_photo_url(photo_data, :screen),
+              :source_thumb_url => password_protected?(album_contents) ? PWD_PROTECTED_STATIC_ICON : get_photo_url(photo_data, :thumb),
+              :source_screen_url => password_protected?(album_contents) ? PWD_PROTECTED_STATIC_ICON : get_photo_url(photo_data, :screen),
               :source => 'mobileme'
       })
 
@@ -65,7 +67,9 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
       photos << photo
     end
 
-    bulk_insert(photos)
+    # bulk insert
+    bulk_insert(photos, :headers => {'Cookie' => api.cookies_as_string})
+
   end
 
   def self.import_all_albums(api, params)
@@ -99,14 +103,18 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
             :upload_batch_id => current_batch.id,
             :capture_date => (DateTime.parse(photo_data.photoDate) rescue nil),
             :source_guid => make_source_guid(photo_data),
-            :source_thumb_url => get_photo_url(photo_data, :thumb),
-            :source_screen_url => get_photo_url(photo_data, :screen),
+            :source_thumb_url => password_protected?(album_contents) ? PWD_PROTECTED_STATIC_ICON : get_photo_url(photo_data, :thumb),
+            :source_screen_url => password_protected?(album_contents) ? PWD_PROTECTED_STATIC_ICON : get_photo_url(photo_data, :screen),
             :source => 'mobileme'
     )
 
-    ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(photo_data, :full) )
+    ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(photo_data, :full), :headers => {'Cookie' => api.cookies_as_string} )
 
     Photo.to_json_lite(photo)
+  end
+
+  def self.password_protected?(album_contents)
+    album_contents.select{|e| e['type']=='Album' }.first.has_key?('accessLogin')
   end
 
 

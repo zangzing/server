@@ -90,6 +90,9 @@ var zz = zz || {};
             },
             request_access: function(album_id, message, success, error){
                 do_post('/service/albums/' +album_id+'/request_access', {message: message}, success, error);
+            },
+            update: function( album_id, data_hash, success,error){
+                do_put('/zz_api/albums/'+album_id, data_hash, success, error );
             }
 
         },

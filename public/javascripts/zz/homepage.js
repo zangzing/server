@@ -104,6 +104,16 @@ zz.homepage = {
                     onLike: function() {
                         alert('This feature is still under construction. It will allow you to like an album.');
                     },
+                    onDelete: function() {
+                        if (confirm('Are you sure you want to delete this album?')) {
+                            clone.find('.picon').hide('scale', {}, 300, function() {
+                                clone.remove();
+                            });
+                            zz.routes.call_delete_album(album.id);
+                        }
+                    },
+                    allowDelete      : !album.profile_album && album.user_id == zz.session.current_user_id,
+                    allowEditCaption : !album.profile_album && album.user_id == zz.session.current_user_id,
                     infoMenuTemplateResolver: function(album){
                         var infomenu_template_matrix = [
                              [ null, zz.infomenu.download_template ],
@@ -136,6 +146,17 @@ zz.homepage = {
                              }
                          }
                          return infomenu_template_matrix[del][download];
+
+                    },
+                    onChangeCaption: function( newAlbumName, onSuccess, onError ){
+                        // send it to the back end
+                        zz.routes.albums.update( album.id,{'name': newAlbumName },
+                        function(data){
+                            onSuccess( data );
+                        },
+                        function(xhr){
+                            zz.dialog.show_flash_dialog(JSON.parse(xhr.responseText).message, function(){ onError(); } );
+                        });
 
                     }
                 });
