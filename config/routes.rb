@@ -203,6 +203,7 @@ Server::Application.routes.draw do
       #kodak
       match '/kodak/sessions/new' => 'kodak_sessions#new', :as => :new_kodak_session
       match '/kodak/sessions/create' => 'kodak_sessions#create', :as => :create_kodak_session
+      match '/kodak/sessions/close' => 'kodak_sessions#close', :as => :close_kodak_session
       match '/kodak/sessions/destroy' => 'kodak_sessions#destroy', :as => :destroy_kodak_session
       match '/kodak/folders/:kodak_album_id/photos.:format' => 'kodak_photos#index', :as => :kodak_photos
       match '/kodak/folders/:kodak_album_id/photos/:photo_id/:action' => 'kodak_photos#index', :as => :kodak_photo_action
@@ -271,6 +272,7 @@ Server::Application.routes.draw do
       #mobile.me
       match '/mobileme/sessions/new' => 'mobileme_sessions#new', :as => :new_mobileme_session
       match '/mobileme/sessions/create' => 'mobileme_sessions#create', :as => :create_mobileme_session
+      match '/mobileme/sessions/close' => 'mobileme_sessions#close', :as => :close_mobileme_session
       match '/mobileme/sessions/destroy' => 'mobileme_sessions#destroy', :as => :destroy_mobileme_session
       match '/mobileme/folders.:format' => 'mobileme_folders#index', :as => :mobileme_folders
       match '/mobileme/folders/:mm_album_id/:action.:format' => 'mobileme_folders#album_index', :as => :mobileme_photos
