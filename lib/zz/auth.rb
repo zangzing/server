@@ -310,7 +310,7 @@ module ZZ
               flash[:notice] = msg
               head :status => 401
             else
-              add_render_action('show_request_access_dialog', {:album_id => @album.id})
+              add_javascript_action('show_request_access_dialog', {:album_id => @album.id})
               redirect_to user_url( @album.user )
             end
             return false
@@ -337,7 +337,7 @@ module ZZ
                 flash.now[:error] = msg
                 render_401
               else
-                add_render_action('show_request_contributor_dialog', {:album_id => @album.id})
+                add_javascript_action('show_request_contributor_dialog', {:album_id => @album.id})
                 redirect_to album_pretty_url( @album )
               end
               return false

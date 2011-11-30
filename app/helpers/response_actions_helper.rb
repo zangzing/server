@@ -36,6 +36,7 @@ module ResponseActionsHelper
             if self.respond_to?(method_name)
               response << self.send( method_name,  action)
             else
+              hash.delete( key )
               raise Exception.new('Unknown Response Action method_name: '+method_name)
             end
           end
@@ -52,7 +53,7 @@ module ResponseActionsHelper
 
   def js_show_message_dialog( action )
     raise Exception.new( 'jsaction show_message_dialog  contains no message') unless action[:message]
-    %{ zz.dialog.show_flash_dialog('#{action[:message]}'); }
+    %{ zz.dialog.show_flash_dialog('#{esacpe_javascript action[:message]}'); }
   end
 
   def js_show_add_photos_dialog( action )
@@ -79,13 +80,23 @@ module ResponseActionsHelper
     s
   end
 
-  def render_show_request_access_dialog( action )
-    raise Exception.new('raction request_access_dialog  contains no album_id') unless action[:album_id]
-    render :partial => 'albums/pwd_dialog',:locals => {:album_id => action[:album_id]}
+  def js_show_request_access_dialog( action )
+      raise Exception.new('jsaction request_access_dialog  contains no album_id') unless action[:album_id]
+      %{ zz.dialog.show_request_access_dialog('#{escape_javascript action[:album_id].to_s}'); }
   end
 
-  def render_show_request_contributor_dialog( action )
-    raise Exception.new('raction request_contributor_dialog  contains no album_id') unless  action[:album_id]
-    render :partial => 'albums/contributor_dialog',:locals => {:album_id => action[:album_id]}
+  def js_show_request_contributor_dialog( action )
+    raise Exception.new('jsaction request_contributor_dialog  contains no album_id') unless  action[:album_id]
+    %{ zz.dialog.show_request_contributor_dialog('#{escape_javascript action[:album_id].to_s}'); }
   end
+
+  #def render_show_request_access_dialog( action )
+  #  raise Exception.new('raction request_access_dialog  contains no album_id') unless action[:album_id]
+  #  render :partial => 'albums/pwd_dialog',:locals => {:album_id => action[:album_id]}
+  #end
+
+  #def render_show_request_contributor_dialog( action )
+  #  raise Exception.new('raction request_contributor_dialog  contains no album_id') unless  action[:album_id]
+  #  render :partial => 'albums/contributor_dialog',:locals => {:album_id => action[:album_id]}
+  #end
 end

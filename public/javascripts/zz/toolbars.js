@@ -170,26 +170,18 @@ zz.toolbars = {
         });
         zz.buy.toggle_visibility_with_buy_mode($('#inline-new-album-button'));
 
-
-         // only album contributers can do this
-        $('#header #top-add-photos-button').click(function() {
+        var add_photos_click_handler = function(){
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
             zz.toolbars._add_photos();
-        });
-         zz.buy.toggle_visibility_with_buy_mode($('#header #top-add-photos-button'));
-        $('#footer #add-photos-button').click(function() {
-            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
-                return;
-            }
-            zz.toolbars._add_photos();    
-        });
+        };
+
+         // only album contributers can do this
+        $('#header #top-add-photos-button').click(add_photos_click_handler);
+        $('#footer #add-photos-button').click( add_photos_click_handler);
+        zz.buy.toggle_visibility_with_buy_mode($('#header #top-add-photos-button'));
         zz.buy.toggle_visibility_with_buy_mode($('#footer #add-photos-button'));
-
-
-
-
 
         //any signed in user can do this
         $('#footer #share-button').click(function() {
@@ -497,8 +489,10 @@ zz.toolbars = {
 
     _add_photos: function(){
             zz.toolbars._disable_buttons();
+            $('#footer #comments-button').fadeOut(200);
+            $('#album-info').fadeOut(200);
+            $('#header #top-breadcrumb').fadeOut(200);
             $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
-
             if( typeof( zz.session.current_user_id) != 'undefined' && typeof( zz.page.current_user_can_contribute) != 'undefined' && zz.page.current_user_can_contribute ){
                 zz.photochooser.open_in_dialog(zz.page.album_id, function() {
                     window.location.reload(false);

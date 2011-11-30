@@ -180,10 +180,10 @@ describe AlbumsController do
     end
 
     it 'should display request access dialog when adding render action :show_request_access_dialog' do
-      add_render_action( 'show_request_access_dialog', {:album_id => @privateAlbum.id } )
+      add_javascript_action( 'show_request_access_dialog', {:album_id => @privateAlbum.id } )
       get :index, :user_id=>@privateAlbum.user.username
       response.code.should == '200'
-      response.body.should include 'request_access_form'
+      response.body.should include "zz.dialog.show_request_access_dialog('#{@privateAlbum.id}')"
     end
 
     it 'The request access dialog should send an email to the album owner that includes my message' do
@@ -217,10 +217,10 @@ describe AlbumsController do
     end
 
     it 'should display request contributor dialog when adding render action :show_contributor_access_dialog' do
-      add_render_action( 'show_request_contributor_dialog', {:album_id => @album.id } )
+      add_javascript_action( 'show_request_contributor_dialog', {:album_id => @album.id } )
       get :index, :user_id=>@album.user.username
       response.code.should == '200'
-      response.body.should include('zz.routes.albums.request_contributor')
+      response.body.should include "zz.dialog.show_request_contributor_dialog('#{@album.id}')"
     end
 
     it 'The request contributor dialog should send an email to the album owner that includes my message' do

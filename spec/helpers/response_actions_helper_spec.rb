@@ -106,25 +106,24 @@ describe 'ResponseActionsHelper' do
     end
   end
 
-  describe  'render_show_request_access_dialog( action )' do
+  describe  'js_show_request_access_dialog( action )' do
     it 'should require album_id argument' do
-      lambda{ helper.render_show_request_access_dialog({})}.should raise_error( Exception , /^.*album_id$/)
+      lambda{ helper.js_show_request_access_dialog({})}.should raise_error( Exception , /^.*album_id$/)
     end
 
-    it 'should render albums/pwd_dialog' do
-      helper.add_render_action("show_request_access_dialog",{ :album_id => '23' })
-      perform_render_actions.should have_selector("textarea#request_access_message")
+    it 'should produce zz.dialog.show_request_access_dialog' do
+      helper.add_javascript_action("show_request_access_dialog",{ :album_id => 23 })
+      perform_javascript_actions.should contain("zz.dialog.show_request_access_dialog")
     end
-
   end
 
-  describe 'render_show_request_contributor_dialog( action )' do
+  describe 'js_show_request_contributor_dialog( action )' do
     it 'should require album_id argument' do
-      lambda{helper.render_show_request_contributor_dialog({})}.should raise_error( Exception , /^.*album_id$/)
+      lambda{helper.js_show_request_contributor_dialog({})}.should raise_error( Exception , /^.*album_id$/)
     end
-    it 'should render albums/contributor_dialog' do
-      helper.add_render_action("show_request_contributor_dialog",{ :album_id => '23' })
-      perform_render_actions.should contain('zz.routes.albums.request_contributor')
+    it 'should  produce zz.dialog.show_request_contributor_dialog' do
+      helper.add_javascript_action("show_request_contributor_dialog",{ :album_id => 23 })
+      perform_javascript_actions.should contain("zz.dialog.show_request_contributor_dialog")
     end
 
   end

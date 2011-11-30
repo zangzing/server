@@ -576,14 +576,6 @@ zz.album = {};
             document.location.href = url;
         });
 
-         $('#top-add-photos-button').click(function() {
-            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
-                return;
-            }
-            $('#footer #comments-button').fadeOut(200);
-            $('#album-info').fadeOut(200);
-            $('#header #top-breadcrumb').fadeOut(200);
-        });
 
     }
 
