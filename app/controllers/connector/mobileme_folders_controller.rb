@@ -1,6 +1,6 @@
 class Connector::MobilemeFoldersController < Connector::MobilemeController
 
-  PWD_PROTECTED_STATIC_ICON = '/images/private-album.png'
+  PWD_PROTECTED_STATIC_ICON = '/images/password-protected-view-after-import.png'
 
   def self.list_albums(api, params)
     album_list = call_with_error_adapter do
