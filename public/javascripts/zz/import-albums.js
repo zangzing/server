@@ -50,7 +50,7 @@ zz.import_albums = zz.import_albums || {};
                         return identity.identity_source == service_name;
                     });
 
-                    if(identity && identity.credentials){
+                    if(identity && identity.credentials && identity.identity_source != 'mobileme'){ // since we have issues with mobile me sessions, we want to always create a new one before starting an import
                         show_service_screen(service_name);
                     }
                     else{
