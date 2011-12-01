@@ -13,7 +13,8 @@ zz.import_albums = zz.import_albums || {};
     function SELECT_SERVICE_TEMPLATE(){
         return '<div class="import-all">' +
                     '<div class="select-service">' +
-                        '<div class="header">Select a service below and import all your albums to ZangZing</div>' +
+                        '<div class="header">Import All Your Photos</div>' +
+                        '<div class="sub-header">Choose a service to import your photos</div>' +
                         '<div class="services">' +
                             '<div class="service flickr" data-name="flickr"><div/></div>' +
                             '<div class="service facebook" data-name="facebook"><div/></div>' +
@@ -28,10 +29,14 @@ zz.import_albums = zz.import_albums || {};
                         '</div>' +
                     '</div>' +
                     '<div class="confirm-import">' +
-                        '<div class="header">Import all your albums from <span class="service-name"></span>. You will see the new ZangZing albums immediately and the photos will continue to load in the background.</div>' +
-                        '<img class="import-image">'+
-                        '<div class="warning-message">Warning: you already imported albums from <span class="service-name"></span> on <span class="date"></span>. If you import again, you may end up with duplicate albums in ZangZing</div>'+
-                        '<a class="green-button import-all-button"><span>Import All Albums</span></a>' +
+                        '<div class="header service-name">Service Name Import</div>' +
+                        '<div class="sub-header">Choose the default privacy setting for you imported albums.<br>You can always change it for each album.</div>' +
+                        '<div class="privacy-buttons">' +
+                            '<div class="public-button selected"></div>' +
+                            '<div class="hidden-button"></div>' +
+                            '<div class="password-button"></div>' +
+                        '</div>' +
+                        '<a class="green-button import-all-button"><span>Import My Albums</span></a>' +
                     '</div>' +
                     '<div class="import-progress">' +
                         '<img class="import-image">'+
@@ -69,43 +74,47 @@ zz.import_albums = zz.import_albums || {};
                     });
 
                     if(identity && identity.credentials && identity.identity_source != 'mobileme'){ // since we have issues with mobile me sessions, we want to always create a new one before starting an import
-                        show_service_screen(service_name);
+                        show_confirm_screen(service_name);
                     }
                     else{
                         zz.oauthmanager.login(zz.routes.identities.login_url_for_service(service_name), function() {
-                            show_service_screen(service_name);
+                            show_confirm_screen(service_name);
                         });
                     }
                 });
             });
 
 
-            var show_service_screen = function(service_name){
+            var show_confirm_screen = function(service_name){
                 zz.routes.identities.get_identity_for_service(service_name, function(identity){
                     content.find('.select-service').hide();
                     content.find('.confirm-import').show();
-                    content.find('.confirm-import .service-name').text(service_name);
-                    content.find('.confirm-import img.import-image').attr('src', '/images/connect-to-' + service_name + '.jpg');
+
+
+                    content.find('.confirm-import .service-name').text(identity.name + ' Import');
+
 
                     content.find('.confirm-import .import-all-button').click(function(){
-                        show_progress_screen(service_name);
+                        if(identity.last_import_all){
+                            var d = new Date(identity.last_import_all);
+                            var formatted_date = d.getMonth() + '-' + d.getDate() + '-' + d.getFullYear();
+                            var message = 'You already imported ablums from ' + idenity.service_name + ' on ' + formatted_date +'. If you import again, you may end up with duplicate albums. Do you want to continue?';
+                            if(!confirm(message)){
+                                return;
+                            }
+                        }
+
+                        show_progress_screen_and_start_import(service_name);
                     });
 
 
-                    if(identity.last_import_all){
-                        var d = new Date(identity.last_import_all);
-                        var formatted_date = d.getMonth() + '-' + d.getDate() + '-' + d.getFullYear();
-                        content.find('.confirm-import .warning-message .service-name').text(service_name);
-                        content.find('.confirm-import .warning-message .date').text(formatted_date);
-                        content.find('.confirm-import .warning-message').show();
-                    }
                 });
             };
 
 
-            var show_progress_screen = function(service_name){
+            var show_progress_screen_and_start_import = function(service_name){
                 var on_finished = function(){
-                    document.location.reload();
+                    alert('done!');
                 };
 
                 zz.routes.albums.import_all_from_service(service_name, on_finished);
@@ -123,7 +132,7 @@ zz.import_albums = zz.import_albums || {};
                 zz.toolbars.enable_buttons();
             };
 
-            zz.dialog.show_square_dialog(content, {width:800, height:600, on_close: on_close});
+            zz.dialog.show_dialog(content, {width:890, height:530, on_close: on_close});
 
         });
     };

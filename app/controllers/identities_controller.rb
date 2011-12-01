@@ -16,6 +16,7 @@ class IdentitiesController < ApplicationController
 
       current_user.identities.each do |identity|
         attrs = identity.attributes
+        attrs[:name] = identity.name
         results << attrs
       end
 
