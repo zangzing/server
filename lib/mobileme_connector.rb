@@ -112,8 +112,8 @@ protected
       req.headers['X-Requested-With'] = "XMLHttpRequest"
     end
 
-    Rails.logger.debug("mobileme response headers for #{api_path}: #{response.headers.inspect}")
-    Rails.logger.debug("mobileme response body for #{api_path}: #{response.body}")
+    Rails.logger.info("mobileme response headers for #{api_path}: #{response.headers.inspect}")
+    Rails.logger.info("mobileme response body for #{api_path}: #{response.body}")
 
     raise MobilemeError.new(403, response.body) if response.body =~ /Error:/
     #begin
