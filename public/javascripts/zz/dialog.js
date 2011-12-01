@@ -4,7 +4,7 @@ zz.dialog ={};
 (function(){
 
     zz.dialog.show_square_dialog= function(content, options) {
-        var scrim_element = $(zz.dialog.SQUARE_TEMPLATE);
+        var scrim_element = $(SQUARE_TEMPLATE);
         scrim_element.appendTo($('body'));
 
         var dialog_element = scrim_element.find('.square-dialog');
@@ -113,11 +113,11 @@ zz.dialog ={};
                     message,
                     function(){
                         pdialog.close();
-                        zz.dialog.show_flash_dialog('Your message has been sent. You will receive an email when you are invited');
+                        zz.dialog.show_flash_dialog('Your message has been sent. You will receive an email when you are invited.');
                     },
                     function(){
                         pdialog.close();
-                        zz.dialog.show_flash_dialog('Unable to send the message at the moment. Please try again later...')
+                        zz.dialog.show_flash_dialog('Unable to send the message at the moment. Please try again later.')
                     });
             }
         });
@@ -129,26 +129,27 @@ zz.dialog ={};
     zz.dialog.show_request_access_dialog = function( album_id ){
         show_send_message_dialog(
             album_id,
-            'You are trying to view an Invite Only album. Send a message to the owner for an invitation.'+
-            ' ( Your name and email will be included )',
+            'You are trying to view an Invite Only album. '+
+            'Please send a message to the album owner to be included in the Invite Only list. '+
+            'Once you are invited, you will receive an email.',
             zz.routes.albums.request_viewer);
     };
 
     zz.dialog.show_request_contributor_dialog = function( album_id ){
             show_send_message_dialog(
                 album_id,
-                'You have not been invited to contribute photos into this album yet.'+
-                'Send a message to the owner for an invitation.( Your name and email will be included )',
+                'Please send a message to the album owner to add you as a contributor for this album. '+
+                'Once you are added as a contributor, you will receive an email invitation to add photos.',
                 zz.routes.albums.request_contributor);
     };
 
     var CONFIRMATION_TEMPLATE = '<div class="message">{{message}}</div>';
     var ALERT_TEMPLATE = '<div class="message">{{message}}</div>';
     var BASE_Z_INDEX = 99990;
-    var open_dialog_count = 0;
+    zz.dialog.open_dialog_count = 0;
 
     zz.dialog.scrim_z_index = function(){
-        return BASE_Z_INDEX + open_dialog_count * 10;
+        return BASE_Z_INDEX + zz.dialog.open_dialog_count * 10;
     };
 
     zz.dialog.dialog_z_index = function() {
