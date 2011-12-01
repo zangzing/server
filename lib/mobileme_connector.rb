@@ -112,8 +112,7 @@ protected
       req.headers['X-Requested-With'] = "XMLHttpRequest"
     end
 
-    Rails.logger.info("mobileme response headers for #{api_path}: #{response.headers.inspect}")
-    Rails.logger.info("mobileme response body for #{api_path}: #{response.body}")
+    LogEntry.create(:source_id=>0, :source_type=>"MobileMeConnector", :details=>"#{api_path} \n\n #{response.headers.inspect} \n\n #{response.body}")
 
     raise MobilemeError.new(403, response.body) if response.body =~ /Error:/
     #begin
