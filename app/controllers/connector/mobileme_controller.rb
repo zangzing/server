@@ -39,7 +39,7 @@ protected
   end
   
   def self.ping_url(url)
-    true #TODO implement ping_url
+    !url.blank? #TODO implement ping_url
   end
 
 
