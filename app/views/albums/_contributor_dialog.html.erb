@@ -2,8 +2,8 @@
   <div id="ld-inner">
     <%= form_for 'album', :url => request_album_access_url(album_id),  :html => { :method => :post, :id => "request_access_form" } do |f | %>
     <div id="ld-top">
-      You are trying to view an Invite Only album.
-      Send a message to the owner for an invitation.
+      You have not been invited to contribute photos into this album yet.
+      Send a message to the owner for an invitation.( Your name and email will be included )
     </div>
     <div id="ld-middle">
       <textarea id="request_access_message" name="message"></textarea>
@@ -25,7 +25,7 @@
                          $('#social-like-dialog').zz_dialog('close');
                          $('#social-like-dialog').zz_dialog().empty().remove();
                          var dialog = zz.dialog.show_progress_dialog('Requesting Invitation...');
-                         zz.routes.albums.request_viewer( '<%=album_id%>',
+                         zz.routes.albums.request_contributor( '<%=album_id%>',
                                                           message,
                                                           function(){
                                                               dialog.close();

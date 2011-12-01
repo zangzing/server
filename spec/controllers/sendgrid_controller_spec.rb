@@ -17,7 +17,7 @@ describe SendgridController do
           :category => "foo",
           :event => "click",
           :email => "jeremyhermann@gmail.com",
-          :url => "http://www.zangzing.com/jlh/bowie?show_add_photos_dialog=true"
+          :url => "http://www.zangzing.com/service/albums/1234/add_photos"
       }
 
       @mock_zza.should_receive(:track_event).with("foo.click", anything(), anything(), anything(), anything(), anything())

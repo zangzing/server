@@ -52,10 +52,18 @@
     cursor: pointer;
 }
 
-#header #back-button{
+#header #top-breadcrumb{
     position: absolute;
     left: 140px;
     top: 14px;
+}
+#top-breadcrumb #back-button{
+    display: inline-block;
+}
+
+#top-breadcrumb #top-add-photos-button{
+    display: inline-block;
+    margin-right: 10px;
 }
 
 #header #inline-new-album-button{
