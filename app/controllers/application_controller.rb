@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
   include ZZ::Auth
   include ZZ::ZZAController
   include PrettyUrlHelper
+  include ResponseActionsHelper
   include BuyHelper
   include Spree::CurrentOrder
 
@@ -50,9 +51,7 @@ class ApplicationController < ActionController::Base
 
 
   def send_zza_event_from_client (event)
-    events = session[:send_zza_events_from_client] || []
-    events << event
-    session[:send_zza_events_from_client] = events
+    add_javascript_action('send_zza_event_from_client', {:event => event})
   end
 
   #
@@ -99,13 +98,13 @@ class ApplicationController < ActionController::Base
 
   def album_not_found_redirect_to_owners_homepage(user_id)
     flash[:notice] = "Sorry, we could not find the album that you were looking for."
-    session[:flash_dialog] = true
+    add_javascript_action( 'show_message_dialog',  {:message => flash[:notice]})
     redirect_to user_url(user_id), :status => 301
   end
 
   def user_not_found_redirect_to_homepage_or_potd
     flash[:notice] = "Sorry, we could not find the ZangZing user that you were looking for."
-    session[:flash_dialog] = true
+    add_javascript_action( 'show_message_dialog',  {:message => flash[:notice]})
     if current_user
       redirect_to user_url(current_user)
     else
