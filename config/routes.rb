@@ -43,9 +43,6 @@ Server::Application.routes.draw do
     get   '/subscriptions/:id'         => 'subscriptions#unsubscribe'   #see unsubscribe above
     put   '/subscriptions/:id'         => 'subscriptions#update',       :as => :update_subscriptions
 
-<<<<<<< HEAD
-
-=======
     #identities
     get    '/users/:id/identities'     => 'identities#index',       :as => :user_identities
     get    '/users/:id/identities/new' => 'identities#new',         :as => :new_user_identity
@@ -54,7 +51,6 @@ Server::Application.routes.draw do
     get    '/identities/:id/edit'      => 'identities#edit',        :as => :edit_identity
     put    '/identities/:id'           => 'identities#update',      :as => :update_identity
     delete '/identities/:id'           => 'identities#destroy',     :as => :delete_identity
->>>>>>> master
 
     #albums
     get    '/users/:user_id/my_albums_json'                 => 'albums#my_albums_json',                 :as => :my_albums_json
