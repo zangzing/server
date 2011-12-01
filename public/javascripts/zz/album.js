@@ -56,7 +56,7 @@ zz.album = {};
         //get rid of scrollbars before animate transition
         $('.photogrid').css({overflow: 'hidden'});
         $('#article').css({overflow: 'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
-        $('#header #back-button').fadeOut(200);
+        $('#header #top-breadcrumb').fadeOut(200);
         document.location.href = zz.page.album_base_url + '/photos/#!' + photo_id;
     };
 
@@ -475,7 +475,7 @@ zz.album = {};
                     onClickPhoto: function(index, photo, element, action) {
                         if(!buy_mode){
                             $('#article').css({overflow: 'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
-                            $('#header #back-button').fadeOut(200);
+                            $('#header #top-breadcrumb').fadeOut(200);
                             document.location.href = zz.page.album_base_url + '/photos/#!' + photo.id;
                         }
                         else{
@@ -572,9 +572,11 @@ zz.album = {};
             $('#footer #comments-button').fadeOut(200);
             $('#article').animate({left: $('#article').width()}, 500, 'easeOutQuart');
             $('#album-info').fadeOut(200);
-            $('#header #back-button').fadeOut(200);
+            $('#header #top-breadcrumb').fadeOut(200);
             document.location.href = url;
         });
+
+
     }
 
 

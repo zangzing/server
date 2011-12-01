@@ -56,7 +56,7 @@ class Album < ActiveRecord::Base
 
   #constants for Album.who_can_upload and Album.who_can_download
   WHO_EVERYONE      = 'everyone'
-  WHO_VIEWERS       = 'viewers'
+  WHO_VIEWERS       = 'viewers' # not used
   WHO_CONTRIBUTORS  = 'contributors'
   WHO_OWNER         = 'owner'
 
@@ -496,6 +496,12 @@ class Album < ActiveRecord::Base
       end
     end
     false
+  end
+
+  def can_user_contribute?( user )
+    return true  if everyone_can_contribute?
+    return false if user.nil?  #only contributors can download
+    return contributor?( user.id )
   end
 
   def make_hidden
