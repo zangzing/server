@@ -53,7 +53,7 @@ module ResponseActionsHelper
 
   def js_show_message_dialog( action )
     raise Exception.new( 'jsaction show_message_dialog  contains no message') unless action[:message]
-    %{ zz.dialog.show_flash_dialog('#{esacpe_javascript action[:message]}'); }
+    %{ zz.dialog.show_flash_dialog('#{escape_javascript action[:message]}'); }
   end
 
   def js_show_add_photos_dialog( action )
