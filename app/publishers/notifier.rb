@@ -173,6 +173,15 @@ class Notifier < ActionMailer::Base
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
+  def request_contributor( user_id, album_id,  message,template_id = nil )
+      @user      = User.find( user_id )
+      @album     = Album.find( album_id )
+      @recipient = @album.user
+      @message   = message
+
+      create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
+  end
+
 
 
   def activation_instructions(user_id)
@@ -193,9 +202,6 @@ class Notifier < ActionMailer::Base
       format.text { render :inline => " <%=message.to.to_s%> This is the message body of the test" }
     end
   end
-
-
-
 
   def photo_comment(comment_added_by_user_id, send_notification_to_user_id, comment_id, template_id = nil)
     @user = User.find(comment_added_by_user_id)

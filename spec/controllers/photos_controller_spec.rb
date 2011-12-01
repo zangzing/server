@@ -17,9 +17,12 @@ describe PhotosController do
       response.should redirect_to user_path(  @privateAlbum.user )
     end
 
-    it 'session must have :show_request_access_dialog set to album id' do
+    it 'session must have one :jsaction { :method => :show_request_access_dialog, :album_id =>album id}' do
       get :index, {:user_id =>  @privateAlbum.user.id, :album_id => @privateAlbum.id}
-      session[:show_request_access_dialog].should == @privateAlbum.id
+      session[:jsactions].length.should == 1
+      session[:jsactions][0][:method].should == "show_request_access_dialog"
+      session[:jsactions][0][:album_id].should eq @privateAlbum.id
+
     end
   end
 end

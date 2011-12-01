@@ -84,7 +84,24 @@ zz.toolbars = {
 
         $('#header #help-button').click(function(event) {
             ZZAt.track('button.help.click');
-            //feedback_widget.show();
+            var user_name = '',
+                user_email = '';
+            if( typeof( zz.session.current_user_name) != 'undefined'){
+                user_name  =  zz.session.current_user_name;
+                user_email =  zz.session.current_user_email;
+            }
+
+            Zenbox.init({
+                    dropboxID:   "14620",
+                    url:         "https://zangzing.zendesk.com",
+                    tabID:       "help",
+                    tabColor:    "black",
+                    requester_name: user_name,
+                    requester_email: user_email,
+                    tabPosition: "Left"
+                  });
+
+
             Zenbox.show(event);
 
             //hack: force zendesk dialog to show scrollbars if screen too small
@@ -153,28 +170,18 @@ zz.toolbars = {
         });
         zz.buy.toggle_visibility_with_buy_mode($('#inline-new-album-button'));
 
-
-
-
-        // only album contributers can do this
-        $('#footer #add-photos-button').click(function() {
+        var add_photos_click_handler = function(){
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
+            zz.toolbars._add_photos();
+        };
 
-            zz.toolbars._disable_buttons();
-            $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
-
-
-            zz.photochooser.open_in_dialog(zz.page.album_id, function() {
-                window.location.reload(false);
-            });
-        });
+         // only album contributers can do this
+        $('#header #top-add-photos-button').click(add_photos_click_handler);
+        $('#footer #add-photos-button').click( add_photos_click_handler);
+        zz.buy.toggle_visibility_with_buy_mode($('#header #top-add-photos-button'));
         zz.buy.toggle_visibility_with_buy_mode($('#footer #add-photos-button'));
-
-
-
-
 
         //any signed in user can do this
         $('#footer #share-button').click(function() {
@@ -371,6 +378,7 @@ zz.toolbars = {
 
     _disable_buttons: function() {
         $('#header #back-button').addClass('disabled');
+        $('#header #top-add-photos-button').addClass('disabled');
         $('#header #view-buttons').children().addClass('disabled');
         $('#header #account-badge').addClass('disabled');
         $('#footer #play-button').addClass('disabled');
@@ -477,8 +485,23 @@ zz.toolbars = {
                     arm_text_field();
             };
         }
+    },
+
+    _add_photos: function(){
+            zz.toolbars._disable_buttons();
+            $('#footer #comments-button').fadeOut(200);
+            $('#album-info').fadeOut(200);
+            $('#header #top-breadcrumb').fadeOut(200);
+            $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
+            if( typeof( zz.session.current_user_id) != 'undefined' && typeof( zz.page.current_user_can_contribute) != 'undefined' && zz.page.current_user_can_contribute ){
+                zz.photochooser.open_in_dialog(zz.page.album_id, function() {
+                    window.location.reload(false);
+                });
+            } else {
+                // The user is not allowed to download,
+                // direct main window to server for user
+                // validation and sigin/join request access etc...
+                zz.routes.albums.add_photos(zz.page.album_id);
+            }
     }
-
-
-
 };
