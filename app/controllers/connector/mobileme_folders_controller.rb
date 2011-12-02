@@ -98,7 +98,9 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
   end
 
   def self.password_protected?(album_contents)
-    album_contents.select{|e| e['type']=='Album' || e['type']=='ApertureAlbum' }.first.has_key?('accessLogin')
+    node = album_contents.select{|e|  e['type']=='Album' || e['type']=='ApertureAlbum'}.first
+
+    return node.has_key?('accessLogin') && !node['accessLogin'].blank?
   end
 
 
