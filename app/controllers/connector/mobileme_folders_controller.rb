@@ -26,7 +26,7 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
     end
     photos = []
     album_contents.each do |photo_data|
-      next if photo_data['type']=='Album'
+      next if photo_data['type']!='Photo'
       photo = {
         :name => photo_data.title,
         :id   => photo_data.guid,
@@ -49,7 +49,7 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     album_contents.each do |photo_data|
-      next if photo_data['type']=='Album'
+      next if photo_data['type']!='Photo'
       photo = Photo.new_for_batch(current_batch, {
               :id => Photo.get_next_id,
               :caption => photo_data.title,
@@ -114,7 +114,9 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
   end
 
   def self.password_protected?(album_contents)
-    album_contents.select{|e| e['type']=='Album' }.first.has_key?('accessLogin')
+    node = album_contents.select{|e|  e['type']=='Album' || e['type']=='ApertureAlbum'}.first
+
+    return node.has_key?('accessLogin') && !node['accessLogin'].blank?
   end
 
 
