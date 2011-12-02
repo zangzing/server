@@ -26,7 +26,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
         api_client.get(target, :limit => 1000)
       end
 
-      album_list.reject! { |a| a[:type] == 'profile' } #Remove 'Profile Pictures'
+      #album_list.reject! { |a| a[:type] == 'profile' } #Remove 'Profile Pictures'
       unless album_list.empty?
         if album_list.first[:updated_time]
           album_list.sort!{|a, b| b[:updated_time] <=> a[:updated_time] }
