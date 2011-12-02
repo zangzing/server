@@ -189,6 +189,7 @@ zz.import_albums = zz.import_albums || {};
 
                 zz.routes.albums.import_all_from_service(service_name, privacy, success, failure);
 
+                ZZAt.track('import_all.' + service_name);
 
                 content.find('.confirm-import').hide();
                 content.find('.import-progress').show();

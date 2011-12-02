@@ -1,4 +1,3 @@
-class Connector::MobilemeController < Connector::ConnectorController
 
   def self.api_from_identity(identity)
     cookies = identity.credentials
