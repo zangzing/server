@@ -28,7 +28,7 @@ zz.import_albums = zz.import_albums || {};
 
     function get_notes_for_service(service_name){
         var notes = {
-            'flickr': 'We can only import full resulution from Flickr Pro accounts. If you have a free accout, we will import the highest resolution photos that they allow.',
+            'flickr': 'We can only import full resulution from Flickr Pro accounts. If you have a free account, we will import the highest resolution photos that they allow.',
             'shutterfly': 'Shutterfly does not allow us to import your full resolution photos. We will import the hightest resulution that they allow.'
         };
 
