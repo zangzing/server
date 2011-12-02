@@ -97,7 +97,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
     album_list = call_with_error_adapter do
       api_client.get('me/albums', :limit => 1000)
     end
-    album_list.reject! { |a| a[:type] == 'profile' } #Remove 'Profile Pictures'
+
     unless album_list.empty?
       album_list.each do |fb_album|
         zz_album = create_album(identity, fb_album[:name], params[:privacy])
