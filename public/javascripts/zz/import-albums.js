@@ -9,6 +9,32 @@ zz.import_albums = zz.import_albums || {};
 
 
 
+    function get_service_pretty_name(service_name){
+        var pretty_names = {
+            'flickr': 'Flickr',
+            'smugmug': 'SmugMug',
+            'facebook': 'Facebook',
+            'google': 'Picasa',
+            'mobileme': 'MobileMe',
+            'dropbox': 'Dropbox',
+            'shutterfly': 'Shutterfly',
+            'kodak': 'Kodak Gallery',
+            'instagram': 'Instagram',
+            'photobucket': 'Photobucket'
+        };
+
+        return pretty_names[service_name];
+    }
+
+    function get_notes_for_service(service_name){
+        var notes = {
+            'flickr': 'We can only import full resulution from Flickr Pro accounts. If you have a free accout, we will import the highest resolution photos that they allow.',
+            'shutterfly': 'Shutterfly does not allow us to import your full resolution photos. We will import the hightest resulution that they allow.'
+        };
+
+        return notes[service_name];
+    }
+
 
     function SELECT_SERVICE_TEMPLATE(){
         return '<div class="import-all">' +
@@ -32,16 +58,23 @@ zz.import_albums = zz.import_albums || {};
                         '<div class="header service-name">Service Name Import</div>' +
                         '<div class="sub-header">Choose the default privacy setting for you imported albums.<br>You can always change it for each album.</div>' +
                         '<div class="privacy-buttons">' +
-                            '<div class="public-button selected"></div>' +
+                            '<div class="public-button"></div>' +
                             '<div class="hidden-button"></div>' +
                             '<div class="password-button"></div>' +
                         '</div>' +
+                        '<div class="service-notes"></div>' +
                         '<a class="green-button import-all-button"><span>Import My Albums</span></a>' +
                     '</div>' +
                     '<div class="import-progress">' +
                         '<img class="import-image">'+
-                        '<div class="message">Importing albums from <span class="service-name"></span></div>'+
                         '<img class="spinner" src="/images/loading.gif">'+
+                        '<div class="success-message">' +
+                            'Contrats!<br>' +
+                            'Your albums are on your homepage.<br>' +
+                            'We are still processing all your photos<br>' +
+                            'and will send an email when each album is completed<br>' +
+                        '</div>' +
+                        '<a class="green-button done-button"><span>Back to my Homepage</span></a>' +
                     '</div>' +
                '</div>';
     }
@@ -90,21 +123,50 @@ zz.import_albums = zz.import_albums || {};
                     content.find('.select-service').hide();
                     content.find('.confirm-import').show();
 
+                    var service_pretty_name =  get_service_pretty_name(service_name);
+                    content.find('.confirm-import .service-name').text(service_pretty_name + ' Import');
 
-                    content.find('.confirm-import .service-name').text(identity.name + ' Import');
+                    var privacy = 'public';
+                    var update_button_states = function(){
+                        content.find('.privacy-buttons div').removeClass('selected');
+                        content.find('.privacy-buttons .' + privacy + '-button').addClass('selected');
+                    };
+                    update_button_states();
+
+
+                    content.find('.privacy-buttons .public-button').click(function(){
+                        privacy = 'public'
+                        update_button_states();
+                    });
+
+                    content.find('.privacy-buttons .hidden-button').click(function(){
+                        privacy = 'hidden'
+                        update_button_states();
+                    });
+
+                    content.find('.privacy-buttons .password-button').click(function(){
+                        privacy = 'password'
+                        update_button_states();
+                    });
+
+
+                    var notes = get_notes_for_service(service_name);
+                    if(notes){
+                        content.find('.confirm-import .service-notes').text(notes);
+                    }
 
 
                     content.find('.confirm-import .import-all-button').click(function(){
                         if(identity.last_import_all){
                             var d = new Date(identity.last_import_all);
                             var formatted_date = d.getMonth() + '-' + d.getDate() + '-' + d.getFullYear();
-                            var message = 'You already imported ablums from ' + idenity.service_name + ' on ' + formatted_date +'. If you import again, you may end up with duplicate albums. Do you want to continue?';
+                            var message = 'You already imported ablums from ' + service_pretty_name + ' on ' + formatted_date +'. If you import again, you may end up with duplicate albums. Do you want to continue?';
                             if(!confirm(message)){
                                 return;
                             }
                         }
 
-                        show_progress_screen_and_start_import(service_name);
+                        show_progress_screen_and_start_import(service_name, privacy);
                     });
 
 
@@ -112,19 +174,31 @@ zz.import_albums = zz.import_albums || {};
             };
 
 
-            var show_progress_screen_and_start_import = function(service_name){
-                var on_finished = function(){
-                    alert('done!');
+            var show_progress_screen_and_start_import = function(service_name, privacy){
+                var success = function(){
+                    content.find('.import-progress .success-message').show();
+                    content.find('.import-progress .spinner').hide();
+                    content.find('.import-progress .done-button').show();
                 };
 
-                zz.routes.albums.import_all_from_service(service_name, on_finished);
+                var failure = function(){
+                    alert('Sorry there was an error importing your albums');
+                    content.find('.import-progress .spinner').hide();
+                    content.find('.import-progress .done-button').show();
+                };
+
+                zz.routes.albums.import_all_from_service(service_name, privacy, success, failure);
 
 
                 content.find('.confirm-import').hide();
                 content.find('.import-progress').show();
                 content.find('.import-progress img.import-image').attr('src', '/images/connect-to-' + service_name + '.jpg');
-                content.find('.import-progress .message .service-name').text(service_name);
-                content.find('.import-progress .message').center_x();
+
+                content.find('.import-progress .done-button').click(function(){
+                    document.location.reload();
+                });
+
+
             };
 
 

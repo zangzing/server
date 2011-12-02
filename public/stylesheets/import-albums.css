@@ -224,7 +224,13 @@
 
 
 
-
+.import-all .confirm-import .service-notes{
+    position: absolute;
+    top: 426px;
+    left: 0px;
+    right: 0px;
+    font-size: 12px;
+}
 
 
 
@@ -243,8 +249,8 @@
 
 .import-all .import-progress img.import-image {
     position: absolute;
-    top: 175px;
-    left: 67px;
+    top: 98px;
+    left: 218px;
     right: 0px;
     height: 150px;
     width: 463px;
@@ -252,8 +258,8 @@
 
 .import-all .import-progress img.spinner {
     position: absolute;
-    top: 399px;
-    left: 288px;
+    top: 300px;
+    left: 432px;
     right: 0px;
     height: 23px;
     width: 23px;
@@ -263,6 +269,22 @@
     font-size: 14px;
     position: absolute;
     top: 360px;
+}
+
+.import-all .import-progress .success-message{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 369px;
+    font-size: 16px;
+    display:none;
+}
+
+.import-all .import-progress .done-button{
+    position:absolute;
+    bottom:40px;
+    left:375px;
+    display:none;
 }
 
 
