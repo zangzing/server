@@ -26,9 +26,15 @@
     min-height:263px;
 }
 
-
-#inline-new-album-button{
+div#sort-buttons{
     position: absolute;
     top: 26px;
     left: 140px;
+}
+
+#inline-new-album-button,
+#sort-recent-button,
+#sort-name-button{
+    display: inline-block;
+    margin: 0 5px;
 }

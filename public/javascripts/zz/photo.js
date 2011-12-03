@@ -41,7 +41,6 @@ zz.template_cache = zz.template_cache || {};
             type: 'photo',               //photo \ folder \ blank
             captionHeight: 30,
             rolloverFrameContainer: null
-
         },
 
         _create: function() {
@@ -53,7 +52,7 @@ zz.template_cache = zz.template_cache || {};
             if (_.isUndefined(zz.template_cache.photo_template)) {
                 zz.template_cache.photo_caption_template = $('<div class="photo-caption ellipsis multiline"></div>');
                 zz.template_cache.photo_template = $('<div class="photo-border">' +
-                                                     '<img class="photo-image" src="' + zz.routes.image_url('/images/blank.png') + '">' +
+                                                     '<img class="photo-image" src="' +zz.routes.image_url('/images/photo_placeholder.png') + '">' +
                                                      '<img class="bottom-shadow" src="' + zz.routes.image_url('/images/photo/bottom-full.png') + '">' +
                                                      '</div>');
 
@@ -67,8 +66,6 @@ zz.template_cache = zz.template_cache || {};
                                                                 '</div>' +
                                                            '</div>');
             }
-
-//                                    '<div class="button like-button zzlike" data-zzid="' + o.photoId + '" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>';
 
 
             self.captionElement = zz.template_cache.photo_caption_template.clone();
@@ -145,14 +142,10 @@ zz.template_cache = zz.template_cache || {};
                         o.onClick('magnify');
                     });
                     self.borderElement.append(self.photoAddElement).append(self.photoMagnifyElement);
-
-
                 }
                 else {
                     self.borderElement.addClass('no-shadow');
                 }
-
-
             }
 
             //click
@@ -175,9 +168,8 @@ zz.template_cache = zz.template_cache || {};
 
             //lazy loading
             if (o.type !== 'photo') {
+                // for photos the src is set to  '/images/photo_placeholder.png'
                 self._loadImage();
-            } else {
-                self.imageElement.attr('src', zz.routes.image_url('/images/photo_placeholder.png'));
             }
 
             //rollover

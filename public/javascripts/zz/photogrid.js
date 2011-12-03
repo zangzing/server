@@ -253,7 +253,7 @@
             //     that it is executed when all photos have been processed.
             var create_some_photos = function(i) {
                 if (i < o.photos.length) {
-                    var batch_size = 100;
+                    var batch_size = 30;
                     for (var j = i; j < i + batch_size && j < o.photos.length; j++) {
                         create_photo(j, o.photos[j]);
                     }

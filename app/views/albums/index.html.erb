@@ -8,6 +8,14 @@
     <%= render :partial => "facebook/user_opengraph_tags" %>
 <% end %>
 
+<div id="sort-buttons">
+<% if current_user == @user %>
+  <a id="inline-new-album-button" class="green-add-button"><span>New Album</span></a>
+<% end %>
+  <a id="sort-recent-button" class="gray-button"><span>Most Recent First</span></a>
+ <a id="sort-name-button" class="gray-button"><span>Sort by Name</span></a>
+</div>
+
 <div id="my-albums" class="albums-list">
   <div class="album-section-header">
     <% if current_user == @user %>
@@ -16,10 +24,7 @@
         <%= @user.posessive_short_name%> Albums
     <% end %>
   </div>
-  <% if current_user == @user %>
-    <a id="inline-new-album-button" class="green-add-button"><span>New Album</span></a>
-  <% end %>
-</div>
+ </div>
 
 <div id="liked-albums" class="albums-list">
   <div class="album-section-header">

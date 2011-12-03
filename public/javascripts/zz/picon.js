@@ -3,6 +3,8 @@
  */
 
 (function($, undefined) {
+
+    // Pre-rotated stack frames
     //stackAngles: [   [-6, -3], [-3, 3], [6, 3] ]
     var rbPlus3  = $('<div class="stacked-image">').rotate( 3),
         rbMinus3 = $('<div class="stacked-image">').rotate(-3),
@@ -14,6 +16,16 @@
             [rbPlus6,rbPlus3]
         ];
 
+
+    var  cover_photo_template = $('<img class="cover-photo">'),
+         caption_template  = $('<div class="photo-caption ellipsis multiline">'),
+         button_bar_template = $('<div class="button-bar">'),
+         buttons_template = $('<div class="buttons">'),
+         like_button_template = $('<div class="button like-button zzlike"  data-zztype="album"><div class="zzlike-icon thumbdown">'),
+         info_button_template = $('<div class="button info-button">'),
+         share_button_template = $('<div class="button share-button">');
+
+
     $.widget('ui.zz_picon', {
         options: {
             album: null, //album json
@@ -22,7 +34,6 @@
             albumUrl: null,
             albumId: null,
             onClick: $.noop,
-            onLike: $.noop,
             onDelete: $.noop,
             allowDelete: false,
             onChangeCaption: $.noop,
@@ -38,24 +49,18 @@
                     el = self.element,
                     o = self.options;
 
-            self.template = $('<div class="picon">');
-            self.captionElement = $('<div class="photo-caption ellipsis multiline">');
+            self.template =  $('<div class="picon">');
+            self.captionElement = caption_template.clone();
             var     caption = self.captionElement,
-                    stacked_image_0 = $('<div class="stacked-image">'),
-                    stacked_image_1 = $('<div class="stacked-image">'),
-                    cover_photo = $('<img class="cover-photo" src="' + zz.routes.image_url('/images/photo_placeholder.png') + '">'),
-                    button_bar = $('<div class="button-bar">'),
-                    buttons = $('<div class="buttons">'),
-                    share_button = $('<div class="button share-button">'),
-                    like_button = $('<div class="button like-button zzlike" data-zzid="' + o.albumId + '" data-zztype="album"><div class="zzlike-icon thumbdown">'),
-                    info_button = $('<div class="button info-button">');
+                    cover_photo = cover_photo_template.clone(),
+                    button_bar = button_bar_template.clone();
 
             self.topOfStack = $('<div class="stacked-image">').append(cover_photo);
 
-            //rotate stack
+            //randomly pick from the stack from pre-rotated frames
             var stackOption = Math.floor(Math.random() * rotated_borders.length);
-            stacked_image_0 = rotated_borders[stackOption][0].clone();
-            stacked_image_1 = rotated_borders[stackOption][1].clone();
+            var stacked_image_0 = rotated_borders[stackOption][0].clone();
+            var stacked_image_1 = rotated_borders[stackOption][1].clone();
 
             //for selenium tests...
             self.template.attr('id', 'picon-' + o.caption.replace(/[\W]+/g, '-'));
@@ -91,6 +96,12 @@
 
             var wire_button_bar = function() {
                 //build and insert buttonbar into dom
+                var buttons      = buttons_template.clone(),
+                    like_button  = like_button_template.clone(),
+                    info_button  = info_button_template.clone(),
+                    share_button = share_button_template.clone();
+
+                like_button.attr( 'data-zzid', o.albumId );
                 buttons.append(share_button).append(like_button).append(info_button);
                 button_bar.append(buttons);
                 self.topOfStack.append(button_bar);
@@ -174,20 +185,16 @@
             };
 
             //load cover photos and display menus
-            if (o.coverUrl) {
-                var onload = function(image) {
-                    var scaledSize = zz.image_utils.scale(image, {width: o.maxCoverWidth, height: o.maxCoverHeight});
-                    self._resize(scaledSize.width, scaledSize.height);
-                    cover_photo.attr('src', image.src);
-                    el.hover(mouse_in, mouse_out);
-                };
-                var onerror = function(image) {
-                    el.hover(mouse_in, mouse_out);
-                };
-                zz.image_utils.pre_load_image(o.coverUrl, onload, onerror);
-            } else {
-                el.hover(mouse_in, mouse_out);
+            if( !o.coverUrl || o.coverUrl.length <= 0) {
+                o.coverUrl = zz.routes.image_url('/images/photo_placeholder.png');
             }
+            var onload = function(image) {
+                var scaledSize = zz.image_utils.scale(image, {width: o.maxCoverWidth, height: o.maxCoverHeight});
+                self._resize(scaledSize.width, scaledSize.height);
+                cover_photo.attr('src', image.src);
+            };
+            zz.image_utils.pre_load_image(o.coverUrl, onload );
+            el.hover(mouse_in, mouse_out);
         },
 
         _resize: function(coverWidth, coverHeight) {
