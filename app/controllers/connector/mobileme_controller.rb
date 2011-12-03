@@ -32,7 +32,7 @@ protected
     url = case size
       when :thumb then photo_info.smallDerivativeUrl
       when :screen then photo_info.webImageUrl #mediumDerivativeUrl
-      when :full then ping_url(photo_info.largeImageUrl) ? photo_info.largeImageUrl : photo_info.webImageUrl
+      when :full then get_large_image_url( photo_info )
     end
     url.gsub!('https://www.me.com/ro', 'http://gallery.me.com').gsub!('/Galleries/', '/') if url && size!=:full
     url
@@ -42,5 +42,21 @@ protected
     !url.nil? && !url.blank?  #TODO implement ping_url
   end
 
-
+  # when there is no large image the json looks like this
+  #   "webImageUrl"    : "https://www.me.com/ro/niallaitken/Galleries/100080/DSCF0005/web.jpg",
+  #   "webImagePath"   : "web.jpg",
+  #   "largeImageUrl"  : "https://www.me.com/ro/Galleries/100080/DSCF0005/",
+  #   "largeImagePath" :  "",
+  # When There is a large image it looks like
+  #   "webImageUrl"    : "https://www.me.com/ro/niallaitken/Galleries/100080/DSCF0005/web.jpg",
+  #   "webImagePath"   : "web.jpg",
+  #   "largeImageUrl"  : "https://www.me.com/ro/Galleries/1234/DSCF00005/large.jpg",
+  #   "largeImagePath" : "large.jpg",
+  def self.get_large_image_url(photo_info)
+    if(  photo_info.largeImagePath && !photo_info.largeImagePath.blank?  &&
+         photo_info.largeImageUrl  && !photo_info.largeImageUrl.blank? )
+        return photo_info.largeImageUrl
+    end
+    return photo_info.webImageUrl
+  end
 end
