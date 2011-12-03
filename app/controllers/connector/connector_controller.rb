@@ -99,13 +99,11 @@ class Connector::ConnectorController < ApplicationController
     def create_album(identity, name, privacy = Album::PUBLIC)
       raise ArgumentError.new("Invalid album privacy setting - #{privacy}") unless Album::PRIVACIES.values.include?(privacy)
       album_type = 'PersonalAlbum'
-      album = album_type.constantize.new(:name => name, :privacy => privacy)
+      album = album_type.constantize.new(:name => name[0..49], :privacy => privacy) # limit name to 50 chars
       album.user = identity.user
-      unless album.save
-        identity.user.albums << album
-        return nil
-      end
-      album
+      album.save!
+
+      return album
     end
 
   end
