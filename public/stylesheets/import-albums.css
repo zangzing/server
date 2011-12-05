@@ -1,3 +1,7 @@
+.import-all {
+    color: #333333;
+}
+
 .import-all .header{
     font-size: 23px;
     position: absolute;
@@ -5,6 +9,8 @@
     left: 0px;
     right: 0px
 }
+
+
 
 .import-all .sub-header{
     font-size: 15px;
@@ -118,7 +124,7 @@
 
 .import-all .confirm-import .privacy-buttons{
     position: absolute;
-    top: 125px;
+    top: 150px;
     left: 50px;
     width: 770px;
     height: 143px;
@@ -186,7 +192,7 @@
 
 .import-all .confirm-import .service-notes{
     position: absolute;
-    top: 426px;
+    bottom: 67px;
     left: 0px;
     right: 0px;
     font-size: 12px;
@@ -196,9 +202,9 @@
 
 
 .import-all .confirm-import .import-all-button{
-    position:absolute;
-    bottom:40px;
-    left:375px;
+    position: absolute;
+    bottom: 21px;
+    left: 375px;
 }
 
 
@@ -217,47 +223,45 @@
     width:149px;
     height:128px;
     background: url(/images/import/stack.png) no-repeat scroll 0px 0px transparent;
-    top: 185px;
+    top: 175px;
     left: 200px;
 }
+
+
+.import-all .import-progress .animation{
+    position: absolute;
+    top: 177px;
+    left: 200px;
+}
+
 
 .import-all .import-progress .import-to-zangzing{
     position:absolute;
     width:149px;
     height:128px;
     background: url(/images/import/stack.png) no-repeat scroll 0px 0px transparent;
-    top: 185px;
+    top: 175px;
     right: 200px;
 }
 
 
 
 
-.import-all .import-progress .import-from-service .service-image{
-
-}
-
-.import-all .import-progress .import-from-service .service-image.shutterfly{
-
-}
 
 
-.import-all .import-progress .animation{
-    position: absolute;
-    top: 187px;
-    left: 200px;
-}
 
 
 
 .import-all .import-progress .message {
-    font-size: 14px;
+    font-size: 24px;
     position: absolute;
     top: 360px;
 }
 
 .import-all .import-complete{
     display: none;
+    background: url(/images/import/zangzing-watermark.png) no-repeat center center transparent;
+
 }
 
 .import-all .import-complete .success-message{
@@ -266,6 +270,7 @@
     right: 0px;
     top: 207px;
     font-size: 20px;
+    font-size: 24px;
 }
 
 .import-all .import-complete .done-button{

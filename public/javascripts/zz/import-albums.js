@@ -73,11 +73,11 @@ zz.import_albums = zz.import_albums || {};
                         '<div class="import-to-zangzing"><div class="service-logo zangzing"/></div>' +
                     '</div>' +
                     '<div class="import-complete">' +
-                        '<div class="header">Contrats!</div>' +
+                        '<div class="header">Welcome to ZangZing!</div>' +
                         '<div class="success-message">' +
-                            'Your albums are on your homepage.<br>' +
-                            'We are still processing all your photos<br>' +
-                            'and will send an email when each album is completed<br>' +
+                            'We’ve started uploading photos from <span class="album-count"></span> albums.<br>' +
+                            'It takes a few minutes to process all the photos.<br>' +
+                            'We’ll send you an email when each album is ready.<br>' +
                         '</div>' +
                         '<a class="green-button done-button"><span>Back to my Homepage</span></a>' +
                     '</div>' +
@@ -217,7 +217,7 @@ zz.import_albums = zz.import_albums || {};
                 zz.toolbars.enable_buttons();
             };
 
-            zz.dialog.show_dialog(content, {width:890, height:530, on_close: on_close});
+            zz.dialog.show_dialog(content, {width:890, height:450, on_close: on_close});
 
         });
     };
