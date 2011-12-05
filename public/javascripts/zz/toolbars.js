@@ -427,6 +427,7 @@ zz.toolbars = {
         $('#footer #share-button').removeClass('disabled');
         $('#footer #edit-album-button').removeClass('disabled');
         $('#footer #buy-button').removeClass('disabled');
+        $('#footer #cart-button').removeClass('disabled');
         $('#footer #like-button').removeClass('disabled');
         $('#footer #import-button').removeClass('disabled').removeClass('selected');
         $('#header #inline-new-album-button').removeClass('disabled');
