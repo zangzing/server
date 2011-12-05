@@ -174,7 +174,7 @@ module ZZ
           else
             store_location
             flash[:notice] = msg
-            redirect_back_or_default root_path
+            redirect_back_or_default signout_path
           end
           return false
         end
