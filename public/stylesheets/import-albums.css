@@ -53,7 +53,7 @@
 }
 
 
-.import-all .select-service .services .service div{
+.import-all .service-logo{
     position:absolute;
     left:0px;
     right:0px;
@@ -62,93 +62,53 @@
 }
 
 
-.import-all .select-service .services .service.google div{
+.import-all .service-logo.google {
     background: url(/images/import/picasa.png) no-repeat center center transparent;
 }
 
-.import-all .select-service .services .service.facebook div{
+.import-all .service-logo.facebook{
     background: url(/images/import/facebook.png) no-repeat center center transparent;
 }
 
-.import-all .select-service .services .service.mobileme div{
+.import-all .service-logo.mobileme {
     background: url(/images/import/mobileme.png) no-repeat center center transparent;
 }
 
-.import-all .select-service .services .service.flickr div{
+.import-all .service-logo.flickr {
     background: url(/images/import/flickr.png) no-repeat center center transparent;
 }
 
-.import-all .select-service .services .service.dropbox div{
+.import-all .service-logo.dropbox {
     background: url(/images/import/dropbox.png) no-repeat center center transparent;
 }
 
-.import-all .select-service .services .service.shutterfly div{
+.import-all .service-logo.shutterfly {
     background: url(/images/import/shutterfly.png) no-repeat center center transparent;
 }
 
-.import-all .select-service .services .service.kodak div{
+.import-all .service-logo.kodak {
     background: url(/images/import/kodak.png) no-repeat center center transparent;
 }
 
-.import-all .select-service .services .service.instagram div{
+.import-all .service-logo.instagram {
     background: url(/images/import/instagram.png) no-repeat center center transparent;
 }
 
-.import-all .select-service .services .service.smugmug div{
+.import-all .service-logo.smugmug {
     background: url(/images/import/smugmug.png) no-repeat center center transparent;
 }
 
-.import-all .select-service .services .service.photobucket div{
+.import-all .service-logo.photobucket {
     background: url(/images/import/photobucket.png) no-repeat center center transparent;
+}
+
+.import-all .service-logo.zangzing {
+    background: url(/images/import/zangzing.png) no-repeat center center transparent;
 }
 
 
 
-/*.import-all .select-service .services .service:hover{*/
-    /*text-decoration: underline*/
-/*}*/
 
-
-
-/*.import-all .select-service .services .service.google{*/
-    /*background: url(/images/logos/google-sq.png) no-repeat scroll 0px 0px transparent;*/
-/*}*/
-
-/*.import-all .select-service .services .service.flickr{*/
-    /*background: url(/images/logos/flickr-sq.png) no-repeat scroll 0px 0px transparent;*/
-/*}*/
-
-/*.import-all .select-service .services .service.facebook{*/
-    /*background: url(/images/logos/facebook-sq.png) no-repeat scroll 0px 0px transparent;*/
-/*}*/
-
-/*.import-all .select-service .services .service.smugmug{*/
-    /*background: url(/images/logos/smugmug-sq.png) no-repeat scroll 0px 0px transparent;*/
-/*}*/
-
-/*.import-all .select-service .services .service.photobucket{*/
-    /*background: url(/images/logos/photobucket-sq.png) no-repeat scroll 0px 0px transparent;*/
-/*}*/
-
-/*.import-all .select-service .services .service.instagram{*/
-    /*background: url(/images/logos/instagram-sq.png) no-repeat scroll 0px 0px transparent;*/
-/*}*/
-
-/*.import-all .select-service .services .service.dropbox{*/
-    /*background: url(/images/logos/dropbox-sq.png) no-repeat scroll 0px 0px transparent;*/
-/*}*/
-
-/*.import-all .select-service .services .service.mobileme{*/
-    /*background: url(/images/logos/mobileme-sq.png) no-repeat scroll 0px 0px transparent;*/
-/*}*/
-
-/*.import-all .select-service .services .service.shutterfly{*/
-    /*background: url(/images/logos/shutterfly-sq.png) no-repeat scroll 0px 0px transparent;*/
-/*}*/
-
-/*.import-all .select-service .services .service.kodak{*/
-    /*background: url(/images/logos/kodak-sq.png) no-repeat scroll 0px 0px transparent;*/
-/*}*/
 
 
 
@@ -245,25 +205,50 @@
 
 .import-all .import-progress{
     display: none;
+    position: absolute;
+    left:0px;
+    right:0px;
+    top:0px;
+    bottom:0px;
 }
 
-.import-all .import-progress img.import-image {
-    position: absolute;
-    top: 98px;
-    left: 218px;
-    right: 0px;
-    height: 150px;
-    width: 463px;
+.import-all .import-progress .import-from-service{
+    position:absolute;
+    width:149px;
+    height:128px;
+    background: url(/images/import/stack.png) no-repeat scroll 0px 0px transparent;
+    top: 185px;
+    left: 200px;
 }
 
-.import-all .import-progress img.spinner {
-    position: absolute;
-    top: 300px;
-    left: 432px;
-    right: 0px;
-    height: 23px;
-    width: 23px;
+.import-all .import-progress .import-to-zangzing{
+    position:absolute;
+    width:149px;
+    height:128px;
+    background: url(/images/import/stack.png) no-repeat scroll 0px 0px transparent;
+    top: 185px;
+    right: 200px;
 }
+
+
+
+
+.import-all .import-progress .import-from-service .service-image{
+
+}
+
+.import-all .import-progress .import-from-service .service-image.shutterfly{
+
+}
+
+
+.import-all .import-progress .animation{
+    position: absolute;
+    top: 187px;
+    left: 200px;
+}
+
+
 
 .import-all .import-progress .message {
     font-size: 14px;
@@ -271,20 +256,22 @@
     top: 360px;
 }
 
-.import-all .import-progress .success-message{
+.import-all .import-complete{
+    display: none;
+}
+
+.import-all .import-complete .success-message{
     position: absolute;
     left: 0px;
     right: 0px;
-    top: 369px;
-    font-size: 16px;
-    display:none;
+    top: 207px;
+    font-size: 20px;
 }
 
-.import-all .import-progress .done-button{
+.import-all .import-complete .done-button{
     position:absolute;
     bottom:40px;
     left:375px;
-    display:none;
 }
 
 

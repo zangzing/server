@@ -42,16 +42,16 @@ zz.import_albums = zz.import_albums || {};
                         '<div class="header">Import All Your Photos</div>' +
                         '<div class="sub-header">Choose a service to import your photos</div>' +
                         '<div class="services">' +
-                            '<div class="service flickr" data-name="flickr"><div/></div>' +
-                            '<div class="service facebook" data-name="facebook"><div/></div>' +
-                            '<div class="service mobileme" data-name="mobileme"><div/></div>' +
-                            '<div class="service google" data-name="google"><div/></div>' +
-                            '<div class="service dropbox" data-name="dropbox"><div/></div>' +
-                            '<div class="service shutterfly" data-name="shutterfly"><div/></div>' +
-                            '<div class="service kodak" data-name="kodak"><div/></div>' +
-                            '<div class="service instagram" data-name="instagram"><div/></div>' +
-                            '<div class="service smugmug" data-name="smugmug"><div/></div>' +
-                            '<div class="service photobucket" data-name="photobucket"><div/></div>' +
+                            '<div class="service" data-name="flickr"><div class="service-logo flickr"/></div>' +
+                            '<div class="service" data-name="facebook"><div class="service-logo facebook"/></div>' +
+                            '<div class="service" data-name="mobileme"><div class="service-logo mobileme"/></div>' +
+                            '<div class="service" data-name="google"><div class="service-logo google"/></div>' +
+                            '<div class="service" data-name="dropbox"><div class="service-logo dropbox"/></div>' +
+                            '<div class="service" data-name="shutterfly"><div class="service-logo shutterfly"/></div>' +
+                            '<div class="service" data-name="kodak"><div class="service-logo kodak"/></div>' +
+                            '<div class="service" data-name="instagram"><div class="service-logo instagram"/></div>' +
+                            '<div class="service" data-name="smugmug"><div class="service-logo smugmug"/></div>' +
+                            '<div class="service" data-name="photobucket"><div class="service-logo photobucket"/></div>' +
                         '</div>' +
                     '</div>' +
                     '<div class="confirm-import">' +
@@ -66,10 +66,15 @@ zz.import_albums = zz.import_albums || {};
                         '<a class="green-button import-all-button"><span>Import My Albums</span></a>' +
                     '</div>' +
                     '<div class="import-progress">' +
-                        '<img class="import-image">'+
-                        '<img class="spinner" src="/images/loading.gif">'+
+                        '<div class="header">Importing your <span class="service-name"></span> albums</div>' +
+                        '<div class="sub-header">We are importing your albums from <span class="service-name"></span> to ZangZing</div>' +
+                        '<div class="import-from-service"><div class="service-logo"></div></div>' +
+                        '<div class="animation"><img/></div>' +
+                        '<div class="import-to-zangzing"><div class="service-logo zangzing"/></div>' +
+                    '</div>' +
+                    '<div class="import-complete">' +
+                        '<div class="header">Contrats!</div>' +
                         '<div class="success-message">' +
-                            'Contrats!<br>' +
                             'Your albums are on your homepage.<br>' +
                             'We are still processing all your photos<br>' +
                             'and will send an email when each album is completed<br>' +
@@ -176,15 +181,12 @@ zz.import_albums = zz.import_albums || {};
 
             var show_progress_screen_and_start_import = function(service_name, privacy){
                 var success = function(){
-                    content.find('.import-progress .success-message').show();
-                    content.find('.import-progress .spinner').hide();
-                    content.find('.import-progress .done-button').show();
+                    show_complete_screen();
                 };
 
                 var failure = function(){
                     alert('Sorry there was an error importing your albums');
-                    content.find('.import-progress .spinner').hide();
-                    content.find('.import-progress .done-button').show();
+                    document.location.reload();
                 };
 
                 zz.routes.albums.import_all_from_service(service_name, privacy, success, failure);
@@ -193,13 +195,21 @@ zz.import_albums = zz.import_albums || {};
 
                 content.find('.confirm-import').hide();
                 content.find('.import-progress').show();
-                content.find('.import-progress img.import-image').attr('src', '/images/connect-to-' + service_name + '.jpg');
 
-                content.find('.import-progress .done-button').click(function(){
+
+                content.find('.import-from-service .service-logo').addClass(service_name);
+                content.find('.animation img').attr('src', '/images/import/' + service_name + '-to-zangzing.gif');
+                content.find('span.service-name').text(get_service_pretty_name(service_name));
+
+
+            };
+
+            var show_complete_screen = function(){
+                content.find('.import-progress').hide();
+                content.find('.import-complete').show();
+                content.find('.import-complete .done-button').click(function(){
                     document.location.reload();
                 });
-
-
             };
 
 
