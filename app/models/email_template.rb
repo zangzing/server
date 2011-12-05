@@ -68,8 +68,8 @@ class EmailTemplate < ActiveRecord::Base
   end
 
 
-  def sendgrid_category_header
-    {'X-SMTPAPI' => {'category' => self.category }.to_json }
+  def sendgrid_category
+    {'category' => self.category }
   end
 
   def unescape_links
