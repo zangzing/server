@@ -180,8 +180,8 @@ zz.import_albums = zz.import_albums || {};
 
 
             var show_progress_screen_and_start_import = function(service_name, privacy){
-                var success = function(){
-                    show_complete_screen();
+                var success = function(json){
+                    show_complete_screen(json);
                 };
 
                 var failure = function(){
@@ -204,13 +204,16 @@ zz.import_albums = zz.import_albums || {};
 
             };
 
-            var show_complete_screen = function(){
+            var show_complete_screen = function(json){
                 content.find('.import-progress').hide();
                 content.find('.import-complete').show();
                 content.find('.import-complete .done-button').click(function(){
                     document.location.reload();
                 });
+                content.find('.success-message .album-count').text(json.length);
             };
+
+
 
 
             var on_close = function(){
