@@ -34,6 +34,8 @@ class Notifier < ActionMailer::Base
     @user = User.find(user_id)
     @recipient = @user
     @password_reset_url = edit_password_reset_url(@user.perishable_token)
+    # Add a header for fast delivery
+    sendgrid_headers.merge!( {'bypass_list_management' => { 'enable' => 1 }} )
 
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
