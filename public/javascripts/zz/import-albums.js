@@ -4,7 +4,37 @@ zz.import_albums = zz.import_albums || {};
 (function(){
 
     var BETA_LIST = [
-
+        'anneliseh',
+        'ryanalvarado',
+        'keberg',
+        'cdesbarbes',
+        'jsearl',
+        'winston',
+        'cdodkin',
+        'webb1416',
+        'larrys29',
+        'bartandre',
+        'mmclane',
+        'few1938',
+        'mneri',
+        'ringelband',
+        'ldtinker',
+        'ennisbr',
+        'pbeisel',
+        'efemek',
+        'hawaiicop',
+        'albertodenis',
+        'shinjutezuka',
+        'rickf',
+        'mherzog42',
+        'roswell',
+        'leothelion',
+        'yvonneinsonoma',
+        'bbd',
+        'jemangum',
+        'puufwebmaster',
+        'jhermannzz',
+        'jlauricella'
     ];
 
 
@@ -87,8 +117,8 @@ zz.import_albums = zz.import_albums || {};
 
 
     zz.import_albums.init = function(){
-        var show_import = (zz.config.rails_env!='photo_production' || _.find(BETA_LIST, function(id){
-            return id == zz.session.current_user_id;
+        var show_import = (zz.config.rails_env!='photo_production' || _.find(BETA_LIST, function(username){
+            return username == zz.session.current_user_name;
         }));
 
         if(show_import){
