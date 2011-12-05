@@ -261,15 +261,18 @@
 .import-all .import-complete{
     display: none;
     background: url(/images/import/zangzing-watermark.png) no-repeat center center transparent;
-
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
 }
 
 .import-all .import-complete .success-message{
     position: absolute;
     left: 0px;
     right: 0px;
-    top: 207px;
-    font-size: 20px;
+    top: 187px;
     font-size: 24px;
 }
 
