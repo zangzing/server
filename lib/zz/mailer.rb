@@ -46,7 +46,8 @@ module ZZ
         # Add unsubscribe links and headers see http://www.list-unsubscribe.com/
         @unsubscribe_url   = unsubscribe_url(  @unsubscribe_token = Subscriptions.unsubscribe_token( recipient ) )
         @unsubscribe_email = Mail::Address.new( "#{@unsubscribe_token}@unsubscribe.#{Server::Application.config.album_email_host}" ).address
-        headers @template.sendgrid_category_header     #set sendgrid category header
+        sendgrid_headers.merge!( @template.sendgrid_category )
+        headers['X-SMTPAPI'] = sendgrid_headers.to_json      #set sendgrid API headers
         headers['X-ZZSubscription-Id'] = @unsubscribe_token
         headers['List-Unsubscribe'] = "<mailto:#{@unsubscribe_email}>,<#{@unsubscribe_url}>,"
 
@@ -77,6 +78,10 @@ module ZZ
         else
           "#{join_url}?return_to=#{destination_url}&email=#{recipient}"
         end
+      end
+
+      def sendgrid_headers
+          @sendgrid_headers ||= {}
       end
     end
   end
