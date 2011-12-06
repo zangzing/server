@@ -260,7 +260,7 @@
 
 .import-all .import-complete{
     display: none;
-    background: url(/images/import/zangzing-watermark.png) no-repeat center center transparent;
+    background: url(/images/import/zangzing-watermark.png) no-repeat center 93px transparent;
     position: absolute;
     left: 0px;
     right: 0px;
@@ -272,7 +272,7 @@
     position: absolute;
     left: 0px;
     right: 0px;
-    top: 187px;
+    top: 150px;
     font-size: 24px;
 }
 
