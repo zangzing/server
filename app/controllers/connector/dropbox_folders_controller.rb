@@ -78,6 +78,34 @@ class Connector::DropboxFoldersController < Connector::DropboxController
     end
     Photo.to_json_lite(photos)
   end
+
+  def self.import_all_folders(api, params)
+    identity = params[:identity]
+    folder_stack = ['/Photos']
+    zz_albums = []
+
+    while !folder_stack.empty? do
+      current_folder = folder_stack.pop
+      list = call_with_error_adapter do
+        api.list(current_folder)
+      end
+      photos_count = 0
+      list.each do |entry|
+        if entry.is_dir
+          folder_stack.push(entry.path)
+        elsif LISTABLE_TYPES.include?(entry.mime_type)
+          photos_count += 1
+        end
+      end
+      if photos_count > 1
+        zz_album = create_album(identity, File.split(current_folder).last, params[:privacy])
+        photos = import_whole_folder(api, params.merge(:path => current_folder, :album_id => zz_album.id))
+        zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
+      end
+    end
+    identity.update_attribute(:last_import_all, Time.now)
+    JSON.fast_generate(zz_albums)
+  end
   
   def self.import_certain_photo(api, params)
     identity = params[:identity]
@@ -119,6 +147,10 @@ class Connector::DropboxFoldersController < Connector::DropboxController
 
   def import_photo
     fire_async_response('import_certain_photo')
+  end
+
+  def import_all
+    fire_async_response('import_all_folders')
   end
   
 end

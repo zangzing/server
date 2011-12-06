@@ -51,11 +51,16 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
       api_client.get_albums
     end
     album_list.each do |sf_album|
-      zz_album = create_album(identity, sf_album[:title])
+      zz_album = create_album(identity, sf_album[:title], params[:privacy])
       sf_album_id = /albumid\/([0-9a-z]+)/.match(sf_album[:id])[1]
-      photos = import_folder(api_client, params.merge(:album_id => zz_album.id, :kodak_album_id => sf_album_id))
-      zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
+      zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
+      fire_async('import_folder', params.merge(:album_id => zz_album.id, :sf_album_id => sf_album_id))
     end
+
+    identity.last_import_all = Time.now
+    identity.save
+
+
     JSON.fast_generate(zz_albums)
   end  
 

@@ -1,0 +1,285 @@
+.import-all {
+    color: #333333;
+}
+
+.import-all .header{
+    font-size: 23px;
+    position: absolute;
+    top: 25px;
+    left: 0px;
+    right: 0px
+}
+
+
+
+.import-all .sub-header{
+    font-size: 15px;
+    position: absolute;
+    top: 62px;
+    left: 0px;
+    right: 0px
+}
+
+
+.import-all .select-service{
+    display: block;
+}
+
+.import-all .select-service .services{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 100px;
+}
+
+
+.import-all .select-service .services .service{
+    position:relative;
+    display: inline-block;
+    width:149px;
+    height:128px;
+    cursor: pointer;
+    background: url(/images/import/stack.png) no-repeat scroll 0px 0px transparent;
+    margin-left:20px;
+    margin-top:20px;
+
+}
+
+.import-all .select-service .services .service div{
+    opacity: 0.75;
+    filter: alpha(opacity = 75); /* for ie */
+
+}
+
+
+.import-all .select-service .services .service:hover div{
+    opacity: 1;
+    filter: alpha(opacity = 100); /* for ie */
+
+}
+
+
+.import-all .service-logo{
+    position:absolute;
+    left:0px;
+    right:0px;
+    top:0px;
+    bottom:0px;
+}
+
+
+.import-all .service-logo.google {
+    background: url(/images/import/picasa.png) no-repeat center center transparent;
+}
+
+.import-all .service-logo.facebook{
+    background: url(/images/import/facebook.png) no-repeat center center transparent;
+}
+
+.import-all .service-logo.mobileme {
+    background: url(/images/import/mobileme.png) no-repeat center center transparent;
+}
+
+.import-all .service-logo.flickr {
+    background: url(/images/import/flickr.png) no-repeat center center transparent;
+}
+
+.import-all .service-logo.dropbox {
+    background: url(/images/import/dropbox.png) no-repeat center center transparent;
+}
+
+.import-all .service-logo.shutterfly {
+    background: url(/images/import/shutterfly.png) no-repeat center center transparent;
+}
+
+.import-all .service-logo.kodak {
+    background: url(/images/import/kodak.png) no-repeat center center transparent;
+}
+
+.import-all .service-logo.instagram {
+    background: url(/images/import/instagram.png) no-repeat center center transparent;
+}
+
+.import-all .service-logo.smugmug {
+    background: url(/images/import/smugmug.png) no-repeat center center transparent;
+}
+
+.import-all .service-logo.photobucket {
+    background: url(/images/import/photobucket.png) no-repeat center center transparent;
+}
+
+.import-all .service-logo.zangzing {
+    background: url(/images/import/zangzing.png) no-repeat center center transparent;
+}
+
+
+
+
+
+
+
+.import-all .confirm-import{
+    display: none;
+}
+
+.import-all .confirm-import .privacy-buttons{
+    position: absolute;
+    top: 150px;
+    left: 50px;
+    width: 770px;
+    height: 143px;
+}
+
+.import-all .confirm-import .privacy-buttons .public-button{
+    position:absolute;
+    width: 228px;
+    height:131px;
+    left:19px;
+    top:4px;
+    background: url('/images/groups/public-button.png') no-repeat 0px -1px;
+    cursor:pointer;
+}
+
+.import-all .confirm-import .privacy-buttons .public-button:hover{
+    background: url('/images/groups/public-button.png') no-repeat 0px -132px;
+}
+
+.import-all .confirm-import .privacy-buttons .public-button.selected{
+    background: url('/images/groups/public-button.png') no-repeat 0px -263px;
+}
+
+
+
+
+.import-all .confirm-import .privacy-buttons .hidden-button{
+    position:absolute;
+    width: 228px;
+    height:131px;
+    left:273px;
+    top:4px;
+    background: url('/images/groups/hidden-button.png') no-repeat 0px -1px;
+    cursor:pointer;
+}
+
+.import-all .confirm-import .privacy-buttons .hidden-button:hover{
+    background: url('/images/groups/hidden-button.png') no-repeat 0px -132px;
+}
+
+.import-all .confirm-import .privacy-buttons .hidden-button.selected{
+    background: url('/images/groups/hidden-button.png') no-repeat 0px -263px;
+}
+
+
+.import-all .confirm-import .privacy-buttons .password-button{
+    position:absolute;
+    width: 228px;
+    height:131px;
+    left:527px;
+    top:4px;
+    background: url('/images/groups/password-button.png') no-repeat 0px -1px;
+    cursor:pointer;
+}
+
+.import-all .confirm-import .privacy-buttons .password-button:hover{
+    background: url('/images/groups/password-button.png') no-repeat 0px -132px;
+}
+
+.import-all .confirm-import .privacy-buttons .password-button.selected{
+    background: url('/images/groups/password-button.png') no-repeat 0px -263px;
+}
+
+
+
+.import-all .confirm-import .service-notes{
+    position: absolute;
+    bottom: 67px;
+    left: 150px;
+    right: 150px;
+    font-size: 14px;
+}
+
+
+
+
+.import-all .confirm-import .import-all-button{
+    position: absolute;
+    bottom: 21px;
+    left: 375px;
+}
+
+
+
+.import-all .import-progress{
+    display: none;
+    position: absolute;
+    left:0px;
+    right:0px;
+    top:0px;
+    bottom:0px;
+}
+
+.import-all .import-progress .import-from-service{
+    position:absolute;
+    width:149px;
+    height:128px;
+    background: url(/images/import/stack.png) no-repeat scroll 0px 0px transparent;
+    top: 175px;
+    left: 200px;
+}
+
+
+.import-all .import-progress .animation{
+    position: absolute;
+    top: 177px;
+    left: 200px;
+}
+
+
+.import-all .import-progress .import-to-zangzing{
+    position:absolute;
+    width:149px;
+    height:128px;
+    background: url(/images/import/stack.png) no-repeat scroll 0px 0px transparent;
+    top: 175px;
+    right: 200px;
+}
+
+
+
+
+
+
+
+
+
+.import-all .import-progress .message {
+    font-size: 24px;
+    position: absolute;
+    top: 360px;
+}
+
+.import-all .import-complete{
+    display: none;
+    background: url(/images/import/zangzing-watermark.png) no-repeat center 93px transparent;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+}
+
+.import-all .import-complete .success-message{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 150px;
+    font-size: 24px;
+}
+
+.import-all .import-complete .done-button{
+    position:absolute;
+    bottom:40px;
+    left:375px;
+}
+
+
