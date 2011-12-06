@@ -9,7 +9,8 @@ class IdentitiesController < ApplicationController
   # for example: /zz_api/identities/:facebook
   #
   #
-  # Returns identity object in the following form
+  # Returns identity object in the following form. For
+  # secuirty, 'credentials' is replaced with true/false
   #
   #   {
   #      "name":null,
@@ -20,7 +21,7 @@ class IdentitiesController < ApplicationController
   #      "user_id":1149,
   #      "type":"FacebookIdentity",
   #      "last_import_all":null,
-  #      "credentials":null,
+  #      "credentials":false,
   #      "last_contact_refresh":null
   #   }
 
@@ -32,6 +33,7 @@ class IdentitiesController < ApplicationController
     zz_api do
       identity = current_user.identities.find(:first, :conditions => {:identity_source => params[:service_name]})
       attrs = identity.attributes
+      attrs['credentials'] = !attrs['credentials'].blank?
       attrs
     end
   end
@@ -41,15 +43,14 @@ class IdentitiesController < ApplicationController
 
 
   # Returns all the identity objects for the current user
-  # Returns all the identity objects for the current user
   #
-  # This is called as:
   # This is called as:
   #
   # /zz_api/identities
   #
   # returns array of identity objects for the current
-  # user in the following form
+  # user in the following form. For
+  # secuirty, 'credentials' is replaced with true/false
   #
   # [
   #   {
@@ -61,7 +62,7 @@ class IdentitiesController < ApplicationController
   #      "user_id":1149,
   #      "type":"FacebookIdentity",
   #      "last_import_all":null,
-  #      "credentials":null,
+  #      "credentials":false,
   #      "last_contact_refresh":null
   #   }
   # ]
@@ -74,6 +75,7 @@ class IdentitiesController < ApplicationController
 
       current_user.identities.each do |identity|
         attrs = identity.attributes
+        attrs['credentials'] = !attrs['credentials'].blank?
         results << attrs
       end
 

@@ -163,6 +163,7 @@ zz.toolbars = {
             ZZAt.track('button.createalbum-top.click');
 
             zz.toolbars._disable_buttons();
+            $('#footer #new-album-button').removeClass('disabled').addClass('selected');
 
             zz.toolbars._init_new_album();
             zz.wizard.create_group_album();
