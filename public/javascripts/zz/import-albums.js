@@ -35,7 +35,8 @@ zz.import_albums = zz.import_albums || {};
         'puufwebmaster',
         'jhermannzz',
         'jlauricella',
-        'blackketter'
+        'blackketter',
+        'jlh'
     ];
 
 
