@@ -128,8 +128,8 @@ zz.import_albums = zz.import_albums || {};
             return username == zz.session.current_user_name;
         }));
 
-        if(show_import){
-            $('#import-button').show();
+        if(!show_import){
+            $('#import-button').remove();
         }
     };
 
