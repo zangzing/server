@@ -227,18 +227,27 @@
     right: 0px;
     bottom: 0px;
     height: 28px;
-    padding-left: 30px;
+    text-align: center;
+}
+
+.photo-status-bar .photo-status.uploading{
     line-height: 24px;
     font-weight: bold;
     color: #333;
+    padding-left: 23px;
+    background: url("/images/photo/icon-uploading.png") no-repeat 0px 2px;
+    height: 28px;
+    display: inline-block;
 }
 
-.photo-status-bar.uploading{
-    background: url("/images/photo/icon-uploading.png") no-repeat 7px 2px;
-}
-
-.photo-status-bar.error{
-    background: url("/images/photo/icon-error.png") no-repeat 7px 2px;
+.photo-status-bar .photo-status.error{
+    line-height: 24px;
+    font-weight: bold;
+    color: #333;
+    padding-left: 23px;
+    background: url("/images/photo/icon-error.png") no-repeat 0px 2px;
+    height: 28px;
+    display: inline-block;
 }
 
 
