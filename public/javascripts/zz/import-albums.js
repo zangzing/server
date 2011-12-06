@@ -124,7 +124,7 @@ zz.import_albums = zz.import_albums || {};
 
 
     zz.import_albums.init = function(){
-        var show_import = (zz.config.rails_env!='photo_production' || _.find(BETA_LIST, function(username){
+        var show_import = (zz.config.rails_env!='photos_production' || _.find(BETA_LIST, function(username){
             return username == zz.session.current_user_name;
         }));
 
