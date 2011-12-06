@@ -28,10 +28,15 @@ class Connector::ConnectorController < ApplicationController
     response_id = AsyncResponse.new_response_id
     ZZ::Async::ConnectorWorker.enqueue(response_id, service_identity.id, self.class.name, class_method, params)
     response.headers["x-poll-for-response"] = async_response_url(response_id)
-
-#    expires_in 3.minutes, :public => false
     render :json => {:message => "poll-for-response"}
   end
+
+  def self.fire_async(class_method, params)
+    response_id = AsyncResponse.new_response_id
+    ZZ::Async::ConnectorWorker.enqueue(response_id, params[:identity].id, self.name, class_method, params)
+  end
+
+
 
   def http_timeout
     return 30.seconds
@@ -91,15 +96,14 @@ class Connector::ConnectorController < ApplicationController
       nil 
     end
 
-    def create_album(identity, name)
+    def create_album(identity, name, privacy = Album::PUBLIC)
+      raise ArgumentError.new("Invalid album privacy setting - #{privacy}") unless Album::PRIVACIES.values.include?(privacy)
       album_type = 'PersonalAlbum'
-      album = album_type.constantize.new(:name => name)
+      album = album_type.constantize.new(:name => name[0..40], :privacy => privacy) # limit name to 40 chars
       album.user = identity.user
-      unless album.save
-        identity.user.albums << album
-        return nil
-      end
-      album
+      album.save!
+
+      return album
     end
 
   end
