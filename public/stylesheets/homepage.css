@@ -26,11 +26,32 @@
     min-height:263px;
 }
 
-div#sort-buttons{
-    position: absolute;
-    top: 26px;
-    left: 140px;
+#inline-new-album-button{
+     display: inline-block;
+    position: relative;
+    top: -3px;
+    /*left: 140px;*/
 }
+
+div#view-buttons{
+    margin: 5px auto;
+}
+div#sort-buttons,
+div#filter-buttons{
+    display: inline-block;
+    margin: 0 30px;
+    /*position: absolute;*/
+    /*top: 26px;*/
+    /*left: 40px;*/
+}
+
+/*div#sort-buttons{*/
+    /*position: absolute;*/
+    /*top: 26px;*/
+    /*left: 540px;*/
+/*}*/
+
+
 
 #inline-new-album-button,
 #sort-recent-button,

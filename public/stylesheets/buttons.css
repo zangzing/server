@@ -271,7 +271,8 @@ a.gray-button span{
 a.gray-button:hover  span{ background-position: left -30px; }
 a.gray-button:active span{ background-position: left -60px; }
 
-
+a.gray-button.selected{  background-position: right -30px; }
+a.gray-button.selected  span{ background-position: left -30px; }
 
 /* gray-square-button
 *************************************************************/
