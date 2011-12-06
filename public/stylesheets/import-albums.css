@@ -193,9 +193,9 @@
 .import-all .confirm-import .service-notes{
     position: absolute;
     bottom: 67px;
-    left: 0px;
-    right: 0px;
-    font-size: 12px;
+    left: 150px;
+    right: 150px;
+    font-size: 14px;
 }
 
 
