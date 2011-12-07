@@ -224,7 +224,7 @@ zz.import_albums = zz.import_albums || {};
                 };
 
                 var failure = function(){
-                    alert('Sorry there was an error importing your albums');
+                    alert('Oops. Something went wrong. Can you please try to import again?');
                     document.location.reload();
                 };
 
