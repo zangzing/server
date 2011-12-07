@@ -38,6 +38,7 @@ class PeopleController < ApplicationController
     begin
       @user = User.find(params[:user_id])
       @user_is_auto_follow = User.auto_like_ids.include?( @user.id )
+      @is_homepage_view = true
     rescue ActiveRecord::RecordNotFound => e
       user_not_found_redirect_to_homepage_or_potd
       return

@@ -68,11 +68,16 @@ class Connector::KodakFoldersController < Connector::KodakController
       kodak_albums = [album_list['Album']].flatten.select { |a| a['type']=='0' } #Looks like real albums have type attribute = 0, but who knows...
 
       kodak_albums.each do |k_album|
-        zz_album = create_album(identity, k_album['name'])
-        photos = import_album(api, params.merge(:album_id => zz_album.id, :kodak_album_id => k_album['id']))
-        zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
+        zz_album = create_album(identity, k_album['name'], params[:privacy])
+        zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
+        fire_async('import_album', params.merge(:album_id => zz_album.id, :kodak_album_id => k_album['id']))
       end
     end
+
+    identity.last_import_all = Time.now
+    identity.save
+
+
     JSON.fast_generate(zz_albums)
   end
 

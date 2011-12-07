@@ -188,16 +188,69 @@
 /*}*/
 
 
-.photo-uploading-icon{
-    position: absolute;
-    bottom: -16px;
-    right: -16px;
+/*.photo-uploading-icon{*/
+    /*position: absolute;*/
+    /*bottom: -16px;*/
+    /*right: -16px;*/
     /*display:none;*/
-    width:32px;
-    height:32px;
-    background-image: url("/images/photo/icon-uploading.png");
+    /*width:32px;*/
+    /*height:32px;*/
+    /*background-image: url("/images/photo/icon-uploading.png");*/
     /*z-index:1000;*/
+/*}*/
+
+/*.photo-error-icon{*/
+    /*position: absolute;*/
+    /*bottom: -16px;*/
+    /*right: -16px;*/
+    /*display:none;*/
+    /*width:32px;*/
+    /*height:32px;*/
+    /*background-image: url("/images/photo/icon-error.png");*/
+    /*z-index:1000;*/
+/*}*/
+
+.photo-status-scrim{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    height: 28px;
+    opacity: .7;
+    filter: alpha(opacity = 70); /* for ie */
+    background-color: white;
 }
+
+.photo-status-bar{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    height: 28px;
+    text-align: center;
+}
+
+.photo-status-bar .photo-status.uploading{
+    line-height: 24px;
+    font-weight: bold;
+    color: #333;
+    padding-left: 23px;
+    background: url("/images/photo/icon-uploading.png") no-repeat 0px 2px;
+    height: 28px;
+    display: inline-block;
+}
+
+.photo-status-bar .photo-status.error{
+    line-height: 24px;
+    font-weight: bold;
+    color: #333;
+    padding-left: 23px;
+    background: url("/images/photo/icon-error.png") no-repeat 0px 2px;
+    height: 28px;
+    display: inline-block;
+}
+
+
 
 .photo-like-icon{
     position: absolute;
@@ -210,16 +263,6 @@
 }
 
 
-.photo-error-icon{
-    position: absolute;
-    bottom: -16px;
-    right: -16px;
-    /*display:none;*/
-    width:32px;
-    height:32px;
-    background-image: url("/images/photo/icon-error.png");
-    /*z-index:1000;*/
-}
 
 .photo-delete-button{
     position: absolute;
