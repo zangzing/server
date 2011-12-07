@@ -160,6 +160,8 @@ zz.import_albums = zz.import_albums || {};
             });
 
 
+            var import_done = false;
+
             var show_confirm_screen = function(service_name){
                 zz.routes.identities.get_identity_for_service(service_name, function(identity){
                     content.find('.select-service').hide();
@@ -248,13 +250,19 @@ zz.import_albums = zz.import_albums || {};
                     document.location.reload();
                 });
                 content.find('.success-message .album-count').text(json.length);
+                import_done = true;
             };
 
 
 
 
             var on_close = function(){
-                zz.toolbars.enable_buttons();
+                if(!import_done){
+                    zz.toolbars.enable_buttons();
+                }
+                else{
+                    document.location.reload();
+                }
             };
 
             zz.dialog.show_dialog(content, {width:890, height:450, on_close: on_close});
