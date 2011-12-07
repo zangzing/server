@@ -68,7 +68,7 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
     end
 
     # bulk insert
-    bulk_insert(photos, :headers => {'Cookie' => api.cookies_as_string})
+    bulk_insert(photos, :headers_making_method => 'Connector::MobilemeController.get_fresh_headers')
 
   end
 
@@ -108,7 +108,7 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
             :source => 'mobileme'
     )
 
-    ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(photo_data, :full), :headers => {'Cookie' => api.cookies_as_string} )
+    ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(photo_data, :full), :headers_making_method => 'Connector::MobilemeController.get_fresh_headers' )
 
     Photo.to_json_lite(photo)
   end

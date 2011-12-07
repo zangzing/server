@@ -106,8 +106,8 @@ zz.import_albums = zz.import_albums || {};
                     '<div class="import-progress">' +
                         '<div class="header">Importing your <span class="service-name"></span> albums</div>' +
                         '<div class="sub-header">We are importing your albums from <span class="service-name"></span> to ZangZing</div>' +
-                        '<div class="import-from-service"><div class="service-logo"></div></div>' +
                         '<div class="animation"><img/></div>' +
+                        '<div class="import-from-service"><div class="service-logo"></div></div>' +
                         '<div class="import-to-zangzing"><div class="service-logo zangzing"/></div>' +
                     '</div>' +
                     '<div class="import-complete">' +
@@ -149,7 +149,7 @@ zz.import_albums = zz.import_albums || {};
                         return identity.identity_source == service_name;
                     });
 
-                    if(identity && identity.credentials && identity.identity_source != 'mobileme'){ // since we have issues with mobile me sessions, we want to always create a new one before starting an import
+                    if(identity && identity.credentials){
                         show_confirm_screen(service_name);
                     }
                     else{
@@ -160,6 +160,8 @@ zz.import_albums = zz.import_albums || {};
                 });
             });
 
+
+            var import_done = false;
 
             var show_confirm_screen = function(service_name){
                 zz.routes.identities.get_identity_for_service(service_name, function(identity){
@@ -202,7 +204,7 @@ zz.import_albums = zz.import_albums || {};
                     content.find('.confirm-import .import-all-button').click(function(){
                         if(identity.last_import_all){
                             var d = new Date(identity.last_import_all);
-                            var formatted_date = d.getMonth() + '-' + d.getDate() + '-' + d.getFullYear();
+                            var formatted_date = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
                             var message = 'You already imported ablums from ' + service_pretty_name + ' on ' + formatted_date +'. If you import again, you may end up with duplicate albums. Do you want to continue?';
                             if(!confirm(message)){
                                 return;
@@ -223,7 +225,7 @@ zz.import_albums = zz.import_albums || {};
                 };
 
                 var failure = function(){
-                    alert('Sorry there was an error importing your albums');
+                    alert('Oops. Something went wrong. Can you please try to import again?');
                     document.location.reload();
                 };
 
@@ -249,13 +251,19 @@ zz.import_albums = zz.import_albums || {};
                     document.location.reload();
                 });
                 content.find('.success-message .album-count').text(json.length);
+                import_done = true;
             };
 
 
 
 
             var on_close = function(){
-                zz.toolbars.enable_buttons();
+                if(!import_done){
+                    zz.toolbars.enable_buttons();
+                }
+                else{
+                    document.location.reload();
+                }
             };
 
             zz.dialog.show_dialog(content, {width:890, height:450, on_close: on_close});
