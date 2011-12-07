@@ -41,7 +41,8 @@ zz.import_albums = zz.import_albums || {};
         'sfmishra',
         'mcsavage',
         'jpistrang',
-        'jsearl'
+        'jsearl',
+        'haichen'
     ];
 
 
