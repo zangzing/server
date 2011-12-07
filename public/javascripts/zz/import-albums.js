@@ -105,8 +105,8 @@ zz.import_albums = zz.import_albums || {};
                     '<div class="import-progress">' +
                         '<div class="header">Importing your <span class="service-name"></span> albums</div>' +
                         '<div class="sub-header">We are importing your albums from <span class="service-name"></span> to ZangZing</div>' +
-                        '<div class="import-from-service"><div class="service-logo"></div></div>' +
                         '<div class="animation"><img/></div>' +
+                        '<div class="import-from-service"><div class="service-logo"></div></div>' +
                         '<div class="import-to-zangzing"><div class="service-logo zangzing"/></div>' +
                     '</div>' +
                     '<div class="import-complete">' +
