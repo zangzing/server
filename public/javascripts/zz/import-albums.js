@@ -203,7 +203,7 @@ zz.import_albums = zz.import_albums || {};
                     content.find('.confirm-import .import-all-button').click(function(){
                         if(identity.last_import_all){
                             var d = new Date(identity.last_import_all);
-                            var formatted_date = d.getMonth() + '-' + d.getDate() + '-' + d.getFullYear();
+                            var formatted_date = (d.getMonth() + 1) + '-' + d.getDate() + '-' + d.getFullYear();
                             var message = 'You already imported ablums from ' + service_pretty_name + ' on ' + formatted_date +'. If you import again, you may end up with duplicate albums. Do you want to continue?';
                             if(!confirm(message)){
                                 return;
