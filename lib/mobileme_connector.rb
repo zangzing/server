@@ -108,48 +108,32 @@ protected
     api_path = "#{api_path}?webdav-method=truthget&feedfmt=galleryowner&depth=1&synchronize=true&lang=en"
 
     conn = Faraday::Connection.new(:url => api_path) do |builder|
-      #builder.use Faraday::Request::UrlEncoded
-      #builder.use Faraday::Response::ParseJson
       builder.use Faraday::Adapter::NetHttp
     end
 
     refresh_auth_cookies
-    #response = nil
-    #retried = false
-    #begin
-      response = conn.send(http_method) do |req|
-        req.params = options.merge(default_options)
-        req.headers['Cookie'] = cookies_as_string
-        req.headers['X-Mobileme-Isc'] = @auth_cookies['isc-www.me.com']
-        req.headers['X-Mobileme-Version'] = '1.0'
-        req.headers['X-Prototype-Version'] = '1.6.0.3'
-        req.headers['X-Requested-With'] = "XMLHttpRequest"
-        req.headers['Referer'] = "https://www.me.com/gallery/"
-        req.headers['Connection'] = "keep-alive"
-        req.headers['Accept'] = "text/javascript, text/html, application/xml, text/xml, */*"
-        req.headers['Host'] = "www.me.com"
-      end
-      raise MobilemeError.new(403, response.body) if response.body =~ /Error:/
-      raise MobilemeError.new(401, response.body) if response.body =~ /Unauthorized/
-    #rescue MobilemeError => me
-    #  raise me if me.code!=401 || retried
-    #  refresh_auth_cookies
-    #  retried = true
-    #  retry
-    #end
+    response = conn.send(http_method) do |req|
+      req.params = options.merge(default_options)
+      req.headers['Cookie'] = cookies_as_string
+      req.headers['X-Mobileme-Isc'] = @auth_cookies['isc-www.me.com']
+      req.headers['X-Mobileme-Version'] = '1.0'
+      req.headers['X-Prototype-Version'] = '1.6.0.3'
+      req.headers['X-Requested-With'] = "XMLHttpRequest"
+      req.headers['Referer'] = "https://www.me.com/gallery/"
+      req.headers['Connection'] = "keep-alive"
+      req.headers['Accept'] = "text/javascript, text/html, application/xml, text/xml, */*"
+      req.headers['Host'] = "www.me.com"
+    end
+
+    raise InvalidToken.new(response.body) if response.status == 401
+    raise MobilemeError.new(response.status, response.body) if response.status != 200
 
     LogEntry.create(:source_id=>0, :source_type=>"MobileMeConnector", :details=>"#{api_path} \n\n #{response.headers.inspect} \n\n #{response.body}")
 
-    #begin
-      json_response = MultiJson.decode(response.body)
+    json_response = MultiJson.decode(response.body)
 
-
-
-    #rescue MultiJson::DecodeError => de
-    #  raise MobilemeError.new(401, response.body)
-    #end
     mash_response = Hashie::Mash.new(json_response)
-    #TODO Handle unsuccessful response
+
     mash_response.records
   end
 

@@ -16,11 +16,7 @@ class Connector::MobilemeController < Connector::ConnectorController
   end
 
   def self.moderate_exception(exception)
-    if exception.kind_of?(MobilemeError)
-      InvalidToken.new(exception.reason)
-    else
-      nil
-    end
+    return exception
   end
 
 protected
