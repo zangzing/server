@@ -125,7 +125,10 @@ protected
       req.headers['Host'] = "www.me.com"
     end
 
+    # this clears the cookie and won't retry
     raise InvalidToken.new(response.body) if response.status == 401
+
+    # this won't clear cookies and won't retry
     raise MobilemeError.new(response.status, response.body) if response.status != 200
 
     LogEntry.create(:source_id=>0, :source_type=>"MobileMeConnector", :details=>"#{api_path} \n\n #{response.headers.inspect} \n\n #{response.body}")
