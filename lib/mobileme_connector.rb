@@ -68,8 +68,18 @@ class MobilemeConnector
     end
   end
 
-  def cookies_as_string
-    @auth_cookies.map{|k,v| "#{k}=#{v}" }.join('; ')
+  def cookies_as_string(cookie_hash = nil)
+    (cookie_hash || @auth_cookies).map{|k,v| "#{k}=#{v}" }.join('; ')
+  end
+
+  def refresh_auth_cookies
+    auth_only_cookies = @auth_cookies.select{|k,_| %w(lua mmls).include?(k) || (k =~ /^mmp-/i) }.to_hash
+    response = Faraday.get AUTH_ENDPOINT do |req|
+      req.params = extra_login_params.merge('anchor' => 'home')
+      req.headers['Cookie'] = cookies_as_string(auth_only_cookies)
+    end
+    new_cookies = parse_cookies(response.headers['set-cookie'])
+    @auth_cookies.merge!(new_cookies)
   end
 
 protected
@@ -103,18 +113,33 @@ protected
       builder.use Faraday::Adapter::NetHttp
     end
 
-    response = conn.send(http_method) do |req|
-      req.params = options.merge(default_options)
-      req.headers['Cookie'] = cookies_as_string
-      req.headers['X-Mobileme-Isc'] = @auth_cookies['isc-www.me.com']
-      req.headers['X-Mobileme-Version'] = '1.0'
-      req.headers['X-Prototype-Version'] = '1.0.3'
-      req.headers['X-Requested-With'] = "XMLHttpRequest"
-    end
+    refresh_auth_cookies
+    #response = nil
+    #retried = false
+    #begin
+      response = conn.send(http_method) do |req|
+        req.params = options.merge(default_options)
+        req.headers['Cookie'] = cookies_as_string
+        req.headers['X-Mobileme-Isc'] = @auth_cookies['isc-www.me.com']
+        req.headers['X-Mobileme-Version'] = '1.0'
+        req.headers['X-Prototype-Version'] = '1.6.0.3'
+        req.headers['X-Requested-With'] = "XMLHttpRequest"
+        req.headers['Referer'] = "https://www.me.com/gallery/"
+        req.headers['Connection'] = "keep-alive"
+        req.headers['Accept'] = "text/javascript, text/html, application/xml, text/xml, */*"
+        req.headers['Host'] = "www.me.com"
+      end
+      raise MobilemeError.new(403, response.body) if response.body =~ /Error:/
+      raise MobilemeError.new(401, response.body) if response.body =~ /Unauthorized/
+    #rescue MobilemeError => me
+    #  raise me if me.code!=401 || retried
+    #  refresh_auth_cookies
+    #  retried = true
+    #  retry
+    #end
 
     LogEntry.create(:source_id=>0, :source_type=>"MobileMeConnector", :details=>"#{api_path} \n\n #{response.headers.inspect} \n\n #{response.body}")
 
-    raise MobilemeError.new(403, response.body) if response.body =~ /Error:/
     #begin
       json_response = MultiJson.decode(response.body)
 
