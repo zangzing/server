@@ -4,6 +4,8 @@ module ZZ
     # base class for resque services - holds policy for retry exceptions and timeouts
     # sub classes can override this behavior
     class Base
+      @queue = nil
+
       class_inheritable_accessor :dont_retry_filter, :backoff_strategy, :retry_exceptions
 
       extend Resque::Plugins::ExponentialBackoff
