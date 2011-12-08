@@ -42,7 +42,8 @@ Server::Application.configure do
   # mail logger is too verbose, shut it off
   config.action_mailer.logger = nil
 
-
-  ActionController::Base.asset_host = "%d.assets.#{ZZDeployEnvironment.env.app_host}"
+  config_group_name = ZZDeployEnvironment.env.group_config[:group]
+  # only hacktest and staging groups get asset hosts for staging env
+  ActionController::Base.asset_host = "%d.assets.#{ZZDeployEnvironment.env.app_host}" if ['photos_staging', 'photos_hacktest'].include?(config_group_name)
 
 end
