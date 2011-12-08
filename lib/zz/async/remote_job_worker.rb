@@ -29,11 +29,13 @@ module ZZ
 
       # kick off the async portion of the rpc
       def self.remote_rpc_async(servers, klass_name, method_name, params)
+        Rails.logger.info("REMOTE_RPC: #{method_name} request to #{servers.count} servers.")
         rpc_responses = []
         servers.each do |server|
           response_id = AsyncResponse.new_response_id
           rpc_response = RPCResponse.new(server, response_id)
           queue_name = remote_queue_name(server)
+          Rails.logger.info("REMOTE_RPC_ENQUEUE: #{method_name} - response_id: #{response_id} to #{queue_name}")
           enqueue_on_queue(queue_name, response_id, klass_name, method_name, params)
           rpc_responses << rpc_response
         end
@@ -110,8 +112,10 @@ module ZZ
             klass = klass_name.constantize
             result = klass.send(method_name.to_sym, paramz)
             json = JSON.fast_generate(result)
+            Rails.logger.info("REMOTE_RPC_PERFORM: #{method_name} - successful, response_id: #{response_id}")
             AsyncResponse.store_response(response_id, json)
           rescue Exception => e   # this needs to be Exception if we want to also catch Timeouts
+            Rails.logger.error("REMOTE_RPC_PERFORM: #{method_name} - failed, response_id: #{response_id} with #{e.message}")
             AsyncResponse.store_error(response_id, e)
           end
         end
