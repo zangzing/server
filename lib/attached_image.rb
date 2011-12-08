@@ -222,7 +222,8 @@ class AttachedImage
       last = self.sizes.count - 1
       current = 0
       the_cmd = 'convert'
-      args = '"' + source_path + '[0]"' + " \\\n "
+      # make sure all resized photos are converted to sRGB
+      args = '"' + source_path + '[0]"' + " -profile /data/global/profiles/sRGB.icm \\\n "
       custom = self.custom_commands
       args << custom + " " unless custom.nil?
       self.sizes.each do |map|

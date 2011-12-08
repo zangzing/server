@@ -808,7 +808,7 @@ class Photo < ActiveRecord::Base
   end
 
   # states where we can upload, we start off
-  # in assinged but may be in error if a failure
+  # in assigned but may be in error if a failure
   # happened and we want to retry
   def can_upload?
     self.assigned? || self.error?
@@ -824,6 +824,7 @@ class Photo < ActiveRecord::Base
   #
   def file_to_upload=(file_path)
     begin
+      save_on_error = true
       if file_path
         if @do_upload || can_upload? == false
           # if we are already uploading then we have bad state since someone may have
@@ -837,6 +838,7 @@ class Photo < ActiveRecord::Base
 
           # note we do not change the database state to error since we don't want to mess up the current one
           errors.add(:image_path, msg)
+          save_on_error = false   # don't save the photo state
           raise PhotoValidationError.new(msg)
         else
           ZZ::ZZA.new.track_transaction("photo.upload.start", self.id)
@@ -875,7 +877,7 @@ class Photo < ActiveRecord::Base
 
       # only save our state if we are not part of an insert batch operation
       self.error_message = ex.message
-      self.save unless self.inserting_for_batch
+      self.save unless save_on_error == false || self.inserting_for_batch
 
       # reraise the error
       raise ex

@@ -1,0 +1,37 @@
+#
+# Use this for common configuration
+#
+common: &common
+  client_timeout: 60
+  backend_timeout: 45
+  zza_id: "dev.photos/svr"
+  thin_log_file: '../log/thin.log'
+  log_type: "file"
+  log_path: "../log/eventmachine.log"
+  log_level: DEBUG
+  pid_file_prefix: "/var/run/zz/em_photos_"    # will add instance number .pid
+  max_wait_for_address: 30              # max time we will wait to get our address
+  server_address: '0.0.0.0'
+  server_base_port: 3031                # incremented by instance number if more than one listening address
+
+development:
+  <<: *common
+  log_type: "stdout"
+
+photos_staging:
+  <<: *common
+  zza_id: "staging.photos/svr"
+  log_type: "syslog"
+  log_app_name: "rails/stag/emphotos"
+#  server_address: '/var/run/zz/em_listen_'  # a prefix for the unix socket if no port
+
+photos_production:
+  <<: *common
+  zza_id: "photos/svr"
+  log_type: "syslog"
+  log_app_name: "rails/prod/emphotos"
+  server_address: '/var/run/zz/em_listen_'  # a prefix for the unix socket if no port
+
+test:
+  <<: *common
+
