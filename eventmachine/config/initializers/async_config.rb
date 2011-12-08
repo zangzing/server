@@ -24,4 +24,12 @@ class AsyncConfig
     config[:logger] = logger
     @@logger = logger
   end
+
+  def self.server=(server)
+    @server = server
+  end
+
+  def self.server
+    @server
+  end
 end

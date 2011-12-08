@@ -196,14 +196,8 @@ class ThinStarter
   # or a server ip and port
   def start_server(*args)
     AsyncConfig.logger.info("Event Machine App started")
-    app = AsyncApp.new
-    @server = Thin::Server.new(*args) do
-      use Rack::CommonLogger
-      map '/test' do
-        run  app
-      end
-    end
-    app.server = @server
+
+    @server = RouteManager.create_routes(*args)
     # max time we will allow for idle to client
     @server.timeout = cfg[:client_timeout]
     @server.maximum_connections = max_connections if max_connections
@@ -219,4 +213,5 @@ class ThinStarter
 
     @server.start!
   end
+
 end

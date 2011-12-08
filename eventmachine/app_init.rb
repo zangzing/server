@@ -7,11 +7,12 @@ require 'require_all'
 require 'logger'
 require 'load_paths'
 # set up load path order, will check them in the order shown
-prepend_load_path(['config/initializers', 'lib', '../lib'])
+prepend_load_path(['config/initializers', 'lib', 'app/controllers','../lib'])
 
 # now load all the initializers and lib files
 require_rel 'config/initializers'
 require_rel 'lib'
+require_rel 'app/controllers'
 
 # load the config
 cfg = AsyncConfig.config
