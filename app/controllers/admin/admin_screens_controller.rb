@@ -13,19 +13,19 @@ class Admin::AdminScreensController < Admin::AdminController
 
 
     # Life Stats
-    @today_photocount       = Photo.all(:conditions => ["created_at >= ?", Time.now.at_beginning_of_day]).count
-    @this_week_photocount   = Photo.all(:conditions => ["created_at >= ?", Time.now.at_beginning_of_week]).count
-    @today_albumcount       = Album.all(:conditions => ["created_at >= ?", Time.now.at_beginning_of_day]).count
-    @this_week_albumcount   = Album.all(:conditions => ["created_at >= ?", Time.now.at_beginning_of_week]).count
+    @today_photocount       = Photo.count(:conditions => ["created_at >= ?", Time.now.at_beginning_of_day])
+    @this_week_photocount   = Photo.count(:conditions => ["created_at >= ?", Time.now.at_beginning_of_week])
+    @today_albumcount       = Album.count(:conditions => ["created_at >= ?", Time.now.at_beginning_of_day])
+    @this_week_albumcount   = Album.count(:conditions => ["created_at >= ?", Time.now.at_beginning_of_week])
 
-    @today_usercount       = User.all(:conditions => ["created_at >= ?", Time.now.at_beginning_of_day]).count
-    @yesterday_usercount   = User.all(:conditions => ["created_at >= ? AND created_at < ?", Time.now.at_beginning_of_day - 1.day, Time.now.at_beginning_of_day]).count
-    @this_week_usercount   = User.all(:conditions => ["created_at >= ?", Time.now.at_beginning_of_week]).count
-    @last_week_usercount   = User.all(:conditions => ["created_at >= ? AND created_at < ?", Time.now.at_beginning_of_week - 1.week, Time.now.at_beginning_of_week]).count
-    @this_month_usercount  = User.all(:conditions => ["created_at >= ?", Time.now.at_beginning_of_month]).count
-    @last_month_usercount  = User.all(:conditions => ["created_at >= ? AND created_at < ?", Time.now.at_beginning_of_month - 1.month, Time.now.at_beginning_of_month]).count
+    @today_usercount       = User.count(:conditions => ["created_at >= ?", Time.now.at_beginning_of_day])
+    @yesterday_usercount   = User.count(:conditions => ["created_at >= ? AND created_at < ?", Time.now.at_beginning_of_day - 1.day, Time.now.at_beginning_of_day])
+    @this_week_usercount   = User.count(:conditions => ["created_at >= ?", Time.now.at_beginning_of_week])
+    @last_week_usercount   = User.count(:conditions => ["created_at >= ? AND created_at < ?", Time.now.at_beginning_of_week - 1.week, Time.now.at_beginning_of_week])
+    @this_month_usercount  = User.count(:conditions => ["created_at >= ?", Time.now.at_beginning_of_month])
+    @last_month_usercount  = User.count(:conditions => ["created_at >= ? AND created_at < ?", Time.now.at_beginning_of_month - 1.month, Time.now.at_beginning_of_month])
 
-    @health_check = health_check;
+    @health_check = health_check
   end
 
 
