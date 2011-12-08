@@ -155,13 +155,13 @@ zz.template_cache = zz.template_cache || {};
 
             //uploading glyph
             if (o.isUploading && !o.isError) {
-                self.uploadingElement = $('<div class="photo-uploading-icon">');
+                self.uploadingElement = $('<div class="photo-status-scrim"></div><div class="photo-status-bar"><span class="photo-status uploading">Uploading</span></div>');
                 self.borderElement.append(self.uploadingElement);
             }
 
             //error glyph
             if (o.isError) {
-                self.errorElement = $('<div class="photo-error-icon">');
+                self.errorElement = $('<div class="photo-status-scrim"></div><div class="photo-status-bar"><span class="photo-status error">Error</span></div>');
                 self.borderElement.append(self.errorElement);
             }
 

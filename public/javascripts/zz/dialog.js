@@ -191,7 +191,8 @@ zz.dialog ={};
             left: 'auto',
             autoOpen: true,
             height: 'auto',
-            width: 'auto'
+            width: 'auto',
+            on_close: null
         },
 
         _create: function() {
@@ -284,6 +285,9 @@ zz.dialog ={};
             $(window).unbind('resize', this.resize_handler);
             $(document).unbind('keypress', this.keypress_handler);
             this._trigger('close');
+            if(this.options.on_close){
+                this.options.on_close();
+            }
             this.destroy();
             open_dialog_count--;
         },

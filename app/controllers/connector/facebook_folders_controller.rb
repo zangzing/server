@@ -26,7 +26,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
         api_client.get(target, :limit => 1000)
       end
 
-      album_list.reject! { |a| a[:type] == 'profile' } #Remove 'Profile Pictures'
+      #album_list.reject! { |a| a[:type] == 'profile' } #Remove 'Profile Pictures'
       unless album_list.empty?
         if album_list.first[:updated_time]
           album_list.sort!{|a, b| b[:updated_time] <=> a[:updated_time] }
@@ -97,14 +97,18 @@ class Connector::FacebookFoldersController < Connector::FacebookController
     album_list = call_with_error_adapter do
       api_client.get('me/albums', :limit => 1000)
     end
-    album_list.reject! { |a| a[:type] == 'profile' } #Remove 'Profile Pictures'
+
     unless album_list.empty?
       album_list.each do |fb_album|
-        zz_album = create_album(identity, fb_album[:name])
+        zz_album = create_album(identity, fb_album[:name], params[:privacy])
         photos = import_folder(api_client, params.merge(:fb_album_id => fb_album[:id], :album_id => zz_album.id))
         zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
       end
     end
+
+    identity.last_import_all = Time.now
+    identity.save
+
     JSON.fast_generate(zz_albums)
   end
 

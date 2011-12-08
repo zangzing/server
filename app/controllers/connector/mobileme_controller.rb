@@ -5,12 +5,18 @@ class Connector::MobilemeController < Connector::ConnectorController
     MobilemeConnector.new(cookies)
   end
 
-  def self.moderate_exception(exception)
-    if exception.kind_of?(MobilemeError)
-      InvalidToken.new(exception.reason)
-    else
-      nil
+  def self.get_fresh_headers(photo, source_url)
+    user = User.find(photo.user_id)
+    identity = user.identity_for_mobileme
+    if identity
+      api = api_from_identity(identity)
+      api.refresh_auth_cookies
+      return {'Cookie' => api.cookies_as_string}
     end
+  end
+
+  def self.moderate_exception(exception)
+    return exception
   end
 
 protected

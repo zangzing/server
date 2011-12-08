@@ -55,6 +55,11 @@
   </div>
 <% end %>
 
+<% if @is_homepage_view && current_user == @user %>
+  <a id="inline-new-album-button" class="green-add-button"><span>New Album</span></a>
+<% end %>
+
+
 
 
 <% if @user %>

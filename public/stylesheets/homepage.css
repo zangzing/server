@@ -26,13 +26,7 @@
     min-height:263px;
 }
 
-#inline-new-album-button{
-     display: inline-block;
-    position: relative;
-    top: -3px;
-    /*left: 140px;*/
-}
-
+<<<<<<< HEAD
 div#view-buttons{
     margin: 5px auto;
 }
@@ -52,8 +46,6 @@ div#filter-buttons{
 /*}*/
 
 
-
-#inline-new-album-button,
 #sort-recent-button,
 #sort-name-button{
     display: inline-block;

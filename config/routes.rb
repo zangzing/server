@@ -207,6 +207,7 @@ Server::Application.routes.draw do
       #kodak
       match '/kodak/sessions/new' => 'kodak_sessions#new', :as => :new_kodak_session
       match '/kodak/sessions/create' => 'kodak_sessions#create', :as => :create_kodak_session
+      match '/kodak/sessions/close' => 'kodak_sessions#close', :as => :close_kodak_session
       match '/kodak/sessions/destroy' => 'kodak_sessions#destroy', :as => :destroy_kodak_session
       match '/kodak/folders/:kodak_album_id/photos.:format' => 'kodak_photos#index', :as => :kodak_photos
       match '/kodak/folders/:kodak_album_id/photos/:photo_id/:action' => 'kodak_photos#index', :as => :kodak_photo_action
@@ -275,6 +276,7 @@ Server::Application.routes.draw do
       #mobile.me
       match '/mobileme/sessions/new' => 'mobileme_sessions#new', :as => :new_mobileme_session
       match '/mobileme/sessions/create' => 'mobileme_sessions#create', :as => :create_mobileme_session
+      match '/mobileme/sessions/close' => 'mobileme_sessions#close', :as => :close_mobileme_session
       match '/mobileme/sessions/destroy' => 'mobileme_sessions#destroy', :as => :destroy_mobileme_session
       match '/mobileme/folders.:format' => 'mobileme_folders#index', :as => :mobileme_folders
       match '/mobileme/folders/:mm_album_id/:action.:format' => 'mobileme_folders#album_index', :as => :mobileme_photos
@@ -294,11 +296,11 @@ Server::Application.routes.draw do
       
       #picasa
       #google session controller used
-      match '/picasa_web/folders/:picasa_album_id/photos.:format' => 'picasa_photos#index', :as => :picasa_photos
-      match '/picasa_web/folders/:picasa_album_id/photos/:photo_id/:action' => 'picasa_photos#index', :as => :picasa_photo_action
-      match '/picasa_web/folders.:format' => 'picasa_folders#index', :as => :picasa_folders
-      match '/picasa_web/folders/:picasa_album_id/:action.:format' => 'picasa_folders#index', :as => :picasa_folder_action
-      match '/picasa_web/folders/import_all.:format' => 'picasa_folders#import_all', :as => :picasa_import_all
+      match '/google/folders/:picasa_album_id/photos.:format' => 'picasa_photos#index', :as => :picasa_photos
+      match '/google/folders/:picasa_album_id/photos/:photo_id/:action' => 'picasa_photos#index', :as => :picasa_photo_action
+      match '/google/folders.:format' => 'picasa_folders#index', :as => :picasa_folders
+      match '/google/folders/:picasa_album_id/:action.:format' => 'picasa_folders#index', :as => :picasa_folder_action
+      match '/google/folders/import_all.:format' => 'picasa_folders#import_all', :as => :picasa_import_all
 
       #local contacts
       match '/local/contacts/import' => 'local_contacts#import', :as => :local_contacts
@@ -418,7 +420,13 @@ Server::Application.routes.draw do
 
 
     #users
-    get    '/users/:user_id/info'                      => 'users#zz_api_user_info',                  :as => :zz_api_user_info
+    get    '/users/:user_id/info' => 'users#zz_api_user_info',                  :as => :zz_api_user_info
+
+
+    #identities
+    get     '/identities' => 'identities#zz_api_identities'
+    get     '/identities/:service_name' => 'identities#zz_api_identity'
+
   end
 
 
