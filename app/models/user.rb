@@ -213,13 +213,12 @@ class User < ActiveRecord::Base
   # Generates a new perishable token for the notifier to use in a password reset request
   def deliver_password_reset_instructions!
       reset_perishable_token!
-      ZZ::Async::Email.enqueue( :password_reset, self.id )
+      ZZ::Async::Email.enqueue_high( :password_reset, self.id )
   end
 
   def deliver_activation_instructions!
       reset_perishable_token!
-      # We may want to delay this action but we need to do it fast, maybe to its own queue!
-      ZZ::Async::Email.enqueue( :activation_instructions, self.id )
+      ZZ::Async::Email.enqueue_high( :activation_instructions, self.id )
   end
 
   def deliver_welcome!

@@ -9,7 +9,7 @@ describe Notifier do
     end
 
     it "shoud send password_reset upon user request" do
-        resque_jobs(:except => [ZZ::Async::MailingListSync]) do
+      resque_jobs(:except => [ZZ::Async::MailingListSync]) do
         user = Factory.create(:user)
         visit new_password_reset_url
         fill_in 'email', :with    => user.email
@@ -17,8 +17,10 @@ describe Notifier do
         response.status.should be 200
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries[0].header['X-SMTPAPI'].value.should include "email.password"
-        end
+        # verify it has the bypass list mgmt flag set to get immediate delivery
+        ActionMailer::Base.deliveries[0].header['X-SMTPAPI'].value.should include "bypass_list_management"
       end
+    end
 
 
     it "should send welcome upon join" do

@@ -2,8 +2,7 @@ module ZZ
   module Async
 
     class Email < Base
-        @queue = :mailer
-        
+
         # only add ourselves one time
         if @retry_criteria_checks.length == 0
           # plug ourselves into the retry framework
@@ -12,10 +11,18 @@ module ZZ
           end
         end
 
-        def self.enqueue( method, *args)
-          super( method, *args)
+        def self.enqueue_high( method, *args)
+          enqueue_on_queue( :mailer_high, method, *args )
         end
-        
+
+        def self.enqueue( method, *args)
+          enqueue_on_queue( :mailer, method, *args)
+        end
+
+        def self.enqueue_low( method, *args)
+          enqueue_on_queue( :mailer_low, method, *args )
+        end
+
         def self.perform( method, *args )
           begin
             msg = Notifier.send( method, *args)

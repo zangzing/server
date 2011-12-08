@@ -168,13 +168,13 @@ module ZZ
       # Filter for methods that require NO USER like sign in
       def require_no_user
         if current_user
-          msg = "You must be logged out to access this page"
+          msg = "You must be logged out to access the page you requested"
           if zz_api_call?
             render_json_error(nil, msg, 401)
           else
-            store_location
             flash[:notice] = msg
-            redirect_back_or_default root_path
+            add_javascript_action( 'show_message_dialog',  {:message => flash[:notice]})
+            redirect_to root_url
           end
           return false
         end

@@ -48,6 +48,7 @@ module ZZ
       # the perform failed so take appropriate action
       def self.handle_failure(exception, will_retry, photo_id, source_url, options)
         photo = Photo.find(photo_id)
+        msg = exception.message
         if will_retry
           photo.update_attributes(:error_message => msg) unless photo.nil?
         else

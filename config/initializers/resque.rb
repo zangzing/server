@@ -80,6 +80,15 @@ module Resque
       $stdout.sync = true
     end
 
+    def working_on(job)
+      Thread.current[:resque_job] = job
+      job.worker = self
+      data = encode \
+        :queue   => job.queue,
+        :run_at  => Time.now.to_s,
+        :payload => job.payload
+      redis.set("worker:#{self}", data)
+    end
 
     # Not every platform supports fork. Here we do our magic to
     # determine if yours does.
