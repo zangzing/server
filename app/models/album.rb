@@ -27,7 +27,9 @@ class Album < ActiveRecord::Base
           'GROUP BY u.id '+
           'ORDER BY u.first_name DESC'
 
-  has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => ["photos", "shares", 'activities', 'slides_source', 'people', 'activity'], :approximate_ascii => true
+  RESERVED_NAMES = ["photos", "shares", 'activities', 'slides_source', 'people', 'activity']
+
+  has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => RESERVED_NAMES, :approximate_ascii => true
 
   validates_presence_of  :user_id
   validates_presence_of  :name, :message => "Your album name cannot be blank"
@@ -93,8 +95,9 @@ class Album < ActiveRecord::Base
   def uniquify_name
     @uname = name
     @i = 0
+
     @album = user.albums.find_by_name( @uname )
-    until @album.nil?
+    until @album.nil? && !RESERVED_NAMES.index(@uname)
       @i+=1
       @uname = "#{name} #{@i}"
       @album = user.albums.find_by_name(@uname)
