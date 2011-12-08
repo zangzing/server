@@ -97,7 +97,7 @@ class Album < ActiveRecord::Base
     @i = 0
 
     @album = user.albums.find_by_name( @uname )
-    until @album.nil? && !RESERVED_NAMES.index(@uname)
+    until @album.nil? && !RESERVED_NAMES.index(@uname.downcase)
       @i+=1
       @uname = "#{name} #{@i}"
       @album = user.albums.find_by_name(@uname)
