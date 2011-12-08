@@ -87,10 +87,15 @@ class Connector::PicasaFoldersController < Connector::PicasaController
     doc = Nokogiri::XML(feed)
     doc.xpath('//a:entry', NS).each do |entry|
       albumid = /albumid\/([0-9a-z]+)/.match(entry.at_xpath('a:id', NS).text)[1]
-      zz_album = create_album(identity, entry.at_xpath('a:title', NS).text)
-      photos = import_album(api, params.merge(:album_id => zz_album.id, :picasa_album_id => albumid))
-      zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
+      zz_album = create_album(identity, entry.at_xpath('a:title', NS).text, params[:privacy])
+      zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
+      fire_async('import_album', params.merge(:album_id => zz_album.id, :picasa_album_id => albumid))
     end
+
+    identity.last_import_all = Time.now
+    identity.save
+
+
     JSON.fast_generate(zz_albums)
   end
 

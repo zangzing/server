@@ -27,7 +27,9 @@ class Album < ActiveRecord::Base
           'GROUP BY u.id '+
           'ORDER BY u.first_name DESC'
 
-  has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => ["photos", "shares", 'activities', 'slides_source', 'people', 'activity'], :approximate_ascii => true
+  RESERVED_NAMES = ["photos", "shares", 'activities', 'slides_source', 'people', 'activity']
+
+  has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => RESERVED_NAMES, :approximate_ascii => true
 
   validates_presence_of  :user_id
   validates_presence_of  :name, :message => "Your album name cannot be blank"
@@ -56,7 +58,7 @@ class Album < ActiveRecord::Base
 
   #constants for Album.who_can_upload and Album.who_can_download
   WHO_EVERYONE      = 'everyone'
-  WHO_VIEWERS       = 'viewers'
+  WHO_VIEWERS       = 'viewers' # not used
   WHO_CONTRIBUTORS  = 'contributors'
   WHO_OWNER         = 'owner'
 
@@ -93,8 +95,9 @@ class Album < ActiveRecord::Base
   def uniquify_name
     @uname = name
     @i = 0
+
     @album = user.albums.find_by_name( @uname )
-    until @album.nil?
+    until @album.nil? && !RESERVED_NAMES.index(@uname.downcase)
       @i+=1
       @uname = "#{name} #{@i}"
       @album = user.albums.find_by_name(@uname)
@@ -496,6 +499,12 @@ class Album < ActiveRecord::Base
       end
     end
     false
+  end
+
+  def can_user_contribute?( user )
+    return true  if everyone_can_contribute?
+    return false if user.nil?  #only contributors can download
+    return contributor?( user.id )
   end
 
   def make_hidden

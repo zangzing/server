@@ -83,13 +83,45 @@ var zz = zz || {};
             }
         },
 
-        albums:{
+        albums: {
+            import_all_from_service: function(service_name, privacy, success, failure){
+                var url = '/service/' + service_name + '/folders/import_all.json?privacy=' + privacy;
+                zz.async_ajax.call(url, 'get', success, failure);
+            },
             request_access: function(album_id, message, success, error){
                 do_post('/service/albums/' +album_id+'/request_access', {message: message}, success, error);
             },
+            request_viewer: function(album_id, message, success, error){
+                do_post('/service/albums/' +album_id+'/request_access', {message: message, access_type: 'viewer'}, success, error);
+            },
+            request_contributor: function(album_id, message, success, error){
+                do_post('/service/albums/' +album_id+'/request_access', {message: message, access_type: 'contributor'}, success, error);
+            },
             update: function( album_id, data_hash, success,error){
                 do_put('/zz_api/albums/'+album_id, data_hash, success, error );
+            },
+            add_photos: function( album_id ){
+                window.location = '/service/albums/' +album_id+'/add_photos';
             }
+
+        },
+
+        identities: {
+            get_identities: function(callback){
+                var url = '/zz_api/identities';
+                do_get(url, {}, callback);
+            },
+
+            get_identity_for_service: function(service_name, callback){
+                var url = '/zz_api/identities/' + service_name;
+                do_get(url, {}, callback);
+            },
+
+            login_url_for_service: function(service_name){
+                return '/service/' + service_name + '/sessions/new';
+            }
+
+
         },
 
         photos: {

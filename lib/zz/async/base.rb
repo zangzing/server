@@ -4,6 +4,8 @@ module ZZ
     # base class for resque services - holds policy for retry exceptions and timeouts
     # sub classes can override this behavior
     class Base
+      @queue = nil
+
       class_inheritable_accessor :dont_retry_filter, :backoff_strategy, :retry_exceptions
 
       extend Resque::Plugins::ExponentialBackoff
@@ -160,6 +162,16 @@ module ZZ
           ensure
             @queue = current_queue
           end
+        end
+      end
+
+      def self.try_again(*args)
+        queue = Thread.current[:resque_job].queue
+        if retry_delay <= 0
+          # If the delay is 0, no point passing it through the scheduler
+          enqueue_on_queue(queue, *args_for_retry(*args))
+        else
+          enqueue_in(retry_delay, queue, *args_for_retry(*args))
         end
       end
 

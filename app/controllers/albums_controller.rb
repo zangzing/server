@@ -265,6 +265,7 @@ class AlbumsController < ApplicationController
     @invited_albums_path = invited_albums_path(@loader)
     @session_user_liked_albums_path = @session_loader.nil? ? nil : liked_albums_path(@session_loader)
     @session_user_invited_albums_path = @session_loader.nil? ? nil : invited_albums_path(@session_loader)
+    @is_homepage_view = true
   end
 
 
@@ -512,7 +513,11 @@ class AlbumsController < ApplicationController
 # Receives and processes a user's request for access into a password protected album
   def request_access
     return unless require_user && require_album
-    ZZ::Async::Email.enqueue( :request_access, current_user.id, @album.id,  params[:message] )
+    if params[:access_type ] && params[:access_type] =="contributor"
+      ZZ::Async::Email.enqueue( :request_contributor, current_user.id, @album.id,  params[:message] )
+    else
+      ZZ::Async::Email.enqueue( :request_access, current_user.id, @album.id,  params[:message] )
+    end
     head :ok and return
   end
 
@@ -578,6 +583,25 @@ class AlbumsController < ApplicationController
       return
     end
   end
+
+  # displays the add photos dialog if the current user is allowed
+  def add_photos
+    return unless require_album(true) && require_album_contributor_role
+    add_javascript_action( 'show_add_photos_dialog' )
+    redirect_to album_pretty_url( @album ) and return
+  end
+
+  # displays the add photos dialog if the current user is allowed
+  def wizard
+    return unless require_user && require_album(true) && require_album_admin_role
+    raise Exception.new("Wizard Step Must Be Specified") unless params[:step ]
+    args ={}
+    args[:step]  = params[:step]
+    args[:email] = params[:email] if params[:email]
+    add_javascript_action( 'show_album_wizard', args )
+    redirect_to album_pretty_url( @album ) and return
+  end
+
 
   private
 

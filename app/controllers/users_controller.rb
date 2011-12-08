@@ -38,7 +38,7 @@ class UsersController < ApplicationController
 
     if current_user
         flash[:notice] = "You are currently logged in as #{current_user.username}. Please log out before creating a new account."
-        session[:flash_dialog] = true
+         add_javascript_action( 'show_message_dialog',  {:message => flash[:notice]})
          redirect_back_or_default user_pretty_url(current_user)
         return
     end
@@ -116,7 +116,7 @@ class UsersController < ApplicationController
 
         flash[:success] = "Welcome to ZangZing!"
         @new_user.deliver_welcome!
-        session[:show_welcome_dialog] = true unless( session[:return_to] )
+        add_javascript_action('show_welcome_dialog') unless( session[:return_to] )
         send_zza_event_from_client('user.join')
         redirect_back_or_default user_pretty_url( @new_user )
         return

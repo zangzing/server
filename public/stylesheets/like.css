@@ -154,3 +154,28 @@ div.zzlike-count.empty{
    bottom: 0;
    right: 0px;
 }
+
+/* ============================ Request Access Dialogs ======*/
+div.request_access#social-like-dialog{
+    height: 220px;
+}
+
+div.request_access#social-like-dialog div#ld-inner{
+    height: 190px;
+}
+
+.request_access #ld-top{
+    font-size: 14px;
+}
+
+.request_access #ld-middle{
+   top: 65px;
+}
+
+.request_access #ld-cancel{
+   right: 125px;
+}
+
+.request_access #ld-ok{
+   width: 100px;
+}

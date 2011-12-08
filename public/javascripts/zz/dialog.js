@@ -1,10 +1,10 @@
 var zz = zz || {};
+zz.dialog ={};
 
+(function(){
 
-zz.dialog = {
-
-    show_square_dialog: function(content, options) {
-        var scrim_element = $(zz.dialog.SQUARE_TEMPLATE);
+    zz.dialog.show_square_dialog= function(content, options) {
+        var scrim_element = $(SQUARE_TEMPLATE);
         scrim_element.appendTo($('body'));
 
         var dialog_element = scrim_element.find('.square-dialog');
@@ -13,8 +13,6 @@ zz.dialog = {
         dialog_element.click(function(event){
             event.stopPropagation();
         });
-
-
 
         var close = function(){
             if(options.on_close){
@@ -45,24 +43,18 @@ zz.dialog = {
             element: dialog_element,
             close: close
         };
-    },
+    };
 
 
-    show_dialog: function(element, options) {
+    zz.dialog.show_dialog = function(element, options) {
         return $(element).zz_dialog(options).data().zz_dialog;
     },
 
+    //show_confirmation_dialog: function(message, on_ok, on_cancel) {};
 
+    // show_alert_dialog: function(message, on_ok) {};
 
-    show_confirmation_dialog: function(message, on_ok, on_cancel) {
-
-    },
-
-    show_alert_dialog: function(message, on_ok) {
-
-    },
-
-    show_flash_dialog: function(message, onClose) {
+    zz.dialog.show_flash_dialog = function(message, onClose) {
         var content = $("<div id='flash-dialog'><div><div id='flash'></div><a id='ok' class='newgreen-button'><span>OK</span></a></div></div>");
         content.find('#flash').text(message);
         content.find('#ok').click(function() {
@@ -79,10 +71,9 @@ zz.dialog = {
         var dialog = zz.dialog.show_dialog(content, {cancelButton: false, close: onClose});
         content.find('#ok').focus();
         return dialog;
-    },
+    };
 
-
-    show_spinner_progress_dialog: function(message) {
+    zz.dialog.show_spinner_progress_dialog = function(message) {
         var template = '<span class="progress-dialog-content"><div id="dspin_here"></div>' + message + '</span>';
         var dialog = zz.dialog.show_dialog(template, { width: 300, height: 90, modal: true, autoOpen: true, cancelButton: false });
         new Spinner({ lines: 12,
@@ -95,22 +86,78 @@ zz.dialog = {
                           shadow: false
                       }).spin( document.getElementById('dspin_here'));
         return dialog;
-    },
+    };
 
-    show_progress_dialog: function(message) {
+    zz.dialog.show_progress_dialog = function(message) {
         var template = '<span class="progress-dialog-content"><img src="/images/loading.gif">' + message + '</span>';
         var dialog = zz.dialog.show_dialog(template, { width: 300, height: 90, modal: true, autoOpen: true, cancelButton: false });
         return dialog;
-    },
+    };
+
+    function show_send_message_dialog( album_id, instructions,  on_ok ){
+        var dialog = zz.dialog.show_dialog(SEND_MESSAGE_TEMPLATE, { autoOpen: false });
+        $('#ld-top').text( instructions );
+        $('#ld-cancel').click( function(){
+            dialog.close();
+            if( typeof(on_cancel) != 'undefined'){
+                on_cancel();
+            }
+        });
+
+        $('#ld-ok').click( function(){
+            var message =  $('#request_access_message').val();
+            dialog.close();
+            if( typeof(on_ok) != 'undefined'){
+                var pdialog = zz.dialog.show_progress_dialog('Sending message...');
+                on_ok( album_id,
+                    message,
+                    function(){
+                        pdialog.close();
+                        zz.dialog.show_flash_dialog('Your message has been sent. You will receive an email when you are invited.');
+                    },
+                    function(){
+                        pdialog.close();
+                        zz.dialog.show_flash_dialog('Unable to send the message at the moment. Please try again later.')
+                    });
+            }
+        });
+        
+        dialog.open();
+        return dialog;
+    };
+
+    zz.dialog.show_request_access_dialog = function( album_id ){
+        show_send_message_dialog(
+            album_id,
+            'You are trying to view an Invite Only album. '+
+            'Please send a message to the album owner to be included in the Invite Only list. '+
+            'Once you are invited, you will receive an email.',
+            zz.routes.albums.request_viewer);
+    };
+
+    zz.dialog.show_request_contributor_dialog = function( album_id ){
+            show_send_message_dialog(
+                album_id,
+                'Please send a message to the album owner to add you as a contributor for this album. '+
+                'Once you are added as a contributor, you will receive an email invitation to add photos.',
+                zz.routes.albums.request_contributor);
+    };
+
+    var CONFIRMATION_TEMPLATE = '<div class="message">{{message}}</div>';
+    var ALERT_TEMPLATE = '<div class="message">{{message}}</div>';
+    var BASE_Z_INDEX = 99990;
+    zz.dialog.open_dialog_count = 0;
+
+    zz.dialog.scrim_z_index = function(){
+        return BASE_Z_INDEX + zz.dialog.open_dialog_count * 10;
+    };
+
+    zz.dialog.dialog_z_index = function() {
+        return zz.dialog.scrim_z_index() + 1;
+    }
 
 
-    CONFIRMATION_TEMPLATE: '<div class="message">{{message}}</div>',
-    ALERT_TEMPLATE: '<div class="message">{{message}}</div>',
-    BASE_Z_INDEX: 99990,
-    open_dialog_count: 0,
-
-
-    SQUARE_TEMPLATE:'<div class="square-dialog-scrim">' +
+    var SQUARE_TEMPLATE='<div class="square-dialog-scrim">' +
                         '<div class="square-dialog">' +
                             '<div class="tl-corner"></div>' +
                             '<div class="tr-corner"></div>' +
@@ -123,22 +170,19 @@ zz.dialog = {
                             '<div class="content"></div>' +
                             '<div class="close-button"></div>' +
                         '</div>' +
-                     '</div>',
+                     '</div>';
 
-
-
-
-    scrim_z_index: function() {
-        return this.BASE_Z_INDEX + this.open_dialog_count * 10;
-    },
-
-    dialog_z_index: function() {
-        return this.scrim_z_index() + 1;
-    }
-
-};
-
-
+    var SEND_MESSAGE_TEMPLATE = '<div class= "request_access" id="social-like-dialog">' +
+                                    '<div id="ld-inner">' +
+                                        '<div id="ld-top"></div>' +
+                                        '<div id="ld-middle">' +
+                                            '<textarea id="request_access_message" name="message"></textarea>' +
+                                        '</div>' +
+                                        '<a id="ld-cancel" class="newblack-button" href="javascript:void(0)"><span>No thanks</span></a>' +
+                                        '<a id="ld-ok" class="newgreen-button" href="javascript:void(0)"><span>Send</span></a>' +
+                                    '</div>' +
+                                '</div>';
+})();
 
 (function($, undefined) {
 
@@ -150,7 +194,8 @@ zz.dialog = {
             left: 'auto',
             autoOpen: true,
             height: 'auto',
-            width: 'auto'
+            width: 'auto',
+            on_close: null
         },
 
         _create: function() {
@@ -243,6 +288,9 @@ zz.dialog = {
             $(window).unbind('resize', this.resize_handler);
             $(document).unbind('keypress', this.keypress_handler);
             this._trigger('close');
+            if(this.options.on_close){
+                this.options.on_close();
+            }
             this.destroy();
             zz.dialog.open_dialog_count--;
         },
