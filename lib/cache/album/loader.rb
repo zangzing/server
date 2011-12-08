@@ -297,14 +297,22 @@ module Cache
               }
             end
           end
+
+          is_profile_album = album.type == 'ProfileAlbum'
+          if is_profile_album and album_cover.nil?
+            c_url = ProfileAlbum.default_profile_cover_url
+          else
+            c_url =  album_cover.nil? ? nil : album_cover.thumb_url  #todo: this should only return non nil if cover_base is nil
+          end
+
           hash_album = {
               :id => album_id,
               :name => album_name,
               :user_name => album_user_name,
               :user_id => album_user_id,
               :album_path => album_pretty_path(album_user_name, album_friendly_id),
-              :profile_album => album.type == 'ProfileAlbum',
-              :c_url => album_cover.nil? ? nil : album_cover.thumb_url,  #todo: this should only return non nil if cover_base is nil
+              :profile_album => is_profile_album,
+              :c_url =>  c_url,
               :cover_base => cover_base,
               :cover_sizes => cover_sizes,
               :photos_count => album.photos_count,

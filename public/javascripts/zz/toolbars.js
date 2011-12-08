@@ -40,6 +40,11 @@ zz.toolbars = {
 
         });
 
+        $("#user-info-picture .defaultprofilepic").click(function(){
+            $('#user-info').fadeOut(200);
+            zz.routes.albums.add_profile_photo();
+        });
+
         $('#header #view-buttons #picture-view-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;

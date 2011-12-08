@@ -5,8 +5,6 @@
 
 class ProfileAlbum < Album
 
-
-
   #name cannot be changed
   def name=( new_name )
   end
@@ -27,9 +25,12 @@ class ProfileAlbum < Album
     ( cover ? cover.thumb_url : ProfileAlbum.default_profile_url)
   end
 
-
   def self.default_profile_url
     '/images/default_profile.png'
+  end
+
+  def self.default_profile_cover_url
+    '/images/default_profile_add.png'
   end
 
 end

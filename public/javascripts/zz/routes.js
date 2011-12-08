@@ -95,6 +95,9 @@ var zz = zz || {};
             },
             add_photos: function( album_id ){
                 window.location = '/service/albums/' +album_id+'/add_photos';
+            },
+            add_profile_photo: function(){
+                window.location = '/service/albums/profile-photos/add_photos';
             }
         },
 

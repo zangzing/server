@@ -99,7 +99,12 @@ zz.homepage = {
                         $('#article').css('width',$('#article').width());
                         $('#article').css({overflow: 'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
                         $('#user-info').fadeOut(200);
-                        document.location.href = album.album_path;
+                        if(album.profile_album && album.photos_count <= 0) {
+                            zz.routes.albums.add_photos(album.id);
+                        } else {
+                            document.location.href = album.album_path;
+                        }
+
                     },
                     onLike: function() {
                         alert('This feature is still under construction. It will allow you to like an album.');
