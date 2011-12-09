@@ -153,7 +153,7 @@ class Photo < ActiveRecord::Base
       photo.image_path = nil
       photo.image_bucket = nil
       photo.source_path = nil
-      photo.source_guid = "copy:"+UUIDTools::UUID.random_create.to_s
+      photo.source_guid = "copy:#{UUIDTools::UUID.random_create}"
       photo.error_message = nil
       options = {}
       options[:copy_s3_object] = true
@@ -799,7 +799,7 @@ class Photo < ActiveRecord::Base
   def verify_file_type
     image_type = self.image_content_type
     if Photo.valid_image_type?(image_type) == false
-      msg = "Not a supported image type, you passed: " +  image_type
+      msg = "Not a supported image type, you passed: #{image_type}"
       errors.add(:image_content_type, msg)
       # save the error state
       self.mark_error

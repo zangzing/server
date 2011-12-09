@@ -31,18 +31,16 @@ class PhotoInfo < ActiveRecord::Base
         data_set = {}
       end
     rescue => ex
-      raise ex, "There was an error getting metadata with exiftool from #{file_name} : " + ex.to_s
+      raise ex, "There was an error getting metadata with exiftool from #{file_name} : #{ex.to_s}"
     end
 
     data_set
   end
 
   def self.decode_gps_coord(source_string, coord_ref)
-    return unless source_string
-    #Here we can determine the source format and decode it
-    #Case 1
-    if match = source_string.match(/(\d+)\/(\d+), (\d+)\/(\d+), (\d+)\/(\d+)/i)
-      return ( match[1].to_f/match[2].to_f + match[3].to_f/match[4].to_f/60 + match[5].to_f/match[6].to_f/3600 ) * (['N','E'].include?(coord_ref) ? 1 : -1)
+    return nil unless source_string
+    if m = source_string.match(/(\d+) +deg +(\d+)' (\d+\.\d+)/i)
+      return (m[1].to_f + m[2].to_f/60 + m[3].to_f/3600) * (['North','East'].include?(coord_ref) ? 1 : -1)
     end
     return nil
   end
