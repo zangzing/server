@@ -23,6 +23,7 @@ photos_staging:
   zza_id: "staging.photos/svr"
   log_type: "syslog"
   log_app_name: "rails/stag/emphotos"
+  server_base_port: 3032                # incremented by instance number if more than one listening address
 #  server_address: '/var/run/zz/em_listen_'  # a prefix for the unix socket if no port
 
 photos_production:
