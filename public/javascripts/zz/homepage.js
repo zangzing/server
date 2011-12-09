@@ -105,7 +105,7 @@ zz.homepage = {
                         $('#article').css('width',$('#article').width());
                         $('#article').css({overflow: 'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
                         $('#user-info').fadeOut(200);
-                        if(album.photos_count <= 0 && zz.session.current_user_id == zz.page.displayed_user_id) {
+                        if(album.photos_count <= 0 && zz.session.current_user_id == album.user_id) {
                             zz.routes.albums.add_photos(album.id);
                         } else {
                             document.location.href = album.album_path;
