@@ -22,15 +22,18 @@ class ProfileAlbum < Album
   end
 
   def profile_photo_url
-    ( cover ? cover.thumb_url : ProfileAlbum.default_profile_url)
+    ( cover ? cover.thumb_url : ProfileAlbum.default_profile_small_url)
   end
 
-  def self.default_profile_url
-    '/images/default_profile.png'
+  def self.default_profile_small_url
+    '/images/profile-default-55.png'
   end
 
-  def self.default_profile_cover_url
-    '/images/default_profile_add.png'
+  def self.default_profile_album_url
+    '/images/profile-default.png'
   end
 
+  def self.default_profile_album_add_url
+    '/images/profile-default-add.png'
+  end
 end
