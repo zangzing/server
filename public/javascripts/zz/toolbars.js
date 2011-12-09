@@ -42,7 +42,7 @@ zz.toolbars = {
 
         $("#user-info-picture .defaultprofilepic").click(function(){
             $('#user-info').fadeOut(200);
-            zz.routes.albums.add_profile_photo();
+            zz.routes.albums.add_profile_photo(zz.session.current_user_id);
         });
 
         $('#header #view-buttons #picture-view-button').click(function() {

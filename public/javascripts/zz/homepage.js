@@ -139,7 +139,7 @@ zz.homepage = {
                              del = 1;
                          }
                          //download
-                         if( album.c_url ){
+                         if( album.photos_count > 0 ){
                              switch( album.who_can_download ){
                                  case 'everyone':
                                      download = 1;
