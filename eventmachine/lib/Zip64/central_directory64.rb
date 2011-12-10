@@ -67,6 +67,20 @@ class Zip64::CentralDirectory64 < CentralDirectory
     buf.pack('VVVVV')
   end
 
+  # end of central dir on 64 bit sets flag to tell unzip to use z64 end of central dir
+  def end_of_central_directory
+    buf = []
+    buf << 0x06054b50           # signature
+    buf << 0                    # disk #
+    buf << 0                    # disk # with central dir
+    buf << Util::ZIP64_WORDLEN  # total entries in local central dir
+    buf << Util::ZIP64_WORDLEN  # total entries in all central dir
+    buf << Util::ZIP64_LEN      # central directory size
+    buf << Util::ZIP64_LEN      # offset to central dir
+    buf << 0                    # file comment
+    buf.pack('VvvvvVVv')
+  end
+
   # for zip64 we have some extra items to write
   # before end of central directory
   def write_end_of_central_directory

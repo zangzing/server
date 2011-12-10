@@ -34,8 +34,8 @@ class Zip64::CentralDirectory
     buf << 0x06054b50           # signature
     buf << 0                    # disk #
     buf << 0                    # disk # with central dir
-    buf << @mgr.entries.length   # total entries in local central dir
-    buf << @mgr.entries.length   # total entries in all central dir
+    buf << @mgr.entries.length  # total entries in local central dir
+    buf << @mgr.entries.length  # total entries in all central dir
     buf << @cd_size             # central directory size
     buf << @cd_offset           # offset to central dir
     buf << 0                    # file comment

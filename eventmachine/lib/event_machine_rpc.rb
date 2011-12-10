@@ -11,6 +11,7 @@ class EventMachineRPC
   def self.parse_json_from_file(path)
     return {} if path.nil? || File.expand_path(path).index(JSON_IPC_PATH) != 0
     json_str = File.read(path) rescue nil
+#TODO put delete below in after testing
 #    File.delete(path) rescue nil
     args = JSON.parse(json_str) rescue {}
     Hash.recursively_symbolize_graph!(args)

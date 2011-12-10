@@ -92,7 +92,10 @@ class ZipDeferrableBody
 
     # if we know the final size of all photos, use the computed zip file size as the
     # content length
-    out_header['Content-Length'] = zip_file_size.to_s if zip_file_size
+    if zip_file_size
+      logger.info context("Zip content length will be: #{zip_file_size}")
+      out_header['Content-Length'] = zip_file_size.to_s
+    end
     out_header['ETag'] = signature if signature
 
     # send the header back to the client

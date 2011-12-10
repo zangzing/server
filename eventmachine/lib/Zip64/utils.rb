@@ -4,6 +4,7 @@ module Zip64
 class Util
   unless defined?(ZIP64_LEN)
     ZIP64_LEN = 0xffffffff
+    ZIP64_WORDLEN = 0xffff
     ZIP64_VER = 45
     ZIP32_VER = 45
   end
