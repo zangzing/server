@@ -3,50 +3,6 @@ zz.import_albums = zz.import_albums || {};
 
 (function(){
 
-    var BETA_LIST = [
-        'anneliseh',
-        'ryanalvarado',
-        'keberg',
-        'cdesbarbes',
-        'jsearl',
-        'winston',
-        'cdodkin',
-        'webb1416',
-        'larrys29',
-        'bartandre',
-        'mmclane',
-        'few1938',
-        'mneri',
-        'ringelband',
-        'ldtinker',
-        'ennisbr',
-        'pbeisel',
-        'efemek',
-        'hawaiicop',
-        'albertodenis',
-        'shinjutezuka',
-        'rickf',
-        'mherzog42',
-        'roswell',
-        'leothelion',
-        'yvonneinsonoma',
-        'bbd',
-        'jemangum',
-        'puufwebmaster',
-        'jhermannzz',
-        'jlauricella',
-        'blackketter',
-        'jlh',
-        'richa',
-        'sfmishra',
-        'mcsavage',
-        'jpistrang',
-        'jsearl',
-        'haichen'
-    ];
-
-
-
     function get_service_pretty_name(service_name){
         var pretty_names = {
             'flickr': 'Flickr',
@@ -121,18 +77,6 @@ zz.import_albums = zz.import_albums || {};
                     '</div>' +
                '</div>';
     }
-
-
-
-    zz.import_albums.init = function(){
-        var show_import = (zz.config.rails_env!='photos_production' || _.find(BETA_LIST, function(username){
-            return username == zz.session.current_user_name;
-        }));
-
-        if(!show_import){
-            $('#import-button').remove();
-        }
-    };
 
     zz.import_albums.show_import_dialog = function(){
         zz.routes.identities.get_identities(function(identities){
