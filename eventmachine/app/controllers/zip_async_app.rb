@@ -34,7 +34,7 @@ class ZipAsyncApp
   def self.make_sample_json(count)
     urls = []
     count.times do |i|
-      suffix = "-%05d" % i + ".jpg"
+      suffix = "-%06d" % i + ".jpg"
       urls << { :url => 'http://4.zz.s3.amazonaws.com/i/df10e709-70c2-4cb1-adcd-3e20a5c35e84-o?1300228724',
                 :size => 810436, :crc32 => nil, :create_date => nil,
                 :filename => "file#{suffix}"}
