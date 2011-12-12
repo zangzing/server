@@ -277,8 +277,8 @@ Order.class_eval do
   def fast_add_photos(variant, photo_ids, quantity = 1)
 
     # check permissions and fail all if any fail
-    Album.select('*').joins(:photos).where("photos.id in (#{photo_ids.join(',')})").each do |album|
-      if(!album.can_user_buy_photos?(user))
+    Album.joins(:photos).where("photos.id in (#{photo_ids.join(',')})").each do |album|
+      if(!album.can_user_buy_photos?(self.user))
         raise "You do not have permission to buy photos from this album"
       end
     end

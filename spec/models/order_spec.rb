@@ -17,6 +17,19 @@ describe Order do
       @print_variant = variants.detect{ |variant| variant.print? }
     end
 
+    it "should allow owner to buy from album owner-only buy permissions" do
+      user = Factory.create(:user)
+
+      order = Order.create
+      order.user = user
+      order.save!
+
+      album = Factory.create(:album, :user => user, :who_can_buy => Album::WHO_OWNER)
+      photo = Factory.create(:photo, :album => album, :user => user)
+      order.fast_add_photos(@print_variant, [photo.id])
+    end
+
+
     it "should prevent guest from buying photo from album with owner-only buy permissions" do
       order = Order.create
       album = Factory.create(:album, :who_can_buy => Album::WHO_OWNER)
@@ -26,7 +39,11 @@ describe Order do
 
     it "should prevent user from buying photo from album with owner-only buy permissions" do
       user = Factory.create(:user)
-      order = Order.create(:user => user)
+
+      order = Order.create
+      order.user = user
+      order.save!
+
       album = Factory.create(:album, :who_can_buy => Album::WHO_OWNER)
       photo = Factory.create(:photo, :album => album)
       lambda { order.fast_add_photos(@print_variant, [photo.id]) }.should raise_error
