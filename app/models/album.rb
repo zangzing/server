@@ -4,7 +4,8 @@
 
 class Album < ActiveRecord::Base
   attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at, :cache_version, :photos_ready_count,
-                  :stream_to_email, :stream_to_facebook, :stream_to_twitter, :who_can_download, :who_can_upload, :user_id, :for_print
+                  :stream_to_email, :stream_to_facebook, :stream_to_twitter, :who_can_download, :who_can_buy, :who_can_upload, :user_id, :for_print
+
   attr_accessor :change_matters, :my_role
 
   belongs_to :user
@@ -56,9 +57,9 @@ class Album < ActiveRecord::Base
   HIDDEN   = 'hidden'
   PASSWORD = 'password'
 
-  #constants for Album.who_can_upload and Album.who_can_download
+  #constants for Album.who_can_upload and Album.who_can_download and Albun.who_can_buy
   WHO_EVERYONE      = 'everyone'
-  WHO_VIEWERS       = 'viewers' # not used
+  WHO_VIEWERS       = 'viewers'
   WHO_CONTRIBUTORS  = 'contributors'
   WHO_OWNER         = 'owner'
 
@@ -441,7 +442,17 @@ class Album < ActiveRecord::Base
     acl.get_users_with_role( AlbumACL::VIEWER_ROLE, exact )
   end
 
-  
+
+  # checks if user can buy photos from the album
+  # in the case of a guest, user param may be nil
+  def can_user_buy_photos?(user)
+    return true if who_can_buy == WHO_EVERYONE
+    return true if who_can_buy == WHO_OWNER && user && admin?(user.id)
+    return true if who_can_buy == WHO_VIEWERS && user && viewer?(user.id)
+
+    return false
+  end
+
 
   def long_email
       " \"#{self.name}\" <#{short_email}>"

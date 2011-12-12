@@ -10,6 +10,46 @@ describe Order do
     ActionMailer::Base.deliveries = []
   end
 
+
+  describe "#fast_add_photos" do
+    before(:each) do
+      variants = Product.find_by_name('Prints').variants
+      @print_variant = variants.detect{ |variant| variant.print? }
+    end
+
+    it "should prevent guest from buying photo from album with owner-only buy permissions" do
+      order = Order.create
+      album = Factory.create(:album, :who_can_buy => Album::WHO_OWNER)
+      photo = Factory.create(:photo, :album => album)
+      lambda { order.fast_add_photos(@print_variant, [photo.id]) }.should raise_error
+    end
+
+    it "should prevent user from buying photo from album with owner-only buy permissions" do
+      user = Factory.create(:user)
+      order = Order.create(:user => user)
+      album = Factory.create(:album, :who_can_buy => Album::WHO_OWNER)
+      photo = Factory.create(:photo, :album => album)
+      lambda { order.fast_add_photos(@print_variant, [photo.id]) }.should raise_error
+    end
+
+    it "should prevent guest from buying photo from album with group-only buy permissions" do
+      order = Order.create
+      album = Factory.create(:album, :who_can_buy => Album::WHO_VIEWERS)
+      photo = Factory.create(:photo, :album => album)
+      lambda { order.fast_add_photos(@print_variant, [photo.id]) }.should raise_error
+    end
+
+    it "should allow guest to buying photo from album with everyone buy permissions" do
+      order = Order.create
+      album = Factory.create(:album, :who_can_buy => Album::WHO_EVERYONE)
+      photo = Factory.create(:photo, :album => album)
+      order.fast_add_photos(@print_variant, [photo.id])
+    end
+
+
+
+  end
+
   describe "Line Item validation" do
     before(:each) do
       @order = Order.create

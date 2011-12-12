@@ -672,6 +672,12 @@ zz.buy = zz.buy || {};
             return;
         }
 
+        if(!zz.page.current_user_can_buy_photos){
+            alert("Sorry, you don't have permission to buy photos from this album.");
+            return;
+        }
+
+
         if(photo_json.state != 'ready'){
             alert("Sorry, you can't purchase a photo until it has finished uploading.");
             return;

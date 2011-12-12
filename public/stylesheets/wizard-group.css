@@ -326,6 +326,17 @@
     margin-right: 15px;
 }
 
+.group-editor .who-can-buy{
+    position: absolute;
+    top: 62px;
+    left: 20px;
+}
+
+.group-editor .who-can-buy select{
+    width: 136px;
+    margin-right: 15px;
+}
+
 
 
 
