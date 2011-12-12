@@ -15,14 +15,14 @@ module SpreeCore
         [
           Gateway::Braintree,
           Gateway::Bogus,
-          Gateway::AuthorizeNet,
-          Gateway::AuthorizeNetCim,
-          Gateway::Eway,
-          Gateway::Linkpoint,
-          Gateway::PayPal,
-          Gateway::SagePay,
-          Gateway::Beanstream,
-          PaymentMethod::Check
+          #Gateway::AuthorizeNet,
+          #Gateway::AuthorizeNetCim,
+          #Gateway::Eway,
+          #Gateway::Linkpoint,
+          #Gateway::PayPal,
+          #Gateway::SagePay,
+          #Gateway::Beanstream,
+          #PaymentMethod::Check
         ].each{|gw|
           begin
             gw.register
@@ -33,12 +33,12 @@ module SpreeCore
 
         #register all calculators
         [
-          Calculator::FlatPercentItemTotal,
-          Calculator::FlatRate,
-          Calculator::FlexiRate,
-          Calculator::PerItem,
+          #Calculator::FlatPercentItemTotal,
+          #Calculator::FlatRate,
+          #Calculator::FlexiRate,
+          #Calculator::PerItem,
           Calculator::SalesTax,
-          Calculator::Vat,
+          #Calculator::Vat,
           Calculator::EzpShipping
           #Calculator::PriceBucket
         ].each{|c_model|

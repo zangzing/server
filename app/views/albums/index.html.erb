@@ -8,26 +8,6 @@
     <%= render :partial => "facebook/user_opengraph_tags" %>
 <% end %>
 
-<div id="view-buttons">
-  
-<div id="filter-buttons">
-  View
-  <a id="filter-all-button" class="gray-button"><span>All</span></a>
-  <a id="filter-my-button" class="gray-button"><span>My</span></a>
-  <% if current_user == @user %>
-      <a id="filter-invited-button" class="gray-button"><span>Invited</span></a>
-  <% end %>
-  <a id="filter-liked-button" class="gray-button"><span>Like</span></a>
-  <a id="filter-following-button" class="gray-button"><span>Following</span></a>
-</div>
-
-<div id="sort-buttons">
-  Sort
-  <a id="sort-date-button" class="gray-button"><span>Date</span></a>
-  <a id="sort-recent-button" class="gray-button"><span>Most Recent First</span></a>
-  <a id="sort-name-button" class="gray-button"><span>Sort by Name</span></a>
-</div>
-</div>
 
 <div id="albums" class="albums-list">
   <div id="albums-title" class="album-section-header"></div>

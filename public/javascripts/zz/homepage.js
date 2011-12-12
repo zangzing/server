@@ -377,45 +377,45 @@ zz.homepage = {};
     }
 
     function arm_buttons(){
-        $('#filter-all-button').click( function(){
-            ZZAt.track('homepage.filter-all.button.click');
+        $('#view-all-btn').click( function(){
+            ZZAt.track('homepage.view-all.button.click');
             zz.homepage.show_all_albums();
             set_button_selection();
         });
-        $('#filter-my-button').click( function(){
-            ZZAt.track('homepage.filter-my.button.click');
+        $('#view-my-btn').click( function(){
+            ZZAt.track('homepage.view-my.button.click');
             zz.homepage.show_my_albums();
             set_button_selection();
         });
-        $('#filter-invited-button').click( function(){
-            ZZAt.track('homepage.filter-invited.button.click');
+        $('#view-invited-btn').click( function(){
+            ZZAt.track('homepage.view-invited.button.click');
             zz.homepage.show_invited_albums();
             set_button_selection();
         });
-        $('#filter-liked-button').click( function(){
-            ZZAt.track('homepage.filter-liked.button.click');
+        $('#view-liked-btn').click( function(){
+            ZZAt.track('homepage.view-liked.button.click');
             zz.homepage.show_liked_albums();
             set_button_selection();
         });
-        $('#filter-following-button').click( function(){
+        $('#view-following-btn').click( function(){
             $(this).addClass('selected');
-            ZZAt.track('homepage.filter-following.button.click');
+            ZZAt.track('homepage.view-following.button.click');
             zz.homepage.show_following_albums();
             set_button_selection();
         });
-        $('#sort-date-button').click( function(){
+        $('#sort-date-btn').click( function(){
             $(this).addClass('selected');
             ZZAt.track('homepage.sort-date.button.click');
             zz.homepage.sort_by_created_at_asc();
             set_button_selection();
         });
-        $('#sort-recent-button').click( function(){
+        $('#sort-recent-btn').click( function(){
             $(this).addClass('selected');
             ZZAt.track('homepage.sort-recent.button.click');
             zz.homepage.sort_by_updated_at_desc();
             set_button_selection();
         } );
-        $('#sort-name-button').click( function(){
+        $('#sort-alpha-btn').click( function(){
             ZZAt.track('homepage.sort-name.button.click');
             zz.homepage.sort_by_caption_asc();
             set_button_selection();
@@ -424,38 +424,38 @@ zz.homepage = {};
     }
 
     function clear_selection(){
-        $('div#view-buttons a.gray-button').removeClass('selected');
+        $('div#view-sort-bar div.zz-setbutton').removeClass('active-state');
     }
 
     function set_button_selection(){
         clear_selection();
         switch( $.cookie('zz.homepage.sort')){
             case('caption_asc'):
-                $('#sort-name-button').addClass('selected');
+                $('#sort-name-btn').addClass('active-state');
                 break;
             case('created_at_asc'):
-                $('#sort-date-button').addClass('selected');
+                $('#sort-date-btn').addClass('active-state');
                 break;
             case('updated_at_desc'):
             default:
-                $('#sort-recent-button').addClass('selected');
+                $('#sort-recent-btn').addClass('active-state');
         }
         switch( $.cookie('zz.homepage.filter')){
             case('my'):
-                $('#filter-my-button').addClass('selected');
+                $('#view-my-btn').addClass('active-state');
                 break;
             case('invited'):
-                $('#filter-invited-button').addClass('selected');
+                $('#view-invited-btn').addClass('active-state');
                 break;
             case('liked'):
-                $('#filter-liked-button').addClass('selected');
+                $('#view-liked-btn').addClass('active-state');
                 break;
             case('following'):
-                $('#filter-following-button').addClass('selected');
+                $('#view-following-btn').addClass('active-state');
                 break;
             case('all'):
             default: //all
-                $('#filter-all-button').addClass('selected');
+                $('#view-all-btn').addClass('active-state');
         }
     }
 
