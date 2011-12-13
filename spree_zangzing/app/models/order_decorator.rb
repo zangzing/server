@@ -73,6 +73,7 @@ Order.class_eval do
 
       transition :from => 'confirm',  :to => 'complete'
     end
+    before_transition :to => 'confirm',  :do => :add_marketing_insert
     before_transition :to => 'confirm',  :do => :create_tax_charge!
     before_transition :to => 'confirm',  :do => :assign_default_shipping_method
     after_transition  :to => 'confirm',  :do => :create_default_shipment!
@@ -419,7 +420,6 @@ Order.class_eval do
     # lock any optional adjustments (coupon promotions, etc.)
     adjustments.optional.each { |adjustment| adjustment.update_attribute("locked", true) }
 
-    add_marketing_insert
 
     ZZ::Async::Email.enqueue( :order_confirmed, self.id )
 
@@ -451,20 +451,32 @@ Order.class_eval do
 
   def add_marketing_insert
     index_print_product_ids = Product.taxons_name_eq('index_print').map{|p| p.id }
-    if line_items.detect { |li| index_print_product_ids.include? li.variant.product_id }
-      variant = Variant.find_by_id( Order::MKTG_INSERT_VARIANT_ID )
-      photo = ez.marketing_insert( Order::MKTG_INSERT_USER_NAME, Order::MKTG_INSERT_ALBUM_NAME)
-      if variant && photo
-        li = LineItem.new()
-        li.quantity = 1
-        li.price    = 0.0
-        li.variant  = variant
-        li.photo    = photo
-        li.hidden   = true
-        self.line_items << li
+    variant = Variant.find_by_id( Order::MKTG_INSERT_VARIANT_ID )
+    if visible_line_items.detect { |li| index_print_product_ids.include? li.variant.product_id }
+      # The cart contains prints, add a new marketing insert or
+      # make sure the existing marketing insert's quantity is one
+      if existing_insert = line_items.find_by_hidden_and_variant_id(true, variant.id)
+        existing_insert.quantity = 1
+        existing_insert.save
       else
-        Rails.logger.error( "MARKETING INSERT ERROR: Variant with id=#{Order::MKTG_INSERT_VARIANT_ID} not found") if variant.nil?
-        Rails.logger.error( "MARKETING INSERT ERROR: No marketing insert image found. Looking in user=#{Order::MKTG_INSERT_USER_NAME} album=#{Order::MKTG_INSERT_ALBUM_NAME}") if photo.nil?
+        photo = ez.marketing_insert( Order::MKTG_INSERT_USER_NAME, Order::MKTG_INSERT_ALBUM_NAME)
+        if variant && photo
+          li = LineItem.new()
+          li.quantity = 1
+          li.price    = 0.0
+          li.variant  = variant
+          li.photo    = photo
+          li.hidden   = true
+          self.line_items << li
+        else
+          Rails.logger.error( "MARKETING INSERT ERROR: Variant with id=#{Order::MKTG_INSERT_VARIANT_ID} not found") if variant.nil?
+          Rails.logger.error( "MARKETING INSERT ERROR: No marketing insert image found. Looking in user=#{Order::MKTG_INSERT_USER_NAME} album=#{Order::MKTG_INSERT_ALBUM_NAME}") if photo.nil?
+        end
+      end
+    else
+      # The cart does not contains prints, make sure there is no marketing print
+      if existing_insert = line_items.find_by_hidden_and_variant_id(true, variant.id)
+        existing_insert.destroy
       end
     end
   end
@@ -910,8 +922,8 @@ Have a wonderful time sharing photos! And, we hope you think of us and visit www
 
   def delete_line_items_at_zero
     # change the line item counts
-    LineItem.delete_all(:quantity => 0, :order_id => self.id)
-    self.line_items.order(:id).reload
+    deleted = LineItem.delete_all( [ "quantity <= 0 AND order_id = ?", self.id] )
+    self.reload if deleted > 0 
   end
 
   def cart_count
