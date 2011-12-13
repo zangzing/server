@@ -922,8 +922,8 @@ Have a wonderful time sharing photos! And, we hope you think of us and visit www
 
   def delete_line_items_at_zero
     # change the line item counts
-    LineItem.delete_all( [ "quantity <= 0 AND order_id = ?", self.id] )
-    self.reload
+    deleted = LineItem.delete_all( [ "quantity <= 0 AND order_id = ?", self.id] )
+    self.reload if deleted > 0 
   end
 
   def cart_count
