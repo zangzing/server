@@ -26,6 +26,8 @@
          share_button_template = $('<div class="button share-button">');
 
 
+
+
     $.widget('ui.zz_picon', {
         options: {
             album: null, //album json
@@ -40,6 +42,8 @@
             allowEditCaption: false,
             maxCoverWidth: 180,
             maxCoverHeight: 150,
+            containerWidth:  230,
+            containerHeight: 230,
             captionHeight: 80,
             infoMenuTemplateResolver: null        // show InfoMenu or not and what style
         },
@@ -78,16 +82,15 @@
                 o.onClick();
             });
 
-            // insert picon into DOM
-            el.append(self.template);
+            // insert picon into container
+            //el.append(self.template);
 
             //calculate size
-            self._resize(o.maxCoverWidth, o.maxCoverHeight);
+            //self._resize(o.maxCoverWidth, o.maxCoverHeight);
 
             // clean and arm caption click
             caption.ellipsis();
             self._setupCaptionEditing();
-
 
             var buttonBarWired = false,
                 menuOpen = false,
@@ -194,23 +197,30 @@
                 cover_photo.attr('src', image.src);
             };
             zz.image_utils.pre_load_image(o.coverUrl, onload );
+            el.append(self.template);
             el.hover(mouse_in, mouse_out);
         },
 
         _resize: function(coverWidth, coverHeight) {
-            var self = this;
+            var self = this,
+                o = self.options;
+
             self.template.find('.cover-photo').css({
                 height: coverHeight,
                 width: coverWidth
             });
+
+            var containerWidth  = ( o.containerWidth ?  o.containerWidth : self.element.width() );
+            var containerHeight = ( o.containerHeight ?  o.containerHeight : self.element.height() );
+
             self.template.find('.stacked-image').css({
                 height: coverHeight + 10,
                 width: coverWidth + 10
             }).center_xy({
                              top: 40,
                              left: 0,
-                             width: self.element.width(), //save room for caption
-                             height: self.element.height() - (self.options.captionHeight + 40)
+                             width: containerWidth, //save room for caption
+                             height: containerHeight - ( o.captionHeight + 40)
                          });
         },
 

@@ -1,3 +1,11 @@
+/*
+ *  Copyright 2011 All Rights Reserved. ZangZing LLC www.zangzing.com
+ *
+ */
+
+
+ /*      ALBUM CELLS
+  *********************************************************************/
 .album-cell{
     /*float:left;*/
     display:inline-block;
@@ -26,28 +34,32 @@
     min-height:263px;
 }
 
-<<<<<<< HEAD
-div#view-buttons{
-    margin: 5px auto;
-}
-div#sort-buttons,
-div#filter-buttons{
-    display: inline-block;
-    margin: 0 30px;
-    /*position: absolute;*/
-    /*top: 26px;*/
-    /*left: 40px;*/
+
+/*      VIEW/SORT Button Set
+  *********************************************************************/
+
+#view-sort-bar{
+    margin: 20px auto;
+    height: 25px;
 }
 
-/*div#sort-buttons{*/
-    /*position: absolute;*/
-    /*top: 26px;*/
-    /*left: 540px;*/
-/*}*/
-
-
-#sort-recent-button,
-#sort-name-button{
+#view-sort-bar div.set-title{
     display: inline-block;
-    margin: 0 5px;
+    position:relative;
+    top: -8px;
+    margin-right: 10px;
+    color: #4a4a4a;
+    font-size:  10px;
+    font-weight: 500;
+}
+
+.ua-ie #view-sort-bar div.set-title{
+    font-weight: bold;
+     font-size:  11px;
+}
+
+#view-sort-bar #sort,
+#view-sort-bar #view{
+  display:inline-block;
+  margin: 0 25px;
 }

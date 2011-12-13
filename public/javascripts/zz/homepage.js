@@ -114,7 +114,6 @@ zz.homepage = {};
                         albums = _.filter(albums, function(album) {
                             return album.user_id == zz.page.displayed_user_id;
                         });
-                        add_picons( albums );
                         my_albums = albums;
                         render(my_albums_title, my_albums);
                         fetch_like_info(my_albums);
@@ -128,7 +127,6 @@ zz.homepage = {};
                         render( invited_albums_title, sort( invited_albums ));
                     }else{
                         call_and_merge([invited_albums_path], function(albums) {
-                            add_picons( albums );
                             invited_albums = albums;
                             render(invited_albums_title, invited_albums);
                             fetch_like_info(invited_albums);
@@ -141,7 +139,6 @@ zz.homepage = {};
                     render(liked_albums_title, sort( liked_albums) );
                 }else{
                     call_and_merge([liked_albums_path], function(albums) {
-                        add_picons( albums );
                         liked_albums = albums;
                         render(liked_albums_title, liked_albums);
                         fetch_like_info(liked_albums);
@@ -153,7 +150,6 @@ zz.homepage = {};
                     render(following_albums_title, sort( following_albums) );
                 }else{
                     call_and_merge([ liked_users_albums_path ], function(albums) {
-                        add_picons( albums );
                         following_albums = albums;
                         render(following_albums_title,following_albums);
                         fetch_like_info(following_albums);
@@ -177,7 +173,6 @@ zz.homepage = {};
                         all_urls.push( invited_albums_path );
                     }
                     call_and_merge( all_urls , function(albums) {
-                        add_picons( albums );
                         all_albums = albums;
                         render(all_albums_title,all_albums);
                         fetch_like_info(all_albums);
@@ -210,6 +205,8 @@ zz.homepage = {};
             _.each(results, function(result) {
                 if (! result) {
                     return;
+                }else{
+                    add_picons( result );
                 }
             });
             //all results are back
@@ -266,6 +263,8 @@ zz.homepage = {};
     // the picon cell is stored in album.ui_cell
     function add_picons( albums ){
         _.each(albums, function(album) {
+            if( !album.ui_cell ){
+                console.log('adding picon');
             var clone = cell.clone();
             album.ui_cell = clone;
             clone.zz_picon({
@@ -335,6 +334,7 @@ zz.homepage = {};
                         });
                 }
             });
+           }
         });
     };
 
@@ -344,18 +344,15 @@ zz.homepage = {};
     // Albums in the array must have picons already added ( see add_picons )
     function render(title, albums) {
         var container = $('div#albums');
+        container.hide();
         container.find('div.album-cell').detach();
-        container.fadeOut( 'fast');
         container.find('div#albums-title').text( title );
-        var new_container = container.clone();
         _.each(albums, function(album) {
             if( !_.isUndefined( album.ui_cell ) ){
-                new_container.append( album.ui_cell );
+                container.append( album.ui_cell );
             }
         });
-        container.replaceWith( new_container );
-        new_container.fadeIn( 'slow');
-        container.remove();
+        container.show();
     }
 
     // used to sort album array by most recent first
@@ -380,58 +377,46 @@ zz.homepage = {};
         $('#view-all-btn').click( function(){
             ZZAt.track('homepage.view-all.button.click');
             zz.homepage.show_all_albums();
-            set_button_selection();
         });
         $('#view-my-btn').click( function(){
             ZZAt.track('homepage.view-my.button.click');
             zz.homepage.show_my_albums();
-            set_button_selection();
         });
         $('#view-invited-btn').click( function(){
             ZZAt.track('homepage.view-invited.button.click');
             zz.homepage.show_invited_albums();
-            set_button_selection();
         });
         $('#view-liked-btn').click( function(){
             ZZAt.track('homepage.view-liked.button.click');
             zz.homepage.show_liked_albums();
-            set_button_selection();
         });
         $('#view-following-btn').click( function(){
             $(this).addClass('selected');
             ZZAt.track('homepage.view-following.button.click');
             zz.homepage.show_following_albums();
-            set_button_selection();
         });
         $('#sort-date-btn').click( function(){
             $(this).addClass('selected');
             ZZAt.track('homepage.sort-date.button.click');
             zz.homepage.sort_by_created_at_asc();
-            set_button_selection();
         });
         $('#sort-recent-btn').click( function(){
             $(this).addClass('selected');
             ZZAt.track('homepage.sort-recent.button.click');
             zz.homepage.sort_by_updated_at_desc();
-            set_button_selection();
         } );
         $('#sort-alpha-btn').click( function(){
             ZZAt.track('homepage.sort-name.button.click');
             zz.homepage.sort_by_caption_asc();
-            set_button_selection();
         } );
         set_button_selection();
     }
 
-    function clear_selection(){
-        $('div#view-sort-bar div.zz-setbutton').removeClass('active-state');
-    }
 
     function set_button_selection(){
-        clear_selection();
         switch( $.cookie('zz.homepage.sort')){
             case('caption_asc'):
-                $('#sort-name-btn').addClass('active-state');
+                $('#sort-alpha-btn').addClass('active-state');
                 break;
             case('created_at_asc'):
                 $('#sort-date-btn').addClass('active-state');
