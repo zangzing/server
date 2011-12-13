@@ -673,7 +673,7 @@ zz.buy = zz.buy || {};
         }
 
         if(!zz.page.current_user_can_buy_photos){
-            alert("Sorry, you don't have permission to buy photos from this album.");
+            alert("Sorry, the photos in this album are not available for purchase.");
             return;
         }
 
