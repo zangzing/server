@@ -443,6 +443,7 @@ Server::Application.routes.draw do
   get    '/:user_id/:album_id/people'          => 'people#album_index'
   get    '/:user_id/:album_id/activities'      => 'activities#album_index'
   get    '/:user_id/:album_id/movie'           => 'photos#movie'
+  get    '/:user_id/:album_id/embedded_slideshow'        => 'photos#movie',           :defaults => {:start => 0, :embed => true}
   get    '/:user_id/:album_id/photos/:photo_id' => 'photos#show'
 
 end

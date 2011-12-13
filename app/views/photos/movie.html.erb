@@ -66,6 +66,15 @@
       start_index = 0
    end
 
+   if params[:embed]
+      back_button_caption = "View on ZangZing"
+      back_url = "javascript:window.open('#{CGI::escape back_url}')"
+   else
+      back_button_caption = "Back to Album"
+   end
+
+
+
 %>
 
 
@@ -85,7 +94,8 @@
                         "borderColor=FFFFFF&" +
                         "controlsHideSpeed=2&" +
                         "backButton=true&" +
-                        "backButtonURL=#{CGI::escape back_url}&" +
+                        "backButtonLabel=#{back_button_caption}&" +
+                        "backButtonURL=#{back_url}&" +
                         "loadOriginalImages=false&" +
                         "overrideFullScreenChange=false&" +
                         "scaleBackground=true&" +
@@ -141,11 +151,11 @@
                 controlsHideSpeed:	2,
 
                 backButton:			true,
-                backButtonURL:		'<%=back_url%>',
+                backButtonURL:		'<%=escape_javascript back_url%>',
 
                 iconsURL:			'/images/movie/',
 
-                backButtonText:     'Back to Album',
+                backButtonLabel:     '<%= back_button_caption%>',
 
                 loadOriginalImages: false,
 
