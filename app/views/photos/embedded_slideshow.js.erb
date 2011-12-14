@@ -3,13 +3,13 @@
     width = params[:width] || '600px'
     album_url = album_pretty_url( @album )
     embedded_movie_url = "#{album_url}/movie?js=true&start=0&embed=true"
-    logo_src = "#{request.protocol}#{request.host_with_port}/images/embedded_slideshow/zangzing_logo.png"
+    logo_src = "#{request.protocol}#{request.host_with_port}/images/embedded_slideshow/zangzing_logo.png?1"
 %>
 
 
 (function(){
     document.write('<div style="background-color:black; position:relative; width:<%=width%>;height:<%=height%>">');
-    document.write('<a style="position:absolute; top:10px; left:10px; text-decoration:none; border:none" href="<%=album_url %>" target="_blank"><img style="border:none" src="<%=logo_src%>"></a>');
+    document.write('<a style="position:absolute; bottom:10px; right:10px; text-decoration:none; border:none" href="<%=album_url %>" target="_blank"><img style="border:none" src="<%=logo_src%>"></a>');
     document.write('<iframe style="border:none; height:100%; width:100%" src="<%=embedded_movie_url%>"></iframe>');
     document.write('</div>');
 }());
