@@ -13,5 +13,6 @@
     zz.page.back_to_home_page_url       = '<%= back_to_home_page_url @album %>';
     zz.page.back_to_home_page_caption   = '<%= escape_javascript back_to_home_page_caption @album %>';
     zz.page.current_photo_index         = 0;
+    zz.page.album_cover_id              = <%= (@album.cover ? @album.cover.id : 0) %>
 </script>
 

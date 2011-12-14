@@ -100,7 +100,7 @@ zz.infomenu = {
             case 'setcover':
                 ZZAt.track('infomenu.setcover.click');
                 zz.routes.call_set_album_cover(zz.page.album_id, id, function() {
-                    zz.toolbars.load_album_cover(photo.options.previewSrc);
+                    zz.toolbars.load_album_cover(id, photo.options.previewSrc);
                 });
                 break;
 

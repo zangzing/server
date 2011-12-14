@@ -380,7 +380,7 @@ zz.toolbars = {
 
     },
 
-    load_album_cover: function(src) {
+    load_album_cover: function(photo_id, src) {
         var image = new Image();
         image.onload = function() {
             var height = 40;
@@ -398,6 +398,8 @@ zz.toolbars = {
             $('img.album-cover').attr('src', image.src);
         };
         image.src = zz.agent.checkAddCredentialsToUrl(src);
+
+        zz.page.album_cover_id = photo_id;
     },
 
     _disable_buttons: function() {

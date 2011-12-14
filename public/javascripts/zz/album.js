@@ -108,12 +108,12 @@ zz.album = {};
      ***************************************************/
 
     function render_grid_view(){
-        load_photos_json(function(json) {
+        load_photos_json(function(photos_json) {
 
             var buy_mode = zz.buy.is_buy_mode_active();
 
             //no movie mode if no photos
-            if (json.length == 0) {
+            if (photos_json.length == 0) {
                 $('#footer #play-button').addClass('disabled');
             }
 
@@ -124,8 +124,8 @@ zz.album = {};
             $('#article').css('overflow', 'hidden');
 
 
-            for (var i = 0; i < json.length; i++) {
-                var photo = json[i];
+            for (var i = 0; i < photos_json.length; i++) {
+                var photo = photos_json[i];
                 photo.previewSrc = zz.agent.checkAddCredentialsToUrl(photo.stamp_url);
                 photo.src = zz.agent.checkAddCredentialsToUrl(photo.thumb_url);
 
@@ -145,12 +145,12 @@ zz.album = {};
                     type: 'blank'
                 };
 
-                json.unshift(addAllButton);
+                photos_json.unshift(addAllButton);
             }
 
 
             var grid = gridElement.zz_photogrid({
-                photos: json,
+                photos: photos_json,
                 allowDelete: false,
                 allowEditCaption: false,
                 allowReorder: false,
@@ -171,7 +171,28 @@ zz.album = {};
                     }
                 },
                 onDelete: function(index, photo) {
-                    zz.routes.call_delete_photo(photo.id);
+                    zz.routes.call_delete_photo(photo.id,
+                        // success
+                        function(){
+                            // if photo deleted was the cover
+                            if(zz.page.album_cover_id==photo.id){
+                                if(zz.page.profile_album){
+                                    zz.toolbars.load_album_cover(0, "/images/profile-default-55.png");
+                                } else {
+                                    zz.toolbars.load_album_cover(0, "/images/album-no-cover.png");
+                                }
+                            }
+
+                            // remove photo from photos_json
+                            // TODO: removed for now because "index" is not updated. no longer correct after 1 delete
+                            // photos_json.splice(index, 1);
+                        },
+
+                        // error
+                        function(){
+                            // do nothing
+                        }
+                    );
                     return true;
                 },
                 showButtonBar: !buy_mode,
@@ -493,7 +514,29 @@ zz.album = {};
                         zz.pages.share.share_in_dialog('photo', photo_id);
                     },
                     onDelete: function(index, photo) {
-                        zz.routes.call_delete_photo(photo.id);
+                    zz.routes.call_delete_photo(photo.id,
+                        // success
+                        function(){
+                            // if photo deleted was the cover
+                            if(zz.page.album_cover_id==photo.id){
+                                if(zz.page.profile_album){
+                                    zz.toolbars.load_album_cover(0, "/images/profile-default-55.png");
+                                } else {
+                                    zz.toolbars.load_album_cover(0, "/images/album-no-cover.png");
+                                }
+
+                            }
+
+                            // remove photo from photos_json
+                            // TODO: removed for now because "index" is not updated. no longer correct after 1 delete
+                            // photos_json.splice(index, 1);
+                        },
+
+                        // error
+                        function(){
+                            // do nothing
+                        }
+                    );
                         return true;
                     },
                     infoMenuTemplateResolver: info_menu_template_resolver,
