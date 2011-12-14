@@ -10,6 +10,63 @@ describe Order do
     ActionMailer::Base.deliveries = []
   end
 
+
+  describe "#fast_add_photos" do
+    before(:each) do
+      variants = Product.find_by_name('Prints').variants
+      @print_variant = variants.detect{ |variant| variant.print? }
+    end
+
+    it "should allow owner to buy from album owner-only buy permissions" do
+      user = Factory.create(:user)
+
+      order = Order.create
+      order.user = user
+      order.save!
+
+      album = Factory.create(:album, :user => user, :who_can_buy => Album::WHO_OWNER)
+      photo = Factory.create(:photo, :album => album, :user => user)
+      order.fast_add_photos(@print_variant, [photo.id])
+    end
+
+
+    it "should prevent guest from buying photo from album with owner-only buy permissions" do
+      order = Order.create
+      album = Factory.create(:album, :who_can_buy => Album::WHO_OWNER)
+      photo = Factory.create(:photo, :album => album)
+      lambda { order.fast_add_photos(@print_variant, [photo.id]) }.should raise_error
+    end
+
+    it "should prevent user from buying photo from album with owner-only buy permissions" do
+      user = Factory.create(:user)
+
+      order = Order.create
+      order.user = user
+      order.save!
+
+      album = Factory.create(:album, :who_can_buy => Album::WHO_OWNER)
+      photo = Factory.create(:photo, :album => album)
+      lambda { order.fast_add_photos(@print_variant, [photo.id]) }.should raise_error
+    end
+
+    it "should prevent guest from buying photo from album with group-only buy permissions" do
+      order = Order.create
+      album = Factory.create(:album, :who_can_buy => Album::WHO_VIEWERS)
+      photo = Factory.create(:photo, :album => album)
+      lambda { order.fast_add_photos(@print_variant, [photo.id]) }.should raise_error
+    end
+
+    it "should allow guest to buying photo from album with everyone buy permissions" do
+      order = Order.create
+      album = Factory.create(:album, :who_can_buy => Album::WHO_EVERYONE)
+      photo = Factory.create(:photo, :album => album)
+      order.fast_add_photos(@print_variant, [photo.id])
+    end
+
+
+
+  end
+
   describe "Line Item validation" do
     before(:each) do
       @order = Order.create
@@ -212,7 +269,7 @@ describe Order do
       @order.line_items.count.should be 0
       @order.add_variant( index_print_variant,  @photo, 1 )
       @order.line_items.count.should be 1
-      @order.finalize!
+      @order.add_marketing_insert
       @order.line_items.count.should be 2
       visible_line_items = @order.line_items.prints.length + @order.line_items.not_prints.length
       visible_line_items.should be 1
@@ -224,11 +281,57 @@ describe Order do
       @order.line_items.count.should be 0
       @order.add_variant( work_order_variant,  @photo, 1 )
       @order.line_items.count.should be 1
-      @order.finalize!
+      @order.add_marketing_insert
       @order.line_items.count.should be 1
       visible_line_items = @order.line_items.prints.length + @order.line_items.not_prints.length
       visible_line_items.should be 1
     end
+
+    it 'should add only ONE  marketing print if order contains IndexPrint products' do
+          index_print_product = Product.taxons_name_eq('index_print').first
+          index_print_variant = index_print_product.variants.first
+          @order.line_items.count.should be 0
+          @order.add_variant( index_print_variant,  @photo, 1 )
+          @order.line_items.count.should be 1
+          @order.add_marketing_insert
+          @order.line_items.count.should be 2
+          @order.add_marketing_insert
+          @order.line_items.count.should be 2
+          marketing_insert = @order.line_items.find_by_hidden(true)
+          marketing_insert.quantity = 10
+          marketing_insert.save
+          @order.add_marketing_insert
+          @order.line_items.count.should be 2
+          marketing_insert = @order.line_items.find_by_hidden(true)
+          marketing_insert.quantity.should be 1
+
+          visible_line_items = @order.line_items.prints.length + @order.line_items.not_prints.length
+          visible_line_items.should be 1
+    end
+
+    it 'should remove marketing print line_item if order no longer contains IndexPrint products' do
+          index_print_product = Product.taxons_name_eq('index_print').first
+          index_print_variant = index_print_product.variants.first
+          @order.line_items.count.should be 0
+          index_print_line_item = @order.add_variant( index_print_variant,  @photo, 1 )
+          @order.line_items.count.should be 1
+          work_order_product = Product.taxons_name_eq('work_order').first
+          work_order_variant = work_order_product.variants.first
+          @order.add_variant( work_order_variant,  @photo, 1 )
+          @order.line_items.count.should be 2
+          @order.add_marketing_insert
+          @order.line_items.count.should be 3
+          visible_line_items = @order.line_items.prints.length + @order.line_items.not_prints.length
+          visible_line_items.should be 2
+          index_print_line_item.destroy
+          @order.reload
+          @order.line_items.count.should be 2
+          visible_line_items = @order.line_items.prints.length + @order.line_items.not_prints.length
+          visible_line_items.should be 1
+          @order.add_marketing_insert  #removes marketing print because index product has been removed
+          @order.line_items.count.should be 1
+        end
+
 
     it 'should send order confirmed email' do
       resque_jobs(:except => [ZZ::Async::MailingListSync]) do

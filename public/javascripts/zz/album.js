@@ -31,7 +31,7 @@ zz.album = {};
 
         zz.buy.on_before_activate(function(){
             var photo = zz.routes.photos.get_photo_json(current_photo_id);
-            if(!zz.buy.is_photo_selected(current_photo_id)){
+            if(!zz.buy.is_photo_selected(current_photo_id) && zz.page.current_user_can_buy_photos){
                 zz.buy.add_selected_photo(current_photo_json);
             }
             ZZAt.track('photo.buy.toolbar.click');
@@ -124,7 +124,7 @@ zz.album = {};
             $('#article').css('overflow', 'hidden');
 
             // add placeholder for add-all button
-            if(buy_mode){
+            if(buy_mode && zz.page.current_user_can_buy_photos){
                 var addAllButton = {
                     id: 'add-all-photos',
                     src: zz.routes.image_url('/images/blank.png'),
@@ -168,7 +168,7 @@ zz.album = {};
 
 
 
-            if (buy_mode) {
+            if (buy_mode && zz.page.current_user_can_buy_photos) {
                 var addAllButton = $('<img class="add-all-button" src="' + zz.routes.image_url('/images/folders/add_all_photos.png') + '">');
                 addAllButton.click(function() {
                     zz.buy.add_all_photos_from_current_album();
