@@ -61,16 +61,23 @@ class Comment < ActiveRecord::Base
       end
 
       # all viewers and contributors of album
-      # viewers comes back as strings of ids or emails
-      album.viewers.each do |viewer|
-        # if viewer doesn't parse, this will return 0
-        viewer_id = viewer.to_i
-        if viewer_id == 0
-          users_to_notify << viewer
-        else
-          users_to_notify << viewer_id
-        end
+      if album.stream_to_email?
+        viewers ||= album.viewers(false)
+          if viewers.length > 0
+            zza.track_event('album.stream.email')
+          end
 
+        # viewers comes back as strings of ids or emails
+        viewers.each do |viewer|
+          # if viewer doesn't parse, this will return 0
+          viewer_id = viewer.to_i
+          if viewer_id == 0
+            users_to_notify << viewer
+          else
+            users_to_notify << viewer_id
+          end
+
+        end
       end
 
       # de-dupe and remove current user
