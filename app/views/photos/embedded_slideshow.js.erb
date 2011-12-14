@@ -1,0 +1,15 @@
+<%
+    height = params[:height] || '400px'
+    width = params[:width] || '600px'
+    album_url = album_pretty_url( @album )
+    embedded_movie_url = "#{album_url}/movie?js=true&start=0&embedded=true"
+    logo_src = "#{request.protocol}#{request.host_with_port}/images/embedded_slideshow/zangzing_logo.png"
+%>
+
+
+(function(){
+    document.write('<div style="background-color:black; position:relative; width:<%=width%>;height:<%=height%>">');
+    document.write('<a style="position:absolute;top:10px;left:10px" href="<%=album_url %>" target="_blank"><img src="<%=logo_src%>"></a>');
+    document.write('<iframe style="border:none; height:100%; width:100%" src="<%=embedded_movie_url%>"></iframe>');
+    document.write('</div>');
+}());

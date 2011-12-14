@@ -76,6 +76,9 @@
 			// The URL or file path and name of an image displayed as the exit button
 			this.backButtonURL = '',
 
+
+            this.backUrlInNewWin = false;
+
 			// Control bar icons URL
 			this.iconsURL = 'icons/',
 
@@ -919,7 +922,12 @@
 		 * Exit button control
 		 */
 		exitControl: function(){
-			window.location=this.backButtonURL;
+            if(this.backUrlInNewWin){
+                window.open(this.backButtonURL);
+            }
+            else{
+                window.location=this.backButtonURL;
+            }
 		},
 
 		/**

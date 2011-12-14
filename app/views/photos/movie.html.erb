@@ -66,11 +66,12 @@
       start_index = 0
    end
 
+   back_button_caption = "Back to Album"
+
    if params[:embed]
-      back_button_caption = "View on ZangZing"
-      back_url = "javascript:window.open('#{CGI::escape back_url}')"
+      open_back_url_in_new_win = true
    else
-      back_button_caption = "Back to Album"
+      open_back_url_in_new_win = false
    end
 
 
@@ -152,6 +153,7 @@
 
                 backButton:			false,
                 backButtonURL:		'<%=escape_javascript back_url%>',
+                backUrlInNewWin:    <%=open_back_url_in_new_win%>,
 
                 iconsURL:			'/images/movie/',
 
