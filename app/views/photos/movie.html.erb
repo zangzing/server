@@ -54,28 +54,28 @@
 </head>
 
 <%
-    if params[:return_to]
-        back_url = CGI::unescape(params[:return_to])
-    else
-        back_url = "#{album_pretty_url( @album )}"
-    end
+   if params[:return_to]
+       back_url = CGI::unescape(params[:return_to])
+   else
+       back_url = "#{album_pretty_url(@album)}"
+   end
 
    if params[:start]
-      start_index = params[:start].to_i
+       start_index = params[:start].to_i
    else
-      start_index = 0
+       start_index = 0
    end
 
    back_button_caption = "Back to Album"
 
    if params[:embed]
-      open_back_url_in_new_win = true
-      back_button = false
+       open_back_url_in_new_win = true
+       back_button = false
+       send_zza_event_from_client('embedded_slideshow.view')
    else
-      open_back_url_in_new_win = false
-     back_button = true
+       open_back_url_in_new_win = false
+       back_button = true
    end
-
 
 
 %>
@@ -216,6 +216,9 @@
             });
 
             setSize();
+
+            <%= perform_javascript_actions %>
+
         });
 
         $(window).ready(function(){
