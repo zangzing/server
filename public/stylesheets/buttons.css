@@ -304,9 +304,10 @@ a.gray-square-button:active span{ background-position: left -60px; }
  **************************************************************************/
 .zz-buttonset {
         display: inline-block;
+        cursor: pointer;
 }
 
-.zz-buttonset .zz-setbutton {
+.zz-buttonset div.zz-setbutton {
     display: inline-block;
     float: left;
     width: auto;
@@ -386,7 +387,7 @@ a.gray-square-button:active span{ background-position: left -60px; }
 /* For buttons with an up/down arrow */
 .zz-setbutton div.arrow{
     display: inline-block;
-    padding-right: 20px;
+    padding-right: 16px;
     background: url('/images/up-down.png') no-repeat scroll right 1px;
 }
 .zz-setbutton.arrow-up div.arrow                { background-position: right -41px; }

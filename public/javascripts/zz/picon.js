@@ -263,11 +263,11 @@
                     var newCaption = textBoxElement.val();
                     if (newCaption !== self.options.caption) {
                       self.options.onChangeCaption(newCaption,
-                            function(data){
+                            function(data){ //onSuccess
                                 self.options.caption = newCaption;
                                 resetCaption(self.options.caption);
                             },
-                            function(){
+                            function(){ //onError
                                 armCaptionEditor();
                             });
                     } else {
