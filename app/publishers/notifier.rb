@@ -205,11 +205,13 @@ class Notifier < ActionMailer::Base
     end
   end
 
-  def photo_comment(comment_added_by_user_id, send_notification_to_user_id, comment_id, template_id = nil)
+  def photo_comment(comment_added_by_user_id, send_notification_to_user_id_or_address, comment_id, template_id = nil)
     @user = User.find(comment_added_by_user_id)
-    @recipient = User.find(send_notification_to_user_id)
     @comment = Comment.find(comment_id)
     @photo = @comment.commentable.subject
+    # if send_notification_to_user_id_or_address is an email, we already know that the email is not a user yet.
+    rcp_user = User.find_by_id( send_notification_to_user_id_or_address )
+    @recipient = ( rcp_user ? rcp_user : send_notification_to_user_id_or_address )
     create_message( __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
 end
