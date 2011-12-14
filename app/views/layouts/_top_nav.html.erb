@@ -17,7 +17,7 @@
                 <% content_for :page_javascript do %>
                     <script type="text/javascript">
                         $(document).ready(function(){
-                            zz.toolbars.load_album_cover(<%= (@album.cover ? @album.cover.id : 0) %>, '<%= @album.cover.thumb_url%>');
+                            zz.toolbars.load_album_cover('<%= @album.cover.thumb_url%>');
                         })
                     </script>
                 <% end %>
@@ -25,7 +25,7 @@
                 <% content_for :page_javascript do %>
                     <script type="text/javascript">
                         $(document).ready(function(){
-                            zz.toolbars.load_album_cover(0, '<%= ProfileAlbum.default_profile_small_url %>');
+                            zz.toolbars.load_album_cover('<%= ProfileAlbum.default_profile_small_url %>');
                         })
                     </script>
                 <% end %>
