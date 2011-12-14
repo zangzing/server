@@ -382,3 +382,15 @@ a.gray-square-button:active span{ background-position: left -60px; }
     -moz-border-radius-bottomright: 4px;
     -moz-border-radius-topright: 4px;
 }
+
+/* For buttons with an up/down arrow */
+.zz-setbutton div.arrow{
+    display: inline-block;
+    padding-right: 20px;
+    background: url('/images/up-down.png') no-repeat scroll right 1px;
+}
+.zz-setbutton.arrow-up div.arrow                { background-position: right -41px; }
+.zz-setbutton.arrow-down div.arrow              { background-position: right -54px; }
+.zz-setbutton.active-state.arrow-up div.arrow   { background-position: right  -13px; }
+.zz-setbutton.active-state.arrow-down div.arrow { background-position: right  -27px; }
+

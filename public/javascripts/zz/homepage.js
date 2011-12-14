@@ -78,6 +78,12 @@ zz.homepage = {};
         filter_sort_and_render( );
     };
 
+    zz.homepage.sort_by_created_at_desc = function(){
+            jQuery.cookie('zz.homepage.sort', 'created_at_desc', {path:'/'});
+            filter_sort_and_render( );
+    };
+
+
     zz.homepage.show_all_albums = function(){
         jQuery.cookie('zz.homepage.filter', 'all', {path:'/'});
         filter_sort_and_render( );
@@ -188,9 +194,11 @@ zz.homepage = {};
                 case('updated_at_desc'):
                     return _.sortBy(albums, most_recent_first_comparator );
                 case('created_at_asc'):
-                    return _.sortBy(albums, most_recent_first_comparator ); //TODO: Write correct comparator
+                    return _.sortBy(albums, created_at_asc_comparator );
+                case('created_at_desc'):
+                    return _.sortBy(albums, created_at_desc_comparator );
                 default:
-                    return _.sortBy(albums, most_recent_first_comparator );
+                    return _.sortBy(albums, updated_at_desc_comparator );
             }
     }
 
@@ -355,12 +363,21 @@ zz.homepage = {};
         container.show();
     }
 
-    // used to sort album array by most recent first
-    function most_recent_first_comparator(album){
+
+    function updated_at_desc_comparator(album){
                 return -1 * album.updated_at;
     }
 
-    // alphabetic ascending
+
+    function created_at_asc_comparator(album){
+                return  album.created_at;
+    }
+
+    function created_at_desc_comparator(album){
+                return  -1 * album.created_at;
+    }
+
+
     function alpha_caption_asc_comprarator( album ){
                 return album.name;
     }
@@ -391,17 +408,19 @@ zz.homepage = {};
             zz.homepage.show_liked_albums();
         });
         $('#view-following-btn').click( function(){
-            $(this).addClass('selected');
             ZZAt.track('homepage.view-following.button.click');
             zz.homepage.show_following_albums();
         });
         $('#sort-date-btn').click( function(){
-            $(this).addClass('selected');
-            ZZAt.track('homepage.sort-date.button.click');
-            zz.homepage.sort_by_created_at_asc();
+            if( $(this).hasClass('arrow-up')){
+                ZZAt.track('homepage.sort-date-asc.button.click');
+                zz.homepage.sort_by_created_at_asc();
+            }else{
+                ZZAt.track('homepage.sort-date-desc.button.click');
+                zz.homepage.sort_by_created_at_desc();
+            }
         });
         $('#sort-recent-btn').click( function(){
-            $(this).addClass('selected');
             ZZAt.track('homepage.sort-recent.button.click');
             zz.homepage.sort_by_updated_at_desc();
         } );
@@ -419,7 +438,10 @@ zz.homepage = {};
                 $('#sort-alpha-btn').addClass('active-state');
                 break;
             case('created_at_asc'):
-                $('#sort-date-btn').addClass('active-state');
+                $('#sort-date-btn').addClass('active-state arrow-up');
+                break;
+            case('created_at_desc'):
+                $('#sort-date-btn').addClass('active-state arrow-down');
                 break;
             case('updated_at_desc'):
             default:
@@ -449,11 +471,13 @@ zz.homepage = {};
                 case('caption_asc'):
                     return _.sortBy(albums, alpha_caption_asc_comprarator );
                 case('updated_at_desc'):
-                    return _.sortBy(albums, most_recent_first_comparator );
+                    return _.sortBy(albums, updated_at_desc_comparator );
                 case('created_at_asc'):
-                    return _.sortBy(albums, most_recent_first_comparator ); //TODO: Write correct comparator
+                    return _.sortBy(albums, created_at_asc_comparator );
+                case('created_at_desc'):
+                    return _.sortBy(albums, created_at_desc_comparator );
                 default:
-                    return _.sortBy(albums, most_recent_first_comparator );
+                    return _.sortBy(albums, updated_at_desc_comparator );
             }
     }
 

@@ -15,12 +15,22 @@
                 }
             )
                 .mousedown(function(){
-                    $(this).parents('.zz-buttonset:first').find(".zz-setbutton.active-state").removeClass("active-state");
-                    $(this).addClass("active-state");
+                    if( $(this).hasClass('active-state') ){
+                        if( $(this).find('div.arrow')){
+                            if( $(this).hasClass('arrow-up') ){
+                                $(this).removeClass('arrow-up').addClass('arrow-down');
+                            }else if( $(this).hasClass('arrow-down') ){
+                                $(this).removeClass('arrow-down').addClass('arrow-up');
+                            }
+                        }
+                    } else {
+                        $(this).parents('.zz-buttonset:first').find(".zz-setbutton.active-state").removeClass("active-state");
+                        $(this).addClass("active-state");
+                    }
                 })
                 .mouseup(function(){
                     if(! $(this).is('.zz-setbutton') ){
-                        $(this).removClass("active-state");
+                        $(this).removeClass("active-state");
                     }
                 });
         });
