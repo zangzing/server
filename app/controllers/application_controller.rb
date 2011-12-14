@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
   helper_method :user_pretty_url, :album_pretty_url, :photo_pretty_url,
                 :back_to_home_page_url, :back_to_home_page_caption, :current_order, :send_zza_event_from_client
 
-  before_filter :check_referrer_and_reset_last_home_page, :capture_zza_event_from_params
+  before_filter :check_referrer_and_reset_last_home_page
 
   after_filter :flash_to_headers
 
@@ -70,26 +70,29 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # jeremy was going to use this but decided not to
+  #  works well and we may want later, so leaving it here
+  #  for now
 
-  def capture_zza_event_from_params
-
-    if params[:zza]
-      # capture and send zza event
-      send_zza_event_from_client(params[:zza])
-
-      # remove the zza param from the query strinng and redirect to destination
-      query_hash = request.query_parameters.reject{|k,v| k == 'zza' }
-
-      url = "#{request.protocol}#{request.host_with_port}#{request.path}"
-
-      if query_hash.length > 0
-        url = "#{url}?#{query_hash.to_query}"
-      end
-
-      redirect_to url
-
-    end
-  end
+  #def capture_zza_event_from_params
+  #
+  #  if params[:zza]
+  #    # capture and send zza event
+  #    send_zza_event_from_client(params[:zza])
+  #
+  #    # remove the zza param from the query strinng and redirect to destination
+  #    query_hash = request.query_parameters.reject{|k,v| k == 'zza' }
+  #
+  #    url = "#{request.protocol}#{request.host_with_port}#{request.path}"
+  #
+  #    if query_hash.length > 0
+  #      url = "#{url}?#{query_hash.to_query}"
+  #    end
+  #
+  #    redirect_to url
+  #
+  #  end
+  #end
 
 
   def back_to_home_page_url(album)

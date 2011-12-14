@@ -27,6 +27,7 @@
             padding: 0;
             text-align: center;
             background-color: #000000;
+            position: relative;
         }
 
         #movie {
@@ -42,6 +43,18 @@
             width:100%;
             background-color: #000000;
             z-index:100000;
+        }
+
+        #logo_for_embedded {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            background: url('/images/embedded_slideshow/zangzing_logo.png?3');
+            width: 99px;
+            height: 23px;
+            display: none;
+            z-index: 10000;
+            cursor: pointer;
         }
 
     </style>
@@ -71,7 +84,6 @@
    if params[:embed]
        open_back_url_in_new_win = true
        back_button = false
-       send_zza_event_from_client('embedded_slideshow.view')
    else
        open_back_url_in_new_win = false
        back_button = true
@@ -119,6 +131,7 @@
       
         <param name="flashvars" value="source=<%=album_photos_json_url @album%>?ver=<%=@album.cache_version_key%>&<%=flash_params%>"/>
     </object>
+    <div id="logo_for_embedded"></div>
     <div id="scrim"></div>
 
     <%= include_javascripts :jquery %>
@@ -218,6 +231,15 @@
             setSize();
 
             <%= perform_javascript_actions %>
+
+            <% if params[:embed] %>
+                ZZAt.track('embedded_slideshow.view');
+
+                $('#logo_for_embedded').show().click(function(){
+                    ZZAt.track('embedded_slideshow.link.click');
+                    window.open('<%= album_pretty_url(@album) %>');
+                });
+            <% end %>
 
         });
 
