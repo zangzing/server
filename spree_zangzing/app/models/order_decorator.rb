@@ -276,6 +276,14 @@ Order.class_eval do
   # order after calling
   # [ [line_item_id, order_id, variant_id, quantity_change, price, created_at, updated_at, photo_id], ... ]
   def fast_add_photos(variant, photo_ids, quantity = 1)
+
+    # check permissions and fail all if any fail
+    Album.select('DISTINCT albums.*').joins(:photos).where("photos.id in (?)", photo_ids).each do |album|
+      if(!album.can_user_buy_photos?(self.user))
+        raise "You do not have permission to buy photos from this album"
+      end
+    end
+
     variant_id = variant.id
     now = DateTime.now
     rows = []
