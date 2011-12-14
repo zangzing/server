@@ -70,8 +70,10 @@
 
    if params[:embed]
       open_back_url_in_new_win = true
+      back_button = false
    else
       open_back_url_in_new_win = false
+     back_button = true
    end
 
 
@@ -94,7 +96,7 @@
                         "borderSize=5&" +
                         "borderColor=FFFFFF&" +
                         "controlsHideSpeed=2&" +
-                        "backButton=false&" +
+                        "backButton=#{back_button}&&" +
                         "backButtonLabel=#{back_button_caption}&" +
                         "backButtonURL=#{back_url}&" +
                         "loadOriginalImages=false&" +
@@ -151,7 +153,7 @@
 
                 controlsHideSpeed:	2,
 
-                backButton:			false,
+                backButton:			<%=back_button%>,
                 backButtonURL:		'<%=escape_javascript back_url%>',
                 backUrlInNewWin:    <%=open_back_url_in_new_win%>,
 

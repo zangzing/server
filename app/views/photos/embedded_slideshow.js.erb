@@ -2,7 +2,7 @@
     height = params[:height] || '400px'
     width = params[:width] || '600px'
     album_url = album_pretty_url( @album )
-    embedded_movie_url = "#{album_url}/movie?js=true&start=0&embedded=true"
+    embedded_movie_url = "#{album_url}/movie?js=true&start=0&embed=true"
     logo_src = "#{request.protocol}#{request.host_with_port}/images/embedded_slideshow/zangzing_logo.png"
 %>
 
