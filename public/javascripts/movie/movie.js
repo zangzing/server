@@ -320,6 +320,14 @@
 				this.backButtonURL = configs.backButtonURL;
 			}
 
+
+            if (typeof configs.backUrlInNewWin != 'undefined') {
+				this.backUrlInNewWin = configs.backUrlInNewWin;
+			}
+
+
+
+
 			// iconsURL
 			if (typeof configs.iconsURL != 'undefined' && configs.iconsURL.length > 0) {
 				this.iconsURL = configs.iconsURL;
