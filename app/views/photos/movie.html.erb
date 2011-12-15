@@ -142,7 +142,7 @@
 
     <script type="text/javascript">
 
-        var force_javascript = (document.location.search.indexOf('js=true') !== -1);
+        var force_javascript = <%= params[:js].nil? ? false : params[:js] %>
 
         var handle_no_flash = function(){
             $("#movie").replaceWith('<div id="movie" class="javascript-movie"></div>');
