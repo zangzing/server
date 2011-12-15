@@ -216,6 +216,10 @@
     padding-left: 5px;
 }
 
+#user-info-picture .defaultprofilepic {
+    cursor: pointer;
+}
+
 #user-name h2{
     vertical-align: top;
     position: relative;

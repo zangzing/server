@@ -1,4 +1,4 @@
-<div class="profile-picture">
+<div class="profile-picture<%= " defaultprofilepic" if user.profile_photo_url==ProfileAlbum.default_profile_small_url && current_user?(user)%>">
     <div class="mask">
       <img data-src="<%=proxy_if_needed_for_ssl(user.profile_photo_url)%>" src="<%= image_path('/images/blank.png')%>">
     </div>
