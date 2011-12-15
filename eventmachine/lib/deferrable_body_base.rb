@@ -5,18 +5,17 @@ class DeferrableBodyBase
   include EventMachine::Deferrable
 
   attr_accessor :base_zza_event
-  attr_reader :tx_id
+  attr_reader :tx_id, :json_data
 
   # prepare for async operations by prepping data
   # with incoming env - we expect a json_path
   # query argument that has a path to a local temp
   # file containing the json
-  def initialize(env)
+  def initialize(env, json_data)
     @env = env
     @connection = env['async.callback'].receiver  # this is a bit of hack since we are relying on the fact that async.callback comes from thins connection
     @client_peer_failure = false
-    @params = Rack::Utils::parse_query(env['QUERY_STRING'])
-    @json_data = (EventMachineRPC.parse_json_from_file(@params['json_path'])) rescue {}
+    @json_data = json_data
     @user_context = @json_data[:user_context]
     @first_fetch = true
     @failed = false
@@ -115,6 +114,7 @@ class DeferrableBodyBase
   def client_success
     zza.track_transaction("#{base_zza_event}.client.success", tx_id)
     log_info "All requests complete."
+    clean_up
   end
 
   # This is setup in initialize via an errback handler
@@ -138,6 +138,7 @@ class DeferrableBodyBase
         # shut down the connection to the back end
         @handled_failure = true
         client_connection_failed
+        clean_up
       end
       true
     else
@@ -158,4 +159,8 @@ class DeferrableBodyBase
   def begin_work
   end
 
+  def clean_up
+    @connection = nil
+    @env = nil
+  end
 end

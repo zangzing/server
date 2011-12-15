@@ -373,7 +373,9 @@ Server::Application.routes.draw do
         put   'users/:id/impersonate'            => 'users#impersonate',          :as => :admin_impersonate
 
         get   'heap'                            => 'heap#index'
-        get   'heap/track'                      => 'heap#track'
+        get   'heap_track'                      => 'heap#track'
+        get   'em_heap'                         => 'heap#em_index'
+        get   'em_heap_track'                   => 'heap#em_track'
     end
 
     #Resque: mount the resque server

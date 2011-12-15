@@ -1,3 +1,2 @@
 require 'rspec'
-require 'require_all'
-require_rel '../lib'
+require File.dirname(__FILE__) + "/../app_init"

@@ -22,5 +22,21 @@ class Admin::HeapController < Admin::AdminController
     render :text => msg, :content_type => 'text/plain'
   end
 
+  # use the eventmachine proxy mechanism to
+  # call into eventmachine - we put this here
+  # rather than eventmachine directly so we can
+  # apply the permission checks, eventmachine_proxy
+  # is not open to the outside world
+  def em_index
+    prepare_proxy_eventmachine('heap', {})
+    render :nothing => true
+  end
 
+  def em_track
+    data = {
+        :on => ZZUtils.as_boolean(params[:on])
+    }
+    prepare_proxy_eventmachine('heap_track', data)
+    render :nothing => true
+  end
 end

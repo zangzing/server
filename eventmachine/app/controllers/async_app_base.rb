@@ -1,29 +1,9 @@
-require 'thin'
-require 'json'
 require 'em-http'
 require 'event_machine_rpc'
 
 
-class AsyncAppBase
-  # This is a template async response.
+class AsyncAppBase < AppBase
   AsyncResponse = [-1, {}, []].freeze
-  ErrorResponse = [500, {}, []].freeze
-
-  def initialize
-    @request_count = 0
-  end
-
-  def request_count
-    @request_count
-  end
-
-  def request_bump
-    @request_count += 1
-  end
-
-  def logger
-    AsyncConfig.logger
-  end
 
   # we are being called to handle our url (/zip_download)
   def call(env)
@@ -31,7 +11,7 @@ class AsyncAppBase
       request_bump
 
       # expected to return the async body, if more_work? is true, we will kick things off
-      body = handle_request(env)
+      body = dispatch_request(env)
       if body.more_work?
         # and away we go...
         body.begin_work

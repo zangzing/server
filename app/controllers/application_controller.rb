@@ -157,7 +157,7 @@ class ApplicationController < ActionController::Base
     render :content_type => "application/octet-stream", :text => contents
   end
 
-  # prepare event machine proxy call
+  # prepare event machine async proxy call
   # if missing will add on the user context to the hash passed in
   # pass in the command, we will prepend the proper eventmachine proxy
   # address and append the json data file location
@@ -182,12 +182,6 @@ class ApplicationController < ActionController::Base
     rpc_path
   end
 
-  # standard json response form for async result polling
-  def render_async_response_json(response_id)
-    response_url = async_response_url(response_id)
-    response.headers["x-poll-for-response"] = response_url
-    render :json => {:message => "poll-for-response", :response_id => response_id, :response_url => response_url}
-  end
 
   # determine if we can return pre zipped data based on the
   # the client accept encodings

@@ -31,9 +31,8 @@ class ZipAsyncApp < AsyncAppBase
   end
 
   # we are being called to handle our url (/zip_download)
-  def handle_request(env)
-    body = ZipDeferrableBody.new(env)
+  def zip_download(env)
+    body = ZipDeferrableBody.new(env, json_data)
   end
-
 end
 

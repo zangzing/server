@@ -5,9 +5,18 @@ require 'rubygems'
 require 'bundler/setup'
 require 'require_all'
 require 'logger'
-require 'load_paths'
+
+# add the array of sub dirs to the load path
+def prepend_load_path(sub_dirs)
+  priority = sub_dirs.reverse
+  priority.each do |sub_dir|
+    path = File.expand_path(File.join(File.dirname(__FILE__), sub_dir))
+    #puts path
+    $LOAD_PATH.unshift(path) unless $LOAD_PATH.include?(path)
+  end
+end
 # set up load path order, will check them in the order shown
-prepend_load_path(['config/initializers', 'lib', 'app/controllers','../lib'])
+prepend_load_path(['config/initializers', 'lib', 'app/controllers','../lib','../app/metal'])
 
 # now load all the initializers and lib files
 require_rel 'config/initializers'

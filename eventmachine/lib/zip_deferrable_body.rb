@@ -3,13 +3,13 @@ require 'zz_utils'
 class ZipDeferrableBody < DeferrableBodyBase
   # adds logging context in front of message
   def context_str
-    str = "#{super}, album_id: #{@json_data[:album_id]}"
+    str = "#{super}, album_id: #{json_data[:album_id]}"
   end
 
   def prepare
     self.base_zza_event = 'event_machine.zip'
-    @urls = @json_data[:urls]
-    album_zip_name = ZZUtils.build_safe_filename(@json_data[:album_name], 'zip')
+    @urls = json_data[:urls]
+    album_zip_name = ZZUtils.build_safe_filename(json_data[:album_name], 'zip')
     out_header = {
         'Content-Disposition' => "attachment; filename=\"#{album_zip_name}\"",
         'Content-Type' => 'application/zip',
@@ -31,7 +31,7 @@ class ZipDeferrableBody < DeferrableBodyBase
 
     # send the header back to the client
     xdata = {
-        :album_name => @json_data[:album_name],
+        :album_name => json_data[:album_name],
         :zip_file_size => zip_file_size,
         :photo_count => @urls.count,
     }
@@ -56,18 +56,19 @@ class ZipDeferrableBody < DeferrableBodyBase
     zza.track_transaction("#{base_zza_event}.backend.request.start", tx_id, url)
 
     # kick off the async fetch
-    @http = EventMachine::HttpRequest.new(url).get(:timeout => cfg[:backend_timeout])
+    http = EventMachine::HttpRequest.new(url).get(:timeout => cfg[:backend_timeout])
+    @http = http
     @item_number += 1
 
     # set up the async handlers
-    @http.headers do |h|
+    http.headers do |h|
       error_wrap do
         # make sure we got a valid response
         if check_client_failed == false
           if h.status != 200
             msg = "Failed to fetch #{url} from back end due to #{h.status} - #{h.http_reason}"
             log_error msg
-            @http.on_error(msg)
+            http.on_error(msg)
           else
             if @first_fetch
               @first_fetch = false
@@ -92,7 +93,7 @@ class ZipDeferrableBody < DeferrableBodyBase
     end
 
     # pass an incoming chunk of data back to the client
-    @http.stream do |chunk|
+    http.stream do |chunk|
       error_wrap do
         if check_client_failed == false
           @mgr.push_data(chunk)
@@ -101,7 +102,7 @@ class ZipDeferrableBody < DeferrableBodyBase
     end
 
     # handle any error on download
-    @http.errback do
+    http.errback do
       error_wrap do
         if client_failed? == false
           log_error "Back end request failed on #{url}: #{@http.inspect}"
@@ -112,7 +113,7 @@ class ZipDeferrableBody < DeferrableBodyBase
     end
 
     # called when everything is finished with current url
-    @http.callback do
+    http.callback do
       error_wrap do
         # go get the next one or finish up
         # because we sit inside a next_tick block
@@ -161,4 +162,10 @@ class ZipDeferrableBody < DeferrableBodyBase
     fetch_next
   end
 
+  def clean_up
+    @mgr.clean_up if @mgr
+    @mgr = nil
+    @http = nil
+    super
+  end
 end

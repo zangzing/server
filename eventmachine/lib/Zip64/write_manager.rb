@@ -48,6 +48,12 @@ class WriteManager
     @central_directory = use_64bit ? CentralDirectory64.new(self) : CentralDirectory.new(self)
   end
 
+  def clean_up
+    @out_stream = nil
+    @central_directory = nil
+    @entries = nil
+  end
+
   # used when we are in seek mode
   # to simply skip data without having to
   # specify a chunk

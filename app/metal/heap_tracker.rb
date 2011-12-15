@@ -18,6 +18,10 @@ class HeapTracker
   @@tracking_allowed = false  # default to off
 	@@config = nil
 
+  def self.load_config(path)
+    @@config ||= YAML::load open(path).read
+  end
+
   def initialize(app)
     @app = app
     @@current_instance = self
@@ -28,8 +32,19 @@ class HeapTracker
     @@current_instance
   end
 
+  def self.tracking_allowed=(allowed)
+    @@tracking_allowed = allowed
+  end
+
+  def self.tracking_allowed
+    @@tracking_allowed
+  end
+
 	def config
-		@@config ||= YAML::load open(File.join(Rails.root, "config", "heap_tracker.yml")).read
+		if @@config.nil?
+      HeapTracker.load_config(File.join(Rails.root, "config", "heap_tracker.yml"))
+    end
+    @@config
 	rescue Errno::ENOENT
 		@@config = {}
 	rescue
@@ -60,8 +75,9 @@ class HeapTracker
 	end
 
 	def gc_stats
+    return '' unless @@tracking_allowed
 		collected = nil
-		puts "Respond to? #{ObjectSpace.respond_to? :live_objects}"
+		#puts "Respond to? #{ObjectSpace.respond_to? :live_objects}"
 		if ObjectSpace.respond_to? :live_objects then
 			live = ObjectSpace.live_objects
 			GC.start
