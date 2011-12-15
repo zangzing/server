@@ -332,7 +332,7 @@ a.gray-square-button:active span{ background-position: left -60px; }
     color: #666666;
     text-shadow: #eeeeee 1px 1px;
     box-shadow:inset 0 0 1px white;
-    behavior: url(/stylesheets/pie.htc);
+    behavior: url(/images/pie.htc);
 }
 
 .zz-buttonset .hover-state{
@@ -341,7 +341,7 @@ a.gray-square-button:active span{ background-position: left -60px; }
     background: -moz-linear-gradient(bottom,  #cacaca,  #f0f0f0);
     -pie-background: linear-gradient(bottom, #CACACA, #F0F0F0);
     color: #4a4a4a;
-    behavior: url(/stylesheets/pie.htc);
+    behavior: url(/images/pie.htc);
 }
 
 .zz-buttonset .active-state{
@@ -353,7 +353,7 @@ a.gray-square-button:active span{ background-position: left -60px; }
     color: #FFFFFF;
     text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.456875);
     box-shadow:inset 1px 1px 2px #444;
-    behavior: url(/stylesheets/pie.htc);
+    behavior: url(/images/pie.htc);
 }
 
 
