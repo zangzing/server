@@ -72,6 +72,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
+
   def back_to_home_page_url(album)
     user_id = last_home_page
     if user_id
