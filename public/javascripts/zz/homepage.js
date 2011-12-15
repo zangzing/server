@@ -376,7 +376,7 @@ zz.homepage = {};
         var container = $('div#albums');
         container.hide();
         container.find('div.album-cell').detach();
-        container.find('div#albums-title').text( title );
+        //container.find('div#albums-title').text( title );
         _.each(albums, function(album) {
             if( !_.isUndefined( album.ui_cell ) ){
                 container.append( album.ui_cell );
