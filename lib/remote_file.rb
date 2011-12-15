@@ -59,10 +59,10 @@ class RemoteFile < ::File
   end
 
   def fetch
-    target_uri = URI.unescape(@remote_path)
+    target_uri = @remote_path #URI.unescape(@remote_path)
     follow_redirect = false
     begin
-      uri = URI::parse(URI.escape(target_uri))
+      uri = URI::parse(target_uri) #URI.escape(target_uri))
       http = Net::HTTP.new(uri.host, uri.port)
       if uri.scheme == 'https'
         http.use_ssl = true
