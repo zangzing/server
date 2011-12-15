@@ -142,7 +142,7 @@
 
     <script type="text/javascript">
 
-        var force_javascript = <%= params[:js].nil? ? false : params[:js] %>
+        var force_javascript = <%= params[:js].nil? ? false : params[:js] %>;
 
         var handle_no_flash = function(){
             $("#movie").replaceWith('<div id="movie" class="javascript-movie"></div>');
@@ -202,7 +202,10 @@
             zz.mobile.lock_page_scroll();
 
 
-            if(swfobject.getFlashPlayerVersion().major == 0){
+            if(force_javascript){
+                handle_no_flash();
+            }
+            else if(swfobject.getFlashPlayerVersion().major == 0){
                 //this handles the case where IE has flash installed,
                 //but it has been 'disabled'
                 handle_no_flash();
