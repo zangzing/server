@@ -254,17 +254,17 @@ class ApplicationController < ActionController::Base
   def zz_api_core(skip_render, block)
     return unless require_zz_api # anything using these api wrappers enforces require_zz_api
     begin
-      custom_err = ZZAPIError.new
-      result = block.call(custom_err)
+      result = block.call
       if skip_render == false
-        if custom_err.err_set
-          render_json_error(nil, custom_err.message, custom_err.code)
-        elsif result.nil?
+        if result.nil?
           head :status => 200
         else
           render :json => JSON.fast_generate(result)
         end
       end
+    rescue ZZAPIError => ex
+      # a custom error which can have a string, hash, or array
+      render_json_error(ex, ex.result, ex.code)
     rescue Exception => ex
       render_json_error(ex)
     end
