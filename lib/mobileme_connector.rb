@@ -129,8 +129,10 @@ protected
         req.headers['Accept'] = "text/javascript, text/html, application/xml, text/xml, */*"
         req.headers['Host'] = "www.me.com"
       end
-      raise MobilemeError.new(403, response.body) if response.body =~ /Error:/
-      raise MobilemeError.new(401, response.body) if response.body =~ /Unauthorized/
+      #raise MobilemeError.new(403, response.body) if response.body =~ /Error:/
+      #raise MobilemeError.new(401, response.body) if response.body =~ /Unauthorized/
+      raise InvalidToken if (response.status == 401) || (response.status == 403)
+
     #rescue MobilemeError => me
     #  raise me if me.code!=401 || retried
     #  refresh_auth_cookies

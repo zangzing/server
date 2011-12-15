@@ -24,9 +24,11 @@ class Connector::ConnectorController < ApplicationController
   end
 
 
-  def fire_async_response(class_method)
+  def fire_async_response(class_method, allow_retries = false)
+    more_params = {}
+    more_params[:allow_retry] = true if allow_retries
     response_id = AsyncResponse.new_response_id
-    ZZ::Async::ConnectorWorker.enqueue(response_id, service_identity.id, self.class.name, class_method, params)
+    ZZ::Async::ConnectorWorker.enqueue(response_id, service_identity.id, self.class.name, class_method, params.merge(more_params))
     response.headers["x-poll-for-response"] = async_response_url(response_id)
     render :json => {:message => "poll-for-response"}
   end
