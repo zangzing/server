@@ -25,6 +25,20 @@ class ThinStarter
       AsyncConfig.logger.info "Shutdown signal received"
       # only top the server once
       @stopping = true
+      remove_self_pid_file(get_pid_path)
+      # Set up a one shot failsafe timer to shut ourselves down
+      # if we don't exit gracefully within the failsafe window.
+      # This can happen if one or more downloads are still running
+      # and they do not complete within the failsafe time.  We don't
+      # want to be kept around indefinitely so we exit immediately
+      # if we hit the end of the window.
+      EventMachine::add_timer(cfg[:failsafe_timeout]) {
+        AsyncConfig.logger.info("Failsafe timer forced termination")
+        # unwind and then exit
+        EventMachine::next_tick {
+          exit!
+        }
+      }
       @server.stop
     end
   end
@@ -53,7 +67,7 @@ class ThinStarter
   end
 
   def get_pid_path
-    "#{cfg[:pid_file_prefix]}#{instance_num}.pid"
+    "#{cfg[:pid_run_dir]}/#{cfg[:pid_file_prefix]}#{instance_num}.pid"
   end
 
   # read the pid file
@@ -70,6 +84,11 @@ class ThinStarter
 
   def remove_pid_file(file)
     File.delete(file) rescue nil
+  end
+
+  def remove_self_pid_file(file)
+    current_pid = read_pid_file(file)
+    remove_pid_file(file) if Process.pid == current_pid
   end
 
   def send_signal(signal, pid, timeout=60)
@@ -125,8 +144,8 @@ class ThinStarter
         still_starting = false  # assume will start
         start_server(*args)
       rescue Exception => ex
-        puts ex.message
         msg = ex.message
+        puts msg
         if msg == 'no acceptor'
           still_starting = true
           sleep 0.5
@@ -149,8 +168,7 @@ class ThinStarter
     end
     # read from the pid file and if it's us we can remove it, otherwise leave it
     # since somebody else has taken over control
-    current_pid = read_pid_file(pid_file)
-    remove_pid_file(pid_file) if Process.pid == current_pid
+    remove_self_pid_file(pid_file)
   end
 
   # allocate a new thread and kick start the server,
@@ -188,6 +206,7 @@ class ThinStarter
     end
   rescue Errno::EPERM => e
     AsyncConfig.logger.info "Couldn't change user and group to #{user}:#{group}: #{e}"
+    raise e
   end
 
   # starts the server in the current thread, this does
@@ -208,6 +227,7 @@ class ThinStarter
     @server.config
     change_privilege(@user, @group) if @user
 
+    # now running as the intended user, so safe to start using zza
     zza = ZZ::ZZA.new
     zza.track_event('event_machine.start')
 

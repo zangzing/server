@@ -8,7 +8,7 @@ class RouteManager
     # map your routes
     server = Thin::Server.new(*args) do
       use Rack::CommonLogger
-      map '/zip_download' do
+      map '/proxy_eventmachine/zip_download' do
         run  zip_app
       end
     end

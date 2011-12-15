@@ -1,3 +1,5 @@
+require 'eventmachine/lib/event_machine_rpc'
+
 #
 #  ApplicationController
 #
@@ -155,6 +157,30 @@ class ApplicationController < ActionController::Base
     render :content_type => "application/octet-stream", :text => contents
   end
 
+  # prepare event machine proxy call
+  # if missing will add on the user context to the hash passed in
+  # pass in the command, we will prepend the proper eventmachine proxy
+  # address and append the json data file location
+  # so if you pass in a command of zip_download it will be converted to
+  # /proxy_eventmachine/zip_download?json_path=/data/tmp/json_ipc/62845.1323732431.61478.6057566634.json
+  # DO NOT add / to either end of the command
+  #
+  def prepare_proxy_eventmachine(command, data)
+    context = data[:user_context]
+    if context.nil?
+      # add in user context
+      user_id, user_type, ip = zza_user_context
+      context = {
+          :user_id => user_id,
+          :user_type => user_type,
+          :user_ip => ip
+      }
+      data[:user_context] = context
+    end
+    rpc_path = EventMachineRPC.generate_json_file(data)
+    response.headers['X-Accel-Redirect'] = "/proxy_eventmachine/#{command}?json_path=#{rpc_path}"
+    rpc_path
+  end
 
   # standard json response form for async result polling
   def render_async_response_json(response_id)

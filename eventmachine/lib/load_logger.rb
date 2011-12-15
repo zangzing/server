@@ -32,3 +32,14 @@ def load_logger
   logger
 end
 
+# only close the logger if it is a file
+def close_logger(logger)
+  cfg = AsyncConfig.config
+
+  log_type = cfg[:log_type]
+  case log_type
+    when 'file'
+      logger.close rescue nil
+  end
+end
+

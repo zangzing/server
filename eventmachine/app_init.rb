@@ -18,8 +18,7 @@ require_rel 'app/controllers'
 cfg = AsyncConfig.config
 
 # load the logger
-logger = load_logger
-AsyncConfig.logger = logger
+AsyncConfig.logger = load_logger
 
 require 'zz/zza'
 # assign our zza_id

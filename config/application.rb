@@ -32,7 +32,7 @@ module Server
     config.filter_parameters << :password << :password_confirmation
      
     # Custom directories with classes and modules you want to be autoloadable.
-    config.autoload_paths += %W(#{config.root}/lib)
+    config.autoload_paths += %W(#{config.root}/lib #{config.root}/eventmachine/lib)
     
     # This allows for GUID use in primary keys 
     config.active_record.schema_format = :sql 
