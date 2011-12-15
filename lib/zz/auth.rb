@@ -168,13 +168,13 @@ module ZZ
       # Filter for methods that require NO USER like sign in
       def require_no_user
         if current_user
-          msg = "You must be logged out to access this page"
+          msg = "You must be logged out to access the page you requested"
           if zz_api_call?
             render_json_error(nil, msg, 401)
           else
-            store_location
             flash[:notice] = msg
-            redirect_back_or_default root_path
+            add_javascript_action( 'show_message_dialog',  {:message => flash[:notice]})
+            redirect_to root_url
           end
           return false
         end
@@ -310,8 +310,7 @@ module ZZ
               flash[:notice] = msg
               head :status => 401
             else
-              session[:show_request_access_dialog] = @album.id
-              #session[:client_dialog] = album_pwd_dialog_url( @album )
+              add_javascript_action('show_request_access_dialog', {:album_id => @album.id})
               redirect_to user_url( @album.user )
             end
             return false
@@ -324,19 +323,40 @@ module ZZ
       # To be run as a before_filter
       # Assumes @album is the album in question and current_user is the user we are evaluating
       def require_album_contributor_role
-        unless  @album.contributor?( current_user.id ) || current_user.support_hero? || @album.everyone_can_contribute?
-          msg = "Only Contributors admins can perform this operation"
+        msg = "Only album contributors can perform this operation"
+        if current_user
+          if @album.everyone_can_contribute?
+            return true
+          else
+            if @album.contributor?( current_user.id ) || current_user.support_hero?
+              return true
+            else
+              if zz_api_call?
+                render_json_error(nil, msg, 401)
+              elsif request.xhr?
+                flash.now[:error] = msg
+                render_401
+              else
+                add_javascript_action('show_request_contributor_dialog', {:album_id => @album.id})
+                redirect_to album_pretty_url( @album )
+              end
+              return false
+            end
+          end
+        else
           if zz_api_call?
             render_json_error(nil, msg, 401)
+          elsif request.xhr?
+            flash.now[:notice] = msg
+            head :status => 401
           else
-            flash.now[:error] = msg
-            render_401
+            flash[:notice] = "You have requested to contribute to this album. Please join/login so we know who you are"
+            store_location
+            redirect_to join_url
           end
-          return false
+          false
         end
-        return true
       end
-
 
       #
       # To be run as a before_filter

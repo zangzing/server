@@ -86,7 +86,7 @@ class LikesController < ApplicationController
         when 'photo' then  flash[:notice] = "You already like this photo by #{@photo.user.name}"
       end
     end
-    session[:flash_dialog] = true
+    add_javascript_action( 'show_message_dialog',  {:message => flash[:notice]})
     redirect_to @redirect_url
   end
 

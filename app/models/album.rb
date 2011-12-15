@@ -4,7 +4,8 @@
 
 class Album < ActiveRecord::Base
   attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at, :cache_version, :photos_ready_count,
-                  :stream_to_email, :stream_to_facebook, :stream_to_twitter, :who_can_download, :who_can_upload, :user_id, :for_print
+                  :stream_to_email, :stream_to_facebook, :stream_to_twitter, :who_can_download, :who_can_buy, :who_can_upload, :user_id, :for_print
+
   attr_accessor :change_matters, :my_role
 
   belongs_to :user
@@ -27,7 +28,9 @@ class Album < ActiveRecord::Base
           'GROUP BY u.id '+
           'ORDER BY u.first_name DESC'
 
-  has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => ["photos", "shares", 'activities', 'slides_source', 'people', 'activity'], :approximate_ascii => true
+  RESERVED_NAMES = ["photos", "shares", 'activities', 'slides_source', 'people', 'activity']
+
+  has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => RESERVED_NAMES, :approximate_ascii => true
 
   validates_presence_of  :user_id
   validates_presence_of  :name, :message => "Your album name cannot be blank"
@@ -54,7 +57,7 @@ class Album < ActiveRecord::Base
   HIDDEN   = 'hidden'
   PASSWORD = 'password'
 
-  #constants for Album.who_can_upload and Album.who_can_download
+  #constants for Album.who_can_upload and Album.who_can_download and Albun.who_can_buy
   WHO_EVERYONE      = 'everyone'
   WHO_VIEWERS       = 'viewers'
   WHO_CONTRIBUTORS  = 'contributors'
@@ -93,8 +96,9 @@ class Album < ActiveRecord::Base
   def uniquify_name
     @uname = name
     @i = 0
+
     @album = user.albums.find_by_name( @uname )
-    until @album.nil?
+    until @album.nil? && !RESERVED_NAMES.index(@uname.downcase)
       @i+=1
       @uname = "#{name} #{@i}"
       @album = user.albums.find_by_name(@uname)
@@ -438,7 +442,17 @@ class Album < ActiveRecord::Base
     acl.get_users_with_role( AlbumACL::VIEWER_ROLE, exact )
   end
 
-  
+
+  # checks if user can buy photos from the album
+  # in the case of a guest, user param may be nil
+  def can_user_buy_photos?(user)
+    return true if who_can_buy == WHO_EVERYONE
+    return true if who_can_buy == WHO_OWNER && user && admin?(user.id)
+    return true if who_can_buy == WHO_VIEWERS && user && viewer?(user.id)
+
+    return false
+  end
+
 
   def long_email
       " \"#{self.name}\" <#{short_email}>"
@@ -496,6 +510,12 @@ class Album < ActiveRecord::Base
       end
     end
     false
+  end
+
+  def can_user_contribute?( user )
+    return true  if everyone_can_contribute?
+    return false if user.nil?  #only contributors can download
+    return contributor?( user.id )
   end
 
   def make_hidden

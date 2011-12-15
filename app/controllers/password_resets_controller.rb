@@ -56,7 +56,7 @@ class PasswordResetsController < ApplicationController
     if @user.save
       @user.reset_perishable_token!
       flash[:notice] = "Password successfully updated"
-      session[:flash_dialog] = true
+       add_javascript_action( 'show_message_dialog',  {:message => flash[:notice]})
       redirect_to user_pretty_url( @user )
     else
       render :action => :edit

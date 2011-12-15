@@ -322,7 +322,7 @@ class PhotosController < ApplicationController
       if params[:show_add_photos_dialog]
         if current_user
           if @album.contributor?(current_user.id)
-            flash[:show_add_photos_dialog] = true
+            add_javascript_action('show_add_photos_dialog' )
           end
           redirect_to album_pretty_url(@album)
           return

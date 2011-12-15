@@ -5,15 +5,16 @@
 
 
 
-  <% if current_user %>
+  <% if @is_homepage_view && current_user == @user %>
       <div id="new-album-button"><div class='footer-button-label'>New</div></div>
+      <div id="import-button"><div class='footer-button-label'>Import</div></div>
   <% end %>
 
   <% if @album && current_user && (@album.user == current_user)%>
       <div id="edit-album-button"><div class='footer-button-label'>Edit</div></div>
   <% end %>
 
-  <% if @album && current_user && (@album.contributor?(current_user.id) || @album.everyone_can_contribute?) %>
+  <% if @album  %>
       <div id="add-photos-button"><div class='footer-button-label'>Add</div></div>
   <% end %>
 

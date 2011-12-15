@@ -31,7 +31,7 @@ zz.album = {};
 
         zz.buy.on_before_activate(function(){
             var photo = zz.routes.photos.get_photo_json(current_photo_id);
-            if(!zz.buy.is_photo_selected(current_photo_id)){
+            if(!zz.buy.is_photo_selected(current_photo_id) && zz.page.current_user_can_buy_photos){
                 zz.buy.add_selected_photo(current_photo_json);
             }
             ZZAt.track('photo.buy.toolbar.click');
@@ -56,7 +56,7 @@ zz.album = {};
         //get rid of scrollbars before animate transition
         $('.photogrid').css({overflow: 'hidden'});
         $('#article').css({overflow: 'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
-        $('#header #back-button').fadeOut(200);
+        $('#header #top-breadcrumb').fadeOut(200);
         document.location.href = zz.page.album_base_url + '/photos/#!' + photo_id;
     };
 
@@ -137,7 +137,7 @@ zz.album = {};
 
 
             // add placeholder for add-all button
-            if(buy_mode){
+            if(buy_mode && zz.page.current_user_can_buy_photos){
                 var addAllButton = {
                     id: 'add-all-photos',
                     src: zz.routes.image_url('/images/blank.png'),
@@ -182,7 +182,7 @@ zz.album = {};
 
 
 
-            if (buy_mode) {
+            if (buy_mode && zz.page.current_user_can_buy_photos) {
                 var addAllButton = $('<img class="add-all-button" src="' + zz.routes.image_url('/images/folders/add_all_photos.png') + '">');
                 addAllButton.click(function() {
                     zz.buy.add_all_photos_from_current_album();
@@ -475,7 +475,7 @@ zz.album = {};
                     onClickPhoto: function(index, photo, element, action) {
                         if(!buy_mode){
                             $('#article').css({overflow: 'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
-                            $('#header #back-button').fadeOut(200);
+                            $('#header #top-breadcrumb').fadeOut(200);
                             document.location.href = zz.page.album_base_url + '/photos/#!' + photo.id;
                         }
                         else{
@@ -572,9 +572,11 @@ zz.album = {};
             $('#footer #comments-button').fadeOut(200);
             $('#article').animate({left: $('#article').width()}, 500, 'easeOutQuart');
             $('#album-info').fadeOut(200);
-            $('#header #back-button').fadeOut(200);
+            $('#header #top-breadcrumb').fadeOut(200);
             document.location.href = url;
         });
+
+
     }
 
 

@@ -47,10 +47,10 @@ Server::Application.routes.draw do
     get    '/users/:id/identities'     => 'identities#index',       :as => :user_identities
     get    '/users/:id/identities/new' => 'identities#new',         :as => :new_user_identity
     post   '/users/:id/identities'     => 'identities#create',      :as => :create_user_identity
-    get    '/identities/:id'          => 'identities#show',        :as => :identity
+    get    '/identities/:id'           => 'identities#show',        :as => :identity
     get    '/identities/:id/edit'      => 'identities#edit',        :as => :edit_identity
-    put    '/identities/:id'          => 'identities#update',      :as => :update_identity
-    delete '/identities/:id'          => 'identities#destroy',     :as => :delete_identity
+    put    '/identities/:id'           => 'identities#update',      :as => :update_identity
+    delete '/identities/:id'           => 'identities#destroy',     :as => :delete_identity
 
     #albums
     get    '/users/:user_id/my_albums_json'                 => 'albums#my_albums_json',                 :as => :my_albums_json
@@ -61,21 +61,23 @@ Server::Application.routes.draw do
     get    '/users/:user_id/invited_albums_json'            => 'albums#invited_albums_json',            :as => :invited_albums_json
 
 
-    get    '/users/:user_id/albums'          => 'albums#index'             #, :as => :user_albums  user albums defined below
-    put    '/users/:user_id/invalidate_cache' => 'albums#invalidate_cache',    :as => :invalidate_user_album_cache
-    get    '/users/:user_id/albums/new'      => 'albums#new',                 :as => :new_user_album
-    post   '/users/:user_id/albums'          => 'albums#create',              :as => :create_user_album
+    get    '/users/:user_id/albums'                => 'albums#index'             #, :as => :user_albums  user albums defined below
+    put    '/users/:user_id/invalidate_cache'      => 'albums#invalidate_cache',    :as => :invalidate_user_album_cache
+    get    '/users/:user_id/albums/new'            => 'albums#new',                       :as => :new_user_album
+    post   '/users/:user_id/albums'                => 'albums#create',                    :as => :create_user_album
     get    '/albums/:album_id/name_album'          => 'albums#name_album',          :as => :name_album
     get    '/albums/:album_id/preview_album_email' => "albums#preview_album_email", :as => :preview_album_email
     get    '/albums/:album_id/privacy'             => 'albums#privacy',             :as => :privacy
     get    '/albums/:album_id/download'            => 'albums#download',            :as => :download_album
-#    get    '/albums/:album_id'                     => 'albums#show',                :as => :album
-#    get    '/albums/:album_id/edit'                => 'albums#edit',                :as => :edit_album
+#   get    '/albums/:album_id'                     => 'albums#show',                :as => :album
+#   get    '/albums/:album_id/edit'                => 'albums#edit',                :as => :edit_album
     get    '/albums/:album_id/close_batch'         => 'albums#close_batch',         :as => :close_batch
     put    '/albums/:album_id'                     => 'albums#update',              :as => :update_album
     delete '/albums/:album_id'                     => 'albums#destroy',             :as => :delete_album
     post   'albums/:album_id/request_access'       => 'albums#request_access',      :as => :request_album_access
     get    '/albums/:album_id/edit_group'          => 'albums#edit_group'
+    get    '/albums/:album_id/add_photos'          => 'albums#add_photos',          :as => :album_add_photos
+    get    '/albums/:album_id/wizard/:step'        => 'albums#wizard',              :as => :album_wizard
 
     #todo: these are not very REST-ful
     post   '/albums/:album_id/add_group_members'   => 'albums#add_group_members'
@@ -84,27 +86,22 @@ Server::Application.routes.draw do
     get    '/albums/:album_id/group_members'       => 'albums#group_members'
 
     #shares
-    get '/albums/:album_id/shares'          => 'shares#index',      :as => :album_shares
-    get '/shares/new'                       => 'shares#new'   # ,        :as => :new_album_share
-    get '/shares/newpost'                   => 'shares#newpost' #,    :as => :new_album_postshare
-    get '/shares/newemail'                  => 'shares#newemail' #,   :as => :new_album_emailshare
-    post '/albums/:album_id/shares'         => 'shares#create',     :as => :create_album_share
-    post '/photos/:photo_id/shares'         => 'shares#create',     :as => :create_photo_share
-    get '/shares/:id'                       => 'shares#show',       :as => :share
-    get '/shares/:id/edit'                  => 'shares#edit',       :as => :edit_share
-    put '/shares/:id'                       => 'shares#update',     :as => :update_share
-    delete '/shares/:id'                    => 'shares#destroy',    :as => :delete_share
-
-    get '/albums/:album_id/new_twitter_share' => 'shares#new_twitter_share'
-    get '/albums/:album_id/new_facebook_share' => 'shares#new_facebook_share'
-    get '/albums/:album_id/new_mailto_share' => 'shares#new_mailto_share'
-
-
-    get '/photos/:photo_id/new_twitter_share' => 'shares#new_twitter_share'
-    get '/photos/:photo_id/new_facebook_share' => 'shares#new_facebook_share'
-    get '/photos/:photo_id/new_mailto_share' => 'shares#new_mailto_share'
-
-
+    get    '/albums/:album_id/shares'             => 'shares#index',            :as => :album_shares
+    get    '/shares/new'                          => 'shares#new'   # ,         :as => :new_album_share
+    get    '/shares/newpost'                      => 'shares#newpost' #,        :as => :new_album_postshare
+    get    '/shares/newemail'                     => 'shares#newemail' #,       :as => :new_album_emailshare
+    post   '/albums/:album_id/shares'             => 'shares#create',           :as => :create_album_share
+    post   '/photos/:photo_id/shares'             => 'shares#create',           :as => :create_photo_share
+    get    '/shares/:id'                          => 'shares#show',             :as => :share
+    get    '/shares/:id/edit'                     => 'shares#edit',             :as => :edit_share
+    put    '/shares/:id'                          => 'shares#update',           :as => :update_share
+    delete '/shares/:id'                          => 'shares#destroy',          :as => :delete_share
+    get    '/albums/:album_id/new_twitter_share'  => 'shares#new_twitter_share'
+    get    '/albums/:album_id/new_facebook_share' => 'shares#new_facebook_share'
+    get    '/albums/:album_id/new_mailto_share'   => 'shares#new_mailto_share'
+    get    '/photos/:photo_id/new_twitter_share'  => 'shares#new_twitter_share'
+    get    '/photos/:photo_id/new_facebook_share' => 'shares#new_facebook_share'
+    get  '/photos/:photo_id/new_mailto_share'     => 'shares#new_mailto_share'
 
     #photos
     get    '/albums/:album_id/photos_json'  => 'photos#photos_json',                :as => :album_photos_json
@@ -210,6 +207,7 @@ Server::Application.routes.draw do
       #kodak
       match '/kodak/sessions/new' => 'kodak_sessions#new', :as => :new_kodak_session
       match '/kodak/sessions/create' => 'kodak_sessions#create', :as => :create_kodak_session
+      match '/kodak/sessions/close' => 'kodak_sessions#close', :as => :close_kodak_session
       match '/kodak/sessions/destroy' => 'kodak_sessions#destroy', :as => :destroy_kodak_session
       match '/kodak/folders/:kodak_album_id/photos.:format' => 'kodak_photos#index', :as => :kodak_photos
       match '/kodak/folders/:kodak_album_id/photos/:photo_id/:action' => 'kodak_photos#index', :as => :kodak_photo_action
@@ -278,6 +276,7 @@ Server::Application.routes.draw do
       #mobile.me
       match '/mobileme/sessions/new' => 'mobileme_sessions#new', :as => :new_mobileme_session
       match '/mobileme/sessions/create' => 'mobileme_sessions#create', :as => :create_mobileme_session
+      match '/mobileme/sessions/close' => 'mobileme_sessions#close', :as => :close_mobileme_session
       match '/mobileme/sessions/destroy' => 'mobileme_sessions#destroy', :as => :destroy_mobileme_session
       match '/mobileme/folders.:format' => 'mobileme_folders#index', :as => :mobileme_folders
       match '/mobileme/folders/:mm_album_id/:action.:format' => 'mobileme_folders#album_index', :as => :mobileme_photos
@@ -297,11 +296,11 @@ Server::Application.routes.draw do
       
       #picasa
       #google session controller used
-      match '/picasa_web/folders/:picasa_album_id/photos.:format' => 'picasa_photos#index', :as => :picasa_photos
-      match '/picasa_web/folders/:picasa_album_id/photos/:photo_id/:action' => 'picasa_photos#index', :as => :picasa_photo_action
-      match '/picasa_web/folders.:format' => 'picasa_folders#index', :as => :picasa_folders
-      match '/picasa_web/folders/:picasa_album_id/:action.:format' => 'picasa_folders#index', :as => :picasa_folder_action
-      match '/picasa_web/folders/import_all.:format' => 'picasa_folders#import_all', :as => :picasa_import_all
+      match '/google/folders/:picasa_album_id/photos.:format' => 'picasa_photos#index', :as => :picasa_photos
+      match '/google/folders/:picasa_album_id/photos/:photo_id/:action' => 'picasa_photos#index', :as => :picasa_photo_action
+      match '/google/folders.:format' => 'picasa_folders#index', :as => :picasa_folders
+      match '/google/folders/:picasa_album_id/:action.:format' => 'picasa_folders#index', :as => :picasa_folder_action
+      match '/google/folders/import_all.:format' => 'picasa_folders#import_all', :as => :picasa_import_all
 
       #local contacts
       match '/local/contacts/import' => 'local_contacts#import', :as => :local_contacts
@@ -423,7 +422,13 @@ Server::Application.routes.draw do
 
 
     #users
-    get    '/users/:user_id/info'                      => 'users#zz_api_user_info',                  :as => :zz_api_user_info
+    get    '/users/:user_id/info' => 'users#zz_api_user_info',                  :as => :zz_api_user_info
+
+
+    #identities
+    get     '/identities' => 'identities#zz_api_identities'
+    get     '/identities/:service_name' => 'identities#zz_api_identity'
+
   end
 
 
@@ -441,9 +446,5 @@ Server::Application.routes.draw do
   get    '/:user_id/:album_id/activities'      => 'activities#album_index'
   get    '/:user_id/:album_id/movie'           => 'photos#movie'
   get    '/:user_id/:album_id/photos/:photo_id' => 'photos#show'
-
-
-
-
 
 end

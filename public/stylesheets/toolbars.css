@@ -52,7 +52,21 @@
     cursor: pointer;
 }
 
-#header #back-button{
+#header #top-breadcrumb{
+    position: absolute;
+    left: 140px;
+    top: 14px;
+}
+#top-breadcrumb #back-button{
+    display: inline-block;
+}
+
+#top-breadcrumb #top-add-photos-button{
+    display: inline-block;
+    margin-right: 10px;
+}
+
+#header #inline-new-album-button{
     position: absolute;
     left: 140px;
     top: 14px;
@@ -200,6 +214,10 @@
     text-align: left;
     height: 100%;
     padding-left: 5px;
+}
+
+#user-info-picture .defaultprofilepic {
+    cursor: pointer;
 }
 
 #user-name h2{
@@ -424,6 +442,24 @@
 #footer #new-album-button:hover    { background-position: 0 -55px;  }
 #footer #new-album-button.selected { background-position: 0 -110px; }
 #footer #new-album-button.disabled { background-position: 0 0; }
+
+/*           Import Button
+ ***************************************************/
+#footer #import-button{
+    position:relative;
+    width: 58px;
+    height: 55px;
+    float:left;
+    top:1px;
+    background: url("/images/embed/toolbars/btn-footer-import.png") no-repeat scroll 0px 0px transparent;
+    cursor: pointer;
+    display: none;
+}
+#footer #import-button:hover    { background-position: 0 -55px;  }
+#footer #import-button.selected { background-position: 0 -110px; }
+#footer #import-button.disabled { background-position: 0 0; }
+
+
 
 
 /*           Edit Album Button

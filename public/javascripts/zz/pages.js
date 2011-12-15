@@ -297,6 +297,14 @@ zz.pages.group_tab = {
                                 '</select>' +
                                 '<span>can download full resolution photos</span>' +
                             '</div>' +
+                            '<div class="who-can-buy">' +
+                                '<select>' +
+                                    '<option value="everyone">Everyone</option>' +
+                                    '<option value="viewers">Group</option>' +
+                                    '<option value="owner">No one</option>' +
+                                '</select>' +
+                                '<span>can purchase photos</span>' +
+                            '</div>' +
                         '</div>' +
                     '</div>' +
                 '</div>';
@@ -368,7 +376,6 @@ zz.pages.group_tab = {
 
     init: function(container, callback) {
         var self = this;
-
         ZZAt.track('album.group_tab.view');
 
 
@@ -467,6 +474,15 @@ zz.pages.group_tab = {
                 container.find('.who-can-download select').change(function() {
                     $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method: 'put', 'album[who_can_download]': $(this).val()});
                 });
+
+
+                //bind who-can-buy droppdown
+                container.find('.who-can-buy select').val(json['album']['who_can_buy']);
+                container.find('.who-can-buy select').change(function() {
+                    $.post(zz.routes.path_prefix + '/albums/' + zz.page.album_id, {_method: 'put', 'album[who_can_buy]': $(this).val()});
+                });
+
+
 
 
                 //bind stream-to-facebook checkbox
@@ -574,12 +590,15 @@ zz.pages.group_tab = {
 
                         });
 
+
                     });
 
                     content.find('.cancel-button').click(function() {
                         dialog.close();
                     });
-
+                    if( typeof( zz.pages.group_tab.init_callback ) != 'undefined' ){
+                        zz.pages.group_tab.init_callback();
+                    }
                 });
 
                 container.find('.facebook-button').click(function() {
@@ -688,6 +707,9 @@ zz.pages.group_tab = {
                         });
                     }
                 });
+              if( typeof( zz.pages.group_tab.init_callback ) != 'undefined' ){
+                  zz.pages.group_tab.init_callback();
+              }
             }
         });
 

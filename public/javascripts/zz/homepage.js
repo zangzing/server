@@ -87,19 +87,30 @@ zz.homepage = {
             _.each(json, function(album) {
 
                 var clone = cell.clone();
+                var c_url = album.c_url;
+
                 container.append(clone);
+
+            	if(album.profile_album && album.photos_count <= 0 && zz.session.current_user_id == zz.page.displayed_user_id) {
+                    c_url = "images/profile-default-add.png";
+                }
 
                 clone.zz_picon({
                     album:   album,
                     caption: album.name,
-                    coverUrl: album.c_url,
+                    coverUrl: c_url,
                     albumId: album.id,
                     albumUrl: 'http://' + document.location.host + album.album_path,
                     onClick: function() {
                         $('#article').css('width',$('#article').width());
                         $('#article').css({overflow: 'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
                         $('#user-info').fadeOut(200);
-                        document.location.href = album.album_path;
+                        if(album.photos_count <= 0 && zz.session.current_user_id == album.user_id) {
+                            zz.routes.albums.add_photos(album.id);
+                        } else {
+                            document.location.href = album.album_path;
+                        }
+
                     },
                     onLike: function() {
                         alert('This feature is still under construction. It will allow you to like an album.');
@@ -128,7 +139,7 @@ zz.homepage = {
                              del = 1;
                          }
                          //download
-                         if( album.c_url ){
+                         if( album.photos_count > 0 ){
                              switch( album.who_can_download ){
                                  case 'everyone':
                                      download = 1;

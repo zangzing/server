@@ -2,7 +2,7 @@ module ZZ
   module Async
       
     class ConnectorWorker < Base
-      @queue = :io_bound
+      @queue = :io_bound_high
 
       # Add on any extra handling that your class
       # needs - generally most classes of errors

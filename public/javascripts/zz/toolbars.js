@@ -40,6 +40,11 @@ zz.toolbars = {
 
         });
 
+        $("#user-info-picture .defaultprofilepic").click(function(){
+            $('#user-info').fadeOut(200);
+            zz.routes.albums.add_profile_photo(zz.session.current_user_id);
+        });
+
         $('#header #view-buttons #picture-view-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
@@ -84,7 +89,24 @@ zz.toolbars = {
 
         $('#header #help-button').click(function(event) {
             ZZAt.track('button.help.click');
-            //feedback_widget.show();
+            var user_name = '',
+                user_email = '';
+            if( typeof( zz.session.current_user_name) != 'undefined'){
+                user_name  =  zz.session.current_user_name;
+                user_email =  zz.session.current_user_email;
+            }
+
+            Zenbox.init({
+                    dropboxID:   "14620",
+                    url:         "https://zangzing.zendesk.com",
+                    tabID:       "help",
+                    tabColor:    "black",
+                    requester_name: user_name,
+                    requester_email: user_email,
+                    tabPosition: "Left"
+                  });
+
+
             Zenbox.show(event);
 
             //hack: force zendesk dialog to show scrollbars if screen too small
@@ -154,27 +176,36 @@ zz.toolbars = {
         zz.buy.toggle_visibility_with_buy_mode($('#inline-new-album-button'));
 
 
-
-
-        // only album contributers can do this
-        $('#footer #add-photos-button').click(function() {
+        $('#footer #import-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
+            ZZAt.track('button.import.click');
 
             zz.toolbars._disable_buttons();
-            $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
+            $('#footer #import-button').removeClass('disabled').addClass('selected');
 
+            zz.import_albums.show_import_dialog();
 
-            zz.photochooser.open_in_dialog(zz.page.album_id, function() {
-                window.location.reload(false);
-            });
         });
+        zz.buy.toggle_visibility_with_buy_mode($('#footer #import-button'));
+
+
+
+
+        // only album contributers can do this
+        var add_photos_click_handler = function(){
+            if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
+                return;
+            }
+            zz.toolbars._add_photos();
+        };
+
+         // only album contributers can do this
+        $('#header #top-add-photos-button').click(add_photos_click_handler);
+        $('#footer #add-photos-button').click( add_photos_click_handler);
+        zz.buy.toggle_visibility_with_buy_mode($('#header #top-add-photos-button'));
         zz.buy.toggle_visibility_with_buy_mode($('#footer #add-photos-button'));
-
-
-
-
 
         //any signed in user can do this
         $('#footer #share-button').click(function() {
@@ -371,12 +402,14 @@ zz.toolbars = {
 
     _disable_buttons: function() {
         $('#header #back-button').addClass('disabled');
+        $('#header #top-add-photos-button').addClass('disabled');
         $('#header #view-buttons').children().addClass('disabled');
         $('#header #account-badge').addClass('disabled');
         $('#footer #play-button').addClass('disabled');
         $('#footer #next-button').addClass('disabled');
         $('#footer #prev-button').addClass('disabled');
         $('#footer #new-album-button').addClass('disabled');
+        $('#footer #import-button').addClass('disabled');
         $('#footer #add-photos-button').addClass('disabled');
         $('#footer #share-button').addClass('disabled');
         $('#footer #edit-album-button').addClass('disabled');
@@ -384,22 +417,28 @@ zz.toolbars = {
         $('#footer #buy-button').addClass('disabled');
         $('#footer #like-button').addClass('disabled');
         $('#footer #comments-button').addClass('disabled');
+        $('#header #inline-new-album-button').addClass('disabled');
     },
 
-//    enable_buttons:function() {
-//        $('#header #back-button').removeClass('disabled');
-//        $('#header #view-buttons').children().removeClass('disabled');
-//        $('#header #account-badge').removeClass('disabled');
-//        $('#footer #play-button').removeClass('disabled');
-//        $('#footer #next-button').removeClass('disabled');
-//        $('#footer #prev-button').removeClass('disabled');
-//        $('#footer #new-album-button').removeClass('disabled');
-//        $('#footer #add-photos-button').removeClass('disabled');
-//        $('#footer #share-button').removeClass('disabled');
-//        $('#footer #edit-album-button').removeClass('disabled');
-//        $('#footer #buy-button').removeClass('disabled');
-//        $('#footer #like-button').removeClass('disabled');
-//    },
+    enable_buttons:function() {
+        $('#header #back-button').removeClass('disabled');
+        $('#header #view-buttons').children().removeClass('disabled');
+        $('#header #account-badge').removeClass('disabled');
+        $('#footer #play-button').removeClass('disabled');
+        $('#footer #next-button').removeClass('disabled');
+        $('#footer #prev-button').removeClass('disabled');
+        $('#footer #new-album-button').removeClass('disabled');
+        $('#footer #import-button').removeClass('disabled');
+        $('#footer #add-photos-button').removeClass('disabled');
+        $('#footer #share-button').removeClass('disabled');
+        $('#footer #edit-album-button').removeClass('disabled');
+        $('#footer #buy-button').removeClass('disabled');
+        $('#footer #cart-button').removeClass('disabled');
+        $('#footer #like-button').removeClass('disabled');
+        $('#footer #import-button').removeClass('disabled').removeClass('selected');
+        $('#header #inline-new-album-button').removeClass('disabled');
+    },
+
 
     _init_album_title:function(){
         var title = $('#album-header-title');
@@ -477,8 +516,23 @@ zz.toolbars = {
                     arm_text_field();
             };
         }
+    },
+
+    _add_photos: function(){
+            zz.toolbars._disable_buttons();
+            $('#footer #comments-button').fadeOut(200);
+            $('#album-info').fadeOut(200);
+            $('#header #top-breadcrumb').fadeOut(200);
+            $('#footer #add-photos-button').removeClass('disabled').addClass('selected');
+            if( typeof( zz.session.current_user_id) != 'undefined' && typeof( zz.page.current_user_can_contribute) != 'undefined' && zz.page.current_user_can_contribute ){
+                zz.photochooser.open_in_dialog(zz.page.album_id, function() {
+                    window.location.reload(false);
+                });
+            } else {
+                // The user is not allowed to download,
+                // direct main window to server for user
+                // validation and sigin/join request access etc...
+                zz.routes.albums.add_photos(zz.page.album_id);
+            }
     }
-
-
-
 };
