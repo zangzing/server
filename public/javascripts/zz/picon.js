@@ -17,7 +17,7 @@
         ];
 
 
-    var  cover_photo_template = $('<img class="cover-photo">'),
+    var  cover_photo_template = null, //$('<img class="cover-photo">'),
          caption_template  = $('<div class="photo-caption ellipsis multiline">'),
          button_bar_template = $('<div class="button-bar">'),
          buttons_template = $('<div class="buttons">'),
@@ -52,6 +52,10 @@
             var self = this,
                     el = self.element,
                     o = self.options;
+
+            if( cover_photo_template == null ){
+                            cover_photo_template = $('<img class="cover-photo" src="' + zz.routes.image_url('/images/photo_placeholder.png') + '">');
+            }
 
             self.template =  $('<div class="picon">');
             self.captionElement = caption_template.clone();
