@@ -13,8 +13,8 @@ class ZipDeferrableBody < DeferrableBodyBase
     out_header = {
         'Content-Disposition' => "attachment; filename=\"#{album_zip_name}\"",
         'Content-Type' => 'application/zip',
-        'Cache-Control' => 'no-cache',
-        'Connection' => 'close',
+#        'Cache-Control' => 'no-cache',
+#        'Connection' => 'close',
     }
     # prep the zip manager
     log_info "Incoming request: #{@env.inspect}"

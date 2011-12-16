@@ -179,6 +179,7 @@ class ApplicationController < ActionController::Base
       data[:user_context] = context
     end
     rpc_path = EventMachineRPC.generate_json_file(data)
+    Rails.logger.info "EventMachineRPC: #{command}, path: #{rpc_path}"
     response.headers['X-Accel-Redirect'] = "/proxy_eventmachine/#{command}?json_path=#{rpc_path}"
     rpc_path
   end
