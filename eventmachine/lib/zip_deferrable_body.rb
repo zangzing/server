@@ -137,7 +137,7 @@ class ZipDeferrableBody < DeferrableBodyBase
       log_info "Data flow throttled with backlog of #{outbound_data_size}"
       # set up a one shot timer and check when it expires again
       EventMachine::add_timer(0.2) do
-        fetch_next_with_throttle   # check again when timer fires
+        fetch_next_with_throttle
       end
     else
       # good to go, kick off the next one
