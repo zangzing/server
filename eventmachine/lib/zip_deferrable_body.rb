@@ -12,7 +12,8 @@ class ZipDeferrableBody < DeferrableBodyBase
     album_zip_name = ZZUtils.build_safe_filename(json_data[:album_name], 'zip')
     out_header = {
         'Content-Disposition' => "attachment; filename=\"#{album_zip_name}\"",
-        'Content-Type' => 'application/zip',
+#        'Content-Type' => 'application/zip; charset=utf-8',
+        'Content-Type' => 'application/octet-stream',
 #        'Cache-Control' => 'no-cache',
 #        'Connection' => 'close',
     }

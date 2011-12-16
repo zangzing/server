@@ -180,6 +180,13 @@ class ApplicationController < ActionController::Base
     end
     rpc_path = EventMachineRPC.generate_json_file(data)
     Rails.logger.info "EventMachineRPC: #{command}, path: #{rpc_path}"
+    # now verify it parses
+    json_str = File.read(rpc_path)
+    Rails.logger.info "EventMachineRPCCRC32: #{Zlib.crc32(json_str, 0)}"
+    Rails.logger.info "EventMachineRPCFileCRC32: #{EventMachineRPC.file_crc32(rpc_path)}"
+    test_parse = JSON.parse(json_str)
+
+
     response.headers['X-Accel-Redirect'] = "/proxy_eventmachine/#{command}?json_path=#{rpc_path}"
     rpc_path
   end

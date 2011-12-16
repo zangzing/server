@@ -27,4 +27,9 @@ class EventMachineRPC
     File.open(filename, 'w') {|f| f.write(json_str) }
     filename
   end
+
+  def self.file_crc32(path)
+    json_str = File.read(path)
+    crc32 = Zlib.crc32(json_str, 0)
+  end
 end
