@@ -129,6 +129,44 @@ describe "Comments Model" do
       end
     end
 
+    it "should notify all other people in the group of new comments" do
+      resque_jobs(comments_resque_filter) do
+        # setup
+        photo_owner = Factory.create(:user)
+        photo = Factory.create(:photo, :user => photo_owner)
+        commentable = Commentable.find_or_create_by_photo_id(photo.id)
+
+        # create users in group
+        user_in_group = Factory.create(:user)
+        user_in_group.save!
+
+        # create users from email
+        user_from_email = "user1@test.zangzing.com"
+
+        # add users to group
+        photo.album.add_contributor(user_in_group.email)
+        photo.album.add_viewer(user_from_email)
+
+        # add comment to photo. make commenter the photo owner so we don't get extra emails.
+        comment = Factory.create(:comment, :commentable => commentable, :user => photo_owner)
+
+        # run the test
+        comment.send_notification_emails
+
+        ActionMailer::Base.deliveries.should have(2).things
+
+        # expect email to user in group
+        ActionMailer::Base.deliveries.should satisfy do |messages|
+          messages.index { |message| message.to == [user_in_group.email] }
+        end
+
+        # expect email to user without an account
+        ActionMailer::Base.deliveries.should satisfy do |messages|
+          messages.index { |message| message.to == [user_from_email] }
+        end
+      end
+    end
+
 
     it "should post comment to facebook" do
       resque_jobs(comments_resque_filter) do
