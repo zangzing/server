@@ -362,8 +362,9 @@ zz.album = {};
 
 
     function render_timeline_or_people_view(which){
-        load_photos_json('timeline', function(json) {
-
+        load_photos_json(which, function(json) {
+              var buy_mode = zz.buy.is_buy_mode_active();
+            
             $('.timeline-grid').each(function(index, element) {
 
                 $(element).empty();
@@ -523,7 +524,7 @@ zz.album = {};
      function process_photos(photos, view, wanted_subjects){
         var bigScreen = ($(window).width() > 1200 && $(window).height() > 1000); //for picture view
         var buy_mode = zz.buy.is_buy_mode_active();  // for buy mode check marks
-        var view_code = (view=='picture'? 2 : 1 );
+        var picture_view = view=='picture';
  
         //Loop through array
         // - Use a map so we can delete the photos that this user cannot see (agent photos still loading a.k.a not ready)
@@ -559,16 +560,17 @@ zz.album = {};
                  }
              }
 
-            //set src and previewSrc
+             //set src and previewSrc
              photo.previewSrc = photo.stamp_url;
-             if( view_code == 1 ){
-                 photo.src = photo.thumb_url;
-             } else {
+             if( picture_view ){
                  if (bigScreen) {
                      photo.src = photo.full_screen_url;
                  }else{
                      photo.src = photo.screen_url;
                  }
+             } else {
+                 photo.src = photo.thumb_url;
+
              }
 
 

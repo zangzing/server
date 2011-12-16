@@ -63,60 +63,60 @@ zz.homepage = {};
 
 
     function sort_by_name_asc(){
-        jQuery.cookie('zz.homepage.sort', 'name_asc', {path:'/'});
+        set_sort_option( 'name_asc' );
         filter_sort_and_render( );
     }
 
     function sort_by_name_desc(){
-        jQuery.cookie('zz.homepage.sort', 'name_desc', {path:'/'});
+        set_sort_option( 'name_desc' );
         filter_sort_and_render( );
     }
 
     function sort_by_updated_at_desc(){
-        jQuery.cookie('zz.homepage.sort', 'updated_at_desc', {path:'/'});
+        set_sort_option( 'updated_at_desc' );
         filter_sort_and_render( );
     }
 
     function sort_by_cover_date_asc(){
-        jQuery.cookie('zz.homepage.sort', 'cover_date_asc', {path:'/'});
+        set_sort_option( 'cover_date_asc' );
         filter_sort_and_render( );
     }
 
     function sort_by_cover_date_desc(){
-            jQuery.cookie('zz.homepage.sort', 'cover_date_desc', {path:'/'});
+            set_sort_option( 'cover_date_desc' );
             filter_sort_and_render( );
     };
 
     function show_all_albums(){
-        jQuery.cookie('zz.homepage.filter', 'all', {path:'/'});
+        set_filter_option( 'all' );
         filter_sort_and_render( );
     };
 
     function show_my_albums(){
-        jQuery.cookie('zz.homepage.filter', 'my', {path:'/'});
+        set_filter_option( 'my' );
         filter_sort_and_render( );
     };
 
     function show_invited_albums(){
-        jQuery.cookie('zz.homepage.filter', 'invited', {path:'/'});
+        set_filter_option( 'invited' );
         filter_sort_and_render( );
     };
 
     function show_liked_albums(){
-        jQuery.cookie('zz.homepage.filter', 'liked', {path:'/'});
+        set_filter_option( 'liked' );
         filter_sort_and_render( );
     };
 
     function show_following_albums(){
-        jQuery.cookie('zz.homepage.filter', 'following', {path:'/'});
+        set_filter_option( 'following' );
         filter_sort_and_render( );
     };
 
 
-    // This function gets and caches the right albums from server according to the filter cookie
-    // It uses the sort method indicated by the sort cookie
+    // This function gets and caches the right albums from server according to the filter option
+    // It uses the sort method indicated by the sort option
     function filter_sort_and_render( ){
-        switch( $.cookie('zz.homepage.filter')){
+        switch( get_filter_option() ){
             case('my'):
                 if( my_albums ){
                     render( my_albums_title, sort( my_albums ));
@@ -193,9 +193,9 @@ zz.homepage = {};
         }
     }
 
-    // Sorts the given array using the comparator indicated by the sort cookie
+    // Sorts the given array using the comparator indicated by the sort option
     function sort( albums ){
-        switch( $.cookie('zz.homepage.sort')){
+        switch( get_sort_option() ){
                 case('name_asc'):
                     return _.sortBy(albums, name_asc_comprarator );
                 case('name_desc'):
@@ -213,7 +213,7 @@ zz.homepage = {};
 
     // gets the albums from each url in the urls array
     // calls back with the merged,sorted,deduped array of albums
-    // it sorts the results based on the sort cookie
+    // it sorts the results based on the sort option
     function call_and_merge(urls, callback) {
         var results = {};
 
@@ -400,12 +400,12 @@ zz.homepage = {};
     }
 
     function name_asc_comprarator( album ){
-                return album.name;
+                return album.name.toLowerCase();
     }
 
     function name_desc_comprarator( album ){
        return String.fromCharCode.apply(String,
-        _.map(album['name'].split(""), function (c) {
+        _.map(album['name'].toLowerCase().split(''), function (c) {
             return 0xffff - c.charCodeAt();
         }));
     }
@@ -468,7 +468,7 @@ zz.homepage = {};
 
 
     function set_button_selection(){
-        switch( $.cookie('zz.homepage.sort')){
+        switch( get_sort_option() ){
             case('name_asc'):
                 $('#sort-name-btn').addClass('active-state arrow-up');
                 break;
@@ -485,15 +485,15 @@ zz.homepage = {};
             default:
                 $('#sort-recent-btn').addClass('active-state');
         }
-        switch( $.cookie('zz.homepage.filter')){
+        switch( get_filter_option() ){
             case('my'):
                 $('#view-my-btn').addClass('active-state');
                 break;
             case('invited'):
-                if( $('#view-invited-btn').length != 0 ){
+                if( current_users_home_page ){
                     $('#view-invited-btn').addClass('active-state');
                 } else {
-                   jQuery.cookie('zz.homepage.filter', 'all', {path:'/'});
+                  set_filter_option( 'all' )
                    $('#view-all-btn').addClass('active-state');
                 }
                 break;
@@ -510,7 +510,7 @@ zz.homepage = {};
     }
 
     function sort( albums ){
-        switch( $.cookie('zz.homepage.sort')){
+        switch( get_sort_option() ){
                 case('name_asc'):
                     return _.sortBy(albums, name_asc_comprarator );
                 case('name_desc'):
@@ -524,6 +524,45 @@ zz.homepage = {};
                 default:
                     return _.sortBy(albums, updated_at_desc_comparator );
             }
+    }
+
+
+    function set_option( option, value ){
+        var options = zz.local_storage.get('homepage_options') || {};
+        options[zz.page.displayed_user_base_url] = options[zz.page.displayed_user_base_url] || {};
+        options[zz.page.displayed_user_base_url][option] = value;
+        zz.local_storage.set( 'homepage_options', options );
+    }
+    
+    function set_sort_option(value){
+        set_option('sort', value);
+    }
+
+    function set_filter_option( value ){
+        set_option('filter', value);
+    }
+
+
+    function get_option( option, default_option ){
+        var options = zz.local_storage.get( 'homepage_options');
+        if( options &&
+            options[zz.page.displayed_user_base_url] &&
+            options[zz.page.displayed_user_base_url][option]){
+                return options[zz.page.displayed_user_base_url][option];
+        }
+        return default_option;
+    }
+
+    function get_sort_option(){
+        return get_option('sort','updated_at_desc');
+    }
+    
+    function get_filter_option(){
+        if( current_users_home_page ){
+            return get_option('filter','all');
+        }else{
+            return get_option('filter','my');
+        }
     }
 
 })();
