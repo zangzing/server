@@ -76,7 +76,7 @@
          <%= render :partial => 'users/profile_photo', :locals => { :user => @user }    %>
         </div>
         <div id="user-name">
-            <h2 <%=( !current_user || current_user!=@user ? 'class=with-follow' : '' )%> ><%="#{@user.first_name} #{@user.last_name}"%></h2>
+            <h2 <%=( !current_user || current_user!=@user ? 'class=with-follow' : '' )%> ><%=truncate( "#{@user.first_name} #{@user.last_name}")%></h2>
             <%if !current_user || current_user!=@user # do not show like for self%>
                 <div id="owner-follow" class="zzlike zzlike-follow" data-zzid="<%=@user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
             <%end%>

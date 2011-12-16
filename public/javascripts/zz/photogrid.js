@@ -99,7 +99,7 @@
             var droppableLeft = -1 * Math.floor(droppableWidth / 2);
             var droppableTop = Math.floor((o.cellHeight - droppableHeight) / 2);
 
-            var cells = [];
+            //var cells = [];
 
 
             if (o.lazyLoadThreshold != 0 && !o.lazyLoadThreshold && o.singlePictureMode) {
@@ -112,11 +112,8 @@
             // process other events.
             var create_photo = function(index, photo) {
                 var cell = template.clone();
-                cells.push(cell);
-
-
+                //cells.push(cell);
                 cell.appendTo(self.element);
-
                 cell.zz_photo({
                     json: photo,
                     photoId: photo.id,
@@ -157,6 +154,9 @@
                     onClickShare: o.onClickShare,
                     rolloverFrameContainer: o.rolloverFrameContainer
                 });
+                self._layoutPhoto( cell, index );
+
+                //cell.data().zz_photo.loadIfVisible();
 
                 //setup drag and drop
                 if (o.allowReorder) {
@@ -244,32 +244,49 @@
 
                     });
                 }
-
+                return cell;
             };
 
-            // 1.- Use native for instead of $.each for speed
-            // 2.- Add timeout every 100 photos to prevent lockout warnings
-            // 3.- Move all the grid finishing code to the the finishing condition clause so
-            //     that it is executed when all photos have been processed.
+            // - Build and load screen photos in batches
+            // - Set the batch size to the average photos that are displayed upon loading (how many fit in the screen)
+            // - Optimize insert, draw, and load speed for the first batch (first batch is inserted with element hidden)
+            // - Check if second batch is visible just in case you are using a huge browser window
+            // - Once first batch is on screen then build, and insert the rest of the photos at your leisure
+            // - Add timeout every batch to prevent lockout warnings
+
+            var batch_size = 30;
             var create_some_photos = function(i) {
                 if (i < o.photos.length) {
-                    var batch_size = 100;
+                    var cells = [];
                     for (var j = i; j < i + batch_size && j < o.photos.length; j++) {
-                        create_photo(j, o.photos[j]);
+                        cells.push( create_photo(j, o.photos[j]) );
+                    }
+                    if( !self.options.singlePictureMode && i <= batch_size ){
+                        self.element.show();
+                        for (var k = 0; k < cells.length ; k++) {
+                            cells[k].data().zz_photo.loadIfVisible();
+                        }
+
+                    }else{
+                    
                     }
                     var next_batch = function() {
                         create_some_photos(i + batch_size);
                     };
                     setTimeout(next_batch, 0); //A 0 timeout lets the system process any pending stuff and then this.
                 } else {
-                    self.resetLayout();
+                    if (self.options.singlePictureMode ){
+                         self.element.show();
+                    }
+                    
+                    //self.resetLayout(); Done when each photo is created
 
-                    self.element.show();
+                    //self.element.show(); Done after first batch is created
 
-                    self.element.children('.photogrid-cell').each(function(index, element) {
-                        $(element).data().zz_photo.loadIfVisible();
-                    });
-
+                   //self.element.children('.photogrid-cell').each(function(index, element) {
+                   //     $(element).data().zz_photo.loadIfVisible();
+                   // }); Done only for first and second batches, the rest of the photos will get it when they come
+                   // into view
 
                     //handle window resize
                     var resizeTimer = null;
@@ -629,28 +646,7 @@
             var top_of_last_row = 0;
 
             this.element.children('.photogrid-cell').each(function(index, element) {
-                if (! $(element).data().zz_photo) {
-                    return;
-                }
-
-
-                var position = self.positionForIndex(index);
-                var css = {
-                    top: position.top,
-                    left: position.left
-                };
-
-                //todo: moght want to check that things have actuall changed before setting new properties
-                if (duration > 0) {
-                    $(element).animate(css, duration, easing);
-                }
-                else {
-                    $(element).css(css);
-                }
-
-
-                top_of_last_row = position.top;
-
+                top_of_last_row = self._layoutPhoto( element, index, duration, easing ).top
             });
 
             if(!self.options.singlePictureMode){
@@ -661,6 +657,27 @@
             }
 
 
+        },
+
+        _layoutPhoto: function( photo, index, duration, easing ){
+            if (! $(photo).data().zz_photo) {
+                return;
+            }
+
+            var position = this.positionForIndex(index);
+            var css = {
+                top: position.top,
+                left: position.left
+            };
+
+            //todo: moght want to check that things have actuall changed before setting new properties
+            if (duration && duration > 0) {
+                $(photo).animate(css, duration, easing);
+            }
+            else {
+                $(photo).css(css);
+            }
+            return position;
         },
 
         cellForId: function(id) {
