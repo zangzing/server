@@ -119,7 +119,7 @@ class ZipDeferrableBody < DeferrableBodyBase
         # because we sit inside a next_tick block
         # we won't actually recurse, just get queued up
         zza.track_transaction("#{base_zza_event}.backend.request.complete", tx_id, url)
-        fetch_next
+        fetch_next_with_throttle
       end
     end
   end
@@ -127,6 +127,22 @@ class ZipDeferrableBody < DeferrableBodyBase
   # called only once if client connection failed
   def client_connection_failed
     @http.on_error("Thin client failed")
+  end
+
+  # does the fetch next but only once we are no
+  # longer throttled.  If we are throttled we
+  # need to wait a while and check again
+  def fetch_next_with_throttle
+    if throttle_data?
+      log_info "Data flow throttled with backlog of #{outbound_data_size}"
+      # set up a one shot timer and check when it expires again
+      EventMachine::add_timer(0.2) do
+        fetch_next_with_throttle   # check again when timer fires
+      end
+    else
+      # good to go, kick off the next one
+      fetch_next
+    end
   end
 
   # fetch the next url in the list by pulling from the front

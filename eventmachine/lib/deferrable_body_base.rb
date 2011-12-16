@@ -23,7 +23,7 @@ class DeferrableBodyBase
     self.base_zza_event ||= 'event_machine.app_not_set'
     errback { client_failed }
     callback { client_success }
-    EventMachine::add_periodic_timer(10) { log_outbound_data_size if @connection }
+    @timer = EventMachine::add_periodic_timer(10) { log_outbound_data_size if @connection }
     prepare
   end
 
@@ -98,9 +98,24 @@ class DeferrableBodyBase
     end
   end
 
+  # define point where we hold off on pulling more data
+  # in.  Not much we can do about inflight data other than
+  # implement a disk based buffering scheme but at
+  # least keep more from flowing
+  def throttle_limit
+    128 * 1024
+  end
+
+  def throttle_data?
+    outbound_data_size > throttle_limit
+  end
+
+  def outbound_data_size
+    @connection ? @connection.get_outbound_data_size : 0
+  end
+
   def log_outbound_data_size
-    out_size = @connection.get_outbound_data_size
-    log_info "OutboundDataSize is: #{out_size}"
+    log_info "OutboundDataSize is: #{outbound_data_size}"
   end
 
   # use i/o like interface
@@ -166,6 +181,8 @@ class DeferrableBodyBase
   end
 
   def clean_up
+    @timer.cancel
+    @timer = nil
     @connection = nil
     @env = nil
   end
