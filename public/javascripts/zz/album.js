@@ -108,12 +108,12 @@ zz.album = {};
      ***************************************************/
 
     function render_grid_view(){
-        load_photos_json('grid', function(json) {
+        load_photos_json('grid', function(photos) {
 
             var buy_mode = zz.buy.is_buy_mode_active();
 
             //no movie mode if no photos
-            if (json.length == 0) {
+            if (photos.length == 0) {
                 $('#footer #play-button').addClass('disabled');
             }
 
@@ -131,12 +131,12 @@ zz.album = {};
                     caption: '',
                     type: 'blank'
                 };
-                json.unshift(addAllButton);
+                photos.unshift(addAllButton);
             }
 
 
             var grid = gridElement.zz_photogrid({
-                photos: json,
+                photos: photos,
                 allowDelete: false,
                 allowEditCaption: false,
                 allowReorder: false,
@@ -185,11 +185,11 @@ zz.album = {};
 
 
     function render_picture_view(){
-        load_photos_json('picture', function(json) {
+        load_photos_json('picture', function(photos) {
 
             var render = function() {
                 //no movie mode if no photos
-                if (json.length == 0) {
+                if (photos.length == 0) {
                     $('#footer #play-button').addClass('disabled');
                 }
 
@@ -203,7 +203,7 @@ zz.album = {};
                 $('#article').append(gridElement);
 
                 var grid = gridElement.zz_photogrid({
-                    photos: json,
+                    photos: photos,
                     allowDelete: false,
                     allowEditCaption: false,
                     allowReorder: false,
@@ -232,7 +232,7 @@ zz.album = {};
                         window.location.hash = '#!' + photoId;
                         zz.page.current_photo_index = index; //this is used when we go to movie mode
                         current_photo_id = photoId;
-                        current_photo_json = json[index];
+                        current_photo_json = photos[index];
 
                         zz.comments.set_current_photo_id(photoId);
 
@@ -362,7 +362,7 @@ zz.album = {};
 
 
     function render_timeline_or_people_view(which){
-        load_photos_json(which, function(json) {
+        load_photos_json(which, function(photos) {
               var buy_mode = zz.buy.is_buy_mode_active();
             
             $('.timeline-grid').each(function(index, element) {
@@ -380,23 +380,23 @@ zz.album = {};
                 if (which === 'timeline') {
                     if (!_.isUndefined($(element).attr('data-upload-batch-id'))) {
                         var batchId = parseInt($(element).attr('data-upload-batch-id'));
-                        filteredPhotos = $(json).filter(function(index) {
-                            return (json[index].upload_batch_id === batchId);
+                        filteredPhotos = $(photos).filter(function(index) {
+                            return (photos[index].upload_batch_id === batchId);
                         });
                         var moreLessbuttonElement = $('.viewlist .more-less-btn[data-upload-batch-id="' + batchId.toString() + '"]');
                     }
                     else if (!_.isUndefined($(element).attr('data-photo-id'))) {
                         var photoId = parseInt($(element).attr('data-photo-id'));
-                        filteredPhotos = $(json).filter(function(index) {
-                            return (json[index].id === photoId);
+                        filteredPhotos = $(photos).filter(function(index) {
+                            return (photos[index].id === photoId);
                         });
                     }
                 }
                 else {
                     var userId = parseInt($(element).attr('data-user-id'));
 
-                    filteredPhotos = $(json).filter(function(index) {
-                        return (json[index].user_id === userId);
+                    filteredPhotos = $(photos).filter(function(index) {
+                        return (photos[index].user_id === userId);
                     });
                     var moreLessbuttonElement = $('.viewlist .more-less-btn[data-user-id="' + userId.toString() + '"]');
                 }
