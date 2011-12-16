@@ -261,18 +261,24 @@
                     for (var j = i; j < i + batch_size && j < o.photos.length; j++) {
                         cells.push( create_photo(j, o.photos[j]) );
                     }
-                    if( i <= batch_size ){
+                    if( !self.options.singlePictureMode && i <= batch_size ){
                         self.element.show();
                         for (var k = 0; k < cells.length ; k++) {
                             cells[k].data().zz_photo.loadIfVisible();
                         }
 
+                    }else{
+                    
                     }
                     var next_batch = function() {
                         create_some_photos(i + batch_size);
                     };
-                    setTimeout(next_batch, 5); //A 0 timeout lets the system process any pending stuff and then this.
+                    setTimeout(next_batch, 0); //A 0 timeout lets the system process any pending stuff and then this.
                 } else {
+                    if (self.options.singlePictureMode ){
+                         self.element.show();
+                    }
+                    
                     //self.resetLayout(); Done when each photo is created
 
                     //self.element.show(); Done after first batch is created
