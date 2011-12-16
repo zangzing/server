@@ -353,6 +353,14 @@ class PhotosController < ApplicationController
     render 'movie', :layout => false
   end
 
+
+  def embedded_slideshow_js
+    return unless require_album(true) && require_album_viewer_role
+    render 'embedded_slideshow.js.erb', :layout => false
+  end
+
+
+
   # returns a json string of the album photos
   # @album is set by before_filter require_album
   def photos_loader

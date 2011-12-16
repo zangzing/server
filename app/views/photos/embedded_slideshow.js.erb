@@ -1,0 +1,10 @@
+<%
+    height = params[:height] || '400px'
+    width = params[:width] || '600px'
+    embedded_movie_url = "#{album_pretty_url(@album)}/movie?js=true&start=0&embed=true"
+%>
+
+
+(function(){
+    document.write('<iframe border="0" style="border:none; background-color:#000; height:<%=height%>; width:<%=width%>" src="<%=embedded_movie_url%>"></iframe>');
+}());
