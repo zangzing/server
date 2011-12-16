@@ -24,7 +24,12 @@ class EventMachineRPC
   def self.generate_json_file(data)
     json_str = JSON.fast_generate(data)
     filename = "/data/tmp/json_ipc/#{Process.pid}.#{Time.now.to_f}.#{rand(9999999999)}.json"
-    File.open(filename, 'w') {|f| f.write(json_str) }
+    begin
+      f = File.open(filename, 'w')
+      f.write(json_str)
+    ensure
+      f.close rescue nil
+    end
     filename
   end
 

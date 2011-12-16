@@ -23,6 +23,7 @@ class DeferrableBodyBase
     self.base_zza_event ||= 'event_machine.app_not_set'
     errback { client_failed }
     callback { client_success }
+    EventMachine::add_periodic_timer(10) { log_outbound_data_size if @connection }
     prepare
   end
 
@@ -97,6 +98,11 @@ class DeferrableBodyBase
     end
   end
 
+  def log_outbound_data_size
+    out_size = @connection.get_outbound_data_size
+    log_info "OutboundDataSize is: #{out_size}"
+  end
+
   # use i/o like interface
   def write(chunk)
     @body_callback.call(chunk)
@@ -164,3 +170,4 @@ class DeferrableBodyBase
     @env = nil
   end
 end
+
