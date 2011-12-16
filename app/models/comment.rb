@@ -85,8 +85,9 @@ class Comment < ActiveRecord::Base
 
       # if password album, remove users who are not in ACL
       if album.private?
+        viewers ||= album.viewers(false)
         users_to_notify.reject! { |userid_or_email|
-          !album.viewer?(userid_or_email)
+          !viewers.include?(userid_or_email.to_s)
         }
       end
 
