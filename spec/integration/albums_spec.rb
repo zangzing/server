@@ -5,14 +5,14 @@ include PrettyUrlHelper
 describe "Album download" do
   it "should not allow download without permission" do
     user_id = zz_login('test2', 'testtest')
-    path = build_full_path(download_album_path('t1-a1'))
+    path = build_full_path(download_direct_album_path('t1-a1'))
     get path, nil
     response.status.should eql(401)
   end
 
   it "should download the zip header document" do
     user_id = zz_login('test1', 'testtest')
-    path = "#{build_full_path(download_album_path('t1-a1'))}?test=1"
+    path = "#{build_full_path(download_direct_album_path('t1-a1'))}?test=1"
     get path, nil
     response.status.should eql(200)
 

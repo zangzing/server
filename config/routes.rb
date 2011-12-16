@@ -69,6 +69,7 @@ Server::Application.routes.draw do
     get    '/albums/:album_id/preview_album_email' => "albums#preview_album_email", :as => :preview_album_email
     get    '/albums/:album_id/privacy'             => 'albums#privacy',             :as => :privacy
     get    '/albums/:album_id/download'            => 'albums#download',            :as => :download_album
+    get    '/albums/:album_id/download_direct'     => 'albums#download_direct',     :as => :download_direct_album
 #   get    '/albums/:album_id'                     => 'albums#show',                :as => :album
 #   get    '/albums/:album_id/edit'                => 'albums#edit',                :as => :edit_album
     get    '/albums/:album_id/close_batch'         => 'albums#close_batch',         :as => :close_batch

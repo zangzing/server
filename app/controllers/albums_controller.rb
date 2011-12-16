@@ -521,13 +521,9 @@ class AlbumsController < ApplicationController
     head :ok and return
   end
 
-  # @album is set by require_album before_filter
-  # prepare to download an on the fly zip of the photos
-  # we return.  The heavy lifting is handled by the mod_zip
-  # plugin to nginx, so our job is to put together the list
-  # of all photos that have been uploaded to amazon
-  def download
-    return unless require_album
+  # shared permissions check for both download and download_direct
+  def download_security_check
+    return false unless require_album
 
     unless  @album.can_user_download?( current_user )
       flash.now[:error] = "Only Authorized Album Group Members can download albums"
@@ -538,6 +534,28 @@ class AlbumsController < ApplicationController
       end
       return false
     end
+    return true
+  end
+
+  # Due to issues with Amazons ELB dropping connections and
+  # in some cases dropping the Content-Length header for large requests
+  # we bypass it by doing a redirect to our direct DNS name
+  # this will bypass the ELB and let the client call
+  # back into us directly.
+  def download
+    return unless download_security_check
+
+    zz = ZZDeployEnvironment.env.zz
+    redirect_to "http://#{zz[:public_hostname]}#{download_direct_album_path(@album)}"
+  end
+
+  # @album is set by require_album before_filter
+  # prepare to download an on the fly zip of the photos
+  # we return.  The heavy lifting is handled by the mod_zip
+  # plugin to nginx, so our job is to put together the list
+  # of all photos that have been uploaded to amazon
+  def download_direct
+    return unless download_security_check
 
     # Walk the list of all photos and build up the zip_download hash that tells
     # us which files to download and crc32 and filesize info for each file.
