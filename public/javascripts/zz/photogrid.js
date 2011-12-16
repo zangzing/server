@@ -271,7 +271,7 @@
                     var next_batch = function() {
                         create_some_photos(i + batch_size);
                     };
-                    setTimeout(next_batch, 50); //A 0 timeout lets the system process any pending stuff and then this.
+                    setTimeout(next_batch, 5); //A 0 timeout lets the system process any pending stuff and then this.
                 } else {
                     //self.resetLayout(); Done when each photo is created
 
