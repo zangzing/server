@@ -63,9 +63,6 @@ class Comment < ActiveRecord::Base
       # all viewers and contributors of album
       if album.stream_to_email?
         viewers ||= album.viewers(false)
-          if viewers.length > 0
-            zza.track_event('album.stream.email')
-          end
 
         # viewers comes back as strings of ids or emails
         viewers.each do |viewer|
@@ -99,7 +96,6 @@ class Comment < ActiveRecord::Base
 
     end
   end
-
 
   def post_to_facebook
     ZZ::Async::Facebook.enqueue(:photo_comment, self.id)
