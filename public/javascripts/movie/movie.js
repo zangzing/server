@@ -76,6 +76,9 @@
 			// The URL or file path and name of an image displayed as the exit button
 			this.backButtonURL = '',
 
+
+            this.backUrlInNewWin = false;
+
 			// Control bar icons URL
 			this.iconsURL = 'icons/',
 
@@ -316,6 +319,14 @@
 			if (typeof configs.backButtonURL != 'undefined' && configs.backButtonURL.length > 0) {
 				this.backButtonURL = configs.backButtonURL;
 			}
+
+
+            if (typeof configs.backUrlInNewWin != 'undefined') {
+				this.backUrlInNewWin = configs.backUrlInNewWin;
+			}
+
+
+
 
 			// iconsURL
 			if (typeof configs.iconsURL != 'undefined' && configs.iconsURL.length > 0) {
@@ -919,7 +930,12 @@
 		 * Exit button control
 		 */
 		exitControl: function(){
-			window.location=this.backButtonURL;
+            if(this.backUrlInNewWin){
+                window.open(this.backButtonURL);
+            }
+            else{
+                window.location=this.backButtonURL;
+            }
 		},
 
 		/**
