@@ -29,7 +29,7 @@ class ZipDeferrableBody < DeferrableBodyBase
     end
     out_header['ETag'] = signature if signature
 
-    # send the header back to the client
+    # log the info with zza
     xdata = {
         :album_name => json_data[:album_name],
         :zip_file_size => zip_file_size,

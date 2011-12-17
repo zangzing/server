@@ -23,7 +23,6 @@ class DeferrableBodyBase
     self.base_zza_event ||= 'event_machine.app_not_set'
     errback { client_failed }
     callback { client_success }
-    @timer = EventMachine::add_periodic_timer(10) { log_outbound_data_size if @connection }
     prepare
   end
 
@@ -55,7 +54,12 @@ class DeferrableBodyBase
 
   # child class should call this and append its own data
   def context_str
-    "EM - #{@env['REQUEST_PATH']}, ip: #{user_ip}, user_id: #{@user_context[:user_id]}, tx_id: #{tx_id}"
+    begin
+      msg = "EM - #{@env['REQUEST_PATH']}, ip: #{user_ip}, user_id: #{@user_context[:user_id]}, tx_id: #{tx_id}"
+    rescue Exception => ex
+      msg = "EM - Logging Context Exception: #{ex.message}"
+    end
+    msg
   end
 
   # adds logging context in front of message
@@ -71,7 +75,7 @@ class DeferrableBodyBase
       block.call
     rescue Exception => ex
       # log the error
-      log_error "Event machine request failed: #{ex.message}"
+      log_error "Event machine unexpected exception, request failed: #{ex.message}"
       # drop the client connection
       drop_client_connection
     end
@@ -103,7 +107,7 @@ class DeferrableBodyBase
   # implement a disk based buffering scheme but at
   # least keep more from flowing
   def throttle_limit
-    128 * 1024
+    @throttle_limit ||= 128 * 1024
   end
 
   def throttle_data?
@@ -133,9 +137,14 @@ class DeferrableBodyBase
   end
 
   def client_success
-    zza.track_transaction("#{base_zza_event}.client.success", tx_id)
-    log_info "All requests complete."
-    clean_up
+    error_wrap do
+      begin
+        zza.track_transaction("#{base_zza_event}.client.success", tx_id)
+        log_info "All requests complete."
+      ensure
+        clean_up
+      end
+    end
   end
 
   # This is setup in initialize via an errback handler
@@ -148,7 +157,7 @@ class DeferrableBodyBase
   end
 
   def client_failed?
-    @client_peer_failure || @connection.error?
+    @client_peer_failure || @connection.nil? || @connection.error?
   end
 
   # see if client failed and if so, shut things down
@@ -158,8 +167,8 @@ class DeferrableBodyBase
       unless @handled_failure
         # shut down the connection to the back end
         @handled_failure = true
-        client_connection_failed
-        clean_up
+        client_connection_failed rescue nil
+        clean_up rescue nil
       end
       true
     else
@@ -181,8 +190,6 @@ class DeferrableBodyBase
   end
 
   def clean_up
-    @timer.cancel
-    @timer = nil
     @connection = nil
     @env = nil
   end

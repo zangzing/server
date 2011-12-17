@@ -188,7 +188,7 @@ class ApplicationController < ActionController::Base
       parsed = JSON.parse(json_str)
       raise "Parsed data is invalid" if parsed['parse_test_flag'] != 'valid'
     rescue Exception => ex
-      Rails.logger.error "In prepare_proxy_eventmachine, the json file was corrupt: #{ex.to_s}"
+      Rails.logger.error "In prepare_proxy_eventmachine, the json file was corrupt: #{ex.message}"
     end
 
     response.headers['X-Accel-Redirect'] = "/proxy_eventmachine/#{command}?json_path=#{rpc_path}"

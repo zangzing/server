@@ -545,8 +545,15 @@ class AlbumsController < ApplicationController
   def download
     return unless download_security_check
 
+    # build the single access key if we have a current user
+    #TODO move this to auth helpers
+    key = ''
+    if current_user
+      key = "?zzapi_key=#{current_user.single_access_token}"
+    end
+
     zz = ZZDeployEnvironment.env.zz
-    redirect_to "http://#{zz[:public_hostname]}#{download_direct_album_path(@album)}"
+    redirect_to "http://#{zz[:public_hostname]}#{download_direct_album_path(@album)}#{key}"
   end
 
   # @album is set by require_album before_filter
