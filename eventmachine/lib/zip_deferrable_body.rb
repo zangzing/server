@@ -119,6 +119,7 @@ class ZipDeferrableBody < DeferrableBodyBase
         # because we sit inside a next_tick block
         # we won't actually recurse, just get queued up
         zza.track_transaction("#{base_zza_event}.backend.request.complete", tx_id, url)
+        log_info "Back end request complete on #{url}: #{@http.inspect}"
         fetch_next_with_throttle
       end
     end
