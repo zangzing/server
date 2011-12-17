@@ -7,7 +7,7 @@ class RouteManager
     # make an instance of each app type (controller)
     zip_app = ZipAsyncApp.new(BASE_PROXY, true)
     heap_app = HeapStatsApp.new(BASE_PROXY, true)
-
+    health_app = HealthCheckApp.new(BASE_DIRECT, false)
     # map your routes
     server = Thin::Server.new(*args) do
       use Rack::CommonLogger
@@ -23,6 +23,10 @@ class RouteManager
 
       map "#{BASE_PROXY}/heap_track" do
         run  heap_app
+      end
+
+      map "#{BASE_DIRECT}/health_check" do
+        run  health_app
       end
     end
 

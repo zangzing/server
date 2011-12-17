@@ -1,9 +1,5 @@
 class HeapStatsApp < AppBase
 
-  def allowed_paths
-    @@allowed_paths ||= ['heap', 'heap_track']
-  end
-
   # /heap
   def heap(env)
     body = HeapTracker.current_instance.gc_stats

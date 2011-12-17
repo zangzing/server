@@ -24,7 +24,8 @@ photos_staging:
   zza_id: "staging.photos/svr"
   log_type: "syslog"
   log_app_name: "rails/stag/emphotos"
-  server_address: '/var/run/zz/em_photos_listen_'  # a prefix for the unix socket if no port
+#for testing use tcp socket
+#  server_address: '/var/run/zz/em_photos_listen_'  # a prefix for the unix socket if no port
 
 photos_production:
   <<: *common
