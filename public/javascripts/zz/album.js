@@ -30,7 +30,6 @@ zz.album = {};
         });
 
         zz.buy.on_before_activate(function(){
-            var photo = zz.routes.photos.get_photo_json(current_photo_id);
             if(!zz.buy.is_photo_selected(current_photo_id) && zz.page.current_user_can_buy_photos){
                 zz.buy.add_selected_photo(current_photo_json);
             }

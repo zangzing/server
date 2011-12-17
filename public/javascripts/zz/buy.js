@@ -1359,8 +1359,6 @@ zz.buy = zz.buy || {};
 
 
     function show_glamour_page(product_id){
-        var template = $('<div class="glamouf"')
-
         zz.routes.store.get_glamour_page_html(product_id, function(html){
 
 
