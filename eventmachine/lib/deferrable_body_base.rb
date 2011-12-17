@@ -77,7 +77,7 @@ class DeferrableBodyBase
       # log the error
       log_error "Event machine unexpected exception, request failed: #{ex.message}"
       # drop the client connection
-      drop_client_connection
+      drop_client_connection rescue nil
     end
   end
 
