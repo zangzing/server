@@ -89,8 +89,8 @@ class DeferrableBodyBase
     @zza ||= ZZ::ZZA.new
     @zza.page_uri = @env['REQUEST_PATH']
     @zza.ip_address = @user_context[:user_ip] || @env['REMOTE_ADDR']
-    @zza.user_type = @user_context[:user_type] || @env['REMOTE_ADDR']
-    @zza.user = @user_context[:user_id] || @env['REMOTE_ADDR']
+    @zza.user_type = @user_context[:user_type]
+    @zza.user = @user_context[:user_id]
     @zza
   end
 
