@@ -2,7 +2,7 @@
 # Use this for common configuration
 #
 common: &common
-  client_timeout: 60
+  client_timeout: 600
   backend_timeout: 45
   zza_id: "dev.photos/svr"
   thin_log_file: '../log/thin.log'
