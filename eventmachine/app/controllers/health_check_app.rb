@@ -6,7 +6,8 @@ class HealthCheckApp < AppBase
         'Cache-Control' => 'no-cache',
     }
 
-    body = "OK\n\n"
+    body = "MONIT-WE-ARE-HEALTHY\n\n"
+    body << "OK\n\n"
     body << "Connection count: #{EventMachine::connection_count}\n"
 
     [200, header, [body]]
