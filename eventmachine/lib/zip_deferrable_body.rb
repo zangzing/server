@@ -180,9 +180,11 @@ class ZipDeferrableBody < DeferrableBodyBase
 
   # called only once if client connection failed
   def client_connection_failed
-    @allow_throttle = false
-    @http.resume
-    @http.on_error("Thin client failed")
+    if @http
+      @allow_throttle = false
+      @http.resume
+      @http.on_error("Thin client failed")
+    end
   end
 
   # fetch the next url in the list by pulling from the front
