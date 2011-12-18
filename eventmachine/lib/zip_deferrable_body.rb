@@ -58,8 +58,8 @@ class ZipDeferrableBody < DeferrableBodyBase
 
     backend_timeout = cfg[:backend_timeout]
     # uncomment the following lines and decrease the timeout to test retry handling
-    url = "http://165.23.45.99/BadBadBad" if rand(10) < 3
-    backend_timeout = 1
+    #url = "http://165.23.45.99/BadBadBad" if rand(10) < 3
+    #backend_timeout = 1
 
     # kick off the async fetch
     http = EventMachine::HttpRequest.new(url).get(:timeout => backend_timeout)
