@@ -151,7 +151,8 @@ class ZipDeferrableBody < DeferrableBodyBase
   # need to wait a while and check again
   def fetch_next_with_throttle
     if throttle_data?
-      log_info "Data flow throttled with backlog of #{outbound_data_size}"
+      log_info "Data flow throttled with backlog of #{outbound_data_size}" if @throttle_count % 10 == 0
+      @throttle_count += 1
       # set up a one shot timer and check when it expires again
       EventMachine::add_timer(0.2) do
         fetch_next_with_throttle
@@ -173,6 +174,7 @@ class ZipDeferrableBody < DeferrableBodyBase
         if url_info
           prep_retry
           @item_number += 1
+          @throttle_count = 0
           get_data_from_backend url_info
         else
           # done, finish up
