@@ -99,7 +99,7 @@ class ZipDeferrableBody < DeferrableBodyBase
     # pass an incoming chunk of data back to the client
     http.stream do |chunk|
       connect_check do
-        @mgr.push_data(chunk)
+        throttle_stream(chunk)
       end
     end
 
@@ -136,31 +136,54 @@ class ZipDeferrableBody < DeferrableBodyBase
         # we won't actually recurse, just get queued up
         zza.track_transaction("#{base_zza_event}.backend.request.complete", tx_id, url)
         log_info "Back end request complete on #{url}"
-        fetch_next_with_throttle
+        fetch_next
       end
     end
+  end
+
+  def throttle_limit
+    @throttle_limit ||= 64 * 1024
+  end
+
+  # prepare to resume the stream if ready to take more data
+  def check_throttle_stream
+    connect_check do
+      if throttle_data?
+        out_size = outbound_data_size
+        @high_watermark = out_size if out_size > @high_watermark
+        log_info "Data stream throttled with backlog: #{out_size}, high watermark: #{@high_watermark}" if @throttle_count % 20 == 0
+        @http.pause if @throttle_count == 0
+        @throttle_count += 1
+        current_http = @http
+        EventMachine::add_timer(0.1) do
+          # make sure we haven't moved on to a new http backend request
+          # if it's different then we are done with the current one
+          check_throttle_stream if current_http == @http
+        end
+      else
+        if @throttle_count > 0
+          # we were paused so ok to resume now
+          @throttle_count = 0
+          @http.resume
+        end
+      end
+    end
+  end
+
+  # used to throttle the back end request from
+  # producing more data than we can handle
+  def throttle_stream(chunk)
+    connect_check do
+      # write the data we have been given
+      @mgr.push_data(chunk)
+      # now see if we should throttle
+      check_throttle_stream
+     end
   end
 
   # called only once if client connection failed
   def client_connection_failed
     @http.on_error("Thin client failed")
-  end
-
-  # does the fetch next but only once we are no
-  # longer throttled.  If we are throttled we
-  # need to wait a while and check again
-  def fetch_next_with_throttle
-    if throttle_data?
-      log_info "Data flow throttled with backlog of #{outbound_data_size}" if @throttle_count % 10 == 0
-      @throttle_count += 1
-      # set up a one shot timer and check when it expires again
-      EventMachine::add_timer(0.2) do
-        fetch_next_with_throttle
-      end
-    else
-      # good to go, kick off the next one
-      fetch_next
-    end
   end
 
   # fetch the next url in the list by pulling from the front
@@ -175,6 +198,7 @@ class ZipDeferrableBody < DeferrableBodyBase
           prep_retry
           @item_number += 1
           @throttle_count = 0
+          @high_watermark = 0
           get_data_from_backend url_info
         else
           # done, finish up
