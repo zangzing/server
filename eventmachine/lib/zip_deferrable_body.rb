@@ -141,12 +141,9 @@ class ZipDeferrableBody < DeferrableBodyBase
     end
   end
 
-  def throttle_limit
-    @throttle_limit ||= 64 * 1024
-  end
-
   # prepare to resume the stream if ready to take more data
   def check_throttle_stream
+    return unless @allow_throttle
     connect_check do
       if throttle_data?
         out_size = outbound_data_size
@@ -183,6 +180,8 @@ class ZipDeferrableBody < DeferrableBodyBase
 
   # called only once if client connection failed
   def client_connection_failed
+    @allow_throttle = false
+    @http.resume
     @http.on_error("Thin client failed")
   end
 
@@ -237,6 +236,7 @@ class ZipDeferrableBody < DeferrableBodyBase
   end
 
   def begin_work
+    @allow_throttle = true
     @item_number = 0
     @total_number = @urls.length
     fetch_next

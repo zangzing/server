@@ -21,6 +21,7 @@ class DeferrableBodyBase
     @failed = false
     @tx_id ||= rand(999999999999999)  # zza can only seem to handle 16 digits properly should handle up to BIGINT
     @back_end_dropped_client = false
+    @handled_failure = false
     self.base_zza_event ||= 'event_machine.app_not_set'
     errback { client_failed }
     callback { client_success }
@@ -107,10 +108,10 @@ class DeferrableBodyBase
     end
   end
 
-  # define point where we hold off on pulling more data
-  # in.  Not much we can do about inflight data other than
-  # implement a disk based buffering scheme but at
-  # least keep more from flowing
+  # Limit where we throttle data
+  # we do this by pausing EM for
+  # the current backend connection
+  # until we get back below the limit
   def throttle_limit
     @throttle_limit ||= 128 * 1024
   end
