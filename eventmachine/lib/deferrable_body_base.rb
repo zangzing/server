@@ -20,6 +20,7 @@ class DeferrableBodyBase
     @first_fetch = true
     @failed = false
     @tx_id ||= rand(999999999999999)  # zza can only seem to handle 16 digits properly should handle up to BIGINT
+    @back_end_dropped_client = false
     self.base_zza_event ||= 'event_machine.app_not_set'
     errback { client_failed }
     callback { client_success }
@@ -70,9 +71,12 @@ class DeferrableBodyBase
   # protect the code block with
   # an exception handler, and drop
   # the client connection if we get an exception
-  def error_wrap(&block)
+  # also makes sure client side is still connected
+  def connect_check(&block)
     begin
-      block.call
+      if check_client_failed == false
+        block.call
+      end
     rescue Exception => ex
       # log the error
       log_error "Event machine unexpected exception, request failed: #{ex.message}"
@@ -98,6 +102,7 @@ class DeferrableBodyBase
     if @failed == false
       # only do it once
       @failed = true
+      @back_end_dropped_client = true
       fail
     end
   end
@@ -137,7 +142,7 @@ class DeferrableBodyBase
   end
 
   def client_success
-    error_wrap do
+    connect_check do
       begin
         zza.track_transaction("#{base_zza_event}.client.success", tx_id)
         log_info "All requests complete."
@@ -153,7 +158,9 @@ class DeferrableBodyBase
   def client_failed
     @client_peer_failure = true
     zza.track_transaction("#{base_zza_event}.client.failed", tx_id)
-    log_error "Client peer connection failed"
+    msg = @back_end_dropped_client ? "Back end dropped client connection" : "Unexpected client disconnect"
+    log_error msg
+    check_client_failed # kick off cleanup
   end
 
   def client_failed?
@@ -167,8 +174,11 @@ class DeferrableBodyBase
       unless @handled_failure
         # shut down the connection to the back end
         @handled_failure = true
-        client_connection_failed rescue nil
-        clean_up rescue nil
+        # schedule the cleanup to happen shortly
+        EventMachine::next_tick do
+          client_connection_failed rescue nil
+          clean_up rescue nil
+        end
       end
       true
     else

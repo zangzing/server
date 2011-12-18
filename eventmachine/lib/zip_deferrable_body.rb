@@ -58,8 +58,8 @@ class ZipDeferrableBody < DeferrableBodyBase
 
     backend_timeout = cfg[:backend_timeout]
     # uncomment the following lines and decrease the timeout to test retry handling
-    #url = "http://165.23.45.99/BadBadBad" if rand(10) < 2
-    #backend_timeout = 1
+    url = "http://165.23.45.99/BadBadBad" if rand(10) < 3
+    backend_timeout = 1
 
     # kick off the async fetch
     http = EventMachine::HttpRequest.new(url).get(:timeout => backend_timeout)
@@ -67,79 +67,75 @@ class ZipDeferrableBody < DeferrableBodyBase
 
     # set up the async handlers
     http.headers do |h|
-      error_wrap do
+      connect_check do
         cant_retry
         # make sure we got a valid response
-        if check_client_failed == false
-          if h.status != 200
-            msg = "Failed to fetch #{url} from back end due to #{h.status} - #{h.http_reason}"
-            log_error msg
-            http.on_error(msg)
-          else
-            if @first_fetch
-              @first_fetch = false
-              puts h.inspect
-            end
-
-            # get info about file being downloaded
-            crc32 = url_info[:crc32]
-            file_size = url_info[:size]
-            file_name = url_info[:filename]
-            time = Time.at(url_info[:create_date]) rescue nil
-            if file_size.nil?
-              # use returned length if not known
-              file_size = h['CONTENT_LENGTH'].to_i
-            end
-
-            # set up the current file
-            @mgr.start_file(file_name, file_size, crc32, time ? time : Time.now)
+        if h.status != 200
+          msg = "Failed to fetch #{url} from back end due to #{h.status} - #{h.http_reason}"
+          log_error msg
+          http.on_error(msg)
+        else
+          if @first_fetch
+            @first_fetch = false
+            puts h.inspect
           end
+
+          # get info about file being downloaded
+          crc32 = url_info[:crc32]
+          file_size = url_info[:size]
+          file_name = url_info[:filename]
+          time = Time.at(url_info[:create_date]) rescue nil
+          if file_size.nil?
+            # use returned length if not known
+            file_size = h['CONTENT_LENGTH'].to_i
+          end
+
+          # set up the current file
+          @mgr.start_file(file_name, file_size, crc32, time ? time : Time.now)
         end
       end
     end
 
     # pass an incoming chunk of data back to the client
     http.stream do |chunk|
-      error_wrap do
-        if check_client_failed == false
-          @mgr.push_data(chunk)
-        end
+      connect_check do
+        @mgr.push_data(chunk)
       end
     end
 
     # handle any error on download
     http.errback do
-      error_wrap do
-        if client_failed? == false
-          # only retries if we have NOT seen
-          # any response from the backend, i.e. we were
-          # unable to connect.  Once data flows can't
-          # retry since the zip stream would be corrupt
-          if should_retry?
-            # schedule another try
-            EventMachine::add_timer(retry_back_off) do
-              log_error "Back end request retry on #{url}: #{http.inspect}"
+      connect_check do
+        # only retries if we have NOT seen
+        # any response from the backend, i.e. we were
+        # unable to connect.  Once data flows can't
+        # retry since the zip stream would be corrupt
+        if should_retry?
+          # schedule another try
+          EventMachine::add_timer(retry_back_off) do
+            connect_check do
+              log_error "Back end request retry on #{url}"
               zza.track_transaction("#{base_zza_event}.backend.request.retry", tx_id, url)
               # try again
               get_data_from_backend(url_info)
             end
-          else
-            log_error "Back end request failed on #{url}: #{http.inspect}"
-            zza.track_transaction("#{base_zza_event}.backend.request.fail", tx_id, url)
-            drop_client_connection
           end
+        else
+          log_error "Back end request failed on #{url}"
+          zza.track_transaction("#{base_zza_event}.backend.request.fail", tx_id, url)
+          drop_client_connection
         end
       end
     end
 
     # called when everything is finished with current url
     http.callback do
-      error_wrap do
+      connect_check do
         # go get the next one or finish up
         # because we sit inside a next_tick block
         # we won't actually recurse, just get queued up
         zza.track_transaction("#{base_zza_event}.backend.request.complete", tx_id, url)
-        log_info "Back end request complete on #{url}: #{http.inspect}"
+        log_info "Back end request complete on #{url}"
         fetch_next_with_throttle
       end
     end
@@ -170,23 +166,19 @@ class ZipDeferrableBody < DeferrableBodyBase
   def fetch_next
     # let current dispatch unwind before doing any work
     EventMachine::next_tick do
-      # finish out the current file
-      @mgr.finish_file if @mgr.entry
-      url_info = @urls.shift
-      if url_info
-        if client_failed?
-          # the client that we are connected to went away, so stop
-          # asking for data from the back end and log an error
-          log_error "Lost client connection.  No more data will be fetched from back end."
-        else
+      connect_check do
+        # finish out the current file
+        @mgr.finish_file if @mgr.entry
+        url_info = @urls.shift
+        if url_info
           prep_retry
           @item_number += 1
           get_data_from_backend url_info
+        else
+          # done, finish up
+          @mgr.finish_all if @mgr
+          succeed
         end
-      else
-        # done, finish up
-        @mgr.finish_all if @mgr
-        succeed
       end
     end
   end
@@ -225,6 +217,7 @@ class ZipDeferrableBody < DeferrableBodyBase
   end
 
   def clean_up
+    log_info "Cleaned up zip data"
     @mgr.clean_up if @mgr
     @mgr = nil
     @http = nil
