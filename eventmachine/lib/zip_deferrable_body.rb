@@ -1,6 +1,7 @@
 require 'zz_utils'
 
 class ZipDeferrableBody < DeferrableBodyBase
+
   # adds logging context in front of message
   def context_str
     str = "#{super}, album_id: #{json_data[:album_id]}"
@@ -55,14 +56,19 @@ class ZipDeferrableBody < DeferrableBodyBase
     log_info "Fetching (#{@item_number} of #{@total_number}): #{url}"
     zza.track_transaction("#{base_zza_event}.backend.request.start", tx_id, url)
 
+    backend_timeout = cfg[:backend_timeout]
+    # uncomment the following lines and decrease the timeout to test retry handling
+    #url = "http://165.23.45.99/BadBadBad" if rand(10) < 2
+    #backend_timeout = 1
+
     # kick off the async fetch
-    http = EventMachine::HttpRequest.new(url).get(:timeout => cfg[:backend_timeout])
+    http = EventMachine::HttpRequest.new(url).get(:timeout => backend_timeout)
     @http = http
-    @item_number += 1
 
     # set up the async handlers
     http.headers do |h|
       error_wrap do
+        cant_retry
         # make sure we got a valid response
         if check_client_failed == false
           if h.status != 200
@@ -105,9 +111,23 @@ class ZipDeferrableBody < DeferrableBodyBase
     http.errback do
       error_wrap do
         if client_failed? == false
-          log_error "Back end request failed on #{url}: #{@http.inspect}"
-          zza.track_transaction("#{base_zza_event}.backend.request.fail", tx_id, url)
-          drop_client_connection
+          # only retries if we have NOT seen
+          # any response from the backend, i.e. we were
+          # unable to connect.  Once data flows can't
+          # retry since the zip stream would be corrupt
+          if should_retry?
+            # schedule another try
+            EventMachine::add_timer(retry_back_off) do
+              log_error "Back end request retry on #{url}: #{http.inspect}"
+              zza.track_transaction("#{base_zza_event}.backend.request.retry", tx_id, url)
+              # try again
+              get_data_from_backend(url_info)
+            end
+          else
+            log_error "Back end request failed on #{url}: #{http.inspect}"
+            zza.track_transaction("#{base_zza_event}.backend.request.fail", tx_id, url)
+            drop_client_connection
+          end
         end
       end
     end
@@ -119,7 +139,7 @@ class ZipDeferrableBody < DeferrableBodyBase
         # because we sit inside a next_tick block
         # we won't actually recurse, just get queued up
         zza.track_transaction("#{base_zza_event}.backend.request.complete", tx_id, url)
-        log_info "Back end request complete on #{url}: #{@http.inspect}"
+        log_info "Back end request complete on #{url}: #{http.inspect}"
         fetch_next_with_throttle
       end
     end
@@ -159,6 +179,8 @@ class ZipDeferrableBody < DeferrableBodyBase
           # asking for data from the back end and log an error
           log_error "Lost client connection.  No more data will be fetched from back end."
         else
+          prep_retry
+          @item_number += 1
           get_data_from_backend url_info
         end
       else
@@ -173,8 +195,31 @@ class ZipDeferrableBody < DeferrableBodyBase
     @urls && @urls.length > 0
   end
 
+  def prep_retry
+    @current_failure_count = 0
+    @can_retry = true
+  end
+
+  def cant_retry
+    @can_retry = false
+  end
+
+  def should_retry?
+    @current_failure_count += 1
+    @current_failure_count <= cfg[:max_backend_retries] && @can_retry
+  end
+
+  def doing_retry?
+    @current_failure_count > 0
+  end
+
+  # exponential backoff for retry
+  def retry_back_off
+    @current_failure_count ** 2
+  end
+
   def begin_work
-    @item_number = 1
+    @item_number = 0
     @total_number = @urls.length
     fetch_next
   end
