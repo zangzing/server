@@ -11,8 +11,7 @@ gem 'authlogic',     '3.0.0'
 gem "friendly_id",   "3.2.1.1"                       #User-friendly links to albums and users' pages
 gem 'uuidtools'
 gem 'activerecord-import', '~>0.2'  # bulk database inserts
-
-
+gem "json", ">= 1.6.3"
 
 gem "require_all"                 # lets us pull in everything for our resque tasks
 

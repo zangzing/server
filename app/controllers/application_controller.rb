@@ -182,13 +182,16 @@ class ApplicationController < ActionController::Base
     rpc_path = EventMachineRPC.generate_json_file(data)
 
     # now verify that json parses
+    # looks like a GC related bug in the json generator was fixed in JSON 1.6.1 or later
+    # so probably don't need this sanity check anymore
     begin
       json_str = File.read(rpc_path)
-      Rails.logger.info "EventMachineRPCFile: crc32: #{Zlib.crc32(json_str, 0)}, path: #{rpc_path}"
+      Rails.logger.info "EventMachineRPC: crc32: #{Zlib.crc32(json_str, 0)}, path: #{rpc_path}"
       parsed = JSON.parse(json_str)
       raise "Parsed data is invalid" if parsed['parse_test_flag'] != 'valid'
     rescue Exception => ex
       Rails.logger.error "In prepare_proxy_eventmachine, the json file was corrupt: #{ex.message}"
+      raise ex
     end
 
     response.headers['X-Accel-Redirect'] = "/proxy_eventmachine/#{command}?json_path=#{rpc_path}"

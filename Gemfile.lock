@@ -145,7 +145,7 @@ GEM
     jquery-rails (0.2.6)
       rails (~> 3.0)
       thor (~> 0.14.4)
-    json (1.5.1)
+    json (1.6.3)
     json_pure (1.4.6)
     kgio (2.6.0)
     launchy (0.3.7)
@@ -315,6 +315,7 @@ DEPENDENCIES
   i18n
   instagram
   jammit
+  json (>= 1.6.3)
   launchy
   less
   mechanize
