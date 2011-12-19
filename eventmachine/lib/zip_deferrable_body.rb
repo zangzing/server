@@ -148,14 +148,21 @@ class ZipDeferrableBody < DeferrableBodyBase
       if throttle_data?
         out_size = outbound_data_size
         @high_watermark = out_size if out_size > @high_watermark
-        log_info "Data stream throttled with backlog: #{out_size}, high watermark: #{@high_watermark}" if @throttle_count % 20 == 0
-        @http.pause if @throttle_count == 0
+        @http.pause if @throttle_count == 0   # pause if first time we've throttled since an un-throttle
         @throttle_count += 1
         current_http = @http
-        EventMachine::add_timer(0.1) do
-          # make sure we haven't moved on to a new http backend request
-          # if it's different then we are done with the current one
-          check_throttle_stream if current_http == @http
+        if @throttle_waiting == false
+          # no one else comes in until the current timer finishes
+          @throttle_waiting = true
+          log_info "Data stream throttled with backlog: #{out_size}, high watermark: #{@high_watermark}" if @throttle_wait_count % 20 == 0
+          @throttle_wait_count += 1
+          EventMachine::add_timer(0.1) do
+            # make sure we haven't moved on to a new http backend request
+            # if it's different then we are done with the current one and
+            # simply return
+            @throttle_waiting = false
+            check_throttle_stream if current_http == @http
+          end
         end
       else
         if @throttle_count > 0
@@ -187,6 +194,14 @@ class ZipDeferrableBody < DeferrableBodyBase
     end
   end
 
+  def reset_throttle_tracks
+    @throttle_count = 0
+    @high_watermark = 0
+    # Current number of times we've had to wait for this request
+    @throttle_wait_count = 0
+    @throttle_waiting = false   # not currently in a throttle wait condition
+  end
+
   # fetch the next url in the list by pulling from the front
   def fetch_next
     # let current dispatch unwind before doing any work
@@ -198,8 +213,7 @@ class ZipDeferrableBody < DeferrableBodyBase
         if url_info
           prep_retry
           @item_number += 1
-          @throttle_count = 0
-          @high_watermark = 0
+          reset_throttle_tracks
           get_data_from_backend url_info
         else
           # done, finish up
