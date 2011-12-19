@@ -154,7 +154,7 @@ class ZipDeferrableBody < DeferrableBodyBase
         if @throttle_waiting == false
           # no one else comes in until the current timer finishes
           @throttle_waiting = true
-          log_info "Data stream throttled with backlog: #{out_size}, high watermark: #{@high_watermark}" if @throttle_wait_count % 20 == 0
+          log_info "Data stream throttled with backlog: #{out_size}, high watermark: #{@high_watermark}" if @throttle_wait_count % 50 == 0
           @throttle_wait_count += 1
           EventMachine::add_timer(0.1) do
             # make sure we haven't moved on to a new http backend request
