@@ -67,7 +67,7 @@ class ZipDeferrableBody < DeferrableBodyBase
 
     # set up the async handlers
     http.headers do |h|
-      connect_check do
+      connect_check('http.headers') do
         cant_retry
         # make sure we got a valid response
         if h.status != 200
@@ -98,14 +98,14 @@ class ZipDeferrableBody < DeferrableBodyBase
 
     # pass an incoming chunk of data back to the client
     http.stream do |chunk|
-      connect_check do
+      connect_check('http.stream') do
         throttle_stream(chunk)
       end
     end
 
     # handle any error on download
     http.errback do
-      connect_check do
+      connect_check('http.errback') do
         # only retries if we have NOT seen
         # any response from the backend, i.e. we were
         # unable to connect.  Once data flows can't
@@ -113,7 +113,7 @@ class ZipDeferrableBody < DeferrableBodyBase
         if should_retry?
           # schedule another try
           EventMachine::add_timer(retry_back_off) do
-            connect_check do
+            connect_check('http.errback.retry') do
               log_error "Back end request retry on #{url}"
               zza.track_transaction("#{base_zza_event}.backend.request.retry", tx_id, url)
               # try again
@@ -130,7 +130,7 @@ class ZipDeferrableBody < DeferrableBodyBase
 
     # called when everything is finished with current url
     http.callback do
-      connect_check do
+      connect_check('http.callback') do
         # go get the next one or finish up
         # because we sit inside a next_tick block
         # we won't actually recurse, just get queued up
@@ -144,7 +144,7 @@ class ZipDeferrableBody < DeferrableBodyBase
   # prepare to resume the stream if ready to take more data
   def check_throttle_stream
     return unless @allow_throttle
-    connect_check do
+    connect_check('check_throttle_stream') do
       if throttle_data?
         out_size = outbound_data_size
         @high_watermark = out_size if out_size > @high_watermark
@@ -177,7 +177,7 @@ class ZipDeferrableBody < DeferrableBodyBase
   # used to throttle the back end request from
   # producing more data than we can handle
   def throttle_stream(chunk)
-    connect_check do
+    connect_check('throttle_stream') do
       # write the data we have been given
       @mgr.push_data(chunk)
       # now see if we should throttle
@@ -206,7 +206,7 @@ class ZipDeferrableBody < DeferrableBodyBase
   def fetch_next
     # let current dispatch unwind before doing any work
     EventMachine::next_tick do
-      connect_check do
+      connect_check('fetch_next') do
         # finish out the current file
         @mgr.finish_file if @mgr.entry
         url_info = @urls.shift

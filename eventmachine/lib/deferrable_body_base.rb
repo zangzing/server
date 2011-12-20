@@ -73,14 +73,14 @@ class DeferrableBodyBase
   # an exception handler, and drop
   # the client connection if we get an exception
   # also makes sure client side is still connected
-  def connect_check(&block)
+  def connect_check(method_name, &block)
     begin
       if check_client_failed == false
         block.call
       end
     rescue Exception => ex
       # log the error
-      log_error "Event machine unexpected exception, request failed: #{ex.message}"
+      log_error "Event machine unexpected exception in #{method_name}, request failed: #{ex.message}"
       # drop the client connection
       drop_client_connection rescue nil
     end
@@ -143,7 +143,7 @@ class DeferrableBodyBase
   end
 
   def client_success
-    connect_check do
+    connect_check("client_success") do
       begin
         zza.track_transaction("#{base_zza_event}.client.success", tx_id)
         log_info "All requests complete."
@@ -158,8 +158,13 @@ class DeferrableBodyBase
   # failed.
   def client_failed
     @client_peer_failure = true
-    zza.track_transaction("#{base_zza_event}.client.failed", tx_id)
-    msg = @back_end_dropped_client ? "Back end dropped client connection" : "Unexpected client disconnect"
+    if @back_end_dropped_client
+      zza.track_transaction("#{base_zza_event}.client.failed.backend", tx_id)
+      msg = "Back end dropped client connection"
+    else
+      zza.track_transaction("#{base_zza_event}.client.failed.frontend", tx_id)
+      msg = "Unexpected client disconnect"
+    end
     log_error msg
     check_client_failed # kick off cleanup
   end
