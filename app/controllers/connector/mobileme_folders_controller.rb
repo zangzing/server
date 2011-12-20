@@ -108,7 +108,7 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
             :source => 'mobileme'
     )
 
-    ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(photo_data, :full), :headers_making_method => 'Connector::MobilemeController.get_fresh_headers' )
+    ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(photo_data, :full), :headers_making_method => 'Connector::MobilemeController.get_fresh_headers')
 
     Photo.to_json_lite(photo)
   end
@@ -129,15 +129,15 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
   end
 
   def import_photo
-    fire_async_response('import_certain_photo')
+    fire_async_response('import_certain_photo', true)
   end
 
   def import_album
-    fire_async_response('import_dir_photos')
+    fire_async_response('import_dir_photos', true)
   end
 
   def import_all
-    fire_async_response('import_all_albums')
+    fire_async_response('import_all_albums', true)
   end
 
 
