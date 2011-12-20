@@ -93,6 +93,9 @@
             try {
                 if (url.indexOf('http://localhost:30777') == -1 && url.indexOf('http://localhost:30778') == -1) {
                     ZZAt.track('js.error', {message: message, url: url, line: line});
+                    if (typeof(console) != 'undefined') {
+                        console.log('ZZ Javascript error: ' + message + ' on: '+url+':'+line);
+                    }
                 }
 
             }

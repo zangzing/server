@@ -243,7 +243,7 @@ module Cache
       # we invalidate the browsers cache for
       # old items.
       def self.hash_schema_version
-        'v5'
+        'v7'
       end
 
       # this method returns the album as a map which allows us to perform
@@ -286,7 +286,9 @@ module Cache
           # prep for substitution
           cover_base = nil
           cover_sizes = nil
+          cover_date  = album.created_at.to_i #default value for empty albums
           if album_cover && album_cover.ready?
+            cover_date = album_cover.capture_date unless album_cover.capture_date.nil?
             cover_base = album_cover.base_subst_url
             if cover_base
               # ok, photo is ready so include sizes map
@@ -319,6 +321,7 @@ module Cache
               :photos_ready_count => album.photos_ready_count,
               :cache_version => album.cache_version_key,
               :updated_at => album.updated_at.to_i,
+              :cover_date => cover_date.to_i,
               :my_role => album.my_role, # valid values are Viewer, Contrib, Admin
               :all_can_contrib => album.everyone_can_contribute?,
               :who_can_download => album.who_can_download #Valid values are viewers, owner, everyone

@@ -64,7 +64,7 @@
 .picon .photo-caption .caption-ok-button{
     width:30px;
     height:28px;
-    background: url(/images/edit-caption-ok-button.png) no-repeat scroll right -30px;
+    background: url('/images/edit-caption-ok-button.png') no-repeat scroll right -30px;
     line-height: 31px;
     color:#ffffff ;
     text-align:center;

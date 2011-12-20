@@ -85,97 +85,9 @@ div.zzlike-count.empty{
 .zzlike-follow.thumbdown:active{     background: url("/images/embed/toolbars/btn-header-follow.png") 0  -80px; }
 .zzlike-follow.thumbup:hover{ background: url("/images/embed/toolbars/btn-header-follow.png") 0 -20px;  }
 
-/*.zzlike-follow.thumbdown:hover{ background-position: 0     }*/
 
 
 
 
 
 
-/* ============================ Social Like Dialog (Post your like in Facebook and/or Twitter? ) ======*/
-#social-like-dialog{
-    width:  500px;
-    height: 190px;
-	display: none;
-    border: 0;
-}
-
-#social-like-dialog div{
-    position: absolute;
-}
-
-#social-like-dialog #ld-inner{
-    top: 20px;
-    left: 20px;
-    width:  460px;
-    height: 150px;
-    text-align: left;
-}
-#ld-top{
-    height:20px;
-    font-size: 18px;
-}
-#ld-middle{
-   top: 35px;
-   width: 460px;
-   height:65px;
-}
-
-#ld-middle textarea{
-    width: 440px;
-    height: 55px;
-    border: 1px solid #c8c8c9;
-    font-size: 14px;
-    padding: 8px;
-    vertical-align:text-top;
-    -moz-box-shadow: 0px 0px 1px 1px  #fed33a;
-    -webkit-box-shadow: 0px 0px 1px 1px  #fed33a;
-    box-shadow: 0px 0px 1px 1px  #fed33a;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-}
-
-#ld-dothis{
-   bottom: 6px;
-   font-size: 13px;
-}
-
-#ld-cancel{
-   width: 90px;
-   position: absolute;
-   bottom: 0;
-   right: 95px;
-
-}
-
-#ld-ok{
-   width: 80px;
-   position: absolute;
-   bottom: 0;
-   right: 0px;
-}
-
-/* ============================ Request Access Dialogs ======*/
-div.request_access#social-like-dialog{
-    height: 220px;
-}
-
-div.request_access#social-like-dialog div#ld-inner{
-    height: 190px;
-}
-
-.request_access #ld-top{
-    font-size: 14px;
-}
-
-.request_access #ld-middle{
-   top: 65px;
-}
-
-.request_access #ld-cancel{
-   right: 125px;
-}
-
-.request_access #ld-ok{
-   width: 100px;
-}
