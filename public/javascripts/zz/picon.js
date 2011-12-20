@@ -156,17 +156,6 @@
               });
             };
 
-            //load cover photos and display menus
-            if( !o.coverUrl || o.coverUrl.length <= 0) {
-                o.coverUrl = zz.routes.image_url('/images/photo_placeholder.png');
-            }else{
-                // load the image and resize when ready
-                zz.image_utils.pre_load_image(o.coverUrl, function(image) {
-                    var scaledSize = zz.image_utils.scale(image, {width: o.maxCoverWidth, height: o.maxCoverHeight});
-                    self._resize(scaledSize.width, scaledSize.height);
-                    cover_photo.attr('src', image.src);
-                });
-            }
             // bind the hover handlers
             var mouse_in = function() {
                 hover = true;
@@ -187,7 +176,19 @@
                 hover = false;
                 checkCloseToolbar();
             };
-            el.hover(mouse_in, mouse_out);
+
+            //load cover photos and display menus
+            if( !o.coverUrl || o.coverUrl.length <= 0) {
+                o.coverUrl = zz.routes.image_url('/images/photo_placeholder.png');
+             }
+
+            // load the image and resize when ready
+            zz.image_utils.pre_load_image(o.coverUrl, function(image) {
+                var scaledSize = zz.image_utils.scale(image, {width: o.maxCoverWidth, height: o.maxCoverHeight});
+                self._resize(scaledSize.width, scaledSize.height);
+                cover_photo.attr('src', image.src);
+                el.hover(mouse_in, mouse_out);
+            });
         },
 
         _resize: function(coverWidth, coverHeight) {
