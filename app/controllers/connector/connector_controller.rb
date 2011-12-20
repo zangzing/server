@@ -24,6 +24,8 @@ class Connector::ConnectorController < ApplicationController
   end
 
 
+  # this one is called from an controller action
+  # browser will poll for response
   def fire_async_response(class_method)
     response_id = AsyncResponse.new_response_id
     ZZ::Async::ConnectorWorker.enqueue(response_id, service_identity.id, self.class.name, class_method, params)
@@ -31,6 +33,9 @@ class Connector::ConnectorController < ApplicationController
     render :json => {:message => "poll-for-response"}
   end
 
+
+  # this one is called from within another worker
+  # results will not be sent to browser
   def self.fire_async(class_method, params)
     response_id = AsyncResponse.new_response_id
     ZZ::Async::ConnectorWorker.enqueue(response_id, params[:identity].id, self.name, class_method, params)
