@@ -35,4 +35,10 @@ class CacheWrapper
     Rails.cache.delete
   end
 
+  def self.initialize_cache(config, timeout)
+    opts = {}
+    opts[:logger] = config.logger
+    opts[:timeout] = 1.5
+    config.cache_store = :mem_cache_store, MemcachedConfig.server_list, opts
+  end
 end

@@ -1,3 +1,5 @@
+require 'cache_wrapper'
+
 Server::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
 
@@ -13,6 +15,10 @@ Server::Application.configure do
 
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true
+
+  # set up logger
+  path = config.paths.log.to_a.first
+  config.logger = ActiveSupport::BufferedLogger.new(path)
 
   # Show full error reports and disable caching
   config.consider_all_requests_local = true
@@ -36,16 +42,9 @@ Server::Application.configure do
   config.bench_test_allowed = true
 
 
-##  ActionController::Base.cache_store = :memory_store
-## TESTING USE MEMCACHED
-##TODO remove and uncomment above line
-  # use memcached
-  path = config.paths.log.to_a.first
-  config.logger = ActiveSupport::BufferedLogger.new(path)
-  opts = {}
-  opts[:logger] = config.logger
-  opts[:timeout] = 1.5
-  config.cache_store = :mem_cache_store, MemcachedConfig.server_list, opts
+  # set up cache manager
+  #CacheWrapper.initialize_cache(config, 1.5)
+  ActionController::Base.cache_store = :memory_store
 
   # mail logger is too verbose, shut it off
   config.action_mailer.logger = nil
