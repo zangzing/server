@@ -80,7 +80,7 @@ class DeferrableBodyBase
       end
     rescue Exception => ex
       # log the error
-      log_error "Event machine unexpected exception in #{method_name}, request failed: #{ex.message}"
+      log_error "Event machine unexpected exception in #{method_name}, request failed: #{ex.message} - #{EMUtils.small_back_trace(ex, 10)}"
       # drop the client connection
       drop_client_connection rescue nil
     end
