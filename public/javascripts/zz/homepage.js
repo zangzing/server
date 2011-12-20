@@ -279,9 +279,9 @@ zz.homepage = {};
     // creates a picon cell for each album in the array
     // the picon cell is stored in album.ui_cell
     function add_picons( albums ){
-        var ie8 = !$.support.leadingWhitespace
+        var ie = $.browser.msie; //!$.support.leadingWhitespace
 
-        if( ie8 ){ 
+        if( ie ){
             var container = $('div#albums');
         }
         _.each(albums, function(album) {
@@ -293,7 +293,7 @@ zz.homepage = {};
                 if(album.profile_album && album.photos_count <= 0 && zz.session.current_user_id == zz.page.displayed_user_id) {
                     c_url = "images/profile-default-add.png";
                 }
-                if( ie8 ){ //ie 8
+                if( ie ){ //ie 8
                     container.append( clone );
                 }
                 album.ui_cell = clone;
@@ -370,7 +370,7 @@ zz.homepage = {};
                             });
                     }
                 });
-                if( ie8 ){ //ie 8
+                if( ie ){ //ie 8
                     clone.detach();
                 }
             }
