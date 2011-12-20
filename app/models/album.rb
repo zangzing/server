@@ -38,6 +38,7 @@ class Album < ActiveRecord::Base
   validates_uniqueness_of :name, :scope => :user_id, :case_sensitive => false, :message => "You already have an album named \"%{value}\" please try a different name"
 
   before_validation   :uniquify_name, :on => :create
+  before_validation   'self.name.strip!', :if => :name_changed?
 
   before_save   :cover_photo_id_valid?, :if => :cover_photo_id_changed?
 
@@ -110,6 +111,8 @@ class Album < ActiveRecord::Base
     return true if try_name == name
     user.albums.find_by_name( try_name ).nil?
   end
+
+
 
   # build our base model name for this class and hold onto it as a class variable since we only
   # need to generate it once.  The name built up  has all the support needed by ActiveModel to properly

@@ -263,7 +263,7 @@
                 var commitChanges = function() {
                     disarmCaptionEditor();
                     ZZAt.track('albumframe.title.click');
-                    var newCaption = textBoxElement.val();
+                    var newCaption = $.trim( textBoxElement.val() );
                     if (newCaption !== self.options.caption) {
                       self.options.onChangeCaption(newCaption,
                             function(data){ //onSuccess

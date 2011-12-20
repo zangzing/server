@@ -459,7 +459,8 @@ zz.toolbars = {
                     var commit_title_change = function(evt){
                         disarm_text_field();
                         ZZAt.track('topnavbar.albumtitle.click');
-                        var new_title = text_field.val();
+
+                        var new_title =  $.trim( text_field.val() );
                         if( zz.page.album_name != new_title ){
                             // send it to the back end
                             zz.routes.albums.update( zz.page.album_id,{'name': new_title },
