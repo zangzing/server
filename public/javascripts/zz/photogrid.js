@@ -52,7 +52,6 @@
         },
 
         animatedScrollActive: false,
-        cells: [],
 
         _create: function() {
             var self = this;
@@ -253,14 +252,14 @@
             // - Once first batch is on screen then build, and insert the rest of the photos at your leisure
             // - Add timeout every batch to prevent lockout warnings
 
-            var batch_size = 30;
+            var batch_size = 60;
             var create_some_photos = function(i) {
                 if (i < o.photos.length) {
                     var cells = [];
                     for (var j = i; j < i + batch_size && j < o.photos.length; j++) {
                         cells.push( create_photo(j, o.photos[j]) );
                     }
-                    if( !o.singlePictureMode && i <= batch_size ){
+                    if( !o.singlePictureMode && i < batch_size ){
                         self._show_and_arm();
                         for (var k = 0; k < cells.length ; k++) {
                             cells[k].data().zz_photo.loadIfVisible();
@@ -640,7 +639,10 @@
             var top_of_last_row = 0;
 
             this.element.children('.photogrid-cell').each(function(index, element) {
-                top_of_last_row = self._layoutPhoto( element, index, duration, easing ).top
+                var position = self._layoutPhoto( element, index, duration, easing );
+                if( position ){
+                    top_of_last_row = position.top;
+                }
             });
 
             if(!self.options.singlePictureMode){
@@ -649,8 +651,6 @@
                 scroll_padding.css({top: top});
                 this.element.append(scroll_padding);
             }
-
-
         },
 
         _layoutPhoto: function( photo, index, duration, easing ){

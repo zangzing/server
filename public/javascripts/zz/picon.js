@@ -170,23 +170,22 @@
             //load cover photos and display menus
             if( !o.coverUrl || o.coverUrl.length <= 0) {
                 o.coverUrl = zz.routes.image_url('/images/photo_placeholder.png');
+            }else{
+                // load the image and resize when ready
+                zz.image_utils.pre_load_image(o.coverUrl, function(image) {
+                    var scaledSize = zz.image_utils.scale(image, {width: o.maxCoverWidth, height: o.maxCoverHeight});
+                    self._resize(scaledSize.width, scaledSize.height);
+                    cover_photo.attr('src', image.src);
+                });
             }
-
-            // load the image and resize when ready
-            zz.image_utils.pre_load_image(o.coverUrl, function(image) {
-                var scaledSize = zz.image_utils.scale(image, {width: o.maxCoverWidth, height: o.maxCoverHeight});
-                self._resize(scaledSize.width, scaledSize.height);
-                cover_photo.attr('src', image.src);
-            });
-
             // bind the hover handlers
             var mouse_in = function() {
                 hover = true;
                 if(! zz.buy.is_buy_mode_active()){
                     if (!menuOpen &&  !self.isEditingCaption) {
                         if (!buttonBarWired) {
-                            wire_button_bar();
                             buttonBarWired = true;
+                            wire_button_bar();
                         }
                         //display toolbar
                         height = self.topOfStack.height();

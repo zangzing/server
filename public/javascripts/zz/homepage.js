@@ -218,22 +218,20 @@ zz.homepage = {};
         var results = {};
 
         var check_is_done = function() {
-
             //do we have results for each call?
-            _.each(results, function(result) {
-                if (! result) {
+            var key;
+            for(  key in results){
+                if( !results[key] ) {
                     return;
-                }else{
-                    add_picons( result );
                 }
-            });
-            //all results are back
+            }
+            //all results are here
 
             //combine into one array
             var combined_results = [];
-            _.each(results, function(result) {
-                combined_results = combined_results.concat(result);
-            });
+            for(  key in results){
+                combined_results = combined_results.concat(results[key]);
+            };
 
             //sort
             var sorted_results = sort( combined_results );
@@ -266,6 +264,7 @@ zz.homepage = {};
                 $.ajax({
                     url: url,
                     success: function(albums) {
+                        add_picons( albums );
                         results[url] = albums;
                         check_is_done();
                     },
@@ -280,6 +279,11 @@ zz.homepage = {};
     // creates a picon cell for each album in the array
     // the picon cell is stored in album.ui_cell
     function add_picons( albums ){
+        var ie8 = !$.support.leadingWhitespace
+
+        if( ie8 ){ 
+            var container = $('div#albums');
+        }
         _.each(albums, function(album) {
             if( !album.ui_cell ){
 
@@ -289,7 +293,9 @@ zz.homepage = {};
                 if(album.profile_album && album.photos_count <= 0 && zz.session.current_user_id == zz.page.displayed_user_id) {
                     c_url = "images/profile-default-add.png";
                 }
-
+                if( ie8 ){ //ie 8
+                    container.append( clone );
+                }
                 album.ui_cell = clone;
                 clone.zz_picon({
                     album:   album,
@@ -364,6 +370,9 @@ zz.homepage = {};
                             });
                     }
                 });
+                if( ie8 ){ //ie 8
+                    clone.detach();
+                }
             }
         });
     };
@@ -526,14 +535,14 @@ zz.homepage = {};
             }
     }
 
-
     function set_option( option, value ){
-        var options = zz.local_storage.get('homepage_options') || {};
-        options[zz.page.displayed_user_base_url] = options[zz.page.displayed_user_base_url] || {};
-        options[zz.page.displayed_user_base_url][option] = value;
-        zz.local_storage.set( 'homepage_options', options );
+        var key = 'homepage_options_'+zz.page.displayed_user_base_url
+        var options = zz.local_storage.get( key ) || {};
+        options[option] = options[option] || {};
+        options[option] = value;
+        zz.local_storage.set( key , options );
     }
-    
+
     function set_sort_option(value){
         set_option('sort', value);
     }
@@ -544,11 +553,10 @@ zz.homepage = {};
 
 
     function get_option( option, default_option ){
-        var options = zz.local_storage.get( 'homepage_options');
-        if( options &&
-            options[zz.page.displayed_user_base_url] &&
-            options[zz.page.displayed_user_base_url][option]){
-                return options[zz.page.displayed_user_base_url][option];
+        var key = 'homepage_options_'+zz.page.displayed_user_base_url
+        var options = zz.local_storage.get( key );
+        if( options &&  options[option] ){
+                return options[option];
         }
         return default_option;
     }
@@ -556,7 +564,7 @@ zz.homepage = {};
     function get_sort_option(){
         return get_option('sort','updated_at_desc');
     }
-    
+
     function get_filter_option(){
         if( current_users_home_page ){
             return get_option('filter','all');
