@@ -77,7 +77,7 @@ class ZipDeferrableBody < DeferrableBodyBase
         else
           if @first_fetch
             @first_fetch = false
-            puts h.inspect
+            log_info "Header for first response of #{url}: #{h.inspect}"
           end
 
           # get info about file being downloaded
