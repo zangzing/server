@@ -10,12 +10,12 @@ class CacheWrapper
   def self.write(key, value, options = {})
 
     arg_verify = options[:verify]
-    verify = arg_verify.nil? ? true : arg_verify
+    verify = arg_verify.nil? ? false : arg_verify
 
     write_ok = false
     2.times do |attempt|
       write_ok = Rails.cache.write(key, value, options)
-      Rails.logger.error("Memcache write failed for key: #{key}") unless write_ok
+      Rails.logger.error("Memcache write verify attempt: #{attempt+1} failed for key: #{key}") unless write_ok
       if write_ok && verify
         # verify it
         check_data = Rails.cache.read(key)
