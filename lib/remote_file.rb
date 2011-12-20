@@ -1,6 +1,6 @@
 require 'net/http'
 require 'digest/sha1'
-require 'uri'
+require 'addressable/uri'
 
 class IncompleteResponse < StandardError
   attr_reader :expected_size, :actual_size
@@ -62,7 +62,7 @@ class RemoteFile < ::File
     target_uri = @remote_path #URI.unescape(@remote_path)
     follow_redirect = false
     begin
-      uri = URI::parse(target_uri) #URI.escape(target_uri))
+      uri = Addressable::URI::parse(target_uri) #URI.escape(target_uri))
       http = Net::HTTP.new(uri.host, uri.port)
       if uri.scheme == 'https'
         http.use_ssl = true
