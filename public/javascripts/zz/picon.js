@@ -116,7 +116,6 @@
                 if (o.infoMenuTemplateResolver) {
                     info_menu_template = o.infoMenuTemplateResolver(o.album);
                 }
-
                 if(info_menu_template){
                     info_button.click(function(){
                         zz.infomenu.show_in_picon(info_button, info_menu_template, self,
@@ -128,30 +127,20 @@
                                 checkCloseToolbar();
                         });
                     });
-                }
-                else{
+                }else{
                     info_button.hide();
                 }
 
-                // wire share button
-                share_button.zz_menu(
-                {
-                    subject_id: o.albumId,
-                    subject_type: 'album',
-                    container: $('#article'),
-                    zza_context: 'frame',
-                    style: 'auto',
-                    bind_click_open: true,
-                    append_to_element: true, //use the element zzindex so the overflow goes under the bottom toolbar
-                    menu_template: zz.sharemenu.template,
-                    click: zz.sharemenu.click_handler,
-                    open: function() {
-                        menuOpen = true;
-                    },
-                    close: function() {
-                        menuOpen = false;
-                        checkCloseToolbar();
-                    }
+                //wire share button
+                share_button.click(function(){
+                    zz.sharemenu.show_in_picon( share_button, self,
+                        function() {
+                            menuOpen = true;
+                        },
+                        function() {
+                            menuOpen = false;
+                            checkCloseToolbar();
+                        });
                 });
 
                 // wire like button
