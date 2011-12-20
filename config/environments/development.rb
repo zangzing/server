@@ -36,7 +36,16 @@ Server::Application.configure do
   config.bench_test_allowed = true
 
 
-  ActionController::Base.cache_store = :memory_store
+##  ActionController::Base.cache_store = :memory_store
+## TESTING USE MEMCACHED
+##TODO remove and uncomment above line
+  # use memcached
+  path = config.paths.log.to_a.first
+  config.logger = ActiveSupport::BufferedLogger.new(path)
+  opts = {}
+  opts[:logger] = config.logger
+  opts[:timeout] = 1.5
+  config.cache_store = :mem_cache_store, MemcachedConfig.server_list, opts
 
   # mail logger is too verbose, shut it off
   config.action_mailer.logger = nil
