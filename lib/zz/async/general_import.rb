@@ -55,7 +55,7 @@ module ZZ
           unless photo.nil?
             photo.update_attributes(:state => 'error', :error_message => msg )
             z = ZZ::ZZA.new
-            z.track_event("photo.import.error", {:photo_id => photo_id, :message => msg, :source => photo.source}, 1, photo.user_id)
+            z.track_event("photo.import.error", {:photo_id => photo_id, :message => msg, :source => photo.source, :source_url => source_url}, 1, photo.user_id)
           end
         end
       end
