@@ -38,6 +38,21 @@ module ZZ
               additional_headers = klass.send(method_name.to_sym, photo, source_url)
               @headers.merge!(additional_headers)
             end
+
+
+            # capture the context so we can debug import issues later
+            import_context = {
+               :photo_id => photo_id,
+               :source_url => source_url,
+               :source_url_mod => direct_image_url,
+               :headers => @headers,
+               :options => options
+            }
+            photo.import_context = JSON.fast_generate(import_context)
+            photo.save # if save fails for some reason, just keep going...
+
+
+            # now, import the file from remote site...
             file_path = RemoteFile.read_remote_file(direct_image_url, PhotoGenHelper.photo_upload_dir, @headers)
             photo.file_to_upload = file_path
             photo.save
