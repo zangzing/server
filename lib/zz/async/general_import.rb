@@ -57,12 +57,13 @@ module ZZ
                :options => options
             }
             photo.import_context = JSON.fast_generate(import_context)
-            photo.save # if save fails for some reason, just keep going...
+            photo.save
 
 
             # now, import the file from remote site...
             file_path = RemoteFile.read_remote_file(direct_image_url, PhotoGenHelper.photo_upload_dir, headers)
             photo.file_to_upload = file_path
+            photo.import_context = nil
             photo.save
           end
         end
