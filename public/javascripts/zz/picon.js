@@ -96,8 +96,8 @@
 
             var buttonBarWired = false,
                 menuOpen = false,
-                hover = false,
-                height;
+                hover = false;
+
 
             var wire_button_bar = function() {
                 //build and insert buttonbar into dom
@@ -150,7 +150,7 @@
             var checkCloseToolbar = function() {
               _.defer(function(){
                 if (!menuOpen && !hover) {
-                    self.topOfStack.css({height: height});
+                    self.topOfStack.css({height: self.closedHeight});
                     button_bar.hide();
                 }
               });
@@ -166,8 +166,7 @@
                             wire_button_bar();
                         }
                         //display toolbar
-                        height = self.topOfStack.height();
-                        self.topOfStack.css({height: height + 30});
+                        self.topOfStack.css({height: self.openHeight});
                         button_bar.show();
                     }
                 }
@@ -212,6 +211,8 @@
                              width: containerWidth, //save room for caption
                              height: containerHeight - ( o.captionHeight + 40)
                          });
+            self.closedHeight = self.topOfStack.height();
+            self.openHeight   = self.closedHeight + 30;
         },
 
         _setupCaptionEditing: function(){
