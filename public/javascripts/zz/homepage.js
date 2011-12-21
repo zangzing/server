@@ -430,27 +430,27 @@ zz.homepage = {};
 
     function arm_buttonset(){
         // Arm Buttons
-        $('#view-all-btn').click( function(){
-            ZZAt.track('homepage.view-all.button.click');
+        $('#view-all-btn').bind( 'setbutton-click',  function(){
+            ZZAt.track('homepage.view-all.button.mousedown');
            show_all_albums();
         });
-        $('#view-my-btn').click( function(){
+        $('#view-my-btn').bind( 'setbutton-click',  function(){
             ZZAt.track('homepage.view-my.button.click');
            show_my_albums();
         });
-        $('#view-invited-btn').click( function(){
+        $('#view-invited-btn').bind( 'setbutton-click',  function(){
             ZZAt.track('homepage.view-invited.button.click');
            show_invited_albums();
         });
-        $('#view-liked-btn').click( function(){
+        $('#view-liked-btn').bind( 'setbutton-click',  function(){
             ZZAt.track('homepage.view-liked.button.click');
             show_liked_albums();
         });
-        $('#view-following-btn').click( function(){
+        $('#view-following-btn').bind( 'setbutton-click',  function(){
             ZZAt.track('homepage.view-following.button.click');
            show_following_albums();
         });
-        $('#sort-date-btn').click( function(){
+        $('#sort-date-btn').bind( 'setbutton-click',  function(){
             if( $(this).hasClass('arrow-up')){
                 ZZAt.track('homepage.sort-date-asc.button.click');
                 sort_by_cover_date_asc();
@@ -459,11 +459,11 @@ zz.homepage = {};
                 sort_by_cover_date_desc();
             }
         });
-        $('#sort-recent-btn').click( function(){
+        $('#sort-recent-btn').bind( 'setbutton-click',  function(){
             ZZAt.track('homepage.sort-recent.button.click');
            sort_by_updated_at_desc();
         } );
-        $('#sort-name-btn').click( function(){
+        $('#sort-name-btn').bind( 'setbutton-click',  function(){
             if( $(this).hasClass('arrow-up')){
                 ZZAt.track('homepage.sort-name-asc.button.click');
                 sort_by_name_asc();
