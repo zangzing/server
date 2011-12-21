@@ -521,13 +521,9 @@ class AlbumsController < ApplicationController
     head :ok and return
   end
 
-  # @album is set by require_album before_filter
-  # prepare to download an on the fly zip of the photos
-  # we return.  The heavy lifting is handled by the mod_zip
-  # plugin to nginx, so our job is to put together the list
-  # of all photos that have been uploaded to amazon
-  def download
-    return unless require_album
+  # shared permissions check for both download and download_direct
+  def download_security_check
+    return false unless require_album
 
     unless  @album.can_user_download?( current_user )
       flash.now[:error] = "Only Authorized Album Group Members can download albums"
@@ -538,47 +534,96 @@ class AlbumsController < ApplicationController
       end
       return false
     end
+    return true
+  end
 
-    # Walk the list of all photos and build a plain test response in the form
-    # crc32 size custom_url name_in_zip_file
-    # since we just added crc32 some files don't have it so it is permissible for it
-    # to be just a -.  When we perform the next full photos resize sweep we can compute
-    # and add it to those that are missing.   The benifit to having this is that it
-    # gives us restartable downloads from an arbitrary point.
+  # Due to issues with Amazons ELB dropping connections and
+  # in some cases dropping the Content-Length header for large requests
+  # we bypass it by doing a redirect to our direct DNS name
+  # this will bypass the ELB and let the client call
+  # back into us directly.
+  def download
+    return unless download_security_check
+
+    # build the single access key if we have a current user
+    #TODO move this to auth helpers
+    key = ''
+    if current_user
+      key = "?zzapi_key=#{current_user.single_access_token}"
+    end
+
+    zz = ZZDeployEnvironment.env.zz
+    redirect_to "http://#{zz[:public_hostname]}#{download_direct_album_path(@album)}#{key}"
+  end
+
+  # @album is set by require_album before_filter
+  # prepare to download an on the fly zip of the photos
+  # we return.  The heavy lifting is handled by the mod_zip
+  # plugin to nginx, so our job is to put together the list
+  # of all photos that have been uploaded to amazon
+  def download_direct
+    return unless download_security_check
+
+    # Walk the list of all photos and build up the zip_download hash that tells
+    # us which files to download and crc32 and filesize info for each file.
+    # Since we just added crc32 some files don't have it so it is permissible for it
+    # to be just nil.  When we perform the next full photos resize sweep we can compute
+    # and add it to those that are missing.
     #
-    # The custom_url must be of the form
-    # /nginx_redirect/host/uri
-    # the nginx_redirect part tells us to proxy through to a remote
-    # server to fetch the actual contents for that file
+    # This call passes the real work to eventmachine in to form:
+    # /proxy_eventmachine/zip_download?json_path=/data/tmp/json_ipc/62845.1323732431.61478.6057566634.json
+    # It must also set the X-Accel-Redirect header with the above uri to cause nginx to internally proxy
+    # to eventmachine.  We have a helper method in the util class that will take a hash, add in the appropriate
+    # user info, save the local ipc file and set up the header.
     #
-    files = ""
+    proxy_data = {
+        :album_name => @album.name,
+        :album_id => @album.id
+    }
+    urls = []
     i = 0
     dup_filter = Set.new
     @album.photos.each do |photo|
       i += 1
       image_path = photo.image_path
-      image_file_size = photo.image_file_size.nil? ? 0 : photo.image_file_size.to_i
-      if (photo.ready? || photo.loaded?) && image_path && image_file_size > 0
+      image_file_size = photo.image_file_size.nil? ? nil : photo.image_file_size.to_i
+      if (photo.ready? || photo.loaded?) && image_path
         full_name = photo.file_name_with_extension(dup_filter, i)
         escaped_url = URI::escape(image_path.to_s)
         uri = URI.parse(escaped_url)
         query = uri.query.blank? ? '' : "?#{uri.query}"
-        crc32 = photo.crc32.nil? ? '-' : photo.crc32.to_s(16)
-        files << "#{crc32} #{image_file_size} /nginx_redirect/#{uri.host}#{uri.path}#{query} #{full_name}\n"
+        crc32 = photo.crc32.nil? ? nil : photo.crc32.to_i
+        capture_date = photo.capture_date
+        local_date = nil
+        if capture_date
+          # need to treat as a local time since database time is UTC but original stored in local time
+          local_date = capture_date.to_i - capture_date.utc_offset
+        end
+        url_info = {
+            :url => "http://#{uri.host}#{uri.path}#{query}",
+            :size => image_file_size,
+            :crc32 => crc32,
+            :create_date => local_date || photo.created_at.to_i,
+            :filename => full_name
+        }
+        urls << url_info
       end
     end
+    proxy_data[:urls] = urls
 
-    if files.blank?
+    if urls.empty?
       flash[:error]="Album has no photos ready for download"
       head :not_found and return
     else
       zza.track_event("albums.download.full")
       Rails.logger.debug("Full album download: #{@album.name}")
       if params[:test]
+        files = JSON.pretty_generate(proxy_data)
         response.headers['Content-Disposition'] = "attachment; filename=testfile.txt"
         render :content_type => "application/octet-stream", :text => files
       else
-        nginx_zip_mod(@album.name, files)
+        prepare_proxy_eventmachine('zip_download', proxy_data)
+        render :nothing => true
       end
       return
     end

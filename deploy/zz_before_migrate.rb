@@ -90,6 +90,7 @@ if [:solo, :app_master, :app].include?(zz_role)
   run "bundle exec jammit"
   run "rm -rf #{zz_release_dir}/public/javascripts"
   run "rm -rf #{zz_release_dir}/public/stylesheets"
+  run "rm -rf #{zz_release_dir}/public/sandbox"
 end
 
 

@@ -63,6 +63,7 @@ class ReservedUserNames
       "directory",
       "dnseitz",
       "elizabethbeisel",
+      "eventmachine",
       "facebook",
       "favorite photos",
       "favorite videos",

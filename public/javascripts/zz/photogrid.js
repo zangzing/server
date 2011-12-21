@@ -53,7 +53,6 @@
 
         animatedScrollActive: false,
 
-
         _create: function() {
             var self = this;
             var o = self.options;
@@ -99,7 +98,6 @@
             var droppableLeft = -1 * Math.floor(droppableWidth / 2);
             var droppableTop = Math.floor((o.cellHeight - droppableHeight) / 2);
 
-            var cells = [];
 
 
             if (o.lazyLoadThreshold != 0 && !o.lazyLoadThreshold && o.singlePictureMode) {
@@ -112,11 +110,7 @@
             // process other events.
             var create_photo = function(index, photo) {
                 var cell = template.clone();
-                cells.push(cell);
-
-
                 cell.appendTo(self.element);
-
                 cell.zz_photo({
                     json: photo,
                     photoId: photo.id,
@@ -157,6 +151,10 @@
                     onClickShare: o.onClickShare,
                     rolloverFrameContainer: o.rolloverFrameContainer
                 });
+                self._layoutPhoto( cell, index );
+                photo.ui_cell = cell;
+
+                //cell.data().zz_photo.loadIfVisible();
 
                 //setup drag and drop
                 if (o.allowReorder) {
@@ -244,91 +242,55 @@
 
                     });
                 }
-
+                return cell;
             };
 
-            // 1.- Use native for instead of $.each for speed
-            // 2.- Add timeout every 100 photos to prevent lockout warnings
-            // 3.- Move all the grid finishing code to the the finishing condition clause so
-            //     that it is executed when all photos have been processed.
+            // - Build and load screen photos in batches
+            // - Set the batch size to the average photos that are displayed upon loading (how many fit in the screen)
+            // - Optimize insert, draw, and load speed for the first batch (first batch is inserted with element hidden)
+            // - Check if second batch is visible just in case you are using a huge browser window
+            // - Once first batch is on screen then build, and insert the rest of the photos at your leisure
+            // - Add timeout every batch to prevent lockout warnings
+
+            var batch_size = 60;
             var create_some_photos = function(i) {
                 if (i < o.photos.length) {
-                    var batch_size = 100;
+                    var cells = [];
                     for (var j = i; j < i + batch_size && j < o.photos.length; j++) {
-                        create_photo(j, o.photos[j]);
+                        cells.push( create_photo(j, o.photos[j]) );
+                    }
+                    if( !o.singlePictureMode && i < batch_size ){
+                        self._show_and_arm();
+                        for (var k = 0; k < cells.length ; k++) {
+                            cells[k].data().zz_photo.loadIfVisible();
+                        }
                     }
                     var next_batch = function() {
                         create_some_photos(i + batch_size);
                     };
                     setTimeout(next_batch, 0); //A 0 timeout lets the system process any pending stuff and then this.
                 } else {
-                    self.resetLayout();
-
-                    self.element.show();
-
-                    self.element.children('.photogrid-cell').each(function(index, element) {
-                        $(element).data().zz_photo.loadIfVisible();
-                    });
-
-
-                    //handle window resize
-                    var resizeTimer = null;
-                    $(window).resize(function(event) {
-                        if (resizeTimer) {
-                            clearTimeout(resizeTimer);
-                            resizeTimer = null;
-                        }
-
-                        resizeTimer = setTimeout(function() {
-                            self.width = parseInt(self.element.css('width'));
-                            self.height = parseInt(self.element.css('height'));
-
-                            self.resetLayout();
-
-                            self.element.children('.photogrid-cell').each(function(index, element) {
-                                if (!_.isUndefined($(element).data().zz_photo)) { //todo: sometimes this is undefined -- not sure why
-                                    $(element).data().zz_photo.loadIfVisible();
-                                }
-                            });
-
-
-                        }, 100);
-                    });
-
-
-                    //handle scroll
-                    var scrollTimer = null;
-                    self.element.scroll(function(event) {
-                        if (scrollTimer) {
-                            clearTimeout(scrollTimer);
-                            scrollTimer = null;
-                        }
-
-                        scrollTimer = setTimeout(function() {
-
-                            var containerDimensions = {
-                                offset: self.element.offset(),
-                                height: self.element.height(),
-                                width: self.element.width()
-                            };
-
-                            self.element.children('.photogrid-cell').each(function(index, element) {
-                                if ($(element).data().zz_photo) { //not sure why this woultn't be here -- maybe if it is a scroll helper?? in any case was seeing js errors
-                                    $(element).data().zz_photo.loadIfVisible(containerDimensions);
-                                }
-                            });
-                        }, 200);
-
-                    });
-
+                    if ( o.singlePictureMode ){
+                         self._show_and_arm()
+                         if( o.currentPhotoId != null){
+                            o.photos[ self.indexOfPhoto(o.currentPhotoId) ].ui_cell.data().zz_photo.loadIfVisible();
+                         }else{
+                            o.photos[0].ui_cell.data().zz_photo.loadIfVisible();
+                         }
+                    }
+                    
+                    //self.resetLayout(); Done when each photo is created
+                    //self.element.show(); Done after first batch is created
+                   //self.element.children('.photogrid-cell').each(function(index, element) {
+                   //     $(element).data().zz_photo.loadIfVisible();
+                   // }); Done only for first and second batches, the rest of the photos will get it when they come
+                   // into view
 
                     //hideNativeScroller
                     if (o.hideNativeScroller) {
-
                         if (o.singlePictureMode) {
                             self.thumbscrollerElement = $('<div class="photogrid-hide-native-scroller-horizontal"></div>').appendTo(self.element.parent());
-                        }
-                        else {
+                        }else {
                             self.thumbscrollerElement = $('<div class="photogrid-hide-native-scroller-vertical"></div>').appendTo(self.element.parent());
                         }
                     }
@@ -339,11 +301,9 @@
 
                         if (o.singlePictureMode) {
                             self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-horizontal"></div>').appendTo(self.element.parent());
-                        }
-                        else {
+                        } else {
                             self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-vertical"></div>').appendTo(self.element.parent());
                         }
-
 
                         //remove any 'special' photos (eg blank one used for drag and drop on edit screen
                         var photos = $.map(o.photos, function(photo, index) {
@@ -469,6 +429,56 @@
             create_some_photos(0);
 
 
+        },
+
+        _show_and_arm: function(){
+            var self = this,
+                o = self.options;
+
+            self.element.show();
+
+            // Window Resize
+            var resizeTimer = null;
+            $(window).resize(function(event) {
+                if (resizeTimer) {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = null;
+                }
+
+                resizeTimer = setTimeout(function() {
+                    self.width = parseInt(self.element.css('width'));
+                    self.height = parseInt(self.element.css('height'));
+                    self.resetLayout();
+                    self.element.children('.photogrid-cell').each(function(index, element) {
+                        if (!_.isUndefined($(element).data().zz_photo)) { //todo: sometimes this is undefined -- not sure why
+                            $(element).data().zz_photo.loadIfVisible();
+                        }
+                    });
+                }, 100);
+            });
+
+            // Scroll
+            var scrollTimer = null;
+            self.element.scroll(function(event) {
+                if (scrollTimer) {
+                    clearTimeout(scrollTimer);
+                    scrollTimer = null;
+                }
+
+                scrollTimer = setTimeout(function() {
+                    var containerDimensions = {
+                        offset: self.element.offset(),
+                        height: self.element.height(),
+                        width: self.element.width()
+                    };
+
+                    self.element.children('.photogrid-cell').each(function(index, element) {
+                        if ($(element).data().zz_photo) { //not sure why this woultn't be here -- maybe if it is a scroll helper?? in any case was seeing js errors
+                            $(element).data().zz_photo.loadIfVisible(containerDimensions);
+                        }
+                    });
+                }, 200);
+            });
         },
 
         findFirstScrollableContainer: function(){
@@ -629,28 +639,10 @@
             var top_of_last_row = 0;
 
             this.element.children('.photogrid-cell').each(function(index, element) {
-                if (! $(element).data().zz_photo) {
-                    return;
+                var position = self._layoutPhoto( element, index, duration, easing );
+                if( position ){
+                    top_of_last_row = position.top;
                 }
-
-
-                var position = self.positionForIndex(index);
-                var css = {
-                    top: position.top,
-                    left: position.left
-                };
-
-                //todo: moght want to check that things have actuall changed before setting new properties
-                if (duration > 0) {
-                    $(element).animate(css, duration, easing);
-                }
-                else {
-                    $(element).css(css);
-                }
-
-
-                top_of_last_row = position.top;
-
             });
 
             if(!self.options.singlePictureMode){
@@ -659,8 +651,27 @@
                 scroll_padding.css({top: top});
                 this.element.append(scroll_padding);
             }
+        },
 
+        _layoutPhoto: function( photo, index, duration, easing ){
+            if (! $(photo).data().zz_photo) {
+                return;
+            }
 
+            var position = this.positionForIndex(index);
+            var css = {
+                top: position.top,
+                left: position.left
+            };
+
+            //todo: moght want to check that things have actuall changed before setting new properties
+            if (duration && duration > 0) {
+                $(photo).animate(css, duration, easing);
+            }
+            else {
+                $(photo).css(css);
+            }
+            return position;
         },
 
         cellForId: function(id) {
