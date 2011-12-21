@@ -52,10 +52,13 @@ module ZZ
         if will_retry
           photo.update_attributes(:error_message => msg) unless photo.nil?
         else
-          photo.update_attributes(:state => 'error', :error_message => msg ) unless photo.nil?
+          unless photo.nil?
+            photo.update_attributes(:state => 'error', :error_message => msg )
+            z = ZZ::ZZA.new
+            z.track_event("photo.import.error", {:photo_id => photo_id, :message => msg, :source => photo.source}, 1, photo.user_id)
+          end
         end
       end
-
     end
   end
 end
