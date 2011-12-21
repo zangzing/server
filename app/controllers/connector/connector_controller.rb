@@ -39,9 +39,10 @@ class Connector::ConnectorController < ApplicationController
   # results will not be sent to browser
   # will retry on failure
   def self.fire_async(class_method, params)
-    more_params = {}
-    more_params[:allow_retry] = true
-    all_params = params.merge(more_params)
+    all_params = {
+      :allow_retry => true
+    }
+    all_params.merge!(params)
     response_id = AsyncResponse.new_response_id
     ZZ::Async::ConnectorWorker.enqueue(response_id, params[:identity].id, self.name, class_method, all_params)
   end
