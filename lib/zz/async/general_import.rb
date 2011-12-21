@@ -17,11 +17,18 @@ module ZZ
       end
       
       def self.perform( photo_id, source_url, options = {} )
-        @headers = options['headers'] || {}
+
+        headers = {
+            'accept' => '*/*'
+        }
+
+        headers.merge!(options['headers']) if options['headers']
+
         direct_image_url = source_url
         SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
           photo = Photo.find(photo_id)
           if photo.assigned? || photo.error?
+
             # some connectors (eg dropbox) have expensive
             # calls to get the url to import. we need to do these
             # inside of resque job. so we pass 'url_making_method' callback
@@ -31,12 +38,13 @@ module ZZ
               klass = klass_name.constantize
               direct_image_url = klass.send(method_name.to_sym, photo, source_url)
             end
+
             # same for headers
             if options.has_key?('headers_making_method')
               klass_name, method_name = options['headers_making_method'].split('.')
               klass = klass_name.constantize
               additional_headers = klass.send(method_name.to_sym, photo, source_url)
-              @headers.merge!(additional_headers)
+              headers.merge!(additional_headers)
             end
 
 
@@ -45,7 +53,7 @@ module ZZ
                :photo_id => photo_id,
                :source_url => source_url,
                :source_url_mod => direct_image_url,
-               :headers => @headers,
+               :headers => headers,
                :options => options
             }
             photo.import_context = JSON.fast_generate(import_context)
@@ -53,7 +61,7 @@ module ZZ
 
 
             # now, import the file from remote site...
-            file_path = RemoteFile.read_remote_file(direct_image_url, PhotoGenHelper.photo_upload_dir, @headers)
+            file_path = RemoteFile.read_remote_file(direct_image_url, PhotoGenHelper.photo_upload_dir, headers)
             photo.file_to_upload = file_path
             photo.save
           end
