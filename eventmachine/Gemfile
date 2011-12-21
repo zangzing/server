@@ -1,0 +1,14 @@
+source :gemcutter
+
+gem "eventmachine"
+gem "thin"
+gem "em-http-request"
+gem "json"
+gem "require_all"
+gem 'syslogger',     "1.2.6", :git => 'git://github.com/zangzing/syslogger.git'
+gem 'SystemTimer'
+
+group :test do
+  # bundler requires these gems while running tests
+  gem 'rspec'
+end

@@ -17,7 +17,7 @@ Product.class_eval do
 
   # clear all of our cached data
   def self.clear_caches
-    Rails.cache.delete(CACHE_KEY)
+    CacheWrapper.delete(CACHE_KEY)
   end
 
 
@@ -25,12 +25,12 @@ Product.class_eval do
   # returns result as json data
   # simple, no versioning for now
   def self.fetch_all_compressed_json
-    json_str = Rails.cache.read(CACHE_KEY)
+    json_str = CacheWrapper.read(CACHE_KEY)
     if json_str.nil?
       products = Product.where('deleted_at' => nil).order('created_at')
       json_str = JSON.fast_generate(products.as_json)
       json_str = ActiveSupport::Gzip.compress(json_str)
-      Rails.cache.write(CACHE_KEY, json_str, :expires_in => 30.days)
+      CacheWrapper.write(CACHE_KEY, json_str, {:verify => true, :expires_in => 30.days})
     end
     json_str
   end

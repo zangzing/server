@@ -26,7 +26,7 @@ module ZZ
         # this can be for async completion if response_id is nil
         # in that case, notify the completion when we are done
         def self.perform( photo_id, queued_at_secs, response_id )
-          SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
+          SystemTimer.timeout_after(ZangZingConfig.config[:thumbnail_timeout]) do
             photo = Photo.find(photo_id)
             if (!response_id.nil? || photo.generate_queued_at.to_i == queued_at_secs)
               # we are the latest or async so go ahead and do it

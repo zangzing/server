@@ -21,18 +21,24 @@ module ZZ
         session[:send_zza_events_from_client] = events
       end
 
+      # returns the user context in zza compatible form
+      # [user_id, user_type, ip]
+      def zza_user_context
+        if current_user
+          user_id = current_user.id
+          user_type = 1
+        else
+          user_id = request.cookies['_zzv_id']
+          user_type = 2
+        end
+        [user_id, user_type, request.remote_ip]
+      end
 
       # Return a correctly initialized reference to zza tracking service
       def zza
         return @zza if @zza
         @zza = ZZ::ZZA.new
-        if current_user
-          @zza.user = current_user.id
-          @zza.user_type = 1
-        else
-          @zza.user = request.cookies['_zzv_id']
-          @zza.user_type = 2
-        end
+        @zza.user, @zza.user_type = zza_user_context
         @zza
       end
     end
