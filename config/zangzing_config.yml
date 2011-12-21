@@ -11,6 +11,7 @@ common: &common
   album_email_host: "mauricio-post.zangzing.com"
 
   # time in seconds before we timeout certain resque jobs
+  thumbnail_timeout: 120
   async_job_timeout: 40
   async_connector_timeout: 60
   remote_job_timeout: 45

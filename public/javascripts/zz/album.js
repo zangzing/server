@@ -108,12 +108,12 @@ zz.album = {};
      ***************************************************/
 
     function render_grid_view(){
-        load_photos_json(function(json) {
+        load_photos_json('grid', function(photos) {
 
             var buy_mode = zz.buy.is_buy_mode_active();
 
             //no movie mode if no photos
-            if (json.length == 0) {
+            if (photos.length == 0) {
                 $('#footer #play-button').addClass('disabled');
             }
 
@@ -123,19 +123,6 @@ zz.album = {};
             $('#article').html(gridElement);
             $('#article').css('overflow', 'hidden');
 
-
-            for (var i = 0; i < json.length; i++) {
-                var photo = json[i];
-                photo.previewSrc = zz.agent.checkAddCredentialsToUrl(photo.stamp_url);
-                photo.src = zz.agent.checkAddCredentialsToUrl(photo.thumb_url);
-
-                if(buy_mode){
-                    photo.checked = zz.buy.is_photo_selected(photo.id);
-                }
-
-            }
-
-
             // add placeholder for add-all button
             if(buy_mode && zz.page.current_user_can_buy_photos){
                 var addAllButton = {
@@ -144,13 +131,12 @@ zz.album = {};
                     caption: '',
                     type: 'blank'
                 };
-
-                json.unshift(addAllButton);
+                photos.unshift(addAllButton);
             }
 
 
             var grid = gridElement.zz_photogrid({
-                photos: json,
+                photos: photos,
                 allowDelete: false,
                 allowEditCaption: false,
                 allowReorder: false,
@@ -199,33 +185,15 @@ zz.album = {};
 
 
     function render_picture_view(){
-        load_photos_json(function(json) {
+        load_photos_json('picture', function(photos) {
 
             var render = function() {
-
+                //no movie mode if no photos
+                if (photos.length == 0) {
+                    $('#footer #play-button').addClass('disabled');
+                }
 
                 var buy_mode = zz.buy.is_buy_mode_active();
-                
-
-                // figure out which image size to use based
-                // on screen size
-                var bigScreen = ($(window).width() > 1200 && $(window).height() > 1000);
-                for (var i = 0; i < json.length; i++) {
-                    var photo = json[i];
-                    photo.previewSrc = zz.agent.checkAddCredentialsToUrl(photo.stamp_url);
-                    if (bigScreen) {
-                        photo.src = zz.agent.checkAddCredentialsToUrl(photo.full_screen_url);
-                    }
-                    else {
-                        photo.src = zz.agent.checkAddCredentialsToUrl(photo.screen_url);
-                    }
-
-                    if(buy_mode){
-                        photo.checked = zz.buy.is_photo_selected(photo.id);
-                    }
-
-
-                }
 
                 var gridElement = $('<div class="photogrid"></div>');
 
@@ -234,13 +202,8 @@ zz.album = {};
                 $('#article .photogrid').remove();
                 $('#article').append(gridElement);
 
-//                if (comments_open()){
-//                    gridElement.css({right: '450px'});
-//                }
-
-
                 var grid = gridElement.zz_photogrid({
-                    photos: json,
+                    photos: photos,
                     allowDelete: false,
                     allowEditCaption: false,
                     allowReorder: false,
@@ -269,7 +232,7 @@ zz.album = {};
                         window.location.hash = '#!' + photoId;
                         zz.page.current_photo_index = index; //this is used when we go to movie mode
                         current_photo_id = photoId;
-                        current_photo_json = json[index];
+                        current_photo_json = photos[index];
 
                         zz.comments.set_current_photo_id(photoId);
 
@@ -354,29 +317,18 @@ zz.album = {};
     }
 
 
-    function load_photos_json(callback){
+    function load_photos_json(view, callback){
 
         ZZAt.track('album.view', {id: zz.page.album_id});
 
-
-        zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(json){
-            json = filterPhotosForUser(json);
-
-            callback(json);
-
-
-            // setup like
+        zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(photos){
             var wanted_subjects = {};
-            for (var key in json) {
-                var id = json[key].id;
-                wanted_subjects[id] = 'photo';
-            }
+            photos = process_photos(photos, view, wanted_subjects);
+
+            callback(photos);
+
             zz.like.add_id_array(wanted_subjects);
 
-            //no movie mode if no photos
-            if (json.length == 0) {
-                $('#footer #play-button').addClass('disabled');
-            }
         });
     };
 
@@ -410,24 +362,9 @@ zz.album = {};
 
 
     function render_timeline_or_people_view(which){
-        load_photos_json(function(json) {
-
-
-            var buy_mode = zz.buy.is_buy_mode_active();
-
-
-            for (var i = 0; i < json.length; i++) {
-                var photo = json[i];
-                photo.previewSrc = zz.agent.checkAddCredentialsToUrl(photo.stamp_url);
-                photo.src = zz.agent.checkAddCredentialsToUrl(photo.thumb_url);
-
-                if(buy_mode){
-                    photo.checked = zz.buy.is_photo_selected(photo.id);
-                }
-
-            }
-
-
+        load_photos_json(which, function(photos) {
+              var buy_mode = zz.buy.is_buy_mode_active();
+            
             $('.timeline-grid').each(function(index, element) {
 
                 $(element).empty();
@@ -443,23 +380,23 @@ zz.album = {};
                 if (which === 'timeline') {
                     if (!_.isUndefined($(element).attr('data-upload-batch-id'))) {
                         var batchId = parseInt($(element).attr('data-upload-batch-id'));
-                        filteredPhotos = $(json).filter(function(index) {
-                            return (json[index].upload_batch_id === batchId);
+                        filteredPhotos = $(photos).filter(function(index) {
+                            return (photos[index].upload_batch_id === batchId);
                         });
                         var moreLessbuttonElement = $('.viewlist .more-less-btn[data-upload-batch-id="' + batchId.toString() + '"]');
                     }
                     else if (!_.isUndefined($(element).attr('data-photo-id'))) {
                         var photoId = parseInt($(element).attr('data-photo-id'));
-                        filteredPhotos = $(json).filter(function(index) {
-                            return (json[index].id === photoId);
+                        filteredPhotos = $(photos).filter(function(index) {
+                            return (photos[index].id === photoId);
                         });
                     }
                 }
                 else {
                     var userId = parseInt($(element).attr('data-user-id'));
 
-                    filteredPhotos = $(json).filter(function(index) {
-                        return (json[index].user_id === userId);
+                    filteredPhotos = $(photos).filter(function(index) {
+                        return (photos[index].user_id === userId);
                     });
                     var moreLessbuttonElement = $('.viewlist .more-less-btn[data-user-id="' + userId.toString() + '"]');
                 }
@@ -551,18 +488,6 @@ zz.album = {};
         
     }
 
-    function filterPhotosForUser(photos) {
-        //filter photos that haven't finished uploading
-        return $.map(photos, function(element, index) {
-            if (element['state'] !== 'ready') {
-                if (_.isUndefined(zz.session.current_user_id) || element['user_id'] != zz.session.current_user_id) {
-                    return null;
-                }
-            }
-            return element;
-        });
-    }
-
      function init_back_button(url) {
         $('#header #back-button').click(function() {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
@@ -595,5 +520,69 @@ zz.album = {};
          });
     }
 
+
+     function process_photos(photos, view, wanted_subjects){
+        var bigScreen = ($(window).width() > 1200 && $(window).height() > 1000); //for picture view
+        var buy_mode = zz.buy.is_buy_mode_active();  // for buy mode check marks
+        var picture_view = view=='picture';
+ 
+        //Loop through array
+        // - Use a map so we can delete the photos that this user cannot see (agent photos still loading a.k.a not ready)
+        // - If the photo is NOT ready and the current_user is NOT owner discard it
+        // - If the photo is NOT ready and the current_user is owner set the urls using agent credentials
+        // - If the phot IS ready, set urls without agent credentials
+        // - Set the previewSrc and Src according to view
+        // - Set the check when in buy mode and selected
+        // - Add photo to wanted objects array for likes
+
+         return $.map(photos, function(photo, index) {
+             if( photo.state !== 'ready') {
+                 if (_.isUndefined(zz.session.current_user_id) || photo.user_id != zz.session.current_user_id) {
+                     //only owner can see it.
+                     return null;
+                 }else{
+                     // translate and add credentials to photo urls
+                     if(photo.photo_base){
+                         photo.stamp_url       = zz.agent.checkAddCredentialsToUrl( photo.photo_base.replace('#{size}',photo.photo_sizes.stamp));
+                         photo.thumb_url       = zz.agent.checkAddCredentialsToUrl( photo.photo_base.replace('#{size}',photo.photo_sizes.thumb));
+                         photo.full_screen_url = zz.agent.checkAddCredentialsToUrl( photo.photo_base.replace('#{size}',photo.photo_sizes.full_screen));
+                         photo.screen_url      = zz.agent.checkAddCredentialsToUrl( photo.photo_base.replace('#{size}',photo.photo_sizes.screen));
+                     }
+                 }
+             }else{
+                 // photo is ready
+                 // translate photo urls
+                 if(photo.photo_base){
+                     photo.stamp_url       = photo.photo_base.replace('#{size}',photo.photo_sizes.stamp);
+                     photo.thumb_url       = photo.photo_base.replace('#{size}',photo.photo_sizes.thumb);
+                     photo.full_screen_url = photo.photo_base.replace('#{size}',photo.photo_sizes.full_screen);
+                     photo.screen_url      = photo.photo_base.replace('#{size}',photo.photo_sizes.screen);
+                 }
+             }
+
+             //set src and previewSrc
+             photo.previewSrc = photo.stamp_url;
+             if( picture_view ){
+                 if (bigScreen) {
+                     photo.src = photo.full_screen_url;
+                 }else{
+                     photo.src = photo.screen_url;
+                 }
+             } else {
+                 photo.src = photo.thumb_url;
+
+             }
+
+
+            //set check marks for buy mode
+            if(buy_mode){
+                photo.checked = zz.buy.is_photo_selected(photo.id);
+            }
+
+            //setup like
+            wanted_subjects[photo.id] = 'photo';
+            return photo;
+        });
+    }
 })();
 

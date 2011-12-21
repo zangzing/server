@@ -56,7 +56,7 @@ def checked_gzip_compress(orig, zza_event, context)
 
     # crc did not match
     Rails.logger.error("Bad compressed data CRC32 checksum did not match called from: #{context}")
-    ZZ::ZZA.new.track_event(zza_event, context)
+    ZZ::ZZA.new.track_event(zza_event, {:context => context})
   end
 
   # if we get here we didn't succeed even after multiple tries

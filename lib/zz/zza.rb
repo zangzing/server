@@ -89,7 +89,7 @@ module ZZ
     # we can't rely on the rails logger since this code
     # is meant to work everywhere so just output to stdout
     def log(msg)
-      puts msg
+      puts msg rescue nil
     end
 
     # true if this thread is aborting
@@ -119,19 +119,19 @@ module ZZ
 
       while thread_aborting? == false do
         begin
-          #puts Time.now.to_s + ": ZZA Sender checking files up: " + Process.pid.to_s
+          #log Time.now.to_s + ": ZZA Sender checking files up: " + Process.pid.to_s
           # first close out the current file so we can send it
           close_current_file
 
           # now send data from any ready files
           send_files_data
-          #puts Time.now.to_s + ": ZZA Sender going to sleep: " + Process.pid.to_s
+          #log Time.now.to_s + ": ZZA Sender going to sleep: " + Process.pid.to_s
 
           # sleep to let the data accumulate again
           sleep SEND_SWEEP_TIME
 
         rescue Exception => ex
-          puts "Error in ZZA sender: " + ex.message
+          log "Error in ZZA sender: " + ex.message
         ensure
           if thread_aborting?
             # make an attempt to clean up
@@ -255,7 +255,7 @@ module ZZ
               # since another process may have grabbed
               # the file before we could open or lock it
             rescue Exception => ex
-              puts "Error in ZZA send_files_data: " + ex.message
+              log "Error in ZZA send_files_data: " + ex.message
             ensure
               file.close rescue nil
             end

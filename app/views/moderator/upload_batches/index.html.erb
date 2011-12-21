@@ -6,7 +6,7 @@
     <div id="batch-list" style="text-align: left; margin-left: 100px;">
       <ul>
         <% @upload_batches_days.each do |date| %>
-          <li><%= link_to "Upload Batches from #{date}", moderator_upload_batch_path(date) %></li>
+          <li style="font-size:14px; margin: 5px 0;"><%= link_to "Upload Batches from #{date}", moderator_upload_batch_path(date) %></li>
         <% end %>
       </ul>
     </div>

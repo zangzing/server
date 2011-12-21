@@ -25,6 +25,25 @@ zz.sharemenu = {
         $(button).zz_menu('open');
     },
 
+    show_in_picon: function(button, picon,  onopen, onclose) {
+        button.zz_menu({
+            picon:         picon,
+            album:         picon.options.album,
+            subject_id:    picon.options.album.id,
+            subject_type:  'album',
+            container:     $('#article'),
+            zza_context:   'frame',
+            style:         'auto',
+            bind_click_open: false,
+            append_to_element: false, //use the el zzindex so overflow goes under bottom toolbar
+            menu_template: zz.sharemenu.template,
+            click: zz.sharemenu.click_handler,
+            open: onopen,
+            close: onclose
+        });
+        $(button).zz_menu('open');
+    },
+
     click_handler: function(event, data) {
         var action = data.action,
                 options = data.options,

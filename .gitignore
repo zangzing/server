@@ -6,6 +6,8 @@ tmp/**/*
 doc/api
 doc/app
 db/*.sqlite3
+eventmachine/.idea
+eventmachine/log/*.log
 /.idea
 .idea*/*
 public/system/*

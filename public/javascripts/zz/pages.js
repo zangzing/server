@@ -273,7 +273,7 @@ zz.pages.group_tab = {
                         '<div class="people-list"></div>' +
                         '<div class="share-button-section">' +
                             '<div class="add-people-button create-group"></div>' +
-                            '<div class="stream-to-email"><input type="checkbox">Automatically email the group about new photos</div>' +
+                            '<div class="stream-to-email"><input type="checkbox">Automatically email the group about new photos and comments</div>' +
                             '<div class="facebook-button"></div>' +
                             '<div class="stream-to-facebook"><input type="checkbox">Automatically share new photos on Facebook</div>' +
                             '<div class="twitter-button"></div>' +

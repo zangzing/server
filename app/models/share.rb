@@ -99,7 +99,6 @@ class Share < ActiveRecord::Base
     case service
       when 'email'
         self.recipients.each do |recipient |
-          #TODO: Add Album.Photo.User handling See bug #1124
           Guest.register( recipient, 'share' ) #add recipient to guest list for beta period
 
 

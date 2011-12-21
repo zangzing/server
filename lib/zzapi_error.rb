@@ -1,14 +1,30 @@
 # this class tracks any zz api error condition set
-class ZZAPIError
-  attr_reader :err_set, :message, :code
+class ZZAPIError < StandardError
+  attr_reader :result, :code
 
-  def self.initialize
-    @err_set = false
-  end
-
-  def set(message, code)
-    @err_set = true
-    @message = message  # can be string or array of strings, or a hash
+  # the message here can be a string, array or hash
+  # for consistency you should generally use a single string,
+  # an array of strings or as last resort a custom hash
+  def initialize(result, code = 412)
+    @result = result
     @code = code
   end
+
+  def to_s
+    if @result.is_a?(String)
+      @result
+    else
+      super
+    end
+  end
 end
+
+
+#begin
+#  raise ZZAPIError.new({:test=>"data", :arr=>[1,2,3]})
+#rescue ZZAPIError => ex
+#  ex.message
+#  ex.to_s
+#  puts ex.result.to_s
+#  puts ex.code
+#end
