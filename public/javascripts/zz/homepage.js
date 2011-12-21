@@ -123,10 +123,9 @@ zz.homepage = {};
                 }else{
                     call_and_merge([my_albums_path, session_user_liked_albums_path, session_user_invited_albums_path], function(albums) {
                         //show only albums for the current homepage
-                        albums = _.filter(albums, function(album) {
+                        my_albums = _.filter(albums, function(album) {
                             return album.user_id == zz.page.displayed_user_id;
                         });
-                        my_albums = albums;
                         render(my_albums_title, my_albums);
                         fetch_like_info(my_albums);
                     });
@@ -185,7 +184,10 @@ zz.homepage = {};
                         all_urls.push( invited_albums_path );
                     }
                     call_and_merge( all_urls , function(albums) {
-                        all_albums = albums;
+                        //show only albums for the current homepage
+                        all_albums = _.filter(albums, function(album) {
+                            return album.user_id == zz.page.displayed_user_id;
+                        });
                         render(all_albums_title,all_albums);
                         fetch_like_info(all_albums);
                     });
