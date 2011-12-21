@@ -43,8 +43,8 @@ Server::Application.configure do
 
 
   # set up cache manager
-  #CacheWrapper.initialize_cache(config, 1.5)
-  ActionController::Base.cache_store = :memory_store
+  CacheWrapper.initialize_cache(config, 1.5)
+  #ActionController::Base.cache_store = :memory_store
 
   # mail logger is too verbose, shut it off
   config.action_mailer.logger = nil

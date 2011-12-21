@@ -1,8 +1,8 @@
 GIT
   remote: git://github.com/zangzing/syslogger.git
-  revision: 19cd3ed188f3b6c294686402ba318a5d114414bf
+  revision: 68bfd9fc9c367883ae0d884ddf16711059a65900
   specs:
-    syslogger (1.2.5)
+    syslogger (1.2.6)
 
 GEM
   remote: http://rubygems.org/
@@ -43,5 +43,5 @@ DEPENDENCIES
   json
   require_all
   rspec
-  syslogger (= 1.2.5)!
+  syslogger (= 1.2.6)!
   thin

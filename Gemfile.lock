@@ -6,9 +6,9 @@ GIT
 
 GIT
   remote: git://github.com/zangzing/syslogger.git
-  revision: d2157f929f2a38a01424089a68060e050d0f88c8
+  revision: 68bfd9fc9c367883ae0d884ddf16711059a65900
   specs:
-    syslogger (1.2.5)
+    syslogger (1.2.6)
 
 PATH
   remote: ./spree_core-0.60.1
@@ -342,7 +342,7 @@ DEPENDENCIES
   spree_dash (= 0.60.1)
   spree_promo (= 0.60.1)
   spree_zangzing!
-  syslogger (= 1.2.5)!
+  syslogger (= 1.2.6)!
   twitter_oauth
   unicorn
   uuidtools
