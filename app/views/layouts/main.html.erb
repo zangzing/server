@@ -151,6 +151,7 @@
         zz.page.rails_controller_name    = '<%= controller.controller_name %>';
         zz.page.rails_action_name        = '<%= controller.action_name %>';
         zz.page.rails_authenticity_token = '<%= form_authenticity_token %>';
+        <%= yield :zz_js_page_variables%>
 
         zz.config = zz.config || {};
         zz.config.win_download_url       = '<%= ZangZingConfig.config[:agent_download_url_win] %>';

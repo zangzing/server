@@ -1,0 +1,40 @@
+#
+# Use this for common configuration
+#
+common: &common
+  client_timeout: 180
+  backend_timeout: 30
+  max_backend_retries: 3                # if we have a recoverable failure, retry up to this many times
+  zza_id: "dev.photos/svr"
+  thin_log_file: '../log/thin.log'
+  log_type: "stdout"
+  log_path: "../log/eventmachine.log"
+  log_level: DEBUG
+  pid_run_dir: '/var/run/zz'
+  pid_file_prefix: "em_photos_"         # will add instance number .pid
+  max_wait_for_address: 30              # max time we will wait to get our address
+  server_address: '0.0.0.0'
+  server_base_port: 3031                # incremented by instance number if more than one listening address
+  failsafe_timeout: 43200               # number of seconds before self termination after kill was issued when we still have pending work
+
+development:
+  <<: *common
+
+photos_staging:
+  <<: *common
+  zza_id: "staging.photos/svr"
+  log_type: "syslog"
+  log_app_name: "rails/stag/emphotos"
+#for testing use tcp socket
+#  server_address: '/var/run/zz/em_photos_listen_'  # a prefix for the unix socket if no port
+
+photos_production:
+  <<: *common
+  zza_id: "photos/svr"
+  log_type: "syslog"
+  log_app_name: "rails/prod/emphotos"
+  server_address: '/var/run/zz/em_photos_listen_'  # a prefix for the unix socket if no port
+
+test:
+  <<: *common
+
