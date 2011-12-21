@@ -1,6 +1,6 @@
 class NewTrackingFieldsToPhotosTable < ActiveRecord::Migration
   def self.up
-    add_column :photos, :work_priority, :string
+    add_column :photos, :work_priority, :integer
     add_column :photos, :import_context, :text
   end
 
