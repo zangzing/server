@@ -17,12 +17,12 @@ class AsyncResponse
 
     def store_response(response_id, response)
       #stores response in memcache
-      Rails.cache.write(response_id, response, :expires_in => RESPONSE_EXPIRES_IN)
+      CacheWrapper.write(response_id, response, {:verify => true, :expires_in => RESPONSE_EXPIRES_IN})
     end
 
     def get_response(response_id)
       #fetches response from memcache (or null)
-      Rails.cache.read(response_id)
+      CacheWrapper.read(response_id)
     end
 
     # exception can be passed as nil, in which
@@ -31,6 +31,7 @@ class AsyncResponse
     def build_error_json(exception, message = nil, code = nil)
       info = {
         :exception => exception.nil? ? false : true,
+        :exception_name => exception.nil? ? nil : exception.class.name,
         :code => code || case exception.class.name
           when 'InvalidToken' then 401
           when 'HttpCallFail' then 509
@@ -44,7 +45,7 @@ class AsyncResponse
     def store_error(response_id, exception)
       error_json = build_error_json(exception)
       Rails.logger.info("AsyncResponse Exception: #{exception.class.name} - #{exception.message}\n#{exception.backtrace}")
-      Rails.cache.write(response_id, error_json, :expires_in => RESPONSE_EXPIRES_IN)
+      CacheWrapper.write(response_id, error_json, {:verify => true, :expires_in => RESPONSE_EXPIRES_IN})
     end
 
   end

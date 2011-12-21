@@ -1,7 +1,7 @@
 var zz = zz || {};
 zz.dialog ={};
 
-(function(){
+(function($, undefined) {
 
     zz.dialog.show_square_dialog= function(content, options) {
         var scrim_element = $(SQUARE_TEMPLATE);
@@ -50,9 +50,6 @@ zz.dialog ={};
         return $(element).zz_dialog(options).data().zz_dialog;
     },
 
-    //show_confirmation_dialog: function(message, on_ok, on_cancel) {};
-
-    // show_alert_dialog: function(message, on_ok) {};
 
     zz.dialog.show_flash_dialog = function(message, onClose) {
         var content = $("<div id='flash-dialog'><div><div id='flash'></div><a id='ok' class='newgreen-button'><span>OK</span></a></div></div>");
@@ -146,10 +143,10 @@ zz.dialog ={};
     var CONFIRMATION_TEMPLATE = '<div class="message">{{message}}</div>';
     var ALERT_TEMPLATE = '<div class="message">{{message}}</div>';
     var BASE_Z_INDEX = 99990;
-    zz.dialog.open_dialog_count = 0;
+    var open_dialog_count = 0;
 
     zz.dialog.scrim_z_index = function(){
-        return BASE_Z_INDEX + zz.dialog.open_dialog_count * 10;
+        return BASE_Z_INDEX + open_dialog_count * 10;
     };
 
     zz.dialog.dialog_z_index = function() {
@@ -182,9 +179,9 @@ zz.dialog ={};
                                         '<a id="ld-ok" class="newgreen-button" href="javascript:void(0)"><span>Send</span></a>' +
                                     '</div>' +
                                 '</div>';
-})();
 
-(function($, undefined) {
+
+
 
     $.widget('ui.zz_dialog', {
         options: {
@@ -254,7 +251,7 @@ zz.dialog ={};
         open: function() {
             var self = this;
 
-            zz.dialog.open_dialog_count++;
+            open_dialog_count++;
 
 
             if (self._trigger('beforeopen') === false) return; //If any listeners return false, then do not open
@@ -292,7 +289,7 @@ zz.dialog ={};
                 this.options.on_close();
             }
             this.destroy();
-            zz.dialog.open_dialog_count--;
+            open_dialog_count--;
         },
 
         toggle: function() {

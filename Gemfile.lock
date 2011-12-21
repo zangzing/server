@@ -6,9 +6,9 @@ GIT
 
 GIT
   remote: git://github.com/zangzing/syslogger.git
-  revision: d2157f929f2a38a01424089a68060e050d0f88c8
+  revision: 68bfd9fc9c367883ae0d884ddf16711059a65900
   specs:
-    syslogger (1.2.5)
+    syslogger (1.2.6)
 
 PATH
   remote: ./spree_core-0.60.1
@@ -145,7 +145,7 @@ GEM
     jquery-rails (0.2.6)
       rails (~> 3.0)
       thor (~> 0.14.4)
-    json (1.5.1)
+    json (1.6.3)
     json_pure (1.4.6)
     kgio (2.6.0)
     launchy (0.3.7)
@@ -176,7 +176,7 @@ GEM
     nested_set (1.6.6)
       activerecord (>= 3.0.0)
       railties (>= 3.0.0)
-    newrelic_rpm (2.13.4)
+    newrelic_rpm (3.3.0)
     nokogiri (1.4.4)
     oauth-plugin (0.4.0.pre4)
       oauth (>= 0.4.4)
@@ -315,6 +315,7 @@ DEPENDENCIES
   i18n
   instagram
   jammit
+  json (>= 1.6.3)
   launchy
   less
   mechanize
@@ -341,7 +342,7 @@ DEPENDENCIES
   spree_dash (= 0.60.1)
   spree_promo (= 0.60.1)
   spree_zangzing!
-  syslogger (= 1.2.5)!
+  syslogger (= 1.2.6)!
   twitter_oauth
   unicorn
   uuidtools
