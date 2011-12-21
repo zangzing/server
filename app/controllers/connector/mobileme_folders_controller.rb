@@ -129,15 +129,15 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
   end
 
   def import_photo
-    fire_async_response('import_certain_photo', true)
+    fire_async_response('import_certain_photo')
   end
 
   def import_album
-    fire_async_response('import_dir_photos', true)
+    fire_async_response('import_dir_photos')
   end
 
   def import_all
-    fire_async_response('import_all_albums', true)
+    fire_async_response('import_all_albums')
   end
 
 

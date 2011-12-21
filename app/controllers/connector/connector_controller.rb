@@ -26,11 +26,10 @@ class Connector::ConnectorController < ApplicationController
 
   # this one is called from an controller action
   # browser will poll for response
-  def fire_async_response(class_method, allow_retries = false)
-    more_params = {}
-    more_params[:allow_retry] = true if allow_retries
+  # does not retry on failure
+  def fire_async_response(class_method)
     response_id = AsyncResponse.new_response_id
-    ZZ::Async::ConnectorWorker.enqueue(response_id, service_identity.id, self.class.name, class_method, params.merge(more_params))
+    ZZ::Async::ConnectorWorker.enqueue(response_id, service_identity.id, self.class.name, class_method, params)
     response.headers["x-poll-for-response"] = async_response_url(response_id)
     render :json => {:message => "poll-for-response"}
   end
@@ -38,9 +37,13 @@ class Connector::ConnectorController < ApplicationController
 
   # this one is called from within another worker
   # results will not be sent to browser
+  # will retry on failure
   def self.fire_async(class_method, params)
+    more_params = {}
+    more_params[:allow_retry] = true
+    all_params = params.merge(more_params)
     response_id = AsyncResponse.new_response_id
-    ZZ::Async::ConnectorWorker.enqueue(response_id, params[:identity].id, self.name, class_method, params)
+    ZZ::Async::ConnectorWorker.enqueue(response_id, params[:identity].id, self.name, class_method, all_params)
   end
 
 

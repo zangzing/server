@@ -103,8 +103,8 @@ class Connector::FacebookFoldersController < Connector::FacebookController
     unless album_list.empty?
       album_list.each do |fb_album|
         zz_album = create_album(identity, fb_album[:name], params[:privacy])
-        photos = import_folder(api_client, params.merge(:fb_album_id => fb_album[:id], :album_id => zz_album.id))
-        zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
+        zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
+        fire_async('import_folder', params.merge(:fb_album_id => album_id, :album_id => zz_album.id))
       end
     end
 
