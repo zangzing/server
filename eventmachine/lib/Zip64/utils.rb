@@ -6,7 +6,7 @@ class Util
     ZIP64_LEN = 0xffffffff
     ZIP64_WORDLEN = 0xffff
     ZIP64_VER = 45
-    ZIP32_VER = 45
+    ZIP32_VER = 20
   end
   # convert to msdos time format
   def self.msdos_time(time)
