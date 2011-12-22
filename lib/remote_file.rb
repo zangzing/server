@@ -1,6 +1,6 @@
 require 'net/http'
 require 'digest/sha1'
-require 'uri'
+require 'addressable/uri'
 
 class IncompleteResponse < StandardError
   attr_reader :expected_size, :actual_size
@@ -59,11 +59,23 @@ class RemoteFile < ::File
   end
 
   def fetch
-    target_uri = URI.unescape(@remote_path)
+    target_uri = @remote_path
     follow_redirect = false
     begin
-      uri = URI::parse(URI.escape(target_uri))
-      http = Net::HTTP.new(uri.host, uri.port)
+
+      # we switched to the addressable gem because it does a better job
+      # parsing urls than the built in URI module
+      uri = Addressable::URI::parse(target_uri)
+
+
+      # addressable gem doesn't seem to always set port correctly for https urls
+      # so check and set if necessary
+      port = uri.port
+      if uri.scheme == 'https' && port.nil?
+        port = 443
+      end
+
+      http = Net::HTTP.new(uri.host, port)
       if uri.scheme == 'https'
         http.use_ssl = true
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
