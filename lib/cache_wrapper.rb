@@ -25,9 +25,7 @@ class CacheWrapper
         # verify it
         check_data = cache.read(key)
         write_ok = value == check_data
-        if write_ok == false
-          Rails.logger.error("Memcache write with verify attempt: #{attempt+1} failed for key: #{key}")
-        end
+        Rails.logger.error("Memcache write with verify attempt: #{attempt+1} failed for key: #{key}") unless write_ok
       end
       break if write_ok
     end
@@ -86,7 +84,7 @@ class MemCacheWrapper
       expires_in ||= 0
       result = @cache.set(key, value, expires_in, true)
     end
-    result.nil? ? false : true
+    !result.nil?  # if nil return false, true otherwise
   end
 
   def read(key)
@@ -102,7 +100,7 @@ class MemCacheWrapper
     safe_wrap do
       result = @cache.delete(key)
     end
-    result.nil? ? false : true
+    !result.nil?  # if nil return false, true otherwise
   end
 
   # if server is dead, mark as undead so we
