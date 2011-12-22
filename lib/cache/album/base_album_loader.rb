@@ -27,7 +27,7 @@ module Cache
         ver = current_version
         key = Loader.make_cache_key(self.user.id, self.album_type, ver)
         cache_man.logger.info("Fetching albums cache key: #{key}")
-        json = cache.read(key)
+        json = CacheWrapper.read(key)
         z = ZZ::ZZA.new
         if(json.nil?)
           cache_man.logger.info("Cache miss key: #{key}")

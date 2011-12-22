@@ -57,10 +57,6 @@ module Cache
         "Cache.Album.#{comp_flag}.#{album_type}.#{user_id}.#{hash_schema_version}.#{ver}"
       end
 
-      def cache
-        Rails.cache
-      end
-
       # get a new version, we use time in seconds
       # which should be ok.  Technically we could have
       # a collision if someone else was changing this user
@@ -116,7 +112,7 @@ module Cache
           begin
             # compress the content once before caching: save memory and save nginx from compressing every response
             json = checked_gzip_compress(json, 'homepage.cache.corruption', "Key: #{key}, UserId: #{user_id}") if use_compression
-            cache.write(key, json, :expires_in => Manager::CACHE_MAX_INACTIVITY)
+            CacheWrapper.write(key, json, :expires_in => Manager::CACHE_MAX_INACTIVITY)
             cache_man.logger.info "Caching #{key}"
           rescue Exception => ex
             # log the message but continue
@@ -243,7 +239,7 @@ module Cache
       # we invalidate the browsers cache for
       # old items.
       def self.hash_schema_version
-        'v5'
+        'v8'
       end
 
       # this method returns the album as a map which allows us to perform
@@ -286,7 +282,9 @@ module Cache
           # prep for substitution
           cover_base = nil
           cover_sizes = nil
+          cover_date  = album.created_at.to_i #default value for empty albums
           if album_cover && album_cover.ready?
+            cover_date = album_cover.capture_date unless album_cover.capture_date.nil?
             cover_base = album_cover.base_subst_url
             if cover_base
               # ok, photo is ready so include sizes map
@@ -319,6 +317,7 @@ module Cache
               :photos_ready_count => album.photos_ready_count,
               :cache_version => album.cache_version_key,
               :updated_at => album.updated_at.to_i,
+              :cover_date => cover_date.to_i,
               :my_role => album.my_role, # valid values are Viewer, Contrib, Admin
               :all_can_contrib => album.everyone_can_contribute?,
               :who_can_download => album.who_can_download #Valid values are viewers, owner, everyone

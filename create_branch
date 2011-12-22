@@ -1,0 +1,77 @@
+#!/usr/bin/env ruby
+
+# this script creates a branch based on an optional
+# branch of your choosing
+#
+#
+require 'readline'
+
+def confirm_continue
+  print "Do you want to continue? (Yes/n): "
+  r = Readline.readline()
+  if r != "Yes"
+    puts "Exiting. Bye."
+    exit
+  end
+end
+
+def get_input(prompt)
+  print prompt
+  r = Readline.readline()
+  if r.empty?
+    puts "Input cannot be empty. Exiting. Bye."
+    exit
+  end
+  return r
+end
+
+def do_cmd(cmd)
+  puts cmd
+  Kernel.system(cmd)
+end
+
+
+puts "Create a new branch."
+confirm_continue
+
+puts
+feature_branch = get_input("Enter the new branch you would like to create: ")
+
+puts
+print "Type the branch/tag name to use for the basis of the tag you want to create (optional): "
+branch = Readline.readline()
+branch = "master" if branch.empty?
+
+puts
+puts "About to create the branch: #{feature_branch} based on #{branch}."
+confirm_continue
+
+
+cur_dir = Dir.pwd
+Dir.chdir("../")
+base_dir = Dir.pwd
+auto_deploy_dir = base_dir + "/auto_deploy"
+Dir.mkdir(auto_deploy_dir) rescue nil
+Dir.chdir(auto_deploy_dir)
+
+repos = ["server"]
+
+repos.each do |repo|
+  Dir.chdir(auto_deploy_dir)
+  repo_dir = auto_deploy_dir + "/" + repo
+  url = "git@github.com:zangzing/" + repo + ".git"
+
+  do_cmd("git clone #{url}")
+
+  Dir.chdir(repo_dir)
+  do_cmd("git remote show origin")
+  do_cmd("git fetch")
+  do_cmd("git checkout -f #{branch}")
+  do_cmd("git checkout -b #{feature_branch}")
+  do_cmd("git pull origin #{branch}")
+  do_cmd("git push origin #{feature_branch}")
+end
+
+puts
+puts "To use the new branch for development use this command:"
+puts "git remote show origin && git fetch && git checkout --track -b #{feature_branch} origin/#{feature_branch}"

@@ -110,6 +110,7 @@ class PhotosController < ApplicationController
   #
   def zz_api_create_photos
     return unless require_user && require_album(true) && require_album_contributor_role
+
     zz_api do
       user_id           = current_user.id
       album_id          = @album.id
@@ -378,7 +379,7 @@ class PhotosController < ApplicationController
       cache_key = "Album.Photos.#{comp_flag}.#{@album.id}.#{cache_version_key}"
 
       logger.debug 'cache key: ' + cache_key
-      json = Rails.cache.read(cache_key)
+      json = CacheWrapper.read(cache_key)
 
       if(json.nil?)
         json = Photo.to_json_lite(@album.photos)
@@ -386,7 +387,7 @@ class PhotosController < ApplicationController
         begin
           #compress the content once before caching: save memory and save nginx from compressing every response
           json = checked_gzip_compress(json, 'album.cache.corruption', "Key: #{cache_key}, AlbumId: #{@album.id}, UserId: #{@album.user_id}") if gzip_compress
-          Rails.cache.write(cache_key, json, :expires_in => 72.hours)
+          CacheWrapper.write(cache_key, json, :expires_in => 72.hours)
           compressed = gzip_compress
           logger.debug 'caching photos_json: ' + cache_key
         rescue Exception => ex
