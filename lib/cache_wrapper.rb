@@ -56,8 +56,8 @@ class CacheWrapper
     @@cache = nil
     if cache_type == :mem_cache_store
       opts = {}
-      #todo, after debugging comment out logger line
-      opts[:logger] = config.logger
+      # don't normally need logging so leave off for now
+      #opts[:logger] = config.logger
       opts[:timeout] = timeout
       # bypass rails wrappers
       @@cache = MemCacheWrapper.new(MemCache.new(MemcachedConfig.server_list, opts))
