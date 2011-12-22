@@ -58,6 +58,7 @@ class CacheWrapper
     @@cache = nil
     if cache_type == :mem_cache_store
       opts = {}
+      #todo, after debugging comment out logger line
       opts[:logger] = config.logger
       opts[:timeout] = 1.5
       # bypass rails wrappers

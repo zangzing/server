@@ -14,7 +14,7 @@ class MemCache
   # Gets or creates a socket connected to the given server, and yields it
   # to the block, wrapped in a mutex synchronization if @multithread is true.
   #
-  # If a socket error (SocketError, SystemCallError, IOError) or protocol error
+  # If a socket error (SocketError, SystemCallError, IOError, Timeout) or protocol error
   # (MemCacheError) is raised by the block, closes the socket, attempts to
   # connect again, and retries the block (once).  If an error is again raised,
   # reraises it as MemCacheError.
@@ -67,18 +67,6 @@ class MemCache
 
     RETRY_DELAY = 5.0
 
-
-    ##
-    # Mark the server as dead and close its socket.
-
-    def mark_dead(error)
-      close
-      @retry  = Time.now + RETRY_DELAY
-
-      reason = "#{error.class.name}: #{error.message}"
-      @status = sprintf "%s:%s DEAD (%s), will retry at %s", @host, @port, reason, @retry
-      @logger.info { @status } if @logger
-    end
 
     # don't make us wait to try again
     def nowait
