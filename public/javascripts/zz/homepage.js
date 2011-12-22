@@ -115,13 +115,15 @@ zz.homepage = {};
 
     // This function gets and caches the right albums from server according to the filter option
     // It uses the sort method indicated by the sort option
+
+
     function filter_sort_and_render( ){
         switch( get_filter_option() ){
             case('my'):
                 if( my_albums ){
                     render( my_albums_title, sort( my_albums ));
                 }else{
-                    call_and_merge([my_albums_path, session_user_liked_albums_path, session_user_invited_albums_path], function(albums) {
+                    call_and_merge(  [my_albums_path, session_user_liked_albums_path, session_user_invited_albums_path] , [],function(albums) {
                         //show only albums for the current homepage
                         my_albums = _.filter(albums, function(album) {
                             return album.user_id == zz.page.displayed_user_id;
@@ -137,7 +139,7 @@ zz.homepage = {};
                     if( invited_albums ){
                         render( invited_albums_title, sort( invited_albums ));
                     }else{
-                        call_and_merge([invited_albums_path], function(albums) {
+                        call_and_merge([invited_albums_path], [], function(albums) {
                             invited_albums = albums;
                             render(invited_albums_title, invited_albums);
                             fetch_like_info(invited_albums);
@@ -149,7 +151,7 @@ zz.homepage = {};
                 if( liked_albums ){
                     render(liked_albums_title, sort( liked_albums) );
                 }else{
-                    call_and_merge([liked_albums_path], function(albums) {
+                    call_and_merge([liked_albums_path], [], function(albums) {
                         liked_albums = albums;
                         render(liked_albums_title, liked_albums);
                         fetch_like_info(liked_albums);
@@ -160,7 +162,7 @@ zz.homepage = {};
                 if( following_albums ){
                     render(following_albums_title, sort( following_albums) );
                 }else{
-                    call_and_merge([ liked_users_albums_path ], function(albums) {
+                    call_and_merge([ liked_users_albums_path ], [], function(albums) {
                         following_albums = albums;
                         render(following_albums_title,following_albums);
                         fetch_like_info(following_albums);
@@ -172,25 +174,34 @@ zz.homepage = {};
                 if( all_albums ){
                      render(all_albums_title, sort( all_albums ) );
                 }else{
-                    var all_urls = [
-                        my_albums_path,
-                        session_user_liked_albums_path,
-                        session_user_invited_albums_path,
-                        liked_albums_path,
-                        liked_users_albums_path
-                    ];
+                    var my_albums_urls = [ my_albums_path, session_user_liked_albums_path, session_user_invited_albums_path];
+                    var additional_urls = [ liked_albums_path, liked_users_albums_path ];
 
                     if( current_users_home_page ){
-                        all_urls.push( invited_albums_path );
+                        additional_urls.push( invited_albums_path );
                     }
-                    call_and_merge( all_urls , function(albums) {
-                        //show only albums for the current homepage
-                        all_albums = _.filter(albums, function(album) {
-                            return album.user_id == zz.page.displayed_user_id;
+
+                    if( my_albums ){
+                        // my_albums is already here and filtered, just get the passthroughs
+                        call_and_merge( additional_urls, my_albums, function(albums) {
+                            all_albums = albums;
+                            render(all_albums_title,all_albums);
+                            fetch_like_info(all_albums);
                         });
-                        render(all_albums_title,all_albums);
-                        fetch_like_info(all_albums);
-                    });
+                    }else{
+                        //get my_albums_urls and filter to get my_albums then get the passthroughs
+                        call_and_merge(my_albums_urls, [],function(albums) {
+                            //show only albums for the current homepage
+                            my_albums = _.filter(albums, function(album) {
+                                return album.user_id == zz.page.displayed_user_id;
+                            });
+                            call_and_merge( additional_urls, my_albums, function(albums) {
+                                all_albums = albums;
+                                render(all_albums_title,all_albums);
+                                fetch_like_info(all_albums);
+                            });
+                        });
+                    }
                 }
         }
     }
@@ -216,8 +227,13 @@ zz.homepage = {};
     // gets the albums from each url in the urls array
     // calls back with the merged,sorted,deduped array of albums
     // it sorts the results based on the sort option
-    function call_and_merge(urls, callback) {
+    // The results will be seeded with seed
+    function call_and_merge(urls, seed, callback) {
         var results = {};
+
+        if(  seed.length > 0 ){
+            results['seed'] = seed;
+        }
 
         var check_is_done = function() {
             //do we have results for each call?
