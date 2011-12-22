@@ -38,7 +38,7 @@ zz.comments = {};
                         '<div class="comment-picture">' +
                         '<div class="profile-picture">' +
                         '<div class="mask">' +
-                        '<img data-src="/images/default_profile.png" src="/images/default_profile.png">' +
+                        '<img data-src="/images/profile-default-55.png" src="/images/profile-default-55.png">' +
                         '</div>' +
                         '</div>' +
                         '</div>' +
@@ -61,7 +61,7 @@ zz.comments = {};
                     '<div class="comment-picture">' +
                         '<div class="profile-picture">' +
                             '<div class="mask">' +
-                                '<img data-src="/images/default_profile.png" src="/images/default_profile.png">' +
+                                '<img data-src="/images/profile-default-55.png" src="/images/profile-default-55.png">' +
                             '</div>' +
                         '</div>' +
                     '</div>' +
