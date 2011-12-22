@@ -120,7 +120,7 @@ zz.album = {};
 
             var gridElement = $('<div class="photogrid"></div>');
 
-            $('#article').html(gridElement);
+            $('#article').append(gridElement);
             $('#article').css('overflow', 'hidden');
 
             // add placeholder for add-all button

@@ -19,6 +19,15 @@ var zz = zz || {};
 
      template: function() {
 
+    	var should_hide_banner = (zz.session.current_user_id != null) || $.cookie('hide_join_banner') == "true";  
+    	
+    	if(!should_hide_banner) {
+            $('#article').prepend('<div id="article-join-banner"></div>');
+            $("#article-join-banner").html(banner_html());
+            setup_banner();    		
+    	}
+
+
         /* Click Handlers    ----------------------------------------------------------------------- */
         //join banner
         $('#join-banner #close-button').click(function() {
@@ -32,15 +41,6 @@ var zz = zz || {};
                 jQuery.cookie('hide_join_banner', 'true', {expires: expires});
             });
         });
-
-        $('#join-banner #join-button').click(function() {
-            document.location.href = '/join';
-        });
-
-        $('#join-banner #signin-button').click(function() {
-            document.location.href = '/signin?return_to=' + encodeURIComponent(document.location.href);
-        });
-
 
         //system message banner
         $('#system-message-banner #close-button').click(function() {
@@ -81,8 +81,41 @@ var zz = zz || {};
         }
     }
 
-};
+    };
+    
+    
+    // Private:
+
+    function banner_html(){
+    return  '<div class="logo"></div>' +
+            '<div class="feature">' +
+                '<form method="post" class="join-form" enctype="multipart/form-data" action="foo">' +
+                '<div class="field"><label for="user_name">First &amp; Last Name</label><input type="text" name="user[name]" id="user_name" value="" /></div>' +
+                '<div class="field"><label for="user_username">Username</label><input type="text" name="user[username]" id="user_username" value="" /></div>' +
+                '<div class="field"><label for="user_email">Email address</label><input type="text" name="user[email]" id="user_email" value="" /></div>' +
+                '<div class="field"><label for="user_password">Password</label><input type="password" name="user[password]" id="user_password" value="" maxlength="40" /></div>' +
+                '<button type="submit" id="signup" class="big shiny default">Join for Free</button>' +
+                '</form>' +
+            '</div>'
+            ;
+
+    }
+    
+    function setup_banner(){
+    	$('.field label').inFieldLabels();
+    	
+    	$('#article-join-banner .join-form').first().attr("action", 'https://'+document.domain+zz.routes.users.create_user_url());
+	
+    	zz.login.add_validation( $('#article-join-banner .join-form') );
+    	
+    	$('#article-join-banner .join-form').submit(function(){
+    		//zz.login.on_form_submit('TODO-STRING'); // TODO: something like homepage.join.click
+    	});
+    }
+   
 
 
 }());
+
+
 

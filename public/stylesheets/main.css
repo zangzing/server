@@ -160,6 +160,76 @@ div#container {
     display:none;
 }
 
+/* article join banner
+ -----------------------------------------------------------------------------*/
+#article-join-banner {
+    width: 975px;
+    height:75px;
+    margin: 2em auto;
+    padding: 1em;
+    border: 1px solid #CCC;
+}
+
+#article-join-banner .field {
+	position: relative;
+	display: inline-block;
+	margin: 0 10px 0 0;
+}
+
+#article-join-banner .ie7 .field {
+	display:inline;
+}
+
+#article-join-banner form .field label {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	color: #999;
+}
+
+#article-join-banner form input {
+		width: 136px;  /*for 4 fields */
+		padding: 8px 10px 9px;
+		border: 1px solid #000;
+		border-radius:5px;
+		-moz-border-radius:5px;
+		-webkit-border-radius: 5px;
+	}
+	
+#article-join-banner form input.error {
+		background-color:#fddbda;
+		border-color:#fd514f;
+	}
+	
+#article-join-banner form button {
+		vertical-align:middle;
+		min-width: 88px;
+	}
+
+
+	
+#article-join-banner form .field label.error {
+	top:41px;
+	bottom:42px;
+	left:50%;
+	width: 136px;
+	height: 34px;
+	margin:0 0 0 -78px;
+	padding:8px 10px;
+	color: white;
+	font-size:14px;
+	font-weight: 200;
+	min-height: 15px;
+	opacity: 0.8;
+	border: 1px solid white;
+	background-color: black;
+	box-shadow: black 0px 0px 10px;
+	-webkit-box-shadow: black 0px 0px 10px;
+	-moz-box-shadow: black 0px 0px 10px;
+}
+
+
+
 /* system message banner
  -----------------------------------------------------------------------------*/
 .show-system-message-banner #system-message-banner{
