@@ -3,4 +3,5 @@
 # about are the servers, the rest is unused.
 defaults:
   servers:
+      #- 192.168.1.164:11211
       - localhost:11211
