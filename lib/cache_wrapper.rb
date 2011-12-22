@@ -1,3 +1,5 @@
+require 'memcache'
+
 # just adds some validation and logging around rails cache class
 class CacheWrapper
 
@@ -13,12 +15,15 @@ class CacheWrapper
     verify = arg_verify.nil? ? false : arg_verify
 
     write_ok = false
+    # try up to limit times, each time we fail we
+    # reset the connection if it is in a wait state
     2.times do |attempt|
-      write_ok = Rails.cache.write(key, value, options)
-      Rails.logger.error("Memcache write verify attempt: #{attempt+1} failed for key: #{key}") unless write_ok
+      nowait(key) if attempt > 0  # turn off wait state since we are trying again
+      write_ok = cache.write(key, value, options)
+      Rails.logger.error("Memcache write attempt: #{attempt+1} failed for key: #{key}") unless write_ok
       if write_ok && verify
         # verify it
-        check_data = Rails.cache.read(key)
+        check_data = cache.read(key)
         write_ok = value == check_data
         Rails.logger.error("Memcache write with verify attempt: #{attempt+1} failed for key: #{key}") unless write_ok
       end
@@ -27,18 +32,94 @@ class CacheWrapper
     write_ok
   end
 
+  def self.nowait(key)
+    if cache.is_a?(MemCacheWrapper)
+      cache.nowait(key)
+    end
+  end
+
+  def self.cache
+    @@cache ||= Rails.cache
+  end
+
   def self.read(key)
-    Rails.cache.read(key)
+    cache.read(key)
   end
 
   def self.delete(key)
-    Rails.cache.delete
+    cache.delete(key)
   end
 
-  def self.initialize_cache(config, timeout)
-    opts = {}
-    opts[:logger] = config.logger
-    opts[:timeout] = 1.5
-    config.cache_store = :mem_cache_store, MemcachedConfig.server_list, opts
+  # init the cache, if memcache we use it directly
+  # since we don't want the local cache behavior behind it
+  def self.initialize_cache(cache_type, config, timeout)
+    @@cache = nil
+    if cache_type == :mem_cache_store
+      opts = {}
+      # don't normally need logging so leave off for now
+      #opts[:logger] = config.logger
+      opts[:timeout] = timeout
+      # bypass rails wrappers
+      @@cache = MemCacheWrapper.new(MemCache.new(MemcachedConfig.server_list, opts))
+    else
+      config.cache_store = cache_type
+    end
   end
+
+end
+
+class MemCacheWrapper
+  attr_accessor :cache
+
+  def initialize(cache)
+    @cache = cache
+  end
+
+  def write(key, value, options = nil)
+    result = nil
+    safe_wrap do
+      if options
+        expires_in = options[:expires_in]
+      end
+      expires_in ||= 0
+      result = @cache.set(key, value, expires_in.to_i, true)
+    end
+    !result.nil?  # if nil return false, true otherwise
+  end
+
+  def read(key)
+    result = nil
+    safe_wrap do
+      result = @cache.get(key, true)
+    end
+    result
+  end
+
+  def delete(key)
+    result = nil
+    safe_wrap do
+      result = @cache.delete(key)
+    end
+    !result.nil?  # if nil return false, true otherwise
+  end
+
+  # if server is dead, mark as undead so we
+  # can try again
+  def nowait(key)
+    safe_wrap do
+      @cache.nowait(key)
+    end
+  end
+
+  def safe_wrap(&block)
+    result = nil
+    begin
+      result = block.call
+    rescue Exception => ex
+      # log the error
+      Rails.logger.error "CacheWrapper, call failed: #{ex.message}"
+    end
+    result
+  end
+
 end

@@ -917,7 +917,7 @@ class Photo < ActiveRecord::Base
   # we invalidate the browsers cache for
   # old items.
   def self.hash_schema_version
-    'v6'
+    'v7'
   end
 
   # this method packages up the fields
