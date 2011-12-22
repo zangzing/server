@@ -58,7 +58,7 @@ class CacheWrapper
       opts = {}
       #todo, after debugging comment out logger line
       opts[:logger] = config.logger
-      opts[:timeout] = 1.5
+      opts[:timeout] = timeout
       # bypass rails wrappers
       @@cache = MemCacheWrapper.new(MemCache.new(MemcachedConfig.server_list, opts))
     else
