@@ -84,6 +84,7 @@ class MobilemeConnector
 
 protected
   def parse_cookies(set_cookie_header)
+    return {} unless set_cookie_header
     set_cookie_header.scan(/([a-z0-9\-_\.]+)=([a-z0-9=:]+);/i).inject({}) do |hsh, kuk|
       hsh[kuk[0]] = kuk[1]
       hsh
