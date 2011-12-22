@@ -239,7 +239,7 @@ module Cache
       # we invalidate the browsers cache for
       # old items.
       def self.hash_schema_version
-        'v7'
+        'v8'
       end
 
       # this method returns the album as a map which allows us to perform
