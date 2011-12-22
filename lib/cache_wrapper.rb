@@ -82,7 +82,7 @@ class MemCacheWrapper
         expires_in = options[:expires_in]
       end
       expires_in ||= 0
-      result = @cache.set(key, value, expires_in, true)
+      result = @cache.set(key, value, expires_in.to_i, true)
     end
     !result.nil?  # if nil return false, true otherwise
   end
