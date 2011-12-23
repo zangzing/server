@@ -415,7 +415,9 @@ Server::Application.routes.draw do
     get    '/users/:user_id/liked_albums_public'       => 'albums#zz_api_liked_albums_public',       :as => :zz_api_liked_albums_public
     get    '/users/:user_id/liked_users_public_albums' => 'albums#zz_api_liked_users_public_albums', :as => :zz_api_liked_users_public_albums
     get    '/users/:user_id/invited_albums'            => 'albums#zz_api_invited_albums',            :as => :zz_api_invited_albums
+    post   '/users/albums/create'                      => 'albums#zz_api_create',                    :as => :zz_api_create_album
     put    '/albums/:album_id'                         => 'albums#zz_api_update',                    :as => :zz_api_update_album
+    put    '/albums/:album_id/close_batch'             => 'albums#zz_api_close_batch',               :as => :zz_api_close_batch
 
     #photos
     get    '/albums/:album_id/photos'                  => 'photos#zz_api_photos',                    :as => :zz_api_photos
