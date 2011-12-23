@@ -5,7 +5,7 @@ class ZZAPIError < StandardError
   # the message here can be a string, array or hash
   # for consistency you should generally use a single string,
   # an array of strings or as last resort a custom hash
-  def initialize(result, code = 412)
+  def initialize(result, code = 409)
     @result = result
     @code = code
   end
