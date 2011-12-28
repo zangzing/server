@@ -368,7 +368,7 @@ zz.homepage = {};
                                 on_success( data );
                             },
                             function(xhr){
-                                zz.dialog.show_flash_dialog(JSON.parse(xhr.responseText).message, function(){ on_error(); } );
+                                zz.dialog.show_flash_dialog(JSON.parse(xhr.responseText).message[0], function(){ on_error(); } );
                             });
                     }
                 });
@@ -430,92 +430,86 @@ zz.homepage = {};
 
 
     function arm_buttonset(){
-        // Arm Buttons
-        $('#view-all-btn').bind( 'setbutton-click',  function(){
-            ZZAt.track('homepage.view-all.button.mousedown');
-           show_all_albums();
-        });
-        $('#view-my-btn').bind( 'setbutton-click',  function(){
-            ZZAt.track('homepage.view-my.button.click');
-           show_my_albums();
-        });
-        $('#view-invited-btn').bind( 'setbutton-click',  function(){
-            ZZAt.track('homepage.view-invited.button.click');
-           show_invited_albums();
-        });
-        $('#view-liked-btn').bind( 'setbutton-click',  function(){
-            ZZAt.track('homepage.view-liked.button.click');
-            show_liked_albums();
-        });
-        $('#view-following-btn').bind( 'setbutton-click',  function(){
-            ZZAt.track('homepage.view-following.button.click');
-           show_following_albums();
-        });
-        $('#sort-date-btn').bind( 'setbutton-click',  function(){
-            if( $(this).hasClass('arrow-up')){
-                ZZAt.track('homepage.sort-date-asc.button.click');
-                sort_by_cover_date_asc();
-            }else{
-                ZZAt.track('homepage.sort-date-desc.button.click');
-                sort_by_cover_date_desc();
-            }
-        });
-        $('#sort-recent-btn').bind( 'setbutton-click',  function(){
-            ZZAt.track('homepage.sort-recent.button.click');
-           sort_by_updated_at_desc();
-        } );
-        $('#sort-name-btn').bind( 'setbutton-click',  function(){
-            if( $(this).hasClass('arrow-up')){
-                ZZAt.track('homepage.sort-name-asc.button.click');
-                sort_by_name_asc();
-            }else{
-                ZZAt.track('homepage.sort-name-desc.button.click');
-                sort_by_name_desc();
-            }
-        } );
+        zz.buttonset.init();
         set_button_selection();
+        // Arm Buttonset
+        $('#view-sort-bar').bind("buttonset-click",function( event, action ){
+            ZZAt.track('homepage.'+action+'.click');
+            switch(action){
+                case 'view-all': 
+                    show_all_albums();
+                    break;
+                case 'view-my':
+                    show_my_albums();
+                    break;
+                case 'view-invited':
+                    show_invited_albums();
+                    break;
+                case 'view-liked':
+                    show_liked_albums();
+                    break;
+                case 'view-following':
+                    show_following_albums();
+                    break;
+                case 'sort-date-up':
+                    sort_by_cover_date_asc();
+                    break;
+                case 'sort-date-down':
+                    sort_by_cover_date_desc();
+                    break;
+                case'sort-recent':
+                    sort_by_updated_at_desc();
+                    break;
+                case 'sort-name-up':
+                    sort_by_name_asc();
+                    break;
+                case 'sort-name-down':
+                    sort_by_name_desc();
+                    break;
+            }
+        });
     }
-
 
     function set_button_selection(){
         switch( get_sort_option() ){
             case('name_asc'):
-                $('#sort-name-btn').addClass('active-state arrow-up');
+                zz.buttonset.activate('sort-name-up');
                 break;
             case('name_desc'):
-                $('#sort-name-btn').addClass('active-state arrow-down');
+                zz.buttonset.activate('sort-name-down');
                 break;
             case('cover_date_asc'):
-                $('#sort-date-btn').addClass('active-state arrow-up');
+                zz.buttonset.activate('sort-date-up');
                 break;
             case('cover_date_desc'):
-                $('#sort-date-btn').addClass('active-state arrow-down');
+                zz.buttonset.activate('sort-date-down');
                 break;
             case('updated_at_desc'):
             default:
-                $('#sort-recent-btn').addClass('active-state');
+                zz.buttonset.activate('sort-recent');
         }
+        
         switch( get_filter_option() ){
             case('my'):
-                $('#view-my-btn').addClass('active-state');
+                zz.buttonset.activate('view-my');
                 break;
             case('invited'):
                 if( current_users_home_page ){
-                    $('#view-invited-btn').addClass('active-state');
+                    zz.buttonset.activate('view-invited');
                 } else {
-                  set_filter_option( 'all' )
-                   $('#view-all-btn').addClass('active-state');
+                  set_filter_option( 'all' );
+                    zz.buttonset.activate('view-all');
                 }
                 break;
             case('liked'):
-                $('#view-liked-btn').addClass('active-state');
+                zz.buttonset.activate('view-liked');
                 break;
             case('following'):
-                $('#view-following-btn').addClass('active-state');
+                zz.buttonset.activate('view-following');
                 break;
             case('all'):
             default: //all
-                $('#view-all-btn').addClass('active-state');
+                zz.buttonset.activate('view-all');
         }
     }
 

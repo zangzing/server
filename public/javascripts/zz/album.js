@@ -134,6 +134,9 @@ zz.album = {};
                 photos.unshift(addAllButton);
             }
 
+            //add sort bar to element
+            var sort_bar = zz.album.sort_bar_template;
+            gridElement.append( sort_bar );
 
             var grid = gridElement.zz_photogrid({
                 photos: photos,
@@ -163,22 +166,53 @@ zz.album = {};
                 showButtonBar: !buy_mode,
                 context: buy_mode ? 'chooser-grid' : 'album-grid',
                 infoMenuTemplateResolver: info_menu_template_resolver,
-                rolloverFrameContainer: gridElement
+                rolloverFrameContainer: gridElement,
+                topPadding: 45, //make room for sort bar
+                defaultSort: 'date-asc',
+                allowEditCaption: true,
+                onChangeCaption: function(index, photo, caption) {
+                    $.ajax({
+                        type: 'POST',
+                        dataType: 'json',
+                        url: zz.routes.path_prefix + '/photos/' + photo.id + '.json',
+                        data: {'photo[caption]': caption, _method: 'put'},
+                        error: function(error) {
+                        }
+
+                    });
+                    return true;
+
+                }
             }).data().zz_photogrid;
 
 
+            sort_bar.bind("buttonset-click",function( event, action ){
+                ZZAt.track('album.'+action+'.click');
+                  switch( action ){
+                      case'sort-name-up':
+                          grid.sort_by_name_asc();
+                        break;
+                      case'sort-name-down':
+                          grid.sort_by_name_desc();
+                        break;
+                      case'sort-date-down':
+                          grid.sort_by_date_desc();
+                        break;
+                      case'sort-date-up':
+                      default:
+                          grid.sort_by_date_asc();
+                        break;
+                  }
+            });
+            zz.buttonset.init('sort-date-up');
 
             if (buy_mode && zz.page.current_user_can_buy_photos) {
                 var addAllButton = $('<img class="add-all-button" src="' + zz.routes.image_url('/images/folders/add_all_photos.png') + '">');
                 addAllButton.click(function() {
                     zz.buy.add_all_photos_from_current_album();
                 });
-
                 gridElement.find('.photogrid-cell:first').append(addAllButton);
             }
-
-
-
         });
 
     }

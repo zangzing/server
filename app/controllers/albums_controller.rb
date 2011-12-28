@@ -132,12 +132,12 @@ class AlbumsController < ApplicationController
          # when we can pass a hash in the custom error object it will be preferred to
          # raising a new exception
          # Take the first error in the array (there is at least one) then take the message (second) not the fieldname
-         raise Exception.new( @album.errors.first.second )
+         raise ZZAPIError.new( @album.errors.full_messages )
        end
       rescue FriendlyId::ReservedError
-        raise Exception.new( "Sorry, \"#{params[:name]}\" is a reserved album name please try a different one" )
+        raise ZZAPIError.new( "Sorry, \"#{params[:name]}\" is a reserved album name please try a different one" )
       rescue FriendlyId::BlankError
-        raise Exception.new( "Your album name must contain at least 1 letter or number" )
+        raise ZZAPIError.new( "Your album name must contain at least 1 letter or number" )
       end
       album = {
               :name     => @album.name,

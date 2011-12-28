@@ -13,6 +13,10 @@ zz.template_cache = zz.template_cache || {};
 
 
 (function($, undefined) {
+    var photo_template = null,
+        photo_caption_template = null,
+        photo_rollover_frame = null;
+
 
     $.widget('ui.zz_photo', {
         options: {
@@ -49,14 +53,14 @@ zz.template_cache = zz.template_cache || {};
                 o = self.options;
 
             // Store a finished template on the global namespace and re-use for every photo.
-            if (_.isUndefined(zz.template_cache.photo_template)) {
-                zz.template_cache.photo_caption_template = $('<div class="photo-caption ellipsis multiline"></div>');
-                zz.template_cache.photo_template = $('<div class="photo-border">' +
+            if ( photo_template == null ) {
+                photo_caption_template = $('<div class="photo-caption ellipsis multiline"></div>');
+                photo_template = $('<div class="photo-border">' +
                                                      '<img class="photo-image" src="' +zz.routes.image_url('/images/photo_placeholder.png') + '">' +
                                                      '<img class="bottom-shadow" src="' + zz.routes.image_url('/images/photo/bottom-full.png') + '">' +
                                                      '</div>');
 
-                zz.template_cache.photo_rollover_frame = $('<div class="photo-rollover-frame">' +
+               photo_rollover_frame = $('<div class="photo-rollover-frame">' +
                                                                 '<div class="button-bar">' +
                                                                     '<div class="button share-button"></div>' +
                                                                     '<div class="button like-button zzlike" data-zzid="" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>' +
@@ -68,8 +72,8 @@ zz.template_cache = zz.template_cache || {};
             }
 
 
-            self.captionElement = zz.template_cache.photo_caption_template.clone();
-            self.borderElement = zz.template_cache.photo_template.clone();
+            self.captionElement = photo_caption_template.clone();
+            self.borderElement = photo_template.clone();
             self.imageElement = self.borderElement.find('.photo-image');
             self.bottomShadow = self.borderElement.find('.bottom-shadow');
 
@@ -186,157 +190,161 @@ zz.template_cache = zz.template_cache || {};
                 });
             }
 
+            self._mouseEnterHandler = function(){
+                // bunch of tricky stuff here
+                // - on rollover, we need to clone the photo, add the rollover frame, then append
+                //   it another element so that the rollover frame can spill out of the photo grid element
+                //
+                // - because the cloned element appears over the original, we need to 'hand off' the mouseover
+                //   events from one to the other
+                //
+                // - while any of the menus is open, we need to keep the rollover frame open, even if mouse is no
+                //   longer over the frame
 
-            if (o.showButtonBar) {
+                var rollover_clone_parent = self.options.rolloverFrameContainer;
+                var rollover_clone = el.clone();
+                self.rollover_clone = rollover_clone;
+                var left = el.offset().left - rollover_clone_parent.offset().left ;
+                var top = el.offset().top - rollover_clone_parent.offset().top + rollover_clone_parent.scrollTop();
 
-                el.mouseenter(function(){
+                rollover_clone.css({left: left, top: top});
+                rollover_clone.appendTo(rollover_clone_parent);
 
-                    // bunch of tricky stuff here
-                    // - on rollover, we need to clone the photo, add the rollover frame, then append
-                    //   it another element so that the rollover frame can spill out of the photo grid element
-                    //
-                    // - because the cloned element appears over the original, we need to 'hand off' the mouseover
-                    //   events from one to the other
-                    //
-                    // - while any of the menus is open, we need to keep the rollover frame open, even if mouse is no
-                    //   longer over the frame
+                // setup the rollover frame
+                var rollover_frame = photo_rollover_frame.clone();
+                var menu_open = false;
+                var mouse_over_el = true;
+                var mouse_over_clone = false;
 
-                    var rollover_clone_parent = self.options.rolloverFrameContainer;
-                    var rollover_clone = el.clone();
+                var hide_frame = function(){
+                    rollover_clone.remove();
+                };
 
-                    var left = el.offset().left - rollover_clone_parent.offset().left ;
-                    var top = el.offset().top - rollover_clone_parent.offset().top + rollover_clone_parent.scrollTop();
+                var check_hide_frame = function(){
+                    // defer so that all the event handlers have had a
+                    // chance to run (we might have one mouseout and one mouseover)
 
-
-                    rollover_clone.css({left: left, top: top});
-                    rollover_clone.appendTo(rollover_clone_parent);
-
-                    
-                    // setup the rollover frame
-                    var rollover_frame = zz.template_cache.photo_rollover_frame.clone();
-                    var menu_open = false;
-                    var mouse_over_el = true;
-                    var mouse_over_clone = false;
-
-                    var hide_frame = function(){
-                        rollover_clone.remove();
-                    };
-
-                    var check_hide_frame = function(){
-                        // defer so that all the event handlers have had a
-                        // chance to run (we might have one mouseout and one mouseover)
-
-                        _.defer(function(){
-                            if(!menu_open && !mouse_over_el && !mouse_over_clone){
-                                hide_frame();
-                            }
-                        });
-                    };
-
-
-                    rollover_clone.mouseover(function(){
-                        mouse_over_clone = true;
+                    _.defer(function(){
+                        if(!menu_open && !mouse_over_el && !mouse_over_clone){
+                            hide_frame();
+                        }
                     });
+                };
 
-                    rollover_clone.mouseleave(function(){
-                        mouse_over_clone = false;
+
+                rollover_clone.mouseover(function(){
+                    mouse_over_clone = true;
+                });
+
+                rollover_clone.mouseleave(function(){
+                    mouse_over_clone = false;
+                    check_hide_frame();
+                });
+
+                el.mouseout(function(){
+                    mouse_over_el = false;
+                    check_hide_frame();
+                });
+
+
+                rollover_clone.prepend(rollover_frame);
+                rollover_frame.center_x();
+                rollover_clone.css({'z-index': 100});
+
+
+                // redirect clicks to the original element...
+                rollover_clone.find('.photo-image').click(function(){
+                    rollover_clone.remove();
+                    self.imageElement.click();
+                });
+
+
+                // setup the button bar
+                var button_bar = rollover_frame.find('.button-bar');
+
+                // share button
+                var share_button = button_bar.find('.share-button');
+                share_button.click(function(){
+                    menu_open = true;
+                    zz.sharemenu.show(share_button, 'photo', o.photoId, {x: 0, y: 0}, 'frame', 'auto', function(){
+                        menu_open = false;
                         check_hide_frame();
                     });
-
-                    el.mouseout(function(){
-                        mouse_over_el = false;
-                        check_hide_frame();
-                    });
+                });
 
 
-                    rollover_clone.prepend(rollover_frame);
-                    rollover_frame.center_x();
-                    rollover_clone.css({'z-index': 100});
+                // like button
+                var like_button = button_bar.find('.like-button');
+                like_button.attr('data-zzid', o.photoId);
+                zz.like.draw_tag(like_button);
 
 
-                    // redirect clicks to the original element...
-                    rollover_clone.find('.photo-image').click(function(){
-                        rollover_clone.remove();
-                        self.imageElement.click();
-                    });
+
+                // comment button
+                var comment_button = button_bar.find('.comment-button');
+                zz.comments.get_pretty_comment_count_for_photo(zz.page.album_id, o.photoId, function(count){
+                    var count_element = comment_button.find('.count');
+                    if(!count){
+                        count_element.hide();
+                    }
+                    else{
+                        count_element.text(count);
+                    }
+                });
+                comment_button.click(function(){
+                    zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_cache_version_key, o.photoId);
+                    hide_frame();
+                    ZZAt.track('photo.comment.frame.click');
+                });
 
 
-                    // setup the button bar
-                    var button_bar = rollover_frame.find('.button-bar');
 
-                    // share button
-                    var share_button = button_bar.find('.share-button');
-                    share_button.click(function(){
+                // info button and menu
+                var info_menu_template = null;
+                if (o.infoMenuTemplateResolver) {
+                    info_menu_template = o.infoMenuTemplateResolver(o.json);
+                }
+
+                var info_button = button_bar.find('.info-button');
+                if(info_menu_template){
+                    info_button.click(function(){
                         menu_open = true;
-                        zz.sharemenu.show(share_button, 'photo', o.photoId, {x: 0, y: 0}, 'frame', 'auto', function(){
+                        zz.infomenu.show_in_photo(info_button, info_menu_template, self, o.photoId, function(){
                             menu_open = false;
                             check_hide_frame();
                         });
+
                     });
+                }
+                else{
+                    info_button.hide();
+                }
 
-
-                    // like button
-                    var like_button = button_bar.find('.like-button');
-                    like_button.attr('data-zzid', o.photoId);
-                    zz.like.draw_tag(like_button);
-
-
-
-                    // comment button
-                    var comment_button = button_bar.find('.comment-button');
-                    zz.comments.get_pretty_comment_count_for_photo(zz.page.album_id, o.photoId, function(count){
-                        var count_element = comment_button.find('.count');
-                        if(!count){
-                            count_element.hide();
-                        }
-                        else{
-                            count_element.text(count);
-                        }
-                    });
-                    comment_button.click(function(){
-                        zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_cache_version_key, o.photoId);
-                        hide_frame();
-                        ZZAt.track('photo.comment.frame.click');
-                    });
-
-
-
-                    // info button and menu
-                    var info_menu_template = null;
-                    if (o.infoMenuTemplateResolver) {
-                        info_menu_template = o.infoMenuTemplateResolver(o.json);
-                    }
-
-                    var info_button = button_bar.find('.info-button');
-                    if(info_menu_template){
-                        info_button.click(function(){
-                            menu_open = true;
-                            zz.infomenu.show_in_photo(info_button, info_menu_template, self, o.photoId, function(){
-                                menu_open = false;
-                                check_hide_frame();
-                            });
-
-                        });
+                var buy_button = button_bar.find('.buy-button');
+                buy_button.click(function(){
+                    ZZAt.track('photo.buy.frame.click');
+                    if(zz.buy.is_photo_selected(o.photoId)){
+                        zz.buy.activate_buy_mode();
                     }
                     else{
-                       info_button.hide(); 
+                        zz.buy.add_selected_photo(o.json, self.element);
                     }
-
-                    var buy_button = button_bar.find('.buy-button');
-                    buy_button.click(function(){
-                        ZZAt.track('photo.buy.frame.click');
-                        if(zz.buy.is_photo_selected(o.photoId)){
-                            zz.buy.activate_buy_mode();
-                        }
-                        else{
-                            zz.buy.add_selected_photo(o.json, self.element);
-                        }
-                    });
-
-
-                    button_bar.center_x();
-
                 });
+
+                //Caption Editing
+                if( o.allowEditCaption ){
+                    if( self.isEditingCaption ){
+                        //If editing caption is active when mouseover happens turn it off
+                        self.captionElement.text(o.caption);
+                        self.captionElement.ellipsis();
+                    }
+                    self._setupCaptionEditing( rollover_clone.find('div.photo-caption') );
+                }
+                button_bar.center_x();
+            };
+
+            if (o.showButtonBar) {
+                el.mouseenter(self._mouseEnterHandler);
             }
 
             // insert elements into DOM
@@ -345,8 +353,8 @@ zz.template_cache = zz.template_cache || {};
             if (o.context.indexOf('chooser') === 0) {
                 self.updateChecked();
             }
-            
         },
+
 
 
         setMenuOpen: function(open) {
@@ -387,6 +395,23 @@ zz.template_cache = zz.template_cache || {};
             }
         },
 
+        nextPhoto: function() {
+            var self = this,
+                o = self.options;
+            if( o.scrollContainer.data().zz_photogrid ){
+                self.photoGrid = o.scrollContainer.data().zz_photogrid;
+            }
+            return self.photoGrid.nextPhoto( o.json.id );
+        },
+
+        previousPhoto: function() {
+            var self = this,
+                o = self.options;
+            if( o.scrollContainer.data().zz_photogrid ){
+                self.photoGrid = o.scrollContainer.data().zz_photogrid;
+            }
+            return self.photoGrid.previousPhoto( o.json.id );
+        },
 
         updateChecked: function(){
             var self = this;
@@ -412,19 +437,19 @@ zz.template_cache = zz.template_cache || {};
             self.updateChecked();
         },
 
-        _setupCaptionEditing: function(){
+        _setupCaptionEditing: function( caption_element ){
             //edit caption
             var self = this;
-            var o = self.options;
             self.isEditingCaption = false;
-            if (o.allowEditCaption) {
-                self.captionElement.unbind('click');
-                self.captionElement.click(function(event) {
+
+            if ( self.options.allowEditCaption) {
+                caption_element.unbind('click');
+                caption_element.click(function(event) {
                     self.editCaption();
                 });
             }
-
         },
+
 
         loadIfVisible: function(containerDimensions) {
             var self = this;
@@ -432,10 +457,6 @@ zz.template_cache = zz.template_cache || {};
                 if (self._inLazyLoadRegion(containerDimensions)) {
                     self._loadImage();
                     self.captionElement.ellipsis();
-
-                    // for some reason, the .ellipsis() call messes up the caption click handler on IE
-                    // so we need to set up again...
-                    self._setupCaptionEditing();
                 }
             }
         },
@@ -508,8 +529,6 @@ zz.template_cache = zz.template_cache || {};
             });
 
             self.bottomShadow.css({'width': (scaled.width + 14) + 'px'});
-
-
         },
 
 
@@ -561,9 +580,13 @@ zz.template_cache = zz.template_cache || {};
         editCaption: function() {
             var self = this;
 
-            if (!self.isEditingCaption) {
+            if (!self.isEditingCaption){
                 self.isEditingCaption = true;
+                self.element.unbind( 'mouseenter', self._mouseEnterHandler);
 
+                if( !_.isUndefined( self.rollover_clone) ){
+                    self.rollover_clone.trigger('mouseout').trigger('mouseleave');
+                }
                 var captionEditor = $('<div class="edit-caption-border"><input type="text"><div class="caption-ok-button"></div></div>');
                 self.captionElement.html(captionEditor);
 
@@ -573,16 +596,18 @@ zz.template_cache = zz.template_cache || {};
                     var newCaption = textBoxElement.val();
                     if (newCaption !== self.options.caption) {
                         self.options.caption = newCaption;
+                        self.options.json.caption = newCaption;
                         self.options.onChangeCaption(newCaption);
                     }
                     self.captionElement.text(newCaption);
                     self.captionElement.ellipsis();
 
-                    // for some reason, the .ellipsis() call messes up the caption click handler on IE
-                    // so we need to set up again...
-                    self._setupCaptionEditing();
+                    self.captionElement.text(newCaption);
+                    self.captionElement.ellipsis();
+
                     self.isEditingCaption = false;
-                }
+                    self.element.mouseenter( self._mouseEnterHandler );
+                };
 
 
                 textBoxElement.val(self.options.caption);
@@ -594,29 +619,15 @@ zz.template_cache = zz.template_cache || {};
 
                 textBoxElement.keydown(function(event) {
 
-                    if (event.which == 13) {  //enter key
-                        commitChanges();
-                        return false;
-                    }
-                    else if (event.which == 9) { //tab key
-                        if (event.shiftKey) {
-                            textBoxElement.blur();
+                    if( event.which == 13 ){  //enter key
 
-                            if (self.element.prev().length !== 0) {
-                                self.element.prev().data().zz_photo.editCaption();
-                            }
-                            else {
-                                self.element.parent().children().last().data().zz_photo.editCaption();
-                            }
-                        }
-                        else {
-                            textBoxElement.blur();
-                            if (self.element.next().length !== 0) {
-                                self.element.next().data().zz_photo.editCaption();
-                            }
-                            else {
-                                self.element.parent().children().first().data().zz_photo.editCaption();
-                            }
+                        return false;
+                    }else if( event.which == 9 ){ //tab key
+                        commitChanges();
+                        if( event.shiftKey ){
+                            self.previousPhoto().ui_photo.editCaption();
+                        } else {
+                            self.nextPhoto().ui_photo.editCaption();
                         }
                         event.stopPropagation();
                         return false;
@@ -630,11 +641,13 @@ zz.template_cache = zz.template_cache || {};
                     event.stopPropagation();
                     return false;
                 });
-
-
             }
 
         },
+
+
+        
+
 
         getPhotoId: function() {
             return this.options.photoId;
