@@ -33,9 +33,9 @@ zz.buttonset = {};
                     $(this).parents('.zz-buttonset:first').find(".zz-setbutton.active-state").removeClass("active-state");
                     $(this).addClass("active-state");
                     if( $(this).hasClass('arrow-up') ){
-                        action = action+'-up'
+                        action = action+'-up';
                     }else if( $(this).hasClass('arrow-down') ){
-                        action = action+'-down'
+                        action = action+'-down';
                     }
                     $(this).trigger('buttonset-click',[action]);
                 }

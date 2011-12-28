@@ -384,7 +384,7 @@ zz.buy = zz.buy || {};
                    '<div class="scrim"></div>' +
                    '<div class="dialog">' +
                    '</div>' +
-                '</div>'
+                '</div>';
     };
 
     var BUY_SCREENS_TEMPLATE = function(){
@@ -904,7 +904,7 @@ zz.buy = zz.buy || {};
             }
 
             if(has_bad_photos()){
-                alert('One or more photos are not large enough for this product. Please remove the photos or select a different product.')
+                alert('One or more photos are not large enough for this product. Please remove the photos or select a different product.');
                 return;
             }
 
@@ -1359,7 +1359,7 @@ zz.buy = zz.buy || {};
 
 
     function show_glamour_page(product_id){
-        var template = $('<div class="glamouf"')
+        var template = $('<div class="glamouf"');
 
         zz.routes.store.get_glamour_page_html(product_id, function(html){
 

@@ -125,7 +125,7 @@ zz.comments = {};
         zz.routes.photos.get_photo_json(album_id, cache_version, photo_id, function(photo){
 
             var comments_dialog = $(COMMENTS_DIALOG_TEMPLATE());
-            var dialog = null
+            var dialog = null;
 
             zz.image_utils.pre_load_image(photo.thumb_url, function(image){
                 var photo_element = comments_dialog.find('.header .photo-border');

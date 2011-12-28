@@ -45,7 +45,7 @@
             centerPhotos: true,
             rolloverFrameContainer: $('#article'),
             topPadding: 10,
-            defaultSort: null,
+            defaultSort: null
         },
 
         _create: function() {
@@ -772,14 +772,14 @@
         },
 
         sort_by_date_asc: function( no_layout ){
-             this._sort( this._capture_date_asc_comp )
+             this._sort( this._capture_date_asc_comp );
              if( typeof no_layout == 'undefined'){
                 this.resetLayout(400, 'easeInOutCubic', true);
              }
         },
 
         sort_by_date_desc: function( no_layout ){
-             this._sort( this._capture_date_desc_comp )
+             this._sort( this._capture_date_desc_comp );
             if( typeof no_layout == 'undefined'){
                 this.resetLayout(400, 'easeInOutCubic', true);
             }
@@ -833,16 +833,16 @@
             if( a.capture_date == b.capture_date ){
                 //if capture date equal go to created at
                 if( a.created_at == b.created_at ){
-                    return( a.id < b.id ? 1 : -1 )
+                    return( a.id < b.id ? 1 : -1 );
                 }else{
-                    return( a.created_at < b.created_at ? 1 : -1 )
+                    return( a.created_at < b.created_at ? 1 : -1 );
                 }
             }else if( a.capture_date == null || a.capture_date == 0 ){
                 return 1;
             }else if( b.capture_date == null || a.capture_date == 0 ){
                 return -1;
             }else{
-                return( a.capture_date < b.capture_date ? 1 : -1 )
+                return( a.capture_date < b.capture_date ? 1 : -1 );
             }
         },
 
@@ -851,16 +851,16 @@
                 //if capture_date equal or null go to created_at
                 if( a.created_at == b.created_at ){
                     // if created_at equal go to id
-                    return( a.id > b.id ? 1 : -1 )
+                    return( a.id > b.id ? 1 : -1 );
                 }else{
-                    return( a.created_at > b.created_at ? 1 : -1 )
+                    return( a.created_at > b.created_at ? 1 : -1 );
                 }
             }else if( a.capture_date == null || a.capture_date == 0 ){
                 return -1;
             }else if( b.capture_date == null || a.capture_date == 0 ){
                 return 1;
             }else{
-                return( a.capture_date > b.capture_date ? 1 : -1 )
+                return( a.capture_date > b.capture_date ? 1 : -1 );
             }
         },
 

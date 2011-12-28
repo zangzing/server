@@ -1,5 +1,5 @@
 var base_url = "/service/admin/store/taxonomies/" + taxonomy_id + "/taxons/";
-var child_url = "/service/admin/store/admin/taxonomies/" + taxonomy_id + "/get_children.json"
+var child_url = "/service/admin/store/admin/taxonomies/" + taxonomy_id + "/get_children.json";
 var is_cut = false;
 var last_rollback = null;
 
@@ -23,7 +23,7 @@ var handle_move = function(e, data) {
     error: handle_ajax_error
   });
 
-  return true
+  return true;
 };
 
 var handle_create = function(e, data) {
@@ -140,7 +140,7 @@ jQuery(document).ready(function(){
                 "label"            : "Edit",
                 "action"           : function (obj) { window.location = base_url + obj.attr("id") + "/edit/"; }
               }
-            }
+            };
           } else {
             menu =  {
               "create" : {
@@ -170,14 +170,14 @@ jQuery(document).ready(function(){
                 "label"            : "Edit",
                 "action"           : function (obj) { window.location = base_url + obj.attr("id") + "/edit/"; }
               }
-                  }
+            };
           }
           return menu;
       }
     },
 
     "plugins" : [ "themes", "json_data", "dnd", "crrm", "contextmenu"]
-  }
+  };
 
   jQuery("#taxonomy_tree").jstree(conf)
     .bind("move_node.jstree", handle_move)
@@ -186,7 +186,7 @@ jQuery(document).ready(function(){
     .bind("rename.jstree", handle_rename);
 
   jQuery("#taxonomy_tree").delegate("a", "dblclick", function (e) {
-   jQuery("#taxonomy_tree").jstree("rename", this)
+   jQuery("#taxonomy_tree").jstree("rename", this);
   });
 
 

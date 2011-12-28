@@ -233,7 +233,7 @@ zz.homepage = {};
             var combined_results = [];
             for(  key in results){
                 combined_results = combined_results.concat(results[key]);
-            };
+            }
 
             //sort
             var sorted_results = sort( combined_results );
@@ -536,7 +536,7 @@ zz.homepage = {};
     }
 
     function set_option( option, value ){
-        var key = 'homepage_options_'+zz.page.displayed_user_base_url
+        var key = 'homepage_options_'+zz.page.displayed_user_base_url;
         var options = zz.local_storage.get( key ) || {};
         options[option] = options[option] || {};
         options[option] = value;
@@ -553,7 +553,7 @@ zz.homepage = {};
 
 
     function get_option( option, default_option ){
-        var key = 'homepage_options_'+zz.page.displayed_user_base_url
+        var key = 'homepage_options_'+zz.page.displayed_user_base_url;
         var options = zz.local_storage.get( key );
         if( options &&  options[option] ){
                 return options[option];

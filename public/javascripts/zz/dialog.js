@@ -114,7 +114,7 @@ zz.dialog ={};
                     },
                     function(){
                         pdialog.close();
-                        zz.dialog.show_flash_dialog('Unable to send the message at the moment. Please try again later.')
+                        zz.dialog.show_flash_dialog('Unable to send the message at the moment. Please try again later.');
                     });
             }
         });

@@ -124,17 +124,17 @@ zz.import_albums = zz.import_albums || {};
 
 
                     content.find('.privacy-buttons .public-button').click(function(){
-                        privacy = 'public'
+                        privacy = 'public';
                         update_button_states();
                     });
 
                     content.find('.privacy-buttons .hidden-button').click(function(){
-                        privacy = 'hidden'
+                        privacy = 'hidden';
                         update_button_states();
                     });
 
                     content.find('.privacy-buttons .password-button').click(function(){
-                        privacy = 'password'
+                        privacy = 'password';
                         update_button_states();
                     });
 
