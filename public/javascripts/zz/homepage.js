@@ -368,7 +368,7 @@ zz.homepage = {};
                                 on_success( data );
                             },
                             function(xhr){
-                                zz.dialog.show_flash_dialog(JSON.parse(xhr.responseText).message[0], function(){ on_error(); } );
+                                zz.dialog.show_flash_dialog(JSON.parse(xhr.responseText).message, function(){ on_error(); } );
                             });
                     }
                 });

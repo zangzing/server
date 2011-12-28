@@ -65,8 +65,16 @@ class MemCache
     # The amount of time to wait before attempting to re-establish a
     # connection with a server that is marked dead.
 
-    RETRY_DELAY = 5.0
+    ZZ_RETRY_DELAY = 5.0
 
+    def mark_dead(error)
+      close
+      @retry  = Time.now + ZZ_RETRY_DELAY
+
+      reason = "#{error.class.name}: #{error.message}"
+      @status = sprintf "%s:%s DEAD (%s), will retry at %s", @host, @port, reason, @retry
+      @logger.info { @status } if @logger
+    end
 
     # don't make us wait to try again
     def nowait
