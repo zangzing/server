@@ -647,7 +647,7 @@
 
             var top_of_last_row = 0;
 
-            if( o.photos.length > 10 ){
+            if( o.photos.length > 300 ){
                 duration = 0;
                 easing = 0;
             }

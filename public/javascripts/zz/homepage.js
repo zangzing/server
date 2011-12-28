@@ -387,11 +387,16 @@ zz.homepage = {};
         var container = $('div#albums');
         container.hide();
         container.find('div.album-cell').detach();
-        _.each(albums, function(album) {
-            if( !_.isUndefined( album.ui_cell ) ){
-                container.append( album.ui_cell );
-            }
-        });
+        container.find('div.no-photos').remove();
+        if( albums.length > 0 ){
+            _.each(albums, function(album) {
+                if( !_.isUndefined( album.ui_cell ) ){
+                    container.append( album.ui_cell );
+                }
+            });
+        }else{
+            container.append('<div class="no-photos">There are no albums in this view</div>');
+        }
         container.show();
     }
 

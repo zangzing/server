@@ -7,16 +7,10 @@
 var zz = zz || {};
 zz.template_cache = zz.template_cache || {};
 
-
-
-
-
-
 (function($, undefined) {
     var photo_template = null,
         photo_caption_template = null,
         photo_rollover_frame = null;
-
 
     $.widget('ui.zz_photo', {
         options: {
@@ -52,7 +46,7 @@ zz.template_cache = zz.template_cache || {};
                 el = self.element,
                 o = self.options;
 
-            // Store a finished template on the global namespace and re-use for every photo.
+            // Store a finished template re-use for every photo.
             if ( photo_template == null ) {
                 photo_caption_template = $('<div class="photo-caption ellipsis multiline"></div>');
                 photo_template = $('<div class="photo-border">' +
@@ -331,14 +325,16 @@ zz.template_cache = zz.template_cache || {};
                     }
                 });
 
-                //Caption Editing
+                //Enable Caption Editing
                 if( o.allowEditCaption ){
                     if( self.isEditingCaption ){
                         //If editing caption is active when mouseover happens turn it off
                         self.captionElement.text(o.caption);
                         self.captionElement.ellipsis();
                     }
-                    self._setupCaptionEditing( rollover_clone.find('div.photo-caption') );
+                    rollover_clone.find('div.photo-caption').unbind('click').click(function(event) {
+                        self.editCaption();
+                    });
                 }
                 button_bar.center_x();
             };
@@ -355,18 +351,6 @@ zz.template_cache = zz.template_cache || {};
             }
         },
 
-
-
-        setMenuOpen: function(open) {
-            if (open) {
-                self.element.find('.photo-toolbar').addClass('menu-open');
-            }
-            else {
-                self.element.find('.photo-toolbar').removeClass('menu-open');
-            }
-        },
-
-        //delete
         delete_photo: function() {
             var self = this;
 
@@ -426,7 +410,6 @@ zz.template_cache = zz.template_cache || {};
             }
         },
 
-
         isChecked: function() {
             return this.options.json.checked;
         },
@@ -436,20 +419,6 @@ zz.template_cache = zz.template_cache || {};
             self.options.json.checked = checked;
             self.updateChecked();
         },
-
-        _setupCaptionEditing: function( caption_element ){
-            //edit caption
-            var self = this;
-            self.isEditingCaption = false;
-
-            if ( self.options.allowEditCaption) {
-                caption_element.unbind('click');
-                caption_element.click(function(event) {
-                    self.editCaption();
-                });
-            }
-        },
-
 
         loadIfVisible: function(containerDimensions) {
             var self = this;
@@ -477,7 +446,6 @@ zz.template_cache = zz.template_cache || {};
             if (self.options.previewSrc) {
                 initialSrc = self.options.previewSrc;
             }
-
 
             zz.image_utils.pre_load_image(initialSrc, function(image) {
                 self.imageObject = image;
@@ -531,9 +499,6 @@ zz.template_cache = zz.template_cache || {};
             self.bottomShadow.css({'width': (scaled.width + 14) + 'px'});
         },
 
-
-
-
         _inLazyLoadRegion: function(containerDimensions /*optional param with container dimensions */) {
             var container = this.options.scrollContainer;
             var threshold = this.options.lazyLoadThreshold;
@@ -582,72 +547,84 @@ zz.template_cache = zz.template_cache || {};
 
             if (!self.isEditingCaption){
                 self.isEditingCaption = true;
+
+                //Avoid having the frame rollover appear if we are editing caption
                 self.element.unbind( 'mouseenter', self._mouseEnterHandler);
 
                 if( !_.isUndefined( self.rollover_clone) ){
+                    //If the rollover is active, hide it by triggering mouseleave
                     self.rollover_clone.trigger('mouseout').trigger('mouseleave');
                 }
+
                 var captionEditor = $('<div class="edit-caption-border"><input type="text"><div class="caption-ok-button"></div></div>');
                 self.captionElement.html(captionEditor);
 
                 var textBoxElement = captionEditor.find('input');
+                var okButton = captionEditor.find('.caption-ok-button');
 
-                var commitChanges = function() {
-                    var newCaption = textBoxElement.val();
+                var resetCaption = function( caption ){
+                    self.captionElement.text(caption);
+                    self.captionElement.ellipsis();
+                    self.isEditingCaption = false;
+                    self.element.mouseenter( self._mouseEnterHandler );
+                };
+
+                var commitChanges = function(){
+                    disarmCaptionEditor(); //disarm to avoid rapid clickcing
+                    ZZAt.track('photoframe.caption.edit.click');
+                    var newCaption = $.trim( textBoxElement.val() );
                     if (newCaption !== self.options.caption) {
                         self.options.caption = newCaption;
                         self.options.json.caption = newCaption;
                         self.options.onChangeCaption(newCaption);
                     }
-                    self.captionElement.text(newCaption);
-                    self.captionElement.ellipsis();
-
-                    self.captionElement.text(newCaption);
-                    self.captionElement.ellipsis();
-
-                    self.isEditingCaption = false;
-                    self.element.mouseenter( self._mouseEnterHandler );
+                    resetCaption( newCaption );
                 };
 
+                var armCaptionEditor = function(){
+                    textBoxElement.val(self.options.caption);
 
-                textBoxElement.val(self.options.caption);
-                textBoxElement.focus();
-                textBoxElement.select();
-                textBoxElement.blur(function() {
-                    commitChanges();
-                });
-
-                textBoxElement.keydown(function(event) {
-
-                    if( event.which == 13 ){  //enter key
-
-                        return false;
-                    }else if( event.which == 9 ){ //tab key
+                    okButton.click(function(event) {
                         commitChanges();
-                        if( event.shiftKey ){
-                            self.previousPhoto().ui_photo.editCaption();
-                        } else {
-                            self.nextPhoto().ui_photo.editCaption();
-                        }
                         event.stopPropagation();
                         return false;
-                    }
-                });
+                    });
+                    textBoxElement.blur(function() {
+                        commitChanges();
+                        return false;
+                    });
 
+                    textBoxElement.keydown(function(e) {
+                        if(  e.keyCode == 13 ){  //enter key
+                            commitChanges();
+                            e.stopPropagation();
+                            return false;
+                        }else if( e.keyCode == 9 ){ //tab key
+                            commitChanges();
+                            if( e.shiftKey ){ //tab forward
+                                self.previousPhoto().ui_photo.editCaption();
+                            } else { //tab backwards
+                                self.nextPhoto().ui_photo.editCaption();
+                            }
+                            e.stopPropagation();
+                            return false;
+                        }else if( e.keyCode == 27 ){  //escape
+                            resetCaption( self.options.caption );
+                        }
+                    });
+                    textBoxElement.focus();
+                    textBoxElement.select();
+                };
 
-                var okButton = captionEditor.find('.caption-ok-button');
-                okButton.click(function(event) {
-                    commitChanges();
-                    event.stopPropagation();
-                    return false;
-                });
+                var disarmCaptionEditor = function(){
+                    okButton.unbind('click');
+                    textBoxElement.unbind( 'keydown')
+                        .unbind('blur');
+                };
+
+                armCaptionEditor();
             }
-
         },
-
-
-        
-
 
         getPhotoId: function() {
             return this.options.photoId;

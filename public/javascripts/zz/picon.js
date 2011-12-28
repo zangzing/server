@@ -279,7 +279,6 @@
                         return false;
                     });
                     textBoxElement.blur(function(eventObject) {
-                        if( eventObject.relatedTarget != okButton )
                         commitChanges();
                         return false;
                     });
