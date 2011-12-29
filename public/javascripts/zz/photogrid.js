@@ -395,9 +395,9 @@
                         });
 
                         //block events to grid
-                        $(el).keydown(function(event) {
-                            event.preventDefault();
-                        });
+//                        $(el).keydown(function(event) {
+//                            event.preventDefault();
+//                        });
 
                     }
 
@@ -413,6 +413,9 @@
                 //create the photos for the grid
                 if( o.defaultSort ){
                     self.sort_by( o.defaultSort, true ); //no layout
+                }
+                if( o.currentPhotoId == 'first'){
+                    o.currentPhotoId = o.photos[0].id;
                 }
                 create_some_photos(0);
             }else{
@@ -486,7 +489,7 @@
 
 
 
-        nextPicture: function() {
+        nextPicture: function(afterScroll) {
             var self = this;
 
             if (!self.nextPrevActive) {
@@ -502,16 +505,21 @@
                 }
 
                 var id = self.options.photos[index].id;
-
+                if( self.options.allowEditCaption ){
+                    self.options.photos[index].ui_photo.resetCaption();
+                }
                 self.nextPrevActive = true;
                 self.scrollToPhoto(id, animateDuration, true, function() {
                     self.nextPrevActive = false;
+                     if( !_.isUndefined( afterScroll )){
+                        afterScroll(self.options.photos[index] );
+                    }
                 });
             }
 
         },
 
-        previousPicture: function() {
+        previousPicture: function( afterScroll ) {
             var self = this;
 
             if (!self.nextPrevActive) {
@@ -527,10 +535,15 @@
                 }
 
                 var id = self.options.photos[index].id;
-
+                if( self.options.allowEditCaption ){
+                    self.options.photos[index].ui_photo.resetCaption();
+                }
                 self.nextPrevActive = true;
                 self.scrollToPhoto(id, animateDuration, true, function() {
                     self.nextPrevActive = false;
+                    if( !_.isUndefined( afterScroll )){
+                        afterScroll(self.options.photos[index] );
+                    }
                 });
             }
         },

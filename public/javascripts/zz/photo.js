@@ -65,7 +65,10 @@ zz.template_cache = zz.template_cache || {};
                                                            '</div>');
             }
 
-
+            //save the grid
+            if( o.scrollContainer.data().zz_photogrid ){
+                self.photoGrid = o.scrollContainer.data().zz_photogrid;
+            }
             self.captionElement = photo_caption_template.clone();
             self.borderElement = photo_template.clone();
             self.imageElement = self.borderElement.find('.photo-image');
@@ -341,6 +344,12 @@ zz.template_cache = zz.template_cache || {};
 
             if (o.showButtonBar) {
                 el.mouseenter(self._mouseEnterHandler);
+            }else{
+                if( o.allowEditCaption ){
+                    self.captionElement.unbind('click').click(function(event) {
+                        self.editCaption();
+                    });
+                }
             }
 
             // insert elements into DOM
@@ -353,11 +362,6 @@ zz.template_cache = zz.template_cache || {};
 
         delete_photo: function() {
             var self = this;
-
-            if (self.options.scrollContainer.data().zz_photogrid) {
-                self.photoGrid = self.options.scrollContainer.data().zz_photogrid;
-            }
-
             if (confirm('Are you sure you want to delete this photo?')) {
                 if (self.options.onDelete()) {
                     if (!_.isUndefined(self.captionElement)) {
@@ -377,24 +381,6 @@ zz.template_cache = zz.template_cache || {};
                     });
                 }
             }
-        },
-
-        nextPhoto: function() {
-            var self = this,
-                o = self.options;
-            if( o.scrollContainer.data().zz_photogrid ){
-                self.photoGrid = o.scrollContainer.data().zz_photogrid;
-            }
-            return self.photoGrid.nextPhoto( o.json.id );
-        },
-
-        previousPhoto: function() {
-            var self = this,
-                o = self.options;
-            if( o.scrollContainer.data().zz_photogrid ){
-                self.photoGrid = o.scrollContainer.data().zz_photogrid;
-            }
-            return self.photoGrid.previousPhoto( o.json.id );
         },
 
         updateChecked: function(){
@@ -542,8 +528,31 @@ zz.template_cache = zz.template_cache || {};
 
         },
 
-        editCaption: function() {
+        resetCaption: function( caption ){
             var self = this;
+            if (self.isEditingCaption){
+
+                if( typeof(caption) == 'undefined' ){
+                    caption = self.options.caption;
+                }
+
+                self.captionElement.text(caption);
+                self.captionElement.ellipsis();
+                self.isEditingCaption = false;
+                if( self.options.showButtonBar ){
+                    self.element.mouseenter( self._mouseEnterHandler );
+                }else{
+                    if( self.options.allowEditCaption ){
+                        self.captionElement.unbind('click').click(function() {
+                            self.editCaption();
+                        });}
+                }
+            }
+        },
+
+        editCaption: function() {
+            var self = this,
+                o = self.options;
 
             if (!self.isEditingCaption){
                 self.isEditingCaption = true;
@@ -556,33 +565,26 @@ zz.template_cache = zz.template_cache || {};
                     self.rollover_clone.trigger('mouseout').trigger('mouseleave');
                 }
 
-                var captionEditor = $('<div class="edit-caption-border"><input type="text"><div class="caption-ok-button"></div></div>');
+                var captionEditor = $('<div class="caption-editor"><div class="caption-editor-inner"><div class="edit-caption-border"><input type="text"><div class="caption-ok-button"></div></div></div></div>');
                 self.captionElement.html(captionEditor);
 
                 var textBoxElement = captionEditor.find('input');
                 var okButton = captionEditor.find('.caption-ok-button');
 
-                var resetCaption = function( caption ){
-                    self.captionElement.text(caption);
-                    self.captionElement.ellipsis();
-                    self.isEditingCaption = false;
-                    self.element.mouseenter( self._mouseEnterHandler );
-                };
-
                 var commitChanges = function(){
                     disarmCaptionEditor(); //disarm to avoid rapid clickcing
                     ZZAt.track('photoframe.caption.edit.click');
                     var newCaption = $.trim( textBoxElement.val() );
-                    if (newCaption !== self.options.caption) {
-                        self.options.caption = newCaption;
-                        self.options.json.caption = newCaption;
-                        self.options.onChangeCaption(newCaption);
+                    if (newCaption !== o.caption) {
+                        o.caption = newCaption;
+                        o.json.caption = newCaption;
+                        o.onChangeCaption(newCaption);
                     }
-                    resetCaption( newCaption );
+                    self.resetCaption( newCaption );
                 };
 
                 var armCaptionEditor = function(){
-                    textBoxElement.val(self.options.caption);
+                    textBoxElement.val(o.caption);
 
                     okButton.click(function(event) {
                         commitChanges();
@@ -595,21 +597,36 @@ zz.template_cache = zz.template_cache || {};
                     });
 
                     textBoxElement.keydown(function(e) {
+                        e.stopPropagation();
                         if(  e.keyCode == 13 ){  //enter key
                             commitChanges();
-                            e.stopPropagation();
                             return false;
-                        }else if( e.keyCode == 9 ){ //tab key
+                        }else if(  e.keyCode == 9 ){ //tab key
                             commitChanges();
                             if( e.shiftKey ){ //tab forward
-                                self.previousPhoto().ui_photo.editCaption();
+                                if (!_.isUndefined(self.photoGrid)) {
+                                    if( o.showButtonBar ){ //grid view
+                                        self.photoGrid.previousPhoto(o.json.id).ui_photo.editCaption();
+                                    }else{
+                                        self.photoGrid.previousPicture(function(photo){
+                                            photo.ui_photo.editCaption();
+                                        });
+                                    }
+                                }
                             } else { //tab backwards
-                                self.nextPhoto().ui_photo.editCaption();
+                                if (!_.isUndefined(self.photoGrid)) {
+                                    if( o.showButtonBar ){ //grid view
+                                        self.photoGrid.nextPhoto(o.json.id).ui_photo.editCaption();
+                                    }else{
+                                        self.photoGrid.nextPicture(function(photo){
+                                            photo.ui_photo.editCaption();
+                                        });
+                                    }
+                                }
                             }
-                            e.stopPropagation();
                             return false;
                         }else if( e.keyCode == 27 ){  //escape
-                            resetCaption( self.options.caption );
+                            self.resetCaption();
                         }
                     });
                     textBoxElement.focus();
@@ -648,6 +665,5 @@ zz.template_cache = zz.template_cache || {};
             $.Widget.prototype.destroy.apply(this, arguments);
         }
     });
-
 
 })(jQuery);

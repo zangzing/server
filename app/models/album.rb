@@ -498,6 +498,10 @@ class Album < ActiveRecord::Base
     self.privacy == HIDDEN
   end
 
+  def can_user_edit?( user )
+    admin?(user.id )
+  end
+
   def can_user_download?( user )
     if user.nil?
       # check conditions for no user given

@@ -141,7 +141,6 @@ zz.album = {};
             var grid = gridElement.zz_photogrid({
                 photos: photos,
                 allowDelete: false,
-                allowEditCaption: false,
                 allowReorder: false,
                 cellWidth: 230,
                 cellHeight: 230,
@@ -169,7 +168,7 @@ zz.album = {};
                 rolloverFrameContainer: gridElement,
                 topPadding: 45, //make room for sort bar
                 defaultSort: 'date-asc',
-                allowEditCaption: true,
+                allowEditCaption: zz.page.current_user_can_edit, 
                 onChangeCaption: function(index, photo, caption) {
                     $.ajax({
                         type: 'POST',
@@ -238,8 +237,8 @@ zz.album = {};
 
                 var grid = gridElement.zz_photogrid({
                     photos: photos,
+                    defaultSort: 'date-asc',
                     allowDelete: false,
-                    allowEditCaption: false,
                     allowReorder: false,
                     cellWidth: gridElement.width(),
                     cellHeight: gridElement.height() - 20,
@@ -259,7 +258,6 @@ zz.album = {};
                         }
                     },
 
-
                     singlePictureMode: true,
                     currentPhotoId: current_photo_id,
                     onScrollToPhoto: function(photoId, index) {
@@ -267,16 +265,24 @@ zz.album = {};
                         zz.page.current_photo_index = index; //this is used when we go to movie mode
                         current_photo_id = photoId;
                         current_photo_json = photos[index];
-
                         zz.comments.set_current_photo_id(photoId);
-
-                       
                         ZZAt.track('photo.view', {id: photoId});
                     },
-                    context: buy_mode ? 'chooser-picture' : 'album-grid'
+                    context: buy_mode ? 'chooser-picture' : 'album-grid',
+                    allowEditCaption: zz.page.current_user_can_edit, 
+                    onChangeCaption: function(index, photo, caption) {
+                        $.ajax({
+                            type: 'POST',
+                            dataType: 'json',
+                            url: zz.routes.path_prefix + '/photos/' + photo.id + '.json',
+                            data: {'photo[caption]': caption, _method: 'put'},
+                            error: function(error) {
+                            }
 
+                        });
+                        return true;
 
-
+                    }
                 }).data().zz_photogrid;
 
 
