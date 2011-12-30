@@ -619,7 +619,7 @@
 
             var onFinishAnimate = function() {
                 self.options.currentPhotoId = photoId;
-                self.options.onScrollToPhoto(photoId, index);
+                self.options.onScrollToPhoto( index, self.options.photos[index]);
                 if (typeof callback !== 'undefined') {
                     callback();
                 }

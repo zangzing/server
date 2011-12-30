@@ -22,13 +22,10 @@
 
 
 
-<% content_for :page_javascript do %>
-
-    <%= render :partial => "photos/album_view_javascript" %>
+<%= render :partial => "photos/album_view_javascript" %>
     
-    <script type="text/javascript">
-        $(document).ready(function(){
-
+<% content_for :zz_js_document_ready do %>
+                
             zz.album.sort_bar_template = $(
                     '<div id="view-sort-bar">'+
                     '   <div id="sort">'+
@@ -59,7 +56,4 @@
             else {
                 zz.album.init_grid_view();
             }
-
-        });
-    </script>
 <% end %>

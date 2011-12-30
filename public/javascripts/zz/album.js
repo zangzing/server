@@ -20,6 +20,7 @@ zz.album = {};
         $('#view-buttons').fadeOut('fast');
 
         zz.buy.toggle_visibility_with_buy_mode($('#footer #comments-button'));
+        zz.buy.toggle_visibility_with_buy_mode($('#footer #more-button'));
 
         zz.buy.on_change_buy_mode(function(){
             render_picture_view();
@@ -99,8 +100,6 @@ zz.album = {};
             ZZAt.track('album.buy.toolbar.click');
         });
     };
-
-
 
 
 
@@ -260,13 +259,13 @@ zz.album = {};
 
                     singlePictureMode: true,
                     currentPhotoId: current_photo_id,
-                    onScrollToPhoto: function(photoId, index) {
-                        window.location.hash = '#!' + photoId;
+                    onScrollToPhoto: function( index, photo ) {
+                        current_photo_json = photo;
+                        current_photo_id = photo.id;
+                        window.location.hash = '#!' + current_photo_id;
                         zz.page.current_photo_index = index; //this is used when we go to movie mode
-                        current_photo_id = photoId;
-                        current_photo_json = photos[index];
-                        zz.comments.set_current_photo_id(photoId);
-                        ZZAt.track('photo.view', {id: photoId});
+                        zz.comments.set_current_photo_id(current_photo_id);
+                        ZZAt.track('photo.view', {id: current_photo_id});
                     },
                     context: buy_mode ? 'chooser-picture' : 'album-grid',
                     allowEditCaption: zz.page.current_user_can_edit, 
@@ -284,7 +283,6 @@ zz.album = {};
 
                     }
                 }).data().zz_photogrid;
-
 
 
                 $('#footer #next-button').unbind('click');
@@ -314,6 +312,16 @@ zz.album = {};
                 resizeTimer = setTimeout(function() {
                     render();
                 }, 100);
+            });
+
+            //info-button
+            $('#more-button').click( function(){
+                    zz.infomenu.show_in_photo( $('#more-button'),
+                                                info_menu_template_resolver(current_photo_json),
+                                                current_photo_json.ui_photo,
+                                                current_photo_json.id,
+                                                function(){}
+                    );
             });
         });
 
