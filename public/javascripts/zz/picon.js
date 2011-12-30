@@ -316,7 +316,6 @@
         },
 
         _ellipsis: function( text ){
-          console.log( text + ' is '+text.length+' long');
           if( text.length > 30){
             return text.substr(0,24) + '...';
           }else{

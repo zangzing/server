@@ -33,7 +33,8 @@ zz.album = {};
         zz.buy.on_before_activate(function(){
             var photo = zz.routes.photos.get_photo_json(current_photo_id);
             if(!zz.buy.is_photo_selected(current_photo_id) && zz.page.current_user_can_buy_photos){
-                zz.buy.add_selected_photo(current_photo_json);
+                var serializable_current_photo_json = $.extend({},current_photo_json,{ui_photo: null, ui_cell: null });
+                zz.buy.add_selected_photo(serializable_current_photo_json);
             }
             ZZAt.track('photo.buy.toolbar.click');
         });
@@ -134,11 +135,11 @@ zz.album = {};
             }
 
             //add sort bar to element
-            var sort_bar = zz.album.sort_bar_template;
-            gridElement.append( sort_bar );
+            init_sort_bar(gridElement);
 
-            var grid = gridElement.zz_photogrid({
+            var grid = gridElement.zz_photogrid( {
                 photos: photos,
+                sort: zz.local_storage.get_album_sort( zz.page.album_id),
                 allowDelete: false,
                 allowReorder: false,
                 cellWidth: 230,
@@ -166,7 +167,6 @@ zz.album = {};
                 infoMenuTemplateResolver: info_menu_template_resolver,
                 rolloverFrameContainer: gridElement,
                 topPadding: 45, //make room for sort bar
-                defaultSort: 'date-asc',
                 allowEditCaption: zz.page.current_user_can_edit, 
                 onChangeCaption: function(index, photo, caption) {
                     $.ajax({
@@ -184,25 +184,6 @@ zz.album = {};
             }).data().zz_photogrid;
 
 
-            sort_bar.bind("buttonset-click",function( event, action ){
-                ZZAt.track('album.'+action+'.click');
-                  switch( action ){
-                      case'sort-name-up':
-                          grid.sort_by_name_asc();
-                        break;
-                      case'sort-name-down':
-                          grid.sort_by_name_desc();
-                        break;
-                      case'sort-date-down':
-                          grid.sort_by_date_desc();
-                        break;
-                      case'sort-date-up':
-                      default:
-                          grid.sort_by_date_asc();
-                        break;
-                  }
-            });
-            zz.buttonset.init('sort-date-up');
 
             if (buy_mode && zz.page.current_user_can_buy_photos) {
                 var addAllButton = $('<img class="add-all-button" src="' + zz.routes.image_url('/images/folders/add_all_photos.png') + '">');
@@ -236,7 +217,7 @@ zz.album = {};
 
                 var grid = gridElement.zz_photogrid({
                     photos: photos,
-                    defaultSort: 'date-asc',
+                    sort: zz.local_storage.get_album_sort( zz.page.album_id ),
                     allowDelete: false,
                     allowReorder: false,
                     cellWidth: gridElement.width(),
@@ -452,6 +433,7 @@ zz.album = {};
 
                 var grid = $(element).zz_photogrid({
                     photos: filteredPhotos,
+                    sort: zz.local_storage.get_album_sort( zz.page.album_id),
                     allowDelete: false,
                     allowEditCaption: false,
                     allowReorder: false,
@@ -631,6 +613,42 @@ zz.album = {};
             wanted_subjects[photo.id] = 'photo';
             return photo;
         });
+    }
+
+    function init_sort_bar( grid_element ){
+        var sort_bar = zz.album.sort_bar_template.clone();
+        grid_element.append( sort_bar );
+        sort_bar.bind("buttonset-click",function( event, action ){
+            ZZAt.track('album.'+action+'.click');
+            switch( action ){
+                case'sort-name-up':
+                    grid_element.data().zz_photogrid.sort_by_name_asc();
+                    zz.local_storage.set_album_sort( zz.page.album_id, 'name-asc' );
+                    break;
+                case'sort-name-down':
+                    grid_element.data().zz_photogrid.sort_by_name_desc();
+                    zz.local_storage.set_album_sort( zz.page.album_id, 'name-desc' );
+                    break;
+                case'sort-date-down':
+                    grid_element.data().zz_photogrid.sort_by_date_desc();
+                    zz.local_storage.set_album_sort( zz.page.album_id, 'date-desc' );
+                    break;
+                case'sort-date-up':
+                default:
+                    grid_element.data().zz_photogrid.sort_by_date_asc();
+                    zz.local_storage.set_album_sort( zz.page.album_id, 'date-asc' );
+                    break;
+            }
+        });
+
+        switch( zz.local_storage.get_album_sort( zz.page.album_id) ){
+            case 'name-asc': zz.buttonset.init('sort-name-up'); break;
+            case 'name-desc':zz.buttonset.init('sort-name-down'); break;
+            case 'date-desc':zz.buttonset.init('sort-date-down'); break;
+            case 'date-asc':
+            default: zz.buttonset.init('sort-date-up'); break;
+        }
+        return sort_bar;
     }
 })();
 

@@ -13,6 +13,7 @@
     $.widget('ui.zz_photogrid', {
         options: {
             photos: [],
+            sort: 'date-asc',
             cellWidth: 200,               //context
             cellHeight: 200,              //context
 
@@ -44,11 +45,10 @@
             onClickShare: jQuery.noop,
             centerPhotos: true,
             rolloverFrameContainer: $('#article'),
-            topPadding: 10,
-            defaultSort: null
+            topPadding: 10
         },
 
-        _create: function() {
+        _create: function(message) {
             var self = this,
                 o = self.options,
                 el = self.element;
@@ -393,12 +393,6 @@
                                 self.previousPicture();
                             }
                         });
-
-                        //block events to grid
-//                        $(el).keydown(function(event) {
-//                            event.preventDefault();
-//                        });
-
                     }
 
                     //scroll to photo
@@ -411,8 +405,8 @@
 
             if( o.photos.length > 0 ){
                 //create the photos for the grid
-                if( o.defaultSort ){
-                    self.sort_by( o.defaultSort, true ); //no layout
+                if( o.sort ){
+                    self.sort_by( o.sort, true ); //no layout
                 }
                 if( o.currentPhotoId == 'first'){
                     o.currentPhotoId = o.photos[0].id;
