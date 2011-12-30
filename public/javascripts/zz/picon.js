@@ -18,7 +18,7 @@
 
 
     var  cover_photo_template = null, //$('<img class="cover-photo">'),
-         caption_template  = $('<div class="photo-caption ellipsis multiline">'),
+         caption_template  = $('<div class="photo-caption">'),
          button_bar_template = $('<div class="button-bar">'),
          buttons_template = $('<div class="buttons">'),
          like_button_template = $('<div class="button like-button zzlike"  data-zztype="album"><div class="zzlike-icon thumbdown">'),
@@ -78,18 +78,16 @@
                     .append(stacked_image_1)
                     .append(self.topOfStack);
 
-            //set caption
-            caption.text(o.caption);
 
             //wire click
             cover_photo.click(function() {
                 o.onClick();
             });
 
-            // clean and arm caption click
-            caption.ellipsis();
+            //set clean and arm caption click
+            caption.text(self._ellipsis(o.caption));
             self._setupCaptionEditing();
-            
+
             // insert picon into container and calculate preliminary size
             el.append(self.template);
             self._resize(o.maxCoverWidth, o.maxCoverHeight);
@@ -242,8 +240,7 @@
                 var okButton = captionEditor.find('.caption-ok-button');
 
                 var resetCaption = function( caption ){
-                    self.captionElement.text(caption);
-                    self.captionElement.ellipsis();
+                    self.captionElement.text(self._ellipsis(caption));
                     // for some reason, the .ellipsis() call messes up the caption click handler on IE
                     // so we need to set up again...
                     self._setupCaptionEditing();
@@ -318,6 +315,14 @@
 
         },
 
+        _ellipsis: function( text ){
+          console.log( text + ' is '+text.length+' long');
+          if( text.length > 30){
+            return text.substr(0,24) + '...';
+          }else{
+              return text;
+          }
+        },
 
         destroy: function() {
             $.Widget.prototype.destroy.apply(this, arguments);
