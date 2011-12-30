@@ -289,10 +289,10 @@
                         }
                     });
 
-                    //limit input to 50 chars
                     textBoxElement.keyup(function(){
                         var text = $(this).val();
                         if(text.length > 50 ){
+                            alert("Album name cannot exceed 50 characters");
                             var new_text = text.substr(0, 50);
                             $(this).val(new_text);
                             $(this).selectRange( 50,50);
