@@ -241,7 +241,7 @@ zz.album = {};
                         zz.comments.set_current_photo_id(current_photo_id);
                         ZZAt.track('photo.view', {id: current_photo_id});
                     },
-                    context: buy_mode ? 'chooser-picture' : 'album-grid',
+                    context: buy_mode ? 'chooser-picture' : 'album-picture',
                     allowEditCaption: zz.page.current_user_can_edit, 
                     onChangeCaption: function(index, photo, caption) {
                         $.ajax({
@@ -255,6 +255,10 @@ zz.album = {};
                         });
                         return true;
 
+                    },
+                    onDelete: function(index, photo) {
+                        zz.routes.call_delete_photo(photo.id);
+                        return true;
                     }
                 }).data().zz_photogrid;
 

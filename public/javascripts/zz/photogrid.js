@@ -99,6 +99,7 @@
                 cell.zz_photo({
                     json:        photo,
                     photoId:     photo.id,
+                    photoGrid:   self,
                     caption:     photo.caption,
                     aspectRatio: photo.aspect_ratio,
                     previewSrc:  photo.previewSrc,
@@ -109,6 +110,11 @@
 
                     allowDelete: o.allowDelete,
                     onDelete: function() {
+                        var i = self.indexOfPhoto( photo.id );
+                        o.photos.splice( i, 1);
+                        if (o.showThumbscroller) {
+                            self.thumbscroller.removePhoto( i );
+                        }
                         return o.onDelete(index, photo);
                     },
 
@@ -279,51 +285,7 @@
                     }
 
                     //thumbscroller
-                    if (o.showThumbscroller) {
-                        var nativeScrollActive = false;
-
-                        if (o.singlePictureMode) {
-                            self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-horizontal"></div>').appendTo(el.parent());
-                        } else {
-                            self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-vertical"></div>').appendTo(el.parent());
-                        }
-
-                        //remove any 'special' photos (eg blank one used for drag and drop on edit screen
-                        var photos = $.map(o.photos, function(photo, index) {
-                            return (photo.type != 'blank' ? photo : null);
-                        });
-
-                        self.thumbscroller = self.thumbscrollerElement.zz_thumbtray({
-                            photos: photos,
-                            srcAttribute: 'previewSrc',
-                            showSelection: false,
-                            thumbnailSize: 20,
-                            showSelectedIndexIndicator: true,
-                            repaintOnResize: true,
-                            onSelectPhoto: function(index, photo) {
-                                if (typeof photo != 'undefined') {
-                                    if (!nativeScrollActive) {
-                                        self.scrollToPhoto(photo.id, 500, true);
-                                    }
-                                }
-                            }
-                        }).data().zz_thumbtray;
-
-                        el.scroll(function(event) {
-                            if (! self.animateScrollActive) {
-                                nativeScrollActive = true;
-
-                                var index;
-                                if (o.singlePictureMode) {
-                                    index = Math.floor(el.scrollLeft() / o.cellWidth);
-                                } else {
-                                    index = Math.floor(el.scrollTop() / o.cellHeight * self.cellsPerRow());
-                                }
-                                self.thumbscroller.setSelectedIndex(index);
-                                nativeScrollActive = false;
-                            }
-                        });
-                    }
+                    self._setupThumbScroller();
 
                     //mousewheel and keyboard for single picture
                     if (o.singlePictureMode) {
@@ -867,6 +829,59 @@
                 this.options.photos.sort( comparator );
             }
         },
+
+        _setupThumbScroller: function(){
+            var self = this,
+                el = self.element,
+                o = self.options;
+
+            if (o.showThumbscroller) {
+                var nativeScrollActive = false;
+
+                if (o.singlePictureMode) {
+                    self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-horizontal"></div>').appendTo(el.parent());
+                } else {
+                    self.thumbscrollerElement = $('<div class="photogrid-thumbscroller-vertical"></div>').appendTo(el.parent());
+                }
+
+                //remove any 'special' photos (eg blank one used for drag and drop on edit screen
+                var photos = $.map(o.photos, function(photo, index) {
+                    return (photo.type != 'blank' ? photo : null);
+                });
+
+                self.thumbscroller = self.thumbscrollerElement.zz_thumbtray({
+                    photos: photos,
+                    srcAttribute: 'previewSrc',
+                    showSelection: false,
+                    thumbnailSize: 20,
+                    showSelectedIndexIndicator: true,
+                    repaintOnResize: true,
+                    onSelectPhoto: function(index, photo) {
+                        if (typeof photo != 'undefined') {
+                            if (!nativeScrollActive) {
+                                self.scrollToPhoto(photo.id, 500, true);
+                            }
+                        }
+                    }
+                }).data().zz_thumbtray;
+
+                el.scroll(function(event) {
+                    if (! self.animateScrollActive) {
+                        nativeScrollActive = true;
+
+                        var index;
+                        if (o.singlePictureMode) {
+                            index = Math.floor(el.scrollLeft() / o.cellWidth);
+                        } else {
+                            index = Math.floor(el.scrollTop() / o.cellHeight * self.cellsPerRow());
+                        }
+                        self.thumbscroller.setSelectedIndex(index);
+                        nativeScrollActive = false;
+                    }
+                });
+            }
+        },
+
 
         destroy: function() {
             if (this.thumbscrollerElement) {

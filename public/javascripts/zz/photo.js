@@ -15,6 +15,7 @@ zz.template_cache = zz.template_cache || {};
     $.widget('ui.zz_photo', {
         options: {
             json: null,
+            photoGrid: null,
             allowDelete: false,          //context
             onDelete: jQuery.noop,        //model
             maxHeight: 120,               //context
@@ -65,10 +66,7 @@ zz.template_cache = zz.template_cache || {};
                                                            '</div>');
             }
 
-            //save the grid
-            if( o.scrollContainer.data().zz_photogrid ){
-                self.photoGrid = o.scrollContainer.data().zz_photogrid;
-            }
+            
             self.captionElement = photo_caption_template.clone();
             self.borderElement = photo_template.clone();
             self.imageElement = self.borderElement.find('.photo-image');
@@ -363,6 +361,7 @@ zz.template_cache = zz.template_cache || {};
         delete_photo: function() {
             var self = this;
             if (confirm('Are you sure you want to delete this photo?')) {
+                var next_photo = self.options.photoGrid.nextPhoto( self.options.json.id );
                 if (self.options.onDelete()) {
                     if (!_.isUndefined(self.captionElement)) {
                         self.captionElement.hide();
@@ -373,9 +372,13 @@ zz.template_cache = zz.template_cache || {};
                     self.borderElement.hide('scale', {}, 300, function() {
                         self.element.animate({width: 0}, 500, function() {
                             self.element.remove();
-                            if (!_.isUndefined(self.photoGrid)) {
-                                self.photoGrid.resetLayout();
-                                self.photoGrid.element.trigger('scroll');
+                            if (self.options.photoGrid) {
+                                self.options.photoGrid.resetLayout();
+                                if( self.options.context == 'album-picture'){
+                                    self.options.photoGrid.scrollToPhoto(next_photo.id);
+                                }else{
+                                    self.options.photoGrid.element.trigger('scroll');
+                                }
                             }
                         });
                     });
