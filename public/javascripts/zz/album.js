@@ -33,6 +33,8 @@ zz.album = {};
         zz.buy.on_before_activate(function(){
             var photo = zz.routes.photos.get_photo_json(current_photo_id);
             if(!zz.buy.is_photo_selected(current_photo_id) && zz.page.current_user_can_buy_photos){
+                // The photos have a link to the ui_photo which also contains the photo.
+                // Set both pointers to null to avoid a circular reference that cannot be serialized
                 var serializable_current_photo_json = $.extend({},current_photo_json,{ui_photo: null, ui_cell: null });
                 zz.buy.add_selected_photo(serializable_current_photo_json);
             }
@@ -120,31 +122,26 @@ zz.album = {};
 
             var gridElement = $('<div class="photogrid"></div>');
 
-            $('#article').html(gridElement);
-            $('#article').css('overflow', 'hidden');
-
-            // add placeholder for add-all button
-            if(buy_mode && zz.page.current_user_can_buy_photos){
-                var addAllButton = {
-                    id: 'add-all-photos',
-                    src: zz.routes.image_url('/images/blank.png'),
-                    caption: '',
-                    type: 'blank'
-                };
-                photos.unshift(addAllButton);
-            }
+            $('#article').html(gridElement).css('overflow', 'hidden');
 
             //add sort bar to element
             init_sort_bar(gridElement);
 
             var grid = gridElement.zz_photogrid( {
-                photos: photos,
-                sort: zz.local_storage.get_album_sort( zz.page.album_id),
-                allowDelete: false,
-                allowReorder: false,
-                cellWidth: 230,
-                cellHeight: 230,
-                showThumbscroller: false,
+                photos:       photos,
+                sort:         zz.local_storage.get_album_sort( zz.page.album_id),
+                context:      buy_mode ? 'chooser-grid' : 'album-grid',
+                cellWidth:    230,
+                cellHeight:   230,
+                topPadding:   45, //make room for sort bar
+
+
+                showButtonBar:            !buy_mode,
+                addAllButton:             buy_mode && zz.page.current_user_can_buy_photos,
+                showThumbscroller:        false,
+                infoMenuTemplateResolver: info_menu_template_resolver,
+                rolloverFrameContainer:   gridElement,
+
                 onClickPhoto: function(index, photo, element, action) {
                     if(!buy_mode){
                         zz.album.goto_single_picture(photo.id);
@@ -158,16 +155,13 @@ zz.album = {};
                         }
                     }
                 },
+
                 onDelete: function(index, photo) {
                     zz.routes.call_delete_photo(photo.id);
                     return true;
                 },
-                showButtonBar: !buy_mode,
-                context: buy_mode ? 'chooser-grid' : 'album-grid',
-                infoMenuTemplateResolver: info_menu_template_resolver,
-                rolloverFrameContainer: gridElement,
-                topPadding: 45, //make room for sort bar
-                allowEditCaption: zz.page.current_user_can_edit, 
+
+                allowEditCaption: zz.page.current_user_can_edit,
                 onChangeCaption: function(index, photo, caption) {
                     $.ajax({
                         type: 'POST',
@@ -179,7 +173,6 @@ zz.album = {};
 
                     });
                     return true;
-
                 }
             }).data().zz_photogrid;
 
@@ -456,9 +449,6 @@ zz.album = {};
                     },
 
                     showThumbscroller: false,
-                    onClickShare: function(photo_id) {
-                        zz.pages.share.share_in_dialog('photo', photo_id);
-                    },
                     onDelete: function(index, photo) {
                         zz.routes.call_delete_photo(photo.id);
                         return true;

@@ -6,54 +6,55 @@
 
 (function($, undefined) {
 
-
     var photogrid_droppablecell_template =  $('<div class="photogrid-cell"><div class="photogrid-droppable"></div></div>');
     var photogrid_cell_template =  $('<div class="photogrid-cell"></div>');
+    var add_all_button = { id: 'add-all-photos',  caption: '', type: 'blank' };
 
     $.widget('ui.zz_photogrid', {
         options: {
-            photos: [],
-            sort: 'date-asc',
-            cellWidth: 200,               //context
-            cellHeight: 200,              //context
+            photos: [],                   // The photos array
+            sort: 'date-asc',             // The desired sort method for photos date-asc, date-desc, name-desc, name-asc
 
-            allowDelete: false,           //context
-            onDelete: jQuery.noop,         //move to photo-model
+            context: 'album-grid',        // Where is the grid being used
+            centerPhotos: true,           // Used to center photogrid on screen (not centered on timeline or people view)
+            topPadding: 10,               // The space between the top of the photogrid element and the top row of photos
 
-            allowEditCaption: false,       //context
-            onChangeCaption: jQuery.noop,  //move to photo-model
+            cellWidth: 200,               // Cell size
+            cellHeight: 200,
 
-            allowReorder: false,          //context
-            onChangeOrder: jQuery.noop,   //move to photo-model
+            allowDelete: false,           // Should delete show in the info-menu?
+            onDelete: jQuery.noop,        // delete callback
 
-            onClickPhoto: jQuery.noop,    //move to photo-model
+            allowEditCaption: false,       // Should caption be editable
+            onChangeCaption: jQuery.noop,  // caption change callback
 
-            showThumbscroller: true,      //context
-            hideNativeScroller: false,    //context
+            allowReorder: false,           // Should grid be re-orderable
+            onChangeOrder: jQuery.noop,    // reorder callback
 
-            singlePictureMode: false,
-            currentPhotoId: null,
-            onScrollToPhoto: jQuery.noop,
+            onClickPhoto: jQuery.noop,     // click callback
 
-            context: 'album-grid',
+            showThumbscroller:  true,       // Bottom thumb scroller (picture view)
+            hideNativeScroller: false,     // hide horizontal scroller
+
+            singlePictureMode: false,      // Picture View
+            currentPhotoId: null,          // Scroll Picture View to this photo
+            onScrollToPhoto: jQuery.noop,  // picture view scroll callback
 
             lazyLoadThreshold: null,
 
-            showButtonBar: false,          //model
-            infoMenuTemplateResolver: null, //album model
+            showButtonBar: false,           // Should the rollover button bar be displayed (photochooser or picture view)
+            rolloverFrameContainer: $('#article'), //Where to attach the rollover button bar
+            infoMenuTemplateResolver: null, // Function used to decide which buttons should show on the info menu.
 
-            onClickShare: jQuery.noop,
-            centerPhotos: true,
-            rolloverFrameContainer: $('#article'),
-            topPadding: 10
+            addAllButton : false           // When true, the add-all button will be shown in the first grid position
         },
 
-        _create: function(message) {
+        _create: function() {
             var self = this,
                 o = self.options,
                 el = self.element;
 
-            //scroll direction
+            //decide scroll direction
             if (o.singlePictureMode) {
                 el.css({
                     'overflow-y': 'hidden',
@@ -70,48 +71,48 @@
             // save the current container sise
             self.width = parseInt(el.css('width'));
             self.height = parseInt(el.css('height'));
-            el.hide();
+            el.hide(); //hide it for speed inserting photos
 
-            //choose template for cells
+            //choose template for cells and size it
+            var template;
             if( o.allowReorder ){
-                var template = photogrid_droppablecell_template.clone();
+                template = photogrid_droppablecell_template.clone();
             }else{
                  // when allowReorder is 'false' don't add the drop target elements
-                var template = photogrid_cell_template.clone();
+                template = photogrid_cell_template.clone();
             }
             template.css({
                 width: o.cellWidth,
                 height: o.cellHeight
             });
 
-
+            // Setup the lazyLoad edge threshold
             if (o.lazyLoadThreshold != 0 && !o.lazyLoadThreshold && o.singlePictureMode) {
                 o.lazyLoadThreshold = o.cellWidth * 3;
             }
 
-            // Create a single photo cell and append it to the grid
-            // called below inside a loop that regularly allows the system to
+            // Function to create a single photo cell and append it to the grid.
+            // It is called below inside a loop that regularly allows the system to
             // process other events.
             var create_photo = function(index, photo) {
                 var cell = template.clone();
                 cell.zz_photo({
-                    json: photo,
-                    photoId: photo.id,
-                    previewSrc: photo.previewSrc,
-                    src: photo.src,
-                    rolloverSrc: photo.rolloverSrc,
-                    maxWidth: Math.floor(o.cellWidth - 50),
-                    maxHeight: Math.floor(o.cellHeight - 50 - 5),  //35 accounts for height if caption. this is also set in photo.js
-                    allowDelete: o.allowDelete,
-                    caption: photo.caption,
+                    json:        photo,
+                    photoId:     photo.id,
+                    caption:     photo.caption,
                     aspectRatio: photo.aspect_ratio,
+                    previewSrc:  photo.previewSrc,
+                    src:         photo.src,
+                    rolloverSrc: photo.rolloverSrc,
+                    maxWidth:    Math.floor(o.cellWidth - 50),
+                    maxHeight:   Math.floor(o.cellHeight - 50 - 5),  //35 accounts for height if caption. this is also set in photo.js
 
+                    allowDelete: o.allowDelete,
                     onDelete: function() {
                         return o.onDelete(index, photo);
                     },
 
                     allowEditCaption: o.allowEditCaption,
-
                     onChangeCaption: function(caption) {
                         photo.caption = caption;
                         return o.onChangeCaption(index, photo, caption);
@@ -130,9 +131,9 @@
                     type: _.isUndefined(photo.type) ? 'photo' : photo.type,
                     showButtonBar: o.showButtonBar,
                     infoMenuTemplateResolver: o.infoMenuTemplateResolver,
-                    onClickShare: o.onClickShare,
                     rolloverFrameContainer: o.rolloverFrameContainer
                 });
+                // Append cell, lay it out in the right spot and save the ui components
                 cell.appendTo(el);
                 photo.ui_cell = cell;
                 photo.ui_photo = cell.data().zz_photo;
@@ -194,13 +195,11 @@
                         drop: function(event, ui) {
                             var draggedCell = ui.draggable;
 
-
                             //create clone so we have something to face out
                             var draggedCellClone = draggedCell.clone().appendTo(draggedCell.parent());
                             draggedCellClone.fadeOut(400, function() {
                                 draggedCellClone.remove();
                             });
-
 
                             //move the dragged cell to the new spot
                             var droppedOnCell = droppable.parent();
@@ -209,7 +208,6 @@
                                 top: parseInt(droppedOnCell.css('top')),
                                 left: parseInt(droppedOnCell.css('left')) - o.cellWidth
                             });
-
 
                             self.resetLayout(800, 'easeInOutCubic');
 
@@ -220,7 +218,6 @@
                             }
                             var after_id = droppedOnCell.data().zz_photo.getPhotoId();
                             o.onChangeOrder(photo_id, before_id, after_id);
-
                         }
 
                     });
@@ -293,12 +290,7 @@
 
                         //remove any 'special' photos (eg blank one used for drag and drop on edit screen
                         var photos = $.map(o.photos, function(photo, index) {
-                            if (photo.type == 'blank') {
-                                return null;
-                            }
-                            else {
-                                return photo;
-                            }
+                            return (photo.type != 'blank' ? photo : null);
                         });
 
                         self.thumbscroller = self.thumbscrollerElement.zz_thumbtray({
@@ -324,8 +316,7 @@
                                 var index;
                                 if (o.singlePictureMode) {
                                     index = Math.floor(el.scrollLeft() / o.cellWidth);
-                                }
-                                else {
+                                } else {
                                     index = Math.floor(el.scrollTop() / o.cellHeight * self.cellsPerRow());
                                 }
                                 self.thumbscroller.setSelectedIndex(index);
@@ -340,16 +331,13 @@
                             var delta;
                             if (typeof(event.wheelDelta) !== 'undefined') {
                                 delta = event.wheelDelta;
-                            }
-                            else {
+                            } else {
                                 delta = -1 * event.detail;
                             }
 
-
                             if (delta < 0) {
                                 self.nextPicture();
-                            }
-                            else {
+                            } else {
                                 self.previousPicture();
                             }
 
@@ -368,29 +356,25 @@
 
                         //capture all events
                         $(document.documentElement).keydown(function(event) {
-                            if (event.keyCode === 40) {
-                                //down
-                                self.nextPicture();
-                            }
-                            else if (event.keyCode === 39) {
-                                //right
-                                self.nextPicture();
-                            }
-                            else if (event.keyCode === 34) {
-                                //page down
-                                self.nextPicture();
-                            }
-                            else if (event.keyCode === 38) {
-                                //up
-                                self.previousPicture();
-                            }
-                            else if (event.keyCode === 37) {
-                                //left
-                                self.previousPicture();
-                            }
-                            else if (event.keyCode === 33) {
-                                //page up
-                                self.previousPicture();
+                            switch( event.keyCode ){
+                                case 40: //down
+                                    self.nextPicture();
+                                    break;
+                                case 39:  //right
+                                    self.nextPicture();
+                                    break;
+                                case 34: //page down
+                                    self.nextPicture();
+                                    break;
+                                case 38: //up
+                                    self.previousPicture();
+                                    break;
+                                case 37: //left
+                                    self.previousPicture();
+                                    break;
+                                case 33: //page up
+                                    self.previousPicture();
+                                    break;
                             }
                         });
                     }
@@ -399,18 +383,24 @@
                     if (o.currentPhotoId !== null) {
                         self.scrollToPhoto(o.currentPhotoId, 0, false);
                     }
-
                 }
             };
 
             if( o.photos.length > 0 ){
-                //create the photos for the grid
+                //Insert add all button (must be called before sort)
+                if( o.addAllButton ){
+                    add_all_button.src = zz.routes.image_url('/images/blank.png');
+                    o.photos.unshift(add_all_button); //insert add all button at the begining of array
+                }
+                //sort the photos for the grid
                 if( o.sort ){
                     self.sort_by( o.sort, true ); //no layout
                 }
                 if( o.currentPhotoId == 'first'){
                     o.currentPhotoId = o.photos[0].id;
                 }
+                // Start creating photos, at the end of the creation
+                // process all grid elements will be bound and active
                 create_some_photos(0);
             }else{
                 //Empty Album - Display no photos in this album sign
@@ -426,7 +416,7 @@
 
             el.show();
 
-            // Window Resize
+            // Window Resize Handler
             var resizeTimer = null;
             $(window).resize(function(event) {
                 if (resizeTimer) {
@@ -440,7 +430,7 @@
                 }, 100);
             });
 
-            // Scroll
+            // Scroll Handler
             var scrollTimer = null;
             el.scroll(function(event) {
                 if (scrollTimer) {
@@ -472,7 +462,6 @@
             }
         },
 
-
         hideThumbScroller: function() {
             if (this.thumbscrollerElement) {
                 this.thumbscrollerElement.hide();
@@ -480,8 +469,6 @@
         },
 
         nextPrevActive: false,
-
-
 
         nextPicture: function(afterScroll) {
             var self = this;
@@ -654,7 +641,7 @@
 
             var top_of_last_row = 0;
 
-            if( o.photos.length > 300 ){
+            if( o.photos.length > 100 ){
                 duration = 0;
                 easing = 0;
             }
@@ -871,21 +858,22 @@
             }
         },
 
-
         _sort: function( comparator ){
-            this.options.photos.sort( comparator );
+            if( this.options.addAllButton ){
+                this.options.photos.shift();                  // - remove add all button from the begining of array
+                this.options.photos.sort( comparator );       // - sort
+                this.options.photos.unshift(add_all_button);  // - insert add all button at the begining of array
+            }else{
+                this.options.photos.sort( comparator );
+            }
         },
-
-
 
         destroy: function() {
             if (this.thumbscrollerElement) {
                 this.thumbscrollerElement.remove();
             }
-
             $.Widget.prototype.destroy.apply(this, arguments);
         }
     });
-
 
 })(jQuery);
