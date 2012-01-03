@@ -419,10 +419,17 @@ zz.template_cache = zz.template_cache || {};
             }
         },
 
-        changeSrc: function(src, previewSrc) {
-            var self = this;
-            self.options.src = src;
-            self.options.previewSrc = previewSrc;
+        changeSrc: function(json_photo) {
+            var self = this,
+                o = self.options;
+            
+            if( o.context == 'album-picture' ) {
+                     self.options.src = json_photo.full_screen_url;
+                 }else{
+                     self.options.src = json_photo.screen_url;
+                 }
+
+            self.options.previewSrc = json_photo.stamp_url;
             self.options.aspectRatio = null;
             self._loadImage();
         },

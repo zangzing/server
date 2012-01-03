@@ -54,7 +54,8 @@
                 o = self.options,
                 el = self.element;
 
-            //decide scroll direction
+            // decide scroll direction
+            // for grid view (vertical) or single picture view (horizontal)
             if (o.singlePictureMode) {
                 el.css({
                     'overflow-y': 'hidden',
@@ -68,12 +69,12 @@
                 el.touchScrollY();
             }
 
-            // save the current container sise
+            // save the current container size before we hide it
             self.width = parseInt(el.css('width'));
             self.height = parseInt(el.css('height'));
             el.hide(); //hide it for speed inserting photos
 
-            //choose template for cells and size it
+            //choose template for cells and size it as desired
             var template;
             if( o.allowReorder ){
                 template = photogrid_droppablecell_template.clone();
@@ -91,7 +92,7 @@
                 o.lazyLoadThreshold = o.cellWidth * 3;
             }
 
-            // Function to create a single photo cell and append it to the grid.
+            // This function creates a single photo cell and appends it to the grid.
             // It is called below inside a loop that regularly allows the system to
             // process other events.
             var create_photo = function(index, photo) {
@@ -287,7 +288,7 @@
                     //thumbscroller
                     self._setupThumbScroller();
 
-                    //mousewheel and keyboard for single picture
+                    //mousewheel, swipe  and keyboard for single picture
                     if (o.singlePictureMode) {
                         el.mousewheel(function(event) {
                             var delta;
@@ -316,7 +317,7 @@
                             }
                         });
 
-                        //capture all events
+                        //capture keys
                         $(document.documentElement).keydown(function(event) {
                             switch( event.keyCode ){
                                 case 40: //down
@@ -345,6 +346,7 @@
                     if (o.currentPhotoId !== null) {
                         self.scrollToPhoto(o.currentPhotoId, 0, false);
                     }
+                    self._trigger('ready');
                 }
             };
 
@@ -371,6 +373,8 @@
             }
         },
 
+        // Display the element (which was hidded in _create)
+        // bind scrolling and window resizing
         _show_and_arm: function(){
             var self = this,
                 o    = self.options,
@@ -410,6 +414,7 @@
                     }
                 }, 200);
             });
+            self._trigger('visible');
         },
 
         findFirstScrollableContainer: function(){
