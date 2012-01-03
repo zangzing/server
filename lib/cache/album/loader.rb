@@ -54,11 +54,7 @@ module Cache
 
       def self.make_cache_key(user_id, album_type, ver)
         comp_flag = compressed ? "Z1" : "Z0"
-        "Cache.Album.#{comp_flag}.#{album_type}.#{user_id}.#{hash_schema_version}.#{ver}"
-      end
-
-      def cache
-        Rails.cache
+        "Cache.Album.#{comp_flag}.#{album_type}.#{user_id}.#{::Album.hash_schema_version}.#{ver}"
       end
 
       # get a new version, we use time in seconds
@@ -116,7 +112,7 @@ module Cache
           begin
             # compress the content once before caching: save memory and save nginx from compressing every response
             json = checked_gzip_compress(json, 'homepage.cache.corruption', "Key: #{key}, UserId: #{user_id}") if use_compression
-            cache.write(key, json, :expires_in => Manager::CACHE_MAX_INACTIVITY)
+            CacheWrapper.write(key, json, :expires_in => Manager::CACHE_MAX_INACTIVITY)
             cache_man.logger.info "Caching #{key}"
           rescue Exception => ex
             # log the message but continue
@@ -233,102 +229,10 @@ module Cache
         update_cache_state(true)
       end
 
-
-      include PrettyUrlHelper
-      # This tracks the version of the data
-      # provided in a single hashed album for
-      # our api usage.  If you make a change
-      # to the albums_to_hash method below
-      # make sure you bump this version so
-      # we invalidate the browsers cache for
-      # old items.
-      def self.hash_schema_version
-        'v5'
-      end
-
-      # this method returns the album as a map which allows us to perform
-      # very fast json conversion on it
+      # wraps album to hash
       def albums_to_hash(albums)
-        fast_albums = []
-
-        if albums.empty?
-          # return a simple array data type
-          return fast_albums
-        end
-
-        # first grab all the cover photos in one query
-        # this populates the albums in place
-        ::Album.fetch_bulk_covers(albums)
-
-        # we keep a local map of the user_id to name because in most
-        # cases the albums will have the same user - avoids lots of
-        # Activerecord overhead
-        # start with this user since likely to be referenced
-        user_id_to_name_map[user.id.to_s] = user.username
-
-
-        albums.each do |album|
-          album_cover = album.cover
-          album_id = album.id
-          album_name = album.name
-          album_friendly_id = album.friendly_id
-
-          # minimize the trips to the database since many
-          # of the users will be the same for the the different albums
-          album_user_id = album.user_id.to_s
-          album_user_name = user_id_to_name_map[album_user_id]
-          if album_user_name.nil?
-              # don't have it, go to the db and get it
-              album_user_name = album.user.username
-              user_id_to_name_map[album_user_id] = album_user_name
-          end
-
-          # prep for substitution
-          cover_base = nil
-          cover_sizes = nil
-          if album_cover && album_cover.ready?
-            cover_base = album_cover.base_subst_url
-            if cover_base
-              # ok, photo is ready so include sizes map
-              cover_sizes = {
-                  :thumb            => album_cover.suffix_based_on_version(AttachedImage::THUMB),
-                  :iphone_cover     => album_cover.suffix_based_on_version(AttachedImage::IPHONE_COVER),
-                  :iphone_cover_ret => album_cover.suffix_based_on_version(AttachedImage::IPHONE_COVER_RET)
-              }
-            end
-          end
-
-          is_profile_album = album.type == 'ProfileAlbum'
-          if is_profile_album and album_cover.nil? 
-            c_url = ProfileAlbum.default_profile_album_url
-          else
-            c_url =  album_cover.nil? ? nil : album_cover.thumb_url  #todo: this should only return non nil if cover_base is nil
-          end
-
-          hash_album = {
-              :id => album_id,
-              :name => album_name,
-              :user_name => album_user_name,
-              :user_id => album_user_id,
-              :album_path => album_pretty_path(album_user_name, album_friendly_id),
-              :profile_album => is_profile_album,
-              :c_url =>  c_url,
-              :cover_base => cover_base,
-              :cover_sizes => cover_sizes,
-              :photos_count => album.photos_count,
-              :photos_ready_count => album.photos_ready_count,
-              :cache_version => album.cache_version_key,
-              :updated_at => album.updated_at.to_i,
-              :my_role => album.my_role, # valid values are Viewer, Contrib, Admin
-              :all_can_contrib => album.everyone_can_contribute?,
-              :who_can_download => album.who_can_download #Valid values are viewers, owner, everyone
-          }
-          fast_albums << hash_album
-        end
-
-        return fast_albums
+        ::Album.albums_to_hash(albums)
       end
-
 
     end
 

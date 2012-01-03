@@ -3,6 +3,8 @@
 #
 
 class Album < ActiveRecord::Base
+    extend PrettyUrlHelper
+
   attr_accessible :name, :privacy, :cover_photo_id, :photos_last_updated_at, :updated_at, :cache_version, :photos_ready_count,
                   :stream_to_email, :stream_to_facebook, :stream_to_twitter, :who_can_download, :who_can_buy, :who_can_upload, :user_id, :for_print
 
@@ -28,8 +30,24 @@ class Album < ActiveRecord::Base
           'GROUP BY u.id '+
           'ORDER BY u.first_name DESC'
 
-  RESERVED_NAMES = ["photos", "shares", 'activities', 'slides_source', 'people', 'activity']
 
+  PUBLIC   = 'public'
+  HIDDEN   = 'hidden'
+  PASSWORD = 'password'
+  PRIVACIES = [PUBLIC, HIDDEN, PASSWORD]
+  validates_inclusion_of  :privacy, :in => PRIVACIES
+
+  #constants for Album.who_can_upload and Album.who_can_download and Albun.who_can_buy
+  WHO_EVERYONE      = 'everyone'
+  WHO_VIEWERS       = 'viewers'
+  WHO_CONTRIBUTORS  = 'contributors'
+  WHO_OWNER         = 'owner'
+  WHO_CAN = [WHO_EVERYONE, WHO_VIEWERS, WHO_CONTRIBUTORS, WHO_OWNER]
+  validates_inclusion_of  :who_can_download, :in => WHO_CAN
+  validates_inclusion_of  :who_can_upload, :in => WHO_CAN
+  validates_inclusion_of  :who_can_buy, :in => WHO_CAN
+
+  RESERVED_NAMES = ["photos", "shares", 'activities', 'slides_source', 'people', 'activity']
   has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => RESERVED_NAMES, :approximate_ascii => true
 
   validates_presence_of  :user_id
@@ -38,6 +56,7 @@ class Album < ActiveRecord::Base
   validates_uniqueness_of :name, :scope => :user_id, :case_sensitive => false, :message => "You already have an album named \"%{value}\" please try a different name"
 
   before_validation   :uniquify_name, :on => :create
+  before_validation   'self.name.strip!', :if => :name_changed?
 
   before_save   :cover_photo_id_valid?, :if => :cover_photo_id_changed?
 
@@ -50,19 +69,6 @@ class Album < ActiveRecord::Base
   after_create  :add_creator_as_admin
 
   default_scope :order => "`albums`.updated_at DESC"
-
-  PRIVACIES = {'Public' =>'public','Hidden' => 'hidden','Password' => 'password'};
-
-  PUBLIC   = 'public'
-  HIDDEN   = 'hidden'
-  PASSWORD = 'password'
-
-  #constants for Album.who_can_upload and Album.who_can_download and Albun.who_can_buy
-  WHO_EVERYONE      = 'everyone'
-  WHO_VIEWERS       = 'viewers'
-  WHO_CONTRIBUTORS  = 'contributors'
-  WHO_OWNER         = 'owner'
-
 
   # need to override basic destroy behavior since
   # we have to know when we are being destroyed in
@@ -110,6 +116,8 @@ class Album < ActiveRecord::Base
     return true if try_name == name
     user.albums.find_by_name( try_name ).nil?
   end
+
+
 
   # build our base model name for this class and hold onto it as a class variable since we only
   # need to generate it once.  The name built up  has all the support needed by ActiveModel to properly
@@ -564,6 +572,113 @@ class Album < ActiveRecord::Base
   # can be negative or positive
   def self.update_photos_ready_count(album_id, amount)
     Album.update_counters album_id, :photos_ready_count => amount
+  end
+
+  # This tracks the version of the data
+  # provided in a single hashed album for
+  # our api usage.  If you make a change
+  # to the albums_to_hash method below
+  # make sure you bump this version so
+  # we invalidate the browsers cache for
+  # old items.
+  def self.hash_schema_version
+    'v9'
+  end
+
+  # this method returns the album as a map which allows us to perform
+  # very fast json conversion on it - it also represents the standard
+  # api response format for an album
+  #
+  # albums - the array of albums to convert
+  #
+  # if you api wants to add or remove data it should start by calling
+  # this and make the necessary changes since we want a consistent
+  # set of fields
+  def self.albums_to_hash(albums)
+    fast_albums = []
+
+    if albums.empty?
+      # return a simple array data type
+      return fast_albums
+    end
+
+    # first grab all the cover photos in one query
+    # this populates the albums in place
+    Album.fetch_bulk_covers(albums)
+
+    # now fetch all the user_id and user names in one query
+    user_ids = albums.map(&:user_id).uniq
+    users = User.select('id,username').where(:id => user_ids)
+    # and set up the map to track them
+    user_id_to_name = {}
+    users.each do |user|
+      user_id_to_name[user.id] = user.username
+    end
+
+    albums.each do |album|
+      album_cover = album.cover
+      album_id = album.id
+      album_name = album.name
+      album_friendly_id = album.friendly_id
+
+      # fetch the username from our local cache
+      album_user_id = album.user_id
+      album_user_name = user_id_to_name[album_user_id]
+
+      # prep for substitution
+      cover_base = nil
+      cover_sizes = nil
+      cover_id = nil
+      cover_date  = album.created_at.to_i #default value for empty albums
+      if album_cover && album_cover.ready?
+        cover_date = album_cover.capture_date unless album_cover.capture_date.nil?
+        cover_base = album_cover.base_subst_url
+        cover_id = album_cover.id
+        if cover_base
+          # ok, photo is ready so include sizes map
+          cover_sizes = {
+              :thumb            => album_cover.suffix_based_on_version(AttachedImage::THUMB),
+              :iphone_cover     => album_cover.suffix_based_on_version(AttachedImage::IPHONE_COVER),
+              :iphone_cover_ret => album_cover.suffix_based_on_version(AttachedImage::IPHONE_COVER_RET)
+          }
+        end
+      end
+
+      is_profile_album = album.type == 'ProfileAlbum'
+      if is_profile_album and album_cover.nil?
+        c_url = ProfileAlbum.default_profile_album_url
+      else
+        c_url =  album_cover.nil? ? nil : album_cover.thumb_url  #todo: this should only return non nil if cover_base is nil
+      end
+
+      hash_album = {
+          :id => album_id,
+          :name => album_name,
+          :email => album.email,
+          :user_name => album_user_name,
+          :user_id => album_user_id,
+          :album_path => album_pretty_path(album_user_name, album_friendly_id),
+          :profile_album => is_profile_album,
+          :c_url =>  c_url,
+          :cover_id => cover_id,
+          :cover_base => cover_base,
+          :cover_sizes => cover_sizes,
+          :cover_date => cover_date.to_i,
+          :photos_count => album.photos_count,
+          :photos_ready_count => album.photos_ready_count,
+          :cache_version => album.cache_version_key,
+          :updated_at => album.updated_at.to_i,
+          :my_role => album.my_role, # valid values are Viewer, Contrib, Admin
+          :privacy => album.privacy,
+          :all_can_contrib => album.everyone_can_contribute?,
+          :who_can_download => album.who_can_download, #Valid values are viewers, owner, everyone
+          :who_can_upload => album.who_can_upload,
+          :who_can_buy => album.who_can_buy
+      }
+      fast_albums << hash_album
+    end
+
+    return fast_albums
   end
 
 private

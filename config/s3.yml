@@ -9,7 +9,7 @@ common: &common
   access_key_id: AKIAJZR7WODGPXONMRVA
   secret_access_key: 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
   buckets: [d.1.zz, d.2.zz]
-  reduced_redundancy: true
+  reduced_redundancy: false
 
 development:
   <<: *common

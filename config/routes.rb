@@ -69,6 +69,7 @@ Server::Application.routes.draw do
     get    '/albums/:album_id/preview_album_email' => "albums#preview_album_email", :as => :preview_album_email
     get    '/albums/:album_id/privacy'             => 'albums#privacy',             :as => :privacy
     get    '/albums/:album_id/download'            => 'albums#download',            :as => :download_album
+    get    '/albums/:album_id/download_direct'     => 'albums#download_direct',     :as => :download_direct_album
 #   get    '/albums/:album_id'                     => 'albums#show',                :as => :album
 #   get    '/albums/:album_id/edit'                => 'albums#edit',                :as => :edit_album
     get    '/albums/:album_id/close_batch'         => 'albums#close_batch',         :as => :close_batch
@@ -372,6 +373,10 @@ Server::Application.routes.draw do
         put   'users/:id/reset_password'         => 'users#reset_password',       :as => :admin_reset_password
         put   'users/:id/impersonate'            => 'users#impersonate',          :as => :admin_impersonate
 
+        get   'heap'                            => 'heap#index'
+        get   'heap_track'                      => 'heap#track'
+        get   'em_heap'                         => 'heap#em_index'
+        get   'em_heap_track'                   => 'heap#em_track'
     end
 
     #Resque: mount the resque server
@@ -410,7 +415,9 @@ Server::Application.routes.draw do
     get    '/users/:user_id/liked_albums_public'       => 'albums#zz_api_liked_albums_public',       :as => :zz_api_liked_albums_public
     get    '/users/:user_id/liked_users_public_albums' => 'albums#zz_api_liked_users_public_albums', :as => :zz_api_liked_users_public_albums
     get    '/users/:user_id/invited_albums'            => 'albums#zz_api_invited_albums',            :as => :zz_api_invited_albums
+    post   '/users/albums/create'                      => 'albums#zz_api_create',                    :as => :zz_api_create_album
     put    '/albums/:album_id'                         => 'albums#zz_api_update',                    :as => :zz_api_update_album
+    put    '/albums/:album_id/close_batch'             => 'albums#zz_api_close_batch',               :as => :zz_api_close_batch
 
     #photos
     get    '/albums/:album_id/photos'                  => 'photos#zz_api_photos',                    :as => :zz_api_photos

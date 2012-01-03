@@ -118,34 +118,155 @@ class AlbumsController < ApplicationController
     end
   end
 
+  # shared code for album update and creation that
+  # throws a friendly error message from the exception or error
+  # If it gets an exception it doesn't understand it simply
+  # returns that exception
+  def friendly_error(ex, name = nil)
+    if ex.is_a?(FriendlyId::ReservedError)
+      ZZAPIError.new("Sorry, \"#{name}\" is a reserved album name please try a different one")
+    elsif ex.is_a?(FriendlyId::BlankError)
+      ZZAPIError.new("Your album name must contain at least 1 letter or number")
+    elsif ex.is_a?(ActiveModel::Errors)
+      ZZAPIError.new(ex)
+    else
+      ex
+    end
+  end
+
+
+  # update an album
+  #
+  # The zz_api update album method.  Updates the specified album.
+  #
+  # This is called as (PUT):
+  #
+  # /zz_api/albums/:album_id
+  #
+  # You must have an album admin role as determined by the current logged in users rights.
+  #
+  # the expected parameters are (items marked with * are the defaults):
+  #
+  # {
+  # :name => the album name
+  # :privacy => the album privacy can be (public*, hidden, password)
+  # :cover_photo_id => the optional cover photo id
+  # :who_can_download => who is allowed to download (everyone*,viewers,contributors,owner)
+  # :who_can_upload => who is allowed to upload (everyone,viewers,contributors*,owner)
+  # :who_can_buy => who is allowed to buy (everyone*,viewers,contributors,owner)
+  # }
+  #
+  # Returns the modified album in the following form:
+  #
+  # {
+  #    :id => album_id,
+  #    :name => album_name,
+  #    :email => album.email,
+  #    :user_name => album_user_name,
+  #    :user_id => album_user_id,
+  #    :album_path => album_pretty_path(album_user_name, album_friendly_id),
+  #    :profile_album => is_profile_album,
+  #    :c_url =>  cover url,
+  #    :cover_id => cover_id,
+  #    :cover_base => cover_base same as a photo returned where cover_sizes are the substitution sizes,
+  #    :cover_sizes => cover_sizes,
+  #    :photos_count => album.photos_count,
+  #    :photos_ready_count => album.photos_ready_count,
+  #    :cache_version => album.cache_version_key,
+  #    :updated_at => album.updated_at.to_i,
+  #    :cover_date => cover_date.to_i,
+  #    :my_role => album.my_role, # valid values are Viewer, Contrib, Admin - if null and you are the owner then Admin
+  #    :privacy => album.privacy,
+  #    :all_can_contrib => true if everyone can contribute,
+  #    :who_can_download => who can download
+  #    :who_can_upload => who can upload
+  #    :who_can_buy => who can buy
+  # }
+  #
   def zz_api_update
     return unless require_user && require_album && require_album_admin_role
     zz_api do
       begin
-       updates = {}
-       updates[:name]           = params[:name] if params[:name]
-       updates[:privacy]        = params[:privacy] if params[:privacy]
-       updates[:cover_photo_id] = params[:cover_photo_id] if params[:cover_photo_id]
-       if !@album.update_attributes( updates )
-         # Place the message portion of the first error in an exception
-         # Right now there is only space for one error in the custom error object
-         # when we can pass a hash in the custom error object it will be preferred to
-         # raising a new exception
-         # Take the first error in the array (there is at least one) then take the message (second) not the fieldname
-         raise Exception.new( @album.errors.first.second )
-       end
-      rescue FriendlyId::ReservedError
-        raise Exception.new( "Sorry, \"#{params[:name]}\" is a reserved album name please try a different one" )
-      rescue FriendlyId::BlankError
-        raise Exception.new( "Your album name must contain at least 1 letter or number" )
+        fields = filter_params(params, [:name, :privacy, :cover_photo_id, :who_can_upload, :who_can_download, :who_can_buy])
+        if !@album.update_attributes( fields )
+          # shows the first error, web client side currently doesn't deal with hash
+          # once it does, can pass full error format by just passing ex directly inside
+          # ZZAPIError
+          raise ZZAPIError.new(@album.errors.first.second)
+        end
+      rescue ZZAPIError => ex
+        raise ex                # don't convert to friendly if already a ZZAPIError
+      rescue Exception => ex
+        raise friendly_error(ex, fields[:name])
       end
-      album = {
-              :name     => @album.name,
-              :email    => @album.email,
-              :url      => album_pretty_url(@album),
-              :cover_id => ( @album.cover ? @album.cover.id : nil ),
-              :c_url    => ( @album.cover ? @album.cover.thumb_url : nil)
-          }
+      # build the result
+      Album.albums_to_hash([@album])[0]   # hand back the single album result
+    end
+  end
+
+  # create a new album
+  #
+  # The zz_api create album method.  Creates a new album
+  # tied to the current user.
+  #
+  # This is called as (POST):
+  #
+  # /zz_api/albums/create
+  #
+  # Where :user_id is derived from your current account session.
+  #
+  # the expected parameters are (items marked with * are the defaults):
+  #
+  # {
+  # :name => the album name
+  # :privacy => the album privacy can be (public*, hidden, password)
+  # :who_can_download => who is allowed to download (everyone*,viewers,contributors,owner)
+  # :who_can_upload => who is allowed to upload (everyone,viewers,contributors*,owner)
+  # :who_can_buy => who is allowed to buy (everyone*,viewers,contributors,owner)
+  # }
+  #
+  # Returns an album in the following form:
+  #
+  # {
+  #    :id => album_id,
+  #    :name => album_name,
+  #    :email => album.email,
+  #    :user_name => album_user_name,
+  #    :user_id => album_user_id,
+  #    :album_path => album_pretty_path(album_user_name, album_friendly_id),
+  #    :profile_album => is_profile_album,
+  #    :c_url =>  cover url,
+  #    :cover_id => cover_id,
+  #    :cover_base => cover_base same as a photo returned where cover_sizes are the substitution sizes,
+  #    :cover_sizes => cover_sizes,
+  #    :photos_count => album.photos_count,
+  #    :photos_ready_count => album.photos_ready_count,
+  #    :cache_version => album.cache_version_key,
+  #    :updated_at => album.updated_at.to_i,
+  #    :cover_date => cover_date.to_i,
+  #    :my_role => album.my_role, # valid values are Viewer, Contrib, Admin - if null and you are the owner then Admin
+  #    :privacy => album.privacy,
+  #    :all_can_contrib => true if everyone can contribute,
+  #    :who_can_download => who can download
+  #    :who_can_upload => who can upload
+  #    :who_can_buy => who can buy
+  # }
+  #
+  def zz_api_create
+    return unless require_user
+    zz_api do
+      begin
+        fields = filter_params(params, [:name, :privacy, :who_can_upload, :who_can_download, :who_can_buy])
+        fields[:user_id] = current_user.id
+        album = Album.new(fields)
+        unless album.save
+          raise friendly_error(album.errors)
+        end
+      rescue Exception => ex
+        raise friendly_error(ex, fields[:name])
+      end
+      # build the result
+      Album.albums_to_hash([album])[0]   # hand back the single album result
     end
   end
 
@@ -510,6 +631,37 @@ class AlbumsController < ApplicationController
     render :nothing => true
   end
 
+  # close a batch
+  #
+  # Closes the batch specified by the :album_id.
+  #
+  # This is called as (PUT):
+  #
+  # /zz_api/albums/:album_id/close_batch
+  #
+  # Where :album_id is the album you want to close.
+  #
+  #
+  # You must be logged in and have album contributor privileges to close the batch.
+  #
+  # Returns an empty hash
+  #
+  def zz_api_close_batch
+    return unless require_user && require_album && require_album_contributor_role
+    zz_api do
+      album_id = @album.id
+      if album_id
+        # get it but don't create it if doesn't exist
+        current_batch = UploadBatch.get_current_and_touch(current_user.id, album_id, false)
+        if current_batch
+          current_batch.close_immediate
+        end
+      end
+      # just an empty result
+      {}
+    end
+  end
+
 # Receives and processes a user's request for access into a password protected album
   def request_access
     return unless require_user && require_album
@@ -521,13 +673,9 @@ class AlbumsController < ApplicationController
     head :ok and return
   end
 
-  # @album is set by require_album before_filter
-  # prepare to download an on the fly zip of the photos
-  # we return.  The heavy lifting is handled by the mod_zip
-  # plugin to nginx, so our job is to put together the list
-  # of all photos that have been uploaded to amazon
-  def download
-    return unless require_album
+  # shared permissions check for both download and download_direct
+  def download_security_check
+    return false unless require_album
 
     unless  @album.can_user_download?( current_user )
       flash.now[:error] = "Only Authorized Album Group Members can download albums"
@@ -538,47 +686,96 @@ class AlbumsController < ApplicationController
       end
       return false
     end
+    return true
+  end
 
-    # Walk the list of all photos and build a plain test response in the form
-    # crc32 size custom_url name_in_zip_file
-    # since we just added crc32 some files don't have it so it is permissible for it
-    # to be just a -.  When we perform the next full photos resize sweep we can compute
-    # and add it to those that are missing.   The benifit to having this is that it
-    # gives us restartable downloads from an arbitrary point.
+  # Due to issues with Amazons ELB dropping connections and
+  # in some cases dropping the Content-Length header for large requests
+  # we bypass it by doing a redirect to our direct DNS name
+  # this will bypass the ELB and let the client call
+  # back into us directly.
+  def download
+    return unless download_security_check
+
+    # build the single access key if we have a current user
+    #TODO move this to auth helpers
+    key = ''
+    if current_user
+      key = "?zzapi_key=#{current_user.single_access_token}"
+    end
+
+    zz = ZZDeployEnvironment.env.zz
+    redirect_to "http://#{zz[:public_hostname]}#{download_direct_album_path(@album)}#{key}"
+  end
+
+  # @album is set by require_album before_filter
+  # prepare to download an on the fly zip of the photos
+  # we return.  The heavy lifting is handled by the mod_zip
+  # plugin to nginx, so our job is to put together the list
+  # of all photos that have been uploaded to amazon
+  def download_direct
+    return unless download_security_check
+
+    # Walk the list of all photos and build up the zip_download hash that tells
+    # us which files to download and crc32 and filesize info for each file.
+    # Since we just added crc32 some files don't have it so it is permissible for it
+    # to be just nil.  When we perform the next full photos resize sweep we can compute
+    # and add it to those that are missing.
     #
-    # The custom_url must be of the form
-    # /nginx_redirect/host/uri
-    # the nginx_redirect part tells us to proxy through to a remote
-    # server to fetch the actual contents for that file
+    # This call passes the real work to eventmachine in to form:
+    # /proxy_eventmachine/zip_download?json_path=/data/tmp/json_ipc/62845.1323732431.61478.6057566634.json
+    # It must also set the X-Accel-Redirect header with the above uri to cause nginx to internally proxy
+    # to eventmachine.  We have a helper method in the util class that will take a hash, add in the appropriate
+    # user info, save the local ipc file and set up the header.
     #
-    files = ""
+    proxy_data = {
+        :album_name => @album.name,
+        :album_id => @album.id
+    }
+    urls = []
     i = 0
     dup_filter = Set.new
     @album.photos.each do |photo|
       i += 1
       image_path = photo.image_path
-      image_file_size = photo.image_file_size.nil? ? 0 : photo.image_file_size.to_i
-      if (photo.ready? || photo.loaded?) && image_path && image_file_size > 0
+      image_file_size = photo.image_file_size.nil? ? nil : photo.image_file_size.to_i
+      if (photo.ready? || photo.loaded?) && image_path
         full_name = photo.file_name_with_extension(dup_filter, i)
         escaped_url = URI::escape(image_path.to_s)
         uri = URI.parse(escaped_url)
         query = uri.query.blank? ? '' : "?#{uri.query}"
-        crc32 = photo.crc32.nil? ? '-' : photo.crc32.to_s(16)
-        files << "#{crc32} #{image_file_size} /nginx_redirect/#{uri.host}#{uri.path}#{query} #{full_name}\n"
+        crc32 = photo.crc32.nil? ? nil : photo.crc32.to_i
+        capture_date = photo.capture_date
+        local_date = nil
+        if capture_date
+          # need to treat as a local time since database time is UTC but original stored in local time
+          local_date = capture_date.to_i - capture_date.utc_offset
+        end
+        url_info = {
+            :url => "http://#{uri.host}#{uri.path}#{query}",
+            :size => image_file_size,
+            :crc32 => crc32,
+            :create_date => local_date || photo.created_at.to_i,
+            :filename => full_name
+        }
+        urls << url_info
       end
     end
+    proxy_data[:urls] = urls
 
-    if files.blank?
+    if urls.empty?
       flash[:error]="Album has no photos ready for download"
       head :not_found and return
     else
       zza.track_event("albums.download.full")
       Rails.logger.debug("Full album download: #{@album.name}")
       if params[:test]
+        files = JSON.pretty_generate(proxy_data)
         response.headers['Content-Disposition'] = "attachment; filename=testfile.txt"
         render :content_type => "application/octet-stream", :text => files
       else
-        nginx_zip_mod(@album.name, files)
+        prepare_proxy_eventmachine('zip_download', proxy_data)
+        render :nothing => true
       end
       return
     end

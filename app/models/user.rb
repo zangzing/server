@@ -417,15 +417,7 @@ class User < ActiveRecord::Base
   # this method is only called by auto_like_ids
   # and gets cached by it
   def self.fetch_auto_like_ids
-    likeable_users = [
-        'zangzing',
-        'phil',
-        'mauricio',
-        'kathryn',
-        'joseph',
-        'greg',
-        'jeremy'
-    ]
+    likeable_users = [ 'zangzing' ]
 
     # fetch any ids for the above users
     users = User.select(:id).where(:username => likeable_users)

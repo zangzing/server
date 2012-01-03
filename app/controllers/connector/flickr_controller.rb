@@ -2,6 +2,7 @@ class Connector::FlickrController < Connector::ConnectorController
 
   PHOTO_SIZES = {:thumb => 'Medium', :screen => 'zBig', :full => 'Big'}
   MY_STREAM_PER_PAGE = 100
+  PHOTOSET_PAGE_SIZE = 250
   
   def self.api_from_identity(identity)
     flickr_token = identity.credentials

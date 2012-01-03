@@ -57,7 +57,7 @@ module ZZ
                     finished = false
                   else
                     # store the response
-                    response = JSON.parse(response_json).symbolize_keys
+                    response = Hash.recursively_symbolize_graph!(JSON.parse(response_json))
                     rpc_response.response = response
                     if response[:exception]
                       # we have an error, so record the info
@@ -72,7 +72,7 @@ module ZZ
               end
               break if finished
               # not finished, sleep for a brief period then check again
-              sleep(0.5)
+              sleep(0.3)
             end
           rescue Exception => ex   # eat the exception, we will have incomplete results to indicate failure
           end
