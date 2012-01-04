@@ -42,12 +42,18 @@ end
 # gzip compressor and sanity checker
 # does a checked compress and returns the result
 def checked_gzip_compress(orig, zza_event, context)
+  # NOTE: now that we have a fixed version of JSON
+  # I believe we will no longer see any cases of corrupt
+  # json so we have turned off verification and just
+  # do the compress
+  return ActiveSupport::Gzip.compress(orig)
+
   # since we have seen issues with corrupt cache
   # data we are trying to eliminate gzip as the source
   # of the problem so checksum, compress, uncompress and check
   #
   crc = Zlib.crc32(orig, 0)
-  # try to get it right up to 5 times before giving up
+  # try to get it right up to n times before giving up
   3.times do |i|
     compressed = ActiveSupport::Gzip.compress(orig)
     decompressed = ActiveSupport::Gzip.decompress(compressed)
@@ -62,3 +68,33 @@ def checked_gzip_compress(orig, zza_event, context)
   # if we get here we didn't succeed even after multiple tries
   raise "Bad compressed data CRC32 checksum did not match after multiple tries: #{context}"
 end
+
+# sort an array of hashes specifying an
+# array of the fields names you care about
+# items - the array of hashes to sort
+# fields - the fields to sort on from most important to least
+# desc - true if descending order
+def sort_by_fields(items, order, desc)
+  # now do the multi field sort
+  items = items.sort do |first, second|
+    comp = 0
+    # reverse if descending order wanted
+    first, second = second, first if desc
+    order.each do |key|
+      v1 = first[key]
+      v2 = second[key]
+      next if v1 == v2 # values are the same, move on to next sub-sort field
+      if v1.nil? # second wins if first nil
+        comp = 1
+      elsif v2.nil? # first wins if second nil
+        comp = -1
+      else
+        comp = v1 <=> v2
+      end
+      break unless comp == 0
+    end
+    comp
+  end
+  items
+end
+
