@@ -105,6 +105,8 @@
                     aspectRatio: photo.aspect_ratio,
                     previewSrc:  photo.previewSrc,
                     src:         photo.src,
+                    context:     o.context,
+                    type:        _.isUndefined(photo.type) ? 'photo' : photo.type,
                     rolloverSrc: photo.rolloverSrc,
                     maxWidth:    Math.floor(o.cellWidth - 50),
                     maxHeight:   Math.floor(o.cellHeight - 50 - 5),  //35 accounts for height if caption. this is also set in photo.js
@@ -134,8 +136,7 @@
                     isUploading: ! _.isUndefined(photo.state) ? photo.state !== 'ready' : false, //todo: move into photochooser.js
                     isError: photo.state === 'error',
 
-                    context: o.context,
-                    type: _.isUndefined(photo.type) ? 'photo' : photo.type,
+
                     showButtonBar: o.showButtonBar,
                     infoMenuTemplateResolver: o.infoMenuTemplateResolver,
                     rolloverFrameContainer: o.rolloverFrameContainer

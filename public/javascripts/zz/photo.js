@@ -422,13 +422,18 @@ zz.template_cache = zz.template_cache || {};
         changeSrc: function(json_photo) {
             var self = this,
                 o = self.options;
-            
+
+            console.log('changeSrc context is '+ o.context);
             if( o.context == 'album-picture' ) {
+                console.log('setting src to full_screen_url');
                      self.options.src = json_photo.full_screen_url;
                  }else{
+                console.log('setting src to screen_url');
                      self.options.src = json_photo.screen_url;
                  }
 
+            console.log('full_screen_url is  '+ json_photo.full_screen_url);
+            console.log('screen_url is  '+ json_photo.screen_url);
             self.options.previewSrc = json_photo.stamp_url;
             self.options.aspectRatio = null;
             self._loadImage();
