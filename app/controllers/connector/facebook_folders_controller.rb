@@ -29,13 +29,28 @@ class Connector::FacebookFoldersController < Connector::FacebookController
       #album_list.reject! { |a| a[:type] == 'profile' } #Remove 'Profile Pictures'
       unless album_list.empty?
         if album_list.first[:updated_time]
-          album_list.sort!{|a, b|
-            b[:updated_time] <=> a[:updated_time] rescue 0 # we have seen rare cases where facebook returns bad values for these, so need to rescue and return 0
-          }
+          begin
+            album_list.sort!{|a, b|
+              b[:updated_time] <=> a[:updated_time]
+            }
+          rescue Exception => ex
+            # we have seen rare cases where facebook returns bad values and we can't sort
+            # in this case, just leave unsorted
+            Rails.logger.info small_back_trace(ex)
+          end
         end
+
         if target=='me/friends' #Sort by last names
-          album_list = album_list.sort_by { |friend| friend[:name].split(' ').last }
+          begin
+            album_list = album_list.sort_by { |friend| friend[:name].split(' ').last }
+          rescue Exception => ex
+            # we have seen rare cases where facebook returns bad values and we can't sort
+            # in this case, just leave unsorted
+            Rails.logger.info small_back_trace(ex)
+          end
         end
+
+
         @folders = album_list.map do |f|
           {
             :name => f[:name] || "Created #{f[:created_time].strftime('%d %b %Y')}",
