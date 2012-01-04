@@ -41,7 +41,7 @@ class Connector::DropboxFoldersController < Connector::DropboxController
         }
       end
     end
-    contents.compact
+    JSON.fast_generate(contents.compact)
   end
   
   def self.import_whole_folder(api, params)
