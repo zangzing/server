@@ -86,14 +86,14 @@ zz.infomenu = {
             case 'rotatel':
                 ZZAt.track('infomenu.rotatel.click');
                 zz.routes.call_rotate_photo_left(options.subject_id, function(json) {
-                    options.zz_photo.changeSrc(json.thumb_url, json.stamp_url);
+                    options.zz_photo.changeSrc( json );
                 });
                 break;
 
             case 'rotater':
                 ZZAt.track('infomenu.rotater.click');
                 zz.routes.call_rotate_photo_right(options.subject_id, function(json) {
-                    options.zz_photo.changeSrc(json.thumb_url, json.stamp_url);
+                    options.zz_photo.changeSrc( json );
                 });
                 break;
 

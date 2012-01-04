@@ -54,7 +54,8 @@
                 o = self.options,
                 el = self.element;
 
-            //decide scroll direction
+            // decide scroll direction
+            // for grid view (vertical) or single picture view (horizontal)
             if (o.singlePictureMode) {
                 el.css({
                     'overflow-y': 'hidden',
@@ -68,12 +69,12 @@
                 el.touchScrollY();
             }
 
-            // save the current container sise
+            // save the current container size before we hide it
             self.width = parseInt(el.css('width'));
             self.height = parseInt(el.css('height'));
             el.hide(); //hide it for speed inserting photos
 
-            //choose template for cells and size it
+            //choose template for cells and size it as desired
             var template;
             if( o.allowReorder ){
                 template = photogrid_droppablecell_template.clone();
@@ -91,7 +92,7 @@
                 o.lazyLoadThreshold = o.cellWidth * 3;
             }
 
-            // Function to create a single photo cell and append it to the grid.
+            // This function creates a single photo cell and appends it to the grid.
             // It is called below inside a loop that regularly allows the system to
             // process other events.
             var create_photo = function(index, photo) {
@@ -104,6 +105,8 @@
                     aspectRatio: photo.aspect_ratio,
                     previewSrc:  photo.previewSrc,
                     src:         photo.src,
+                    context:     o.context,
+                    type:        _.isUndefined(photo.type) ? 'photo' : photo.type,
                     rolloverSrc: photo.rolloverSrc,
                     maxWidth:    Math.floor(o.cellWidth - 50),
                     maxHeight:   Math.floor(o.cellHeight - 50 - 5),  //35 accounts for height if caption. this is also set in photo.js
@@ -133,8 +136,7 @@
                     isUploading: ! _.isUndefined(photo.state) ? photo.state !== 'ready' : false, //todo: move into photochooser.js
                     isError: photo.state === 'error',
 
-                    context: o.context,
-                    type: _.isUndefined(photo.type) ? 'photo' : photo.type,
+
                     showButtonBar: o.showButtonBar,
                     infoMenuTemplateResolver: o.infoMenuTemplateResolver,
                     rolloverFrameContainer: o.rolloverFrameContainer
@@ -287,7 +289,7 @@
                     //thumbscroller
                     self._setupThumbScroller();
 
-                    //mousewheel and keyboard for single picture
+                    //mousewheel, swipe  and keyboard for single picture
                     if (o.singlePictureMode) {
                         el.mousewheel(function(event) {
                             var delta;
@@ -316,7 +318,7 @@
                             }
                         });
 
-                        //capture all events
+                        //capture keys
                         $(document.documentElement).keydown(function(event) {
                             switch( event.keyCode ){
                                 case 40: //down
@@ -345,6 +347,7 @@
                     if (o.currentPhotoId !== null) {
                         self.scrollToPhoto(o.currentPhotoId, 0, false);
                     }
+                    self._trigger('ready');
                 }
             };
 
@@ -371,6 +374,8 @@
             }
         },
 
+        // Display the element (which was hidded in _create)
+        // bind scrolling and window resizing
         _show_and_arm: function(){
             var self = this,
                 o    = self.options,
@@ -410,6 +415,7 @@
                     }
                 }, 200);
             });
+            self._trigger('visible');
         },
 
         findFirstScrollableContainer: function(){
@@ -546,9 +552,10 @@
         },
 
         scrollToPhoto: function(photoId, duration, highlightCell, callback) {
-            var self = this;
+            var self = this,
+                o = self.options;
 
-            if (self.options.photos.length == 0) {
+            if (o.photos.length == 0) {
                 return;
             }
 
@@ -557,20 +564,21 @@
 
             if (index == -1) {
                 index = 0;
-                photoId = self.options.photos[0].id;
+                photoId = o.photos[0].id;
             }
 
             var onFinishAnimate = function() {
-                self.options.currentPhotoId = photoId;
-                self.options.onScrollToPhoto( index, self.options.photos[index]);
+                o.photos[index].ui_photo.loadIfVisible();
+                o.currentPhotoId = photoId;
+                o.onScrollToPhoto( index, o.photos[index]);
                 if (typeof callback !== 'undefined') {
                     callback();
                 }
             }
 
 
-            if (self.options.singlePictureMode) {
-                var x = index * self.options.cellWidth;
+            if (o.singlePictureMode) {
+                var x = index * o.cellWidth;
 
                 self.animateScrollActive = true;
                 self.element.animate({scrollLeft: x}, duration, 'easeOutCubic', function() {
@@ -580,7 +588,7 @@
 
             }
             else {
-                var y = Math.floor(index / self.cellsPerRow()) * self.options.cellHeight;
+                var y = Math.floor(index / self.cellsPerRow()) * o.cellHeight;
                 self.animateScrollActive = true;
                 self.element.animate({scrollTop: y}, duration, 'easeOutCubic', function() {
                     self.animateScrollActive = false;
