@@ -96,6 +96,12 @@
                     if (typeof(console) != 'undefined') {
                         console.log('ZZ Javascript error: ' + message + ' on: '+url+':'+line);
                     }
+
+                    // if we are not running on production, then show error alert
+                    // so that we see the problem
+                    if(zz.config && zz.config.rails_env != 'photos_production'){
+                        alert('unexpected javascript error:\n' + message + '\n' + url + '\n' + line);
+                    }
                 }
 
             }
