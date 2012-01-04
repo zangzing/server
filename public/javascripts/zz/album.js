@@ -31,12 +31,8 @@ zz.album = {};
         });
 
         zz.buy.on_before_activate(function(){
-            var photo = zz.routes.photos.get_photo_json(current_photo_id);
             if(!zz.buy.is_photo_selected(current_photo_id) && zz.page.current_user_can_buy_photos){
-                // The photos have a link to the ui_photo which also contains the photo.
-                // Set both pointers to null to avoid a circular reference that cannot be serialized
-                var serializable_current_photo_json = $.extend({},current_photo_json,{ui_photo: null, ui_cell: null });
-                zz.buy.add_selected_photo(serializable_current_photo_json);
+                zz.buy.add_selected_photo(current_photo_json);
             }
             ZZAt.track('photo.buy.toolbar.click');
         });
