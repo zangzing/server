@@ -72,17 +72,20 @@ describe "ZZ API" do
         photos << Factory.create(:photo, :user => @user, :album => album, :caption => "A", :capture_date => Time.at(2))
         photos << Factory.create(:photo, :user => @user, :album => album, :caption => "C", :capture_date => Time.at(3))
         photos << Factory.create(:photo, :user => @user, :album => album, :caption => "D", :capture_date => Time.at(4))
+        photos << Factory.create(:photo, :user => @user, :album => album, :caption => '', :capture_date => Time.at(5))
         photos << Factory.create(:photo, :user => @user, :album => album, :caption => nil, :capture_date => nil)
         order_by_name_asc = [
+            photos[6].id,
+            photos[5].id,
             photos[2].id,
             photos[1].id,
             photos[0].id,
             photos[3].id,
             photos[4].id,
-            photos[5].id,
         ]
         order_by_name_desc = order_by_name_asc.reverse
         order_by_date_asc = [
+            photos[6].id,
             photos[0].id,
             photos[1].id,
             photos[2].id,
