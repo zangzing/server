@@ -552,9 +552,10 @@
         },
 
         scrollToPhoto: function(photoId, duration, highlightCell, callback) {
-            var self = this;
+            var self = this,
+                o = self.options;
 
-            if (self.options.photos.length == 0) {
+            if (o.photos.length == 0) {
                 return;
             }
 
@@ -563,20 +564,21 @@
 
             if (index == -1) {
                 index = 0;
-                photoId = self.options.photos[0].id;
+                photoId = o.photos[0].id;
             }
 
             var onFinishAnimate = function() {
-                self.options.currentPhotoId = photoId;
-                self.options.onScrollToPhoto( index, self.options.photos[index]);
+                o.photos[index].ui_photo.loadIfVisible();
+                o.currentPhotoId = photoId;
+                o.onScrollToPhoto( index, o.photos[index]);
                 if (typeof callback !== 'undefined') {
                     callback();
                 }
             }
 
 
-            if (self.options.singlePictureMode) {
-                var x = index * self.options.cellWidth;
+            if (o.singlePictureMode) {
+                var x = index * o.cellWidth;
 
                 self.animateScrollActive = true;
                 self.element.animate({scrollLeft: x}, duration, 'easeOutCubic', function() {
@@ -586,7 +588,7 @@
 
             }
             else {
-                var y = Math.floor(index / self.cellsPerRow()) * self.options.cellHeight;
+                var y = Math.floor(index / self.cellsPerRow()) * o.cellHeight;
                 self.animateScrollActive = true;
                 self.element.animate({scrollTop: y}, duration, 'easeOutCubic', function() {
                     self.animateScrollActive = false;
