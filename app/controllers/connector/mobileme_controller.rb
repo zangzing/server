@@ -54,7 +54,7 @@ protected
         #   "webImagePath"   : "web.jpg",
         #   "largeImageUrl"  : "https://www.me.com/ro/Galleries/1234/DSCF00005/large.jpg",
         #   "largeImagePath" : "large.jpg",
-        full_url = nil
+
         if(photo_info.largeImagePath && !photo_info.largeImagePath.blank? && photo_info.largeImageUrl  && !photo_info.largeImageUrl.blank? )
           full_url = photo_info.largeImageUrl
         else
@@ -64,8 +64,10 @@ protected
         # we have seen a bunch of problem with the 'ro' url and only need it if the album is password protected
         # so convert to the public url if we can
         if !password_protected
-          return convert_to_public_url(full_url)
+          full_url = convert_to_public_url(full_url)
         end
+
+        return full_url
 
       else
         raise "invalid size param: #{size}"
