@@ -1,3 +1,6 @@
+require 'addressable/uri'
+
+
 class Connector::MobilemeController < Connector::ConnectorController
 
   def self.api_from_identity(identity)
@@ -14,6 +17,44 @@ class Connector::MobilemeController < Connector::ConnectorController
       return {'Cookie' => api.cookies_as_string}
     end
   end
+
+
+  # we have seen lots of cases there the mobileme json returns a valid looking url for the 'large' format
+  # that returns 404 error. in these cases, we can only degrade to the 'web' format.
+  # we do the check in this callback because we want it to run in the GeneralImportRequest worker
+  # and not the ConnectorWorker that the user is waiting on
+  def self.get_downloadable_photo_url(photo, source_url)
+
+    # this is the url we will try if the first one doesnt work
+    web_url = source_url.gsub('/large.', '/web.')
+
+    # we switched to the addressable gem because it does a better job
+    # parsing urls than the built in URI module
+    uri = Addressable::URI::parse(source_url)
+
+    # addressable gem doesn't seem to always set port correctly for https urls
+    # so check and set if necessary
+    port = uri.port
+    if uri.scheme == 'https' && port.nil?
+      port = 443
+    end
+
+    http = Net::HTTP.new(uri.host, port)
+    if uri.scheme == 'https'
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    end
+
+    http.request_get(uri.request_uri) do |response|
+        if response.code == "404"
+          return web_url
+        end
+    end
+
+    return source_url
+  end
+
+
 
   def self.moderate_exception(exception)
     return exception
