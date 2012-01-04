@@ -355,9 +355,8 @@ class PhotosController < ApplicationController
     return unless require_album(true) && require_album_viewer_role
     @photos = @album.photos
     sort = params[:sort]
-    # encoded & as %26 due to the way params are passed to the flash player
-    # so that it can be appended to the photo_json url instead of treated
-    # as a separate param
+
+    # set up the sort param to be used in the movie view
     @sort_param = sort.nil? ? nil : "sort=#{sort}"
 
     render 'movie', :layout => false
