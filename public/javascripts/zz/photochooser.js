@@ -219,18 +219,6 @@ zz.photochooser = {
                 });
 
 
-                //create a blank cell so we can float the 'add all photos' button over it
-                if (hasPhotos) {
-                    var addAllButton = {
-                        id: 'add-all-photos',
-                        src: zz.routes.image_url('/images/blank.png'),
-                        caption: '',
-                        type: 'blank'
-                    };
-
-                    children.unshift(addAllButton);
-                }
-
 
                 var gridElement = $('<div class="photogrid"></div>');
                 self.bodyElement.html(gridElement);
@@ -238,6 +226,7 @@ zz.photochooser = {
                 self.grid = gridElement.zz_photogrid({
                     photos: children,
                     showThumbscroller: false,
+                    addAllButton: hasPhotos, //if the folder has photos, add an addAllButton
                     cellWidth: 190,
                     cellHeight: 190,
                     context: 'chooser-grid',
