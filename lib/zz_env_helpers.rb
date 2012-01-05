@@ -74,13 +74,14 @@ end
 # items - the array of hashes to sort
 # fields - the fields to sort on from most important to least
 # desc - true if descending order
-def sort_by_fields(items, order, desc, ignore_case = true)
+# ignore_case - true if you want to ignore case on strings
+def sort_by_fields(items, fields, desc, ignore_case)
   # now do the multi field sort
   items = items.sort do |first, second|
     comp = 0
-    # reverse if descending order wanted
+    # reverse if descending fields wanted
     first, second = second, first if desc
-    order.each do |key|
+    fields.each do |key|
       v1 = first[key]
       v2 = second[key]
       next if v1 == v2 # values are the same, move on to next sub-sort field
