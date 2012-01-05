@@ -756,9 +756,9 @@
                 if( a.caption == b.caption ){
                     return self._capture_date_desc_comp( a, b);
                 }else if( a.caption == null || a.caption == '' || a.caption.length <= 0){
-                    return -1;
-                }else if( b.caption == null || b.caption == '' || b.caption.length <= 0){
                     return 1;
+                }else if( b.caption == null || b.caption == '' || b.caption.length <= 0){
+                    return -1;
                 }
                 return  ( a.caption.toLowerCase() < b.caption.toLowerCase() ? 1 : -1);
             });
@@ -783,9 +783,9 @@
                     //if caption equal go to capture date
                     return self._capture_date_asc_comp( a, b);
                 }else if( arcap == null || arcap == '' || arcap.length <= 0){
-                    return 1;
-                }else if( brcap == null || brcap == '' || brcap.length <= 0){
                     return -1;
+                }else if( brcap == null || brcap == '' || brcap.length <= 0){
+                    return 1;
                 }
                 return ( arcap > brcap? -1 : 1 );
             } );
@@ -803,9 +803,9 @@
                     return( a.created_at < b.created_at ? 1 : -1 );
                 }
             }else if( a.capture_date == null || a.capture_date <= 0 ){
-                return -1;
-            }else if( b.capture_date == null || a.capture_date <= 0 ){
                 return 1;
+            }else if( b.capture_date == null || a.capture_date <= 0 ){
+                return -1;
             }else{
                 return( a.capture_date < b.capture_date ? 1 : -1 );
             }
@@ -821,9 +821,9 @@
                     return( a.created_at > b.created_at ? 1 : -1 );
                 }
             }else if( a.capture_date == null || a.capture_date <= 0 ){
-                return 1;
-            }else if( b.capture_date == null || a.capture_date <= 0 ){
                 return -1;
+            }else if( b.capture_date == null || a.capture_date <= 0 ){
+                return 1;
             }else{
                 return( a.capture_date > b.capture_date ? 1 : -1 );
             }

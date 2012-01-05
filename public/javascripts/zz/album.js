@@ -177,7 +177,8 @@ zz.album = {};
             if (buy_mode && zz.page.current_user_can_buy_photos) {
                 var addAllButton = $('<img class="add-all-button" src="' + zz.routes.image_url('/images/folders/add_all_photos.png') + '">');
                 addAllButton.click(function() {
-                    zz.buy.add_all_photos_from_current_album();
+                      zz.buy.add_all_photos( grid.options.photos );
+                      //zz.buy.add_all_photos_from_current_album();
                 });
                 gridElement.find('.photogrid-cell:first').append(addAllButton);
             }
