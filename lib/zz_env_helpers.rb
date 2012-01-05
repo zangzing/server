@@ -79,8 +79,6 @@ def sort_by_fields(items, fields, desc, ignore_case)
   # now do the multi field sort
   items = items.sort do |first, second|
     comp = 0
-    # reverse if descending fields wanted
-    first, second = second, first if desc
     fields.each do |key|
       v1 = first[key]
       v2 = second[key]
@@ -98,7 +96,8 @@ def sort_by_fields(items, fields, desc, ignore_case)
       end
       break unless comp == 0
     end
-    comp
+    # reverse comparison if descending order wanted
+    desc ? -comp : comp
   end
   items
 end
