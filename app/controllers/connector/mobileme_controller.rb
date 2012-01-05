@@ -25,8 +25,6 @@ class Connector::MobilemeController < Connector::ConnectorController
   # and not the ConnectorWorker that the user is waiting on
   def self.get_downloadable_photo_url(photo, source_url)
 
-    # this is the url we will try if the first one doesnt work
-    web_url = source_url.gsub('/large.', '/web.')
 
     # we switched to the addressable gem because it does a better job
     # parsing urls than the built in URI module
@@ -45,8 +43,9 @@ class Connector::MobilemeController < Connector::ConnectorController
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     end
 
-    http.request_get(uri.request_uri) do |response|
+    http.request_head(uri.request_uri) do |response|
         if response.code == "404"
+          web_url = source_url.gsub('/large.', '/web.')
           return web_url
         end
     end

@@ -43,8 +43,8 @@ Server::Application.configure do
 
 
   # set up cache manager
-  #CacheWrapper.initialize_cache(:mem_cache_store, config, 1.5)
-  CacheWrapper.initialize_cache(:memory_store, config, 1.5)
+  CacheWrapper.initialize_cache(:mem_cache_store, config, 1.5)
+  #CacheWrapper.initialize_cache(:memory_store, config, 1.5)
 
   # mail logger is too verbose, shut it off
   config.action_mailer.logger = nil
