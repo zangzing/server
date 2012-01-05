@@ -84,10 +84,10 @@ def sort_by_fields(items, order, desc)
       v1 = first[key]
       v2 = second[key]
       next if v1 == v2 # values are the same, move on to next sub-sort field
-      if v1.nil? # second wins if first nil
-        comp = 1
-      elsif v2.nil? # first wins if second nil
+      if v1.nil? # nil goes first
         comp = -1
+      elsif v2.nil? # nil goes first
+        comp = 1
       else
         comp = v1 <=> v2
       end
