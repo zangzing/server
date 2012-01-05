@@ -74,7 +74,7 @@ end
 # items - the array of hashes to sort
 # fields - the fields to sort on from most important to least
 # desc - true if descending order
-def sort_by_fields(items, order, desc)
+def sort_by_fields(items, order, desc, ignore_case = true)
   # now do the multi field sort
   items = items.sort do |first, second|
     comp = 0
@@ -89,7 +89,11 @@ def sort_by_fields(items, order, desc)
       elsif v2.nil? # nil goes first
         comp = 1
       else
-        comp = v1 <=> v2
+        if ignore_case && v1.is_a?(String)
+          comp = v1.casecmp(v2)
+        else
+          comp = v1 <=> v2
+        end
       end
       break unless comp == 0
     end
