@@ -264,8 +264,8 @@
                         }else{
                             // Grid View - Show as soon as we have first screen ready
                             self._show_and_arm();
-                            for (var k = i; i < j ; i++) {
-                                o.photos[i].ui_photo.loadIfVisible();
+                            for (var k = i; k < j ; k++) {
+                                o.photos[k].ui_photo.loadIfVisible();
                             }
                         }
                     }
@@ -613,7 +613,7 @@
 
             var top_of_last_row = 0;
 
-            if( o.photos.length > 100 ){
+            if( o.photos.length > 300 ){
                 duration = 0;
                 easing = 0;
             }
