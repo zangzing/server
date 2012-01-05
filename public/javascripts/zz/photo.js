@@ -359,10 +359,11 @@ zz.template_cache = zz.template_cache || {};
         },
 
         delete_photo: function() {
-            var self = this;
+            var self = this,
+                o = self.options;
             if (confirm('Are you sure you want to delete this photo?')) {
-                var next_photo = self.options.photoGrid.nextPhoto( self.options.json.id );
-                if (self.options.onDelete()) {
+                var next_photo = o.photoGrid.nextPhoto( o.json.id );
+                if( o.onDelete() ) {
                     if (!_.isUndefined(self.captionElement)) {
                         self.captionElement.hide();
                     }
@@ -372,12 +373,12 @@ zz.template_cache = zz.template_cache || {};
                     self.borderElement.hide('scale', {}, 300, function() {
                         self.element.animate({width: 0}, 500, function() {
                             self.element.remove();
-                            if (self.options.photoGrid) {
-                                self.options.photoGrid.resetLayout();
-                                if( self.options.context == 'album-picture'){
-                                    self.options.photoGrid.scrollToPhoto(next_photo.id);
+                            if (o.photoGrid) {
+                                o.photoGrid.resetLayout();
+                                if( o.context == 'album-picture'){
+                                    o.photoGrid.scrollToPhoto(next_photo.id);
                                 }else{
-                                    self.options.photoGrid.element.trigger('scroll');
+                                    o.photoGrid.element.trigger('scroll');
                                 }
                             }
                         });
@@ -614,21 +615,21 @@ zz.template_cache = zz.template_cache || {};
                         }else if(  e.keyCode == 9 ){ //tab key
                             commitChanges();
                             if( e.shiftKey ){ //tab forward
-                                if (!_.isUndefined(self.photoGrid)) {
+                                if (!_.isUndefined(o.photoGrid)) {
                                     if( o.showButtonBar ){ //grid view
-                                        self.photoGrid.previousPhoto(o.json.id).ui_photo.editCaption();
+                                        o.photoGrid.previousPhoto(o.json.id).ui_photo.editCaption();
                                     }else{
-                                        self.photoGrid.previousPicture(function(photo){
+                                        o.photoGrid.previousPicture(function(photo){
                                             photo.ui_photo.editCaption();
                                         });
                                     }
                                 }
                             } else { //tab backwards
-                                if (!_.isUndefined(self.photoGrid)) {
+                                if (!_.isUndefined(o.photoGrid)) {
                                     if( o.showButtonBar ){ //grid view
-                                        self.photoGrid.nextPhoto(o.json.id).ui_photo.editCaption();
+                                        o.photoGrid.nextPhoto(o.json.id).ui_photo.editCaption();
                                     }else{
-                                        self.photoGrid.nextPicture(function(photo){
+                                        o.photoGrid.nextPicture(function(photo){
                                             photo.ui_photo.editCaption();
                                         });
                                     }

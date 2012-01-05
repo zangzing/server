@@ -135,7 +135,8 @@ zz.toolbars = {
                 'background-color': '#000000',
                 opacity: 0
             }).appendTo('body').animate({opacity: 1}, 500, function() {
-                    document.location.href = zz.page.album_base_url + '/movie?start=' + zz.page.current_photo_index + '&return_to=' + encodeURIComponent(document.location.href);
+                    var sort = zz.local_storage.get_album_sort( zz.page.album_id );
+                    document.location.href = zz.page.album_base_url + '/movie?sort='+sort+'&start=' + zz.page.current_photo_index + '&return_to=' + encodeURIComponent(document.location.href);
                 });
         });
         zz.buy.toggle_visibility_with_buy_mode($('#footer #play-button'));

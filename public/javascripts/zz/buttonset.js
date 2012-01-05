@@ -51,10 +51,12 @@ zz.buttonset = {};
 
         switch( action_parts[ action_parts.length -1 ] ){
             case 'up':
-                $('.zz-buttonset').find('.zz-setbutton[data-action='+action.substr(0, action.length-3)+']').addClass("active-state");
+                $('.zz-buttonset').find('.zz-setbutton[data-action='+action.substr(0, action.length-3)+']')
+                    .addClass("active-state arrow-up").removeClass('arrow-down');
                 break;
             case 'down':
-                $('.zz-buttonset').find('.zz-setbutton[data-action='+action.substr(0, action.length-5)+']').addClass("active-state");
+                $('.zz-buttonset').find('.zz-setbutton[data-action='+action.substr(0, action.length-5)+']')
+                    .addClass("active-state arrow-down").removeClass('arrow-up');
                 break;
             default:
                 $('.zz-buttonset').find('.zz-setbutton[data-action='+action+']').addClass("active-state");
