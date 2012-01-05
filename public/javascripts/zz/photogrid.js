@@ -421,6 +421,10 @@
 
                     //scroll to photo
                     if (o.currentPhotoId !== null) {
+                        if( o.currentPhotoId == 'first'){
+                           o.currentPhotoId = o.photos[0].id;
+                        }
+
                         self.scrollToPhoto(o.currentPhotoId, 0, false);
                     }
 
