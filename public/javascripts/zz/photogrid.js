@@ -753,17 +753,19 @@
         },
 
         sort_by_date_asc: function( no_layout ){
+             var self = this;
              this._sort( this._capture_date_asc_comp );
              if( typeof no_layout == 'undefined'){
 
-                setTimeout( function(){ this.resetLayout(400, 'easeInOutCubic', true)}, 1);
+                setTimeout( function(){ self.resetLayout(400, 'easeInOutCubic', true)}, 1);
              }
         },
 
         sort_by_date_desc: function( no_layout ){
+            var self = this;
              this._sort( this._capture_date_desc_comp );
             if( typeof no_layout == 'undefined'){
-                setTimeout( function(){ this.resetLayout(400, 'easeInOutCubic', true)}, 1);
+                setTimeout( function(){ self.resetLayout(400, 'easeInOutCubic', true)}, 1);
             }
         },
 
@@ -782,7 +784,7 @@
                 return  ( acaption_lowercase < bcaption_lowercase ? 1 : -1);
             });
             if( typeof no_layout == 'undefined'){
-                setTimeout( function(){ this.resetLayout(400, 'easeInOutCubic', true)}, 1);
+                setTimeout( function(){ self.resetLayout(400, 'easeInOutCubic', true)}, 1);
             }
         },
 
@@ -809,7 +811,7 @@
                 return ( arcap > brcap? -1 : 1 );
             } );
             if( typeof no_layout == 'undefined'){
-                setTimeout( function(){ this.resetLayout(400, 'easeInOutCubic', true)}, 1);
+                setTimeout( function(){ self.resetLayout(400, 'easeInOutCubic', true)}, 1);
             }
         },
 
