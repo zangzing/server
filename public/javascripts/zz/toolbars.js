@@ -483,7 +483,7 @@ zz.toolbars = {
 
                 var arm_text_field = function(){
                     text_field.val( zz.page.album_name );
-                    okButton.text('ok');
+                    okButton.text('OK');
 
                     okButton.click(commit_title_change);
                     text_field.blur(commit_title_change);
