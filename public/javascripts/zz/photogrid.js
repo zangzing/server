@@ -59,7 +59,7 @@
             }
 
             // Large album optimization flag
-            self.large_album = o.photos.length > 3000 ;
+            self.large_album = o.photos.length > 2000 ;
             if( self.large_album ){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Wowsers! Your album has a ton of photos. It will take us a minute or two to display it. Please be patient", 350, 150);
             }

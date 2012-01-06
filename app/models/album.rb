@@ -499,6 +499,7 @@ class Album < ActiveRecord::Base
   end
 
   def can_user_edit?( user )
+    return nil if user.nil?
     admin?(user.id )
   end
 
