@@ -365,7 +365,9 @@ zz.template_cache = zz.template_cache || {};
         delete_photo: function() {
             var self = this,
                 o = self.options;
-            self.rollover_clone.trigger('mouseleave');
+            if( !_.isUndefined( self.rollover_clone )){
+                self.rollover_clone.trigger('mouseleave');
+            }
             if (confirm('Are you sure you want to delete this photo?')) {
                 var next_photo = o.photoGrid.nextPhoto( o.json.id );
                 if( o.onDelete() ) {
@@ -377,7 +379,9 @@ zz.template_cache = zz.template_cache || {};
                     }
                     self.borderElement.hide('scale', {}, 300, function() {
                         self.element.animate({width: 0}, 500, function() {
-                            self.rollover_clone.trigger('mouseleave');
+                            if( !_.isUndefined( self.rollover_clone )){
+                                self.rollover_clone.trigger('mouseleave');
+                            }
                             self.element.remove();
                             if (o.photoGrid) {
                                 o.photoGrid.resetLayout();
