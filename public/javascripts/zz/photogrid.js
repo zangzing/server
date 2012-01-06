@@ -58,6 +58,9 @@
                 o.currentPhotoId = o.photos[0].id;
             }
 
+            // Large album optimization flag
+            self.large_album = o.photos.length > 3000 ;
+
             // decide scroll direction
             // for grid view (vertical) or single picture view (horizontal)
             if (o.singlePictureMode) {
@@ -274,12 +277,14 @@
                             o.photos[index].ui_photo.loadIfVisible();
                         }else{
                             // Grid View - Show as soon as we have first screen ready
-                            setTimeout( function(){
-                                self._show_and_arm();
-                                for (var k = i; k < j ; k++) {
-                                    o.photos[k].ui_photo.loadIfVisible();
-                                }
-                            }, time_lapse);
+                            if( !self.large_album ){
+                                setTimeout( function(){
+                                    self._show_and_arm();
+                                    for (var k = i; k < j ; k++) {
+                                        o.photos[k].ui_photo.loadIfVisible();
+                                    }
+                                }, time_lapse);
+                            }
                         }
                     }
 
@@ -289,6 +294,15 @@
 
                 } else {
                     //All photos have been created, add bells and whistles
+                    if( self.large_album ){
+                        setTimeout( function(){
+                            self._show_and_arm();
+                            self.large_album_dialog.close();
+                            for (var k = 0; k < o.photos.length ; k++) {
+                                o.photos[k].ui_photo.loadIfVisible();
+                            }
+                        }, time_lapse);
+                    }
 
                     //hideNativeScroller
                     if (o.hideNativeScroller) {
@@ -375,10 +389,11 @@
                     self.sort_by( o.sort, true ); //no layout
                 }
 
-                //optimize parameters for gigantic albums
-                if( o.photos.length > 3000 ){
-                    batch_size = 300;
+                //optimize parameters for large albums
+                if( self.large_album ){
+                    batch_size = 200;
                     time_lapse = 10;
+                    self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Wowsers! Your album has a ton of photos. It will take us a minute or two to display it. Please be patient", 400, 200);
                 }
                 // Start creating photos, at the end of the creation
                 // process all grid elements will be bound and active
@@ -756,8 +771,7 @@
              var self = this;
              this._sort( this._capture_date_asc_comp );
              if( typeof no_layout == 'undefined'){
-
-                setTimeout( function(){ self.resetLayout(400, 'easeInOutCubic', true)}, 1);
+                self._timed_out_layout("Hot Diggety! Did you take all of these? Sorting them for you, give us a minute");
              }
         },
 
@@ -765,7 +779,7 @@
             var self = this;
              this._sort( this._capture_date_desc_comp );
             if( typeof no_layout == 'undefined'){
-                setTimeout( function(){ self.resetLayout(400, 'easeInOutCubic', true)}, 1);
+                self._timed_out_layout("Blimey! Ordering a double-stack of pics. Give us a minute");
             }
         },
 
@@ -784,7 +798,7 @@
                 return  ( acaption_lowercase < bcaption_lowercase ? 1 : -1);
             });
             if( typeof no_layout == 'undefined'){
-                setTimeout( function(){ self.resetLayout(400, 'easeInOutCubic', true)}, 1);
+                self._timed_out_layout("Yeeeepeee! We are shuffling a bundle of photos. Give us a minute");
             }
         },
 
@@ -811,7 +825,7 @@
                 return ( arcap > brcap? -1 : 1 );
             } );
             if( typeof no_layout == 'undefined'){
-                setTimeout( function(){ self.resetLayout(400, 'easeInOutCubic', true)}, 1);
+               self._timed_out_layout("Woooha! We are sorting a ton of photos. Give us a minute");
             }
         },
 
@@ -847,6 +861,21 @@
                 return 1;
             }else{
                 return( a.capture_date > b.capture_date ? 1 : -1 );
+            }
+        },
+
+        _timed_out_layout: function(message){
+            var self = this;
+            if( self.large_album ){
+             self.large_album_dialog = zz.dialog.show_spinner_progress_dialog(message, 400, 200);
+                setTimeout( function(){
+                    self.element.hide();
+                    self.resetLayout(400, 'easeInOutCubic', true);
+                    self.element.fadeIn('fast');
+                    self.large_album_dialog.close();
+                }, 1);
+            } else {
+                setTimeout( function(){ self.resetLayout(400, 'easeInOutCubic', true); });
             }
         },
 
