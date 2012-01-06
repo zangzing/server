@@ -8,7 +8,10 @@ zz.buttonset = {};
 
 (function($){
     zz.buttonset.init = function( default_action ){
-        $('.zz-setbutton:not(.ui-state-disabled)')
+        $('.zz-buttonset').attr('disabled','');
+        $('#view-sort-bar div.set-title').attr('disabled','');
+        $('.zz-setbutton')
+            .unbind('click')
             .hover(
             function(){
                 $(this).addClass("hover-state");
@@ -64,4 +67,16 @@ zz.buttonset = {};
         }
 
     }
+
+    zz.buttonset.disable = function(message){
+        $('.zz-buttonset').attr('disabled','disabled');
+        $('.zz-setbutton')
+            .unbind('hover')
+            .unbind('mousedown');
+        if(!_.isUndefined(message)){
+            $('.zz-setbutton').click( function(){ alert(message) });
+        }
+        $('#view-sort-bar div.set-title').attr('disabled','disabled');
+    }
+
 })(jQuery);

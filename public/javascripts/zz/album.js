@@ -120,7 +120,10 @@ zz.album = {};
 
             $('#article').html(gridElement).css('overflow', 'hidden');
 
-
+            // Add sort buttons
+            var sort_bar = zz.album.sort_bar_template.clone();
+            gridElement.append( sort_bar );
+            zz.buttonset.disable('ZangZing is preparing '+photos.length+' photos. Sort will be enabled when the album is ready.');
 
             var grid = gridElement.zz_photogrid( {
                 photos:       photos,
@@ -172,8 +175,8 @@ zz.album = {};
             }).data().zz_photogrid;
 
             gridElement.bind('zz_photogridready', function(){
-                //add sort bar to gridelement when grid is ready
-                init_sort_bar(gridElement);
+                //init sort bar when grid is ready
+                init_sort_bar(grid);
             });
 
 
@@ -622,29 +625,25 @@ zz.album = {};
         });
     }
 
-    function init_sort_bar( grid_element ){
-        var sort_bar = zz.album.sort_bar_template.clone();
-        sort_bar.hide();
-        grid_element.append( sort_bar );
-        sort_bar.fadeIn('fast');
-        sort_bar.bind("buttonset-click",function( event, action ){
+    function init_sort_bar( grid ){
+        $('#view-sort-bar').bind("buttonset-click",function( event, action ){
             ZZAt.track('album.'+action+'.click');
             switch( action ){
                 case'sort-name-up':
-                    grid_element.data().zz_photogrid.sort_by_name_asc();
+                    grid.sort_by_name_asc();
                     zz.local_storage.set_album_sort( zz.page.album_id, 'name-asc' );
                     break;
                 case'sort-name-down':
-                    grid_element.data().zz_photogrid.sort_by_name_desc();
+                    grid.sort_by_name_desc();
                     zz.local_storage.set_album_sort( zz.page.album_id, 'name-desc' );
                     break;
                 case'sort-date-down':
-                    grid_element.data().zz_photogrid.sort_by_date_desc();
+                    grid.sort_by_date_desc();
                     zz.local_storage.set_album_sort( zz.page.album_id, 'date-desc' );
                     break;
                 case'sort-date-up':
                 default:
-                    grid_element.data().zz_photogrid.sort_by_date_asc();
+                    grid.sort_by_date_asc();
                     zz.local_storage.set_album_sort( zz.page.album_id, 'date-asc' );
                     break;
             }
@@ -657,7 +656,6 @@ zz.album = {};
             case 'date-asc':
             default: zz.buttonset.init('sort-date-up'); break;
         }
-        return sort_bar;
     }
 })();
 

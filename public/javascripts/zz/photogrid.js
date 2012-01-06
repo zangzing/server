@@ -371,6 +371,10 @@
                 if( o.sort ){
                     self.sort_by( o.sort, true ); //no layout
                 }
+
+                if( o.photos.length > 3000 ){
+                    batch_size = 500;
+                }
                 // Start creating photos, at the end of the creation
                 // process all grid elements will be bound and active
                 create_some_photos(0);
@@ -620,7 +624,7 @@
 
             var top_of_last_row = 0;
 
-            if( o.photos.length > 300 ){
+            if( o.photos.length > 200 ){
                 duration = 0;
                 easing = 0;
             }
