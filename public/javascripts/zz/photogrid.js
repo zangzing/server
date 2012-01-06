@@ -377,7 +377,7 @@
 
                 //optimize parameters for gigantic albums
                 if( o.photos.length > 3000 ){
-                    batch_size = 500;
+                    batch_size = 300;
                     time_lapse = 10;
                 }
                 // Start creating photos, at the end of the creation
