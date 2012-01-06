@@ -60,6 +60,9 @@
 
             // Large album optimization flag
             self.large_album = o.photos.length > 3000 ;
+            if( self.large_album ){
+                self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Wowsers! Your album has a ton of photos. It will take us a minute or two to display it. Please be patient", 350, 150);
+            }
 
             // decide scroll direction
             // for grid view (vertical) or single picture view (horizontal)
@@ -395,8 +398,6 @@
                 //optimize parameters for large albums
                 if( self.large_album ){
                     batch_size = 200;
-                    time_lapse = 10;
-                    self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Wowsers! Your album has a ton of photos. It will take us a minute or two to display it. Please be patient", 350, 150);
                 }
                 // Start creating photos, at the end of the creation
                 // process all grid elements will be bound and active
@@ -772,7 +773,7 @@
 
         sort_by_date_asc: function( no_layout ){
              var self = this;
-//            console.log('sort_by_date_asc');
+            console.log('sort_by_date_asc');
              if( typeof no_layout == 'undefined'){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Hot Diggety! Did you take all of these? Sorting them for you, give us a minute", 350,150);
              }
@@ -784,7 +785,7 @@
 
         sort_by_date_desc: function( no_layout ){
             var self = this;
-//            console.log('sort_by_name_desc');
+            console.log('sort_by_name_desc');
             if( typeof no_layout == 'undefined'){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Blimey! Ordering a double-stack of pics. Give us a minute", 350,150);
             }
@@ -796,7 +797,7 @@
 
         sort_by_name_desc: function( no_layout ){
             var self = this;
-//            console.log('sort_by_name_desc');
+            console.log('sort_by_name_desc');
             if( typeof no_layout == 'undefined'){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Yeeeepeee! We are shuffling a bundle of photos. Give us a minute", 350,150);
             }
@@ -819,7 +820,7 @@
 
         sort_by_name_asc: function(no_layout){
             var self = this;
-//            console.log('sort_by_name_asc');
+            console.log('sort_by_name_asc');
             if( typeof no_layout == 'undefined'){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Woooha! We are sorting a ton of photos. Give us a minute", 350,150);
             }
