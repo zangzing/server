@@ -120,8 +120,7 @@ zz.album = {};
 
             $('#article').html(gridElement).css('overflow', 'hidden');
 
-            //add sort bar to element
-            init_sort_bar(gridElement);
+
 
             var grid = gridElement.zz_photogrid( {
                 photos:       photos,
@@ -172,6 +171,11 @@ zz.album = {};
                 }
             }).data().zz_photogrid;
 
+            gridElement.bind('zz_photogridready', function(){
+                //add sort bar to gridelement when grid is ready
+                init_sort_bar(gridElement);
+            });
+
 
 
             if (buy_mode && zz.page.current_user_can_buy_photos) {
@@ -183,7 +187,6 @@ zz.album = {};
                 gridElement.find('.photogrid-cell:first').append(addAllButton);
             }
         });
-
     }
 
 
@@ -608,7 +611,9 @@ zz.album = {};
 
     function init_sort_bar( grid_element ){
         var sort_bar = zz.album.sort_bar_template.clone();
+        sort_bar.hide();
         grid_element.append( sort_bar );
+        sort_bar.fadeIn('fast');
         sort_bar.bind("buttonset-click",function( event, action ){
             ZZAt.track('album.'+action+'.click');
             switch( action ){

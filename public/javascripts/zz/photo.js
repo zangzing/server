@@ -39,7 +39,8 @@ zz.template_cache = zz.template_cache || {};
             context: null,                //context -- album-edit, album-grid, album-picture, album-timeline, album-people, chooser-grid, chooser-picture
             type: 'photo',               //photo \ folder \ blank
             captionHeight: 30,
-            rolloverFrameContainer: null
+            rolloverFrameContainer: null,
+            captionLength: 400
         },
 
         _create: function() {
@@ -607,6 +608,16 @@ zz.template_cache = zz.template_cache || {};
                     textBoxElement.blur(function() {
                         commitChanges();
                         return false;
+                    });
+
+                    textBoxElement.keyup(function(){
+                        var text = $(this).val();
+                        if(text.length > o.captionLength ){
+                            alert("Photo caption name cannot exceed "+o.captionLength+" characters");
+                            var new_text = text.substr(0, o.captionLength);
+                            $(this).val(new_text);
+                            $(this).selectRange( o.captionLength,o.captionLength);
+                        }
                     });
 
                     textBoxElement.keydown(function(e) {

@@ -382,7 +382,7 @@
                 o    = self.options,
                 el   = self.element;
 
-            el.show();
+            el.fadeIn('fast');
 
             // Window Resize Handler
             var resizeTimer = null;
