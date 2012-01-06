@@ -96,24 +96,33 @@
                 o.lazyLoadThreshold = o.cellWidth * 3;
             }
 
+            //max dimenstions for photos
+            var max_width = Math.floor(o.cellWidth - 50);
+            var max_height = Math.floor(o.cellHeight - 50 - 5); //35 accounts for height if caption. this is also set in photo.js
+
             // This function creates a single photo cell and appends it to the grid.
             // It is called below inside a loop that regularly allows the system to
             // process other events.
             var create_photo = function(index, photo) {
                 var cell = template.clone();
                 cell.zz_photo({
+                    photoGrid:   self,
+
                     json:        photo,
                     photoId:     photo.id,
-                    photoGrid:   self,
                     caption:     photo.caption,
                     aspectRatio: photo.aspect_ratio,
                     previewSrc:  photo.previewSrc,
                     src:         photo.src,
-                    context:     o.context,
-                    type:        _.isUndefined(photo.type) ? 'photo' : photo.type,
                     rolloverSrc: photo.rolloverSrc,
-                    maxWidth:    Math.floor(o.cellWidth - 50),
-                    maxHeight:   Math.floor(o.cellHeight - 50 - 5),  //35 accounts for height if caption. this is also set in photo.js
+
+                    type:        _.isUndefined(photo.type) ? 'photo' : photo.type,
+                    isUploading: ! _.isUndefined(photo.state) ? photo.state !== 'ready' : false, //todo: move into photochooser.js
+                    isError:     photo.state === 'error',
+
+                    context:     o.context,
+                    maxWidth:    max_width,
+                    maxHeight:   max_height,
 
                     allowDelete: o.allowDelete,
                     onDelete: function() {
@@ -137,9 +146,6 @@
 
                     scrollContainer: el,
                     lazyLoadThreshold: o.lazyLoadThreshold,
-                    isUploading: ! _.isUndefined(photo.state) ? photo.state !== 'ready' : false, //todo: move into photochooser.js
-                    isError: photo.state === 'error',
-
 
                     showButtonBar: o.showButtonBar,
                     infoMenuTemplateResolver: o.infoMenuTemplateResolver,

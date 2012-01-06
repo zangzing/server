@@ -25,7 +25,7 @@ function ZZA(id, useridentifier, usemixpanel) {
     this.closing = false;
 
     this.re = /[\x00-\x1f\\"]/;
-    this.stringescape = {
+    var stringescape = {
         '\b': '\\b',
         '\t': '\\t',
         '\n': '\\n',
@@ -247,7 +247,7 @@ function ZZA(id, useridentifier, usemixpanel) {
         return string.replace(
                 /[\x00-\x1f\\"]/g,
                 function(a) {
-                    var b = this.stringescape[a];
+                    var b = stringescape[a];
                     if (b)
                         return b;
                     b = a.charCodeAt();

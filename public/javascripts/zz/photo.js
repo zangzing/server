@@ -14,22 +14,25 @@ zz.template_cache = zz.template_cache || {};
 
     $.widget('ui.zz_photo', {
         options: {
-            json: null,
             photoGrid: null,
+
+            json: null,
+            caption: null,                //model
+            src: null,                    //model
+            previewSrc: null,             //model
+            rolloverSrc: null,            //model
+
             allowDelete: false,          //context
             onDelete: jQuery.noop,        //model
             maxHeight: 120,               //context
             maxWidth: 120,                //context
-            caption: null,                //model
+
             allowEditCaption: false,      //context
             onChangeCaption: jQuery.noop, //model
-            src: null,                    //model
-            previewSrc: null,             //model
-            rolloverSrc: null,            //model
+
             scrollContainer: null,
             lazyLoadThreshold: 0,
             onClick: jQuery.noop,         //model
-            onMagnify: jQuery.noop,       //model
             photoId: null,                //model
             aspectRatio: 0,               //model
             isUploading: false,           //model
@@ -38,8 +41,8 @@ zz.template_cache = zz.template_cache || {};
             infoMenuTemplateResolver: null,        // show InfoMenu or not and what style
             context: null,                //context -- album-edit, album-grid, album-picture, album-timeline, album-people, chooser-grid, chooser-picture
             type: 'photo',               //photo \ folder \ blank
-            captionHeight: 30,
             rolloverFrameContainer: null,
+            captionHeight: 30,
             captionLength: 400
         },
 
@@ -428,13 +431,13 @@ zz.template_cache = zz.template_cache || {};
                 o = self.options;
 
             if( o.context == 'album-picture' ) {
-                self.options.src = json_photo.full_screen_url;
+                o.src = json_photo.full_screen_url;
             }else{
-                self.options.src = json_photo.screen_url;
+                o.src = json_photo.screen_url;
             }
 
-            self.options.previewSrc = json_photo.stamp_url;
-            self.options.aspectRatio = null;
+            o.previewSrc = json_photo.stamp_url;
+            o.aspectRatio = null;
             self._loadImage();
         },
 

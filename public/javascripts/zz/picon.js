@@ -25,7 +25,7 @@
          info_button_template = $('<div class="button info-button">'),
          share_button_template = $('<div class="button share-button">');
 
-
+    var MAX_NAME = 50;
 
 
     $.widget('ui.zz_picon', {
@@ -252,7 +252,7 @@
                     disarmCaptionEditor();
                     ZZAt.track('albumframe.title.click');
                     var newCaption = $.trim( textBoxElement.val() );
-                    if (newCaption !== self.options.caption) {
+                    if (newCaption !== self.options.caption && newCaption.length <= MAX_NAME) {
                       self.options.onChangeCaption(newCaption,
                             function(data){ //onSuccess
                                 self.options.caption = newCaption;
@@ -278,29 +278,23 @@
                     textBoxElement.blur(function(eventObject) {
                         commitChanges();
                         return false;
-                    });
-
-                    textBoxElement.keydown(function(e) {
-                        if (e.keyCode == 13 || e.keyCode == 9) {  //enter or tab
-                            commitChanges();
-                            return false;
-                        } else if( e.keyCode == 27 ){  //escape
-                                resetCaption( self.options.caption );
-                        }
-                    });
-
-                    textBoxElement.keyup(function(){
+                    })
+                        .keydown(function(e) {
                         var text = $(this).val();
-                        if(text.length > 50 ){
-                            alert("Album name cannot exceed 50 characters");
-                            var new_text = text.substr(0, 50);
+                        if(text.length > MAX_NAME ){
+                            alert("Album name cannot exceed "+MAX_NAME+" characters");
+                            var new_text = text.substr(0, MAX_NAME);
                             $(this).val(new_text);
-                            $(this).selectRange( 50,50);
+                            $(this).selectRange( MAX_NAME,MAX_NAME);
+                        }else{
+                            if (e.keyCode == 13 || e.keyCode == 9) {  //enter or tab
+                                commitChanges();
+                                return false;
+                            } else if( e.keyCode == 27 ){  //escape
+                                resetCaption( self.options.caption );
+                            }
                         }
-                    });
-
-                    textBoxElement.focus();
-                    textBoxElement.select();
+                    }).focus().select();
                 }
 
                 var disarmCaptionEditor = function(){
