@@ -432,7 +432,20 @@ zz.album = {};
                     photos: filteredPhotos,
                     sort: zz.local_storage.get_album_sort( zz.page.album_id),
                     allowDelete: false,
-                    allowEditCaption: false,
+                    allowEditCaption: zz.page.current_user_can_edit,
+                    onChangeCaption: function(index, photo, caption) {
+                        $.ajax({
+                            type: 'POST',
+                            dataType: 'json',
+                            url: zz.routes.path_prefix + '/photos/' + photo.id + '.json',
+                            data: {'photo[caption]': caption, _method: 'put'},
+                            error: function(error) {
+                            }
+
+                        });
+                        return true;
+
+                    },
                     allowReorder: false,
                     cellWidth: 230,
                     cellHeight: 230,
