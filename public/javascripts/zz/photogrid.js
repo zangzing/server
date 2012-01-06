@@ -54,6 +54,10 @@
                 o = self.options,
                 el = self.element;
 
+            if( o.currentPhotoId == 'first'){
+                o.currentPhotoId = o.photos[0].id;
+            }
+
             // decide scroll direction
             // for grid view (vertical) or single picture view (horizontal)
             if (o.singlePictureMode) {
@@ -360,9 +364,6 @@
                 //sort the photos for the grid
                 if( o.sort ){
                     self.sort_by( o.sort, true ); //no layout
-                }
-                if( o.currentPhotoId == 'first'){
-                    o.currentPhotoId = o.photos[0].id;
                 }
                 // Start creating photos, at the end of the creation
                 // process all grid elements will be bound and active
