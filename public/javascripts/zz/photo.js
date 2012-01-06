@@ -422,6 +422,9 @@ zz.template_cache = zz.template_cache || {};
 
         loadIfVisible: function(containerDimensions) {
             var self = this;
+            if( !_.isUndefined( self.rollover_clone) ){
+              self.rollover_clone.trigger('mouseleave');
+            }
             if (!self.imageLoaded) {
                 if (self._inLazyLoadRegion(containerDimensions)) {
                     self._loadImage();

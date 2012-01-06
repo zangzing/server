@@ -274,10 +274,12 @@
                             o.photos[index].ui_photo.loadIfVisible();
                         }else{
                             // Grid View - Show as soon as we have first screen ready
-                            self._show_and_arm();
-                            for (var k = i; k < j ; k++) {
-                                o.photos[k].ui_photo.loadIfVisible();
-                            }
+                            setTimeout( function(){
+                                self._show_and_arm();
+                                for (var k = i; k < j ; k++) {
+                                    o.photos[k].ui_photo.loadIfVisible();
+                                }
+                            }, time_lapse);
                         }
                     }
 
@@ -375,8 +377,8 @@
 
                 //optimize parameters for gigantic albums
                 if( o.photos.length > 3000 ){
-                    batch_size = 1000;
-                    time_lapse = 100;
+                    batch_size = 500;
+                    time_lapse = 10;
                 }
                 // Start creating photos, at the end of the creation
                 // process all grid elements will be bound and active
