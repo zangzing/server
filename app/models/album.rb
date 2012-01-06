@@ -82,7 +82,7 @@ class Album < ActiveRecord::Base
       album = Album.find(id)
     end
 
-    if id.to_s.starts_with(Album::DEFAULT_NAME.parameterize) && album.name.parameterize != id
+    if id.to_s.starts_with?(Album::DEFAULT_NAME.parameterize) && album.name.parameterize != id
         raise(ActiveRecord::RecordNotFound)
     end
 
