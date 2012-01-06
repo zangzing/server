@@ -59,7 +59,7 @@
             }
 
             // Large album optimization flag
-            self.large_album = o.photos.length > 3000 ;
+            self.large_album = o.photos.length > 100 ;
 
             // decide scroll direction
             // for grid view (vertical) or single picture view (horizontal)
@@ -301,6 +301,7 @@
                             for (var k = 0; k < o.photos.length ; k++) {
                                 o.photos[k].ui_photo.loadIfVisible();
                             }
+                            self._trigger('ready');
                         }, time_lapse);
                     }
 
@@ -374,7 +375,9 @@
                     if (o.currentPhotoId !== null) {
                         self.scrollToPhoto(o.currentPhotoId, 0, false);
                     }
-                    self._trigger('ready');
+                     if( !self.large_album ){
+                        self._trigger('ready');
+                     }
                 }
             };
 
@@ -393,7 +396,7 @@
                 if( self.large_album ){
                     batch_size = 200;
                     time_lapse = 10;
-                    self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Wowsers! Your album has a ton of photos. It will take us a minute or two to display it. Please be patient", 400, 200);
+                    self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Wowsers! Your album has a ton of photos. It will take us a minute or two to display it. Please be patient", 350, 150);
                 }
                 // Start creating photos, at the end of the creation
                 // process all grid elements will be bound and active
@@ -769,22 +772,34 @@
 
         sort_by_date_asc: function( no_layout ){
              var self = this;
-             this._sort( this._capture_date_asc_comp );
+//            console.log('sort_by_date_asc');
              if( typeof no_layout == 'undefined'){
-                self._timed_out_layout("Hot Diggety! Did you take all of these? Sorting them for you, give us a minute");
+                self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Hot Diggety! Did you take all of these? Sorting them for you, give us a minute", 350,150);
+             }
+             this._sort( this._capture_date_asc_comp );
+            if( typeof no_layout == 'undefined'){
+                self._timed_out_layout();
              }
         },
 
         sort_by_date_desc: function( no_layout ){
             var self = this;
-             this._sort( this._capture_date_desc_comp );
+//            console.log('sort_by_name_desc');
             if( typeof no_layout == 'undefined'){
-                self._timed_out_layout("Blimey! Ordering a double-stack of pics. Give us a minute");
+                self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Blimey! Ordering a double-stack of pics. Give us a minute", 350,150);
+            }
+            this._sort( this._capture_date_desc_comp );
+            if( typeof no_layout == 'undefined'){
+                self._timed_out_layout();
             }
         },
 
         sort_by_name_desc: function( no_layout ){
             var self = this;
+//            console.log('sort_by_name_desc');
+            if( typeof no_layout == 'undefined'){
+                self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Yeeeepeee! We are shuffling a bundle of photos. Give us a minute", 350,150);
+            }
             this._sort( function( a, b ){
                 var acaption_lowercase  = a.caption.toLowerCase();
                 var bcaption_lowercase = b.caption.toLowerCase()
@@ -798,12 +813,16 @@
                 return  ( acaption_lowercase < bcaption_lowercase ? 1 : -1);
             });
             if( typeof no_layout == 'undefined'){
-                self._timed_out_layout("Yeeeepeee! We are shuffling a bundle of photos. Give us a minute");
+                self._timed_out_layout();
             }
         },
 
         sort_by_name_asc: function(no_layout){
             var self = this;
+//            console.log('sort_by_name_asc');
+            if( typeof no_layout == 'undefined'){
+                self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Woooha! We are sorting a ton of photos. Give us a minute", 350,150);
+            }
             function reverse_char(astring){
                 return String.fromCharCode.apply(String,
                     _.map( astring.toLowerCase().split(''), function (c) {
@@ -825,7 +844,7 @@
                 return ( arcap > brcap? -1 : 1 );
             } );
             if( typeof no_layout == 'undefined'){
-               self._timed_out_layout("Woooha! We are sorting a ton of photos. Give us a minute");
+               self._timed_out_layout();
             }
         },
 
@@ -864,10 +883,9 @@
             }
         },
 
-        _timed_out_layout: function(message){
+        _timed_out_layout: function(){
             var self = this;
             if( self.large_album ){
-             self.large_album_dialog = zz.dialog.show_spinner_progress_dialog(message, 400, 200);
                 setTimeout( function(){
                     self.element.hide();
                     self.resetLayout(400, 'easeInOutCubic', true);
