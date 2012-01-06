@@ -70,7 +70,7 @@ describe "ZZ API" do
         photos << Factory.create(:photo, :user => @user, :album => album, :caption => "C", :capture_date => Time.at(0))
         photos << Factory.create(:photo, :user => @user, :album => album, :caption => "B", :capture_date => Time.at(1))
         photos << Factory.create(:photo, :user => @user, :album => album, :caption => "A", :capture_date => Time.at(2))
-        photos << Factory.create(:photo, :user => @user, :album => album, :caption => "C", :capture_date => Time.at(3))
+        photos << Factory.create(:photo, :user => @user, :album => album, :caption => "c", :capture_date => Time.at(3))
         photos << Factory.create(:photo, :user => @user, :album => album, :caption => "D", :capture_date => Time.at(4))
         photos << Factory.create(:photo, :user => @user, :album => album, :caption => '', :capture_date => Time.at(5))
         photos << Factory.create(:photo, :user => @user, :album => album, :caption => nil, :capture_date => nil)

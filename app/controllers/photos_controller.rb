@@ -625,7 +625,7 @@ puts "Time in batch_photo_create with #{photo_count} photos: #{end_time - start_
     if fields
       # see if order should be reversed
       desc = !!sort_type.index('-desc')
-      photos = sort_by_fields(photos, fields, desc)
+      photos = sort_by_fields(photos, fields, desc, true)
     end
     photos
   end
