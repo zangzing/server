@@ -143,6 +143,7 @@
                     allowEditCaption: o.allowEditCaption,
                     onChangeCaption: function(caption) {
                         photo.caption = caption;
+                        self.current_sort = 'none';
                         return o.onChangeCaption(index, photo, caption);
                     },
 
@@ -393,6 +394,8 @@
                 //sort the photos for the grid
                 if( o.sort ){
                     self.sort_by( o.sort, true ); //no layout
+                }else{
+                    self.current_sort = 'date-asc'
                 }
 
                 //optimize parameters for large albums
@@ -776,7 +779,17 @@
              if( self.large_album && typeof no_layout == 'undefined'){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Hot Diggety! Did you take all of these? Sorting them for you, give us a minute", 350,150);
              }
-             this._sort( this._capture_date_asc_comp );
+            switch(  self.current_sort  ){
+                case 'date-asc':
+                    break;
+                case 'date-desc':
+                    self.options.photos.reverse();
+                    break;
+                default:
+                    this._sort( this._capture_date_asc_comp );
+                    break;
+            }
+
             if( typeof no_layout == 'undefined'){
                 self._timed_out_layout();
              }
@@ -787,7 +800,16 @@
             if( self.large_album && typeof no_layout == 'undefined'){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Blimey! Ordering a double-stack of pics. Give us a minute", 350,150);
             }
-            this._sort( this._capture_date_desc_comp );
+            switch(  self.current_sort  ){
+                   case 'date-asc':
+                       self.options.photos.reverse();
+                       break;
+                   case 'date-desc':
+                       break;
+                   default:
+                       this._sort( this._capture_date_desc_comp );
+                       break;
+            }
             if( typeof no_layout == 'undefined'){
                 self._timed_out_layout();
             }
@@ -798,18 +820,28 @@
             if(  self.large_album && typeof no_layout == 'undefined' ){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Yeeeepeee! We are shuffling a bundle of photos. Give us a minute", 350,150);
             }
-            this._sort( function( a, b ){
-                var acaption_lowercase  = a.caption.toLowerCase();
-                var bcaption_lowercase = b.caption.toLowerCase()
-                if(  acaption_lowercase == bcaption_lowercase ){
-                    return self._capture_date_desc_comp( a, b);
-                }else if( a.caption == null || a.caption == '' || a.caption.length <= 0){
-                    return 1;
-                }else if( b.caption == null || b.caption == '' || b.caption.length <= 0){
-                    return -1;
-                }
-                return  ( acaption_lowercase < bcaption_lowercase ? 1 : -1);
-            });
+
+            switch(  self.current_sort  ){
+                case 'name-asc':
+                    self.options.photos.reverse();
+                    break;
+                case 'name-desc':
+                    break;
+                default:
+                    this._sort( function( a, b ){
+                        var acaption_lowercase  = a.caption.toLowerCase();
+                        var bcaption_lowercase = b.caption.toLowerCase()
+                        if(  acaption_lowercase == bcaption_lowercase ){
+                            return self._capture_date_desc_comp( a, b);
+                        }else if( a.caption == null || a.caption == '' || a.caption.length <= 0){
+                            return 1;
+                        }else if( b.caption == null || b.caption == '' || b.caption.length <= 0){
+                            return -1;
+                        }
+                        return  ( acaption_lowercase < bcaption_lowercase ? 1 : -1);
+                    });
+                break;
+            }
             if( typeof no_layout == 'undefined'){
                 self._timed_out_layout();
             }
@@ -820,26 +852,39 @@
             if( self.large_album && typeof no_layout == 'undefined'){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Woooha! We are sorting a ton of photos. Give us a minute", 350,150);
             }
-            function reverse_char(astring){
-                return String.fromCharCode.apply(String,
-                    _.map( astring.toLowerCase().split(''), function (c) {
-                        return 0xffff - c.charCodeAt();
-                    }));
+
+            switch(  self.current_sort  ){
+                case 'name-asc':
+                    break;
+                case 'name-desc':
+                    self.options.photos.reverse();
+                    break;
+                default:
+                    self.sort_by_name_desc( false );
+                    self.options.photos.reverse();
+                break;
             }
 
-            this._sort( function( a, b ){
-                var arcap = reverse_char( a.caption );
-                var brcap = reverse_char( b.caption );
-                if( arcap == brcap ){
-                    //if caption equal go to capture date
-                    return self._capture_date_asc_comp( a, b);
-                }else if( arcap == null || arcap == '' || arcap.length <= 0){
-                    return -1;
-                }else if( brcap == null || brcap == '' || brcap.length <= 0){
-                    return 1;
-                }
-                return ( arcap > brcap? -1 : 1 );
-            } );
+//            function reverse_char(astring){
+//                return String.fromCharCode.apply(String,
+//                    _.map( astring.toLowerCase().split(''), function (c) {
+//                        return 0xffff - c.charCodeAt();
+//                    }));
+//            }
+//
+//            this._sort( function( a, b ){
+//                var arcap = reverse_char( a.caption );
+//                var brcap = reverse_char( b.caption );
+//                if( arcap == brcap ){
+//                    //if caption equal go to capture date
+//                    return self._capture_date_asc_comp( a, b);
+//                }else if( arcap == null || arcap == '' || arcap.length <= 0){
+//                    return -1;
+//                }else if( brcap == null || brcap == '' || brcap.length <= 0){
+//                    return 1;
+//                }
+//                return ( arcap > brcap? -1 : 1 );
+//            } );
             if( typeof no_layout == 'undefined'){
                self._timed_out_layout();
             }
@@ -885,7 +930,7 @@
             if( self.large_album ){
                 setTimeout( function(){
                     self.element.hide();
-                    self.resetLayout(400, 'easeInOutCubic', true);
+                    self.resetLayout(200, 'easeInOutCubic', true);
                     self.element.fadeIn('fast');
                     self.large_album_dialog.close();
                 }, 1);
