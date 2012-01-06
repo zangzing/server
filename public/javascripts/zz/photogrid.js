@@ -250,6 +250,7 @@
             // - Once first batch is on screen then build, and insert the rest of the photos at your leisure
             // - Add timeout every batch to prevent lockout warnings
             var batch_size = 60;
+            var time_lapse = 1; //milliseconds between batches
             var create_some_photos = function(i) {
                 if (i < o.photos.length) { //recursion termination condition
 
@@ -282,7 +283,7 @@
 
                     // Queue next batch for processing
                     //  Even a 0 timeout lets the system process any pending stuff and then this.
-                    setTimeout( function(){ create_some_photos(i + batch_size); }, 1);
+                    setTimeout( function(){ create_some_photos(i + batch_size); }, time_lapse);
 
                 } else {
                     //All photos have been created, add bells and whistles
@@ -372,8 +373,10 @@
                     self.sort_by( o.sort, true ); //no layout
                 }
 
+                //optimize parameters for gigantic albums
                 if( o.photos.length > 3000 ){
-                    batch_size = 500;
+                    batch_size = 1000;
+                    time_lapse = 100;
                 }
                 // Start creating photos, at the end of the creation
                 // process all grid elements will be bound and active
