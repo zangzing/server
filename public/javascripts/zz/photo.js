@@ -630,20 +630,22 @@ zz.template_cache = zz.template_cache || {};
                             return false;
                         }else if(  e.keyCode == 9 ){ //tab key
                             commitChanges();
-                            if( e.shiftKey ){ //tab forward
+                            if( e.shiftKey ){ //tab back
                                 if (!_.isUndefined(o.photoGrid)) {
                                     if( o.showButtonBar ){ //grid view
-                                        o.photoGrid.previousPhoto(o.json.id).ui_photo.editCaption();
+                                        var prev_photo = o.photoGrid.previousPhoto(o.json.id);
+                                        o.photoGrid.scrollToPhoto( prev_photo.id, 100, false, function(){ prev_photo.ui_photo.editCaption();});
                                     }else{
                                         o.photoGrid.previousPicture(function(photo){
                                             photo.ui_photo.editCaption();
                                         });
                                     }
                                 }
-                            } else { //tab backwards
+                            } else { //tab forward
                                 if (!_.isUndefined(o.photoGrid)) {
                                     if( o.showButtonBar ){ //grid view
-                                        o.photoGrid.nextPhoto(o.json.id).ui_photo.editCaption();
+                                        var next_photo = o.photoGrid.nextPhoto(o.json.id);
+                                        o.photoGrid.scrollToPhoto( next_photo.id, 100, false, function(){ next_photo.ui_photo.editCaption();});
                                     }else{
                                         o.photoGrid.nextPicture(function(photo){
                                             photo.ui_photo.editCaption();
