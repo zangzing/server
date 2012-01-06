@@ -38,7 +38,7 @@ class AlbumsController < ApplicationController
     if params[:album_type].nil?
       render :text => "Error No Album Type Supplied. Please Choose Album Type.", :status=>500 and return
     end
-    @album  = params[:album_type].constantize.new(:name => "New Album")
+    @album  = params[:album_type].constantize.new(:name => Album::DEFAULT_NAME)
     @album.user = current_user
     unless @album.save
       current_user.albums << @album
