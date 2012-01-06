@@ -59,7 +59,7 @@
             }
 
             // Large album optimization flag
-            self.large_album = o.photos.length > 100 ;
+            self.large_album = o.photos.length > 3000 ;
 
             // decide scroll direction
             // for grid view (vertical) or single picture view (horizontal)
