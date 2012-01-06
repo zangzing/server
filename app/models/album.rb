@@ -47,6 +47,8 @@ class Album < ActiveRecord::Base
   validates_inclusion_of  :who_can_upload, :in => WHO_CAN
   validates_inclusion_of  :who_can_buy, :in => WHO_CAN
 
+  DEFAULT_NAME = 'New Album'
+
   RESERVED_NAMES = ["photos", "shares", 'activities', 'slides_source', 'people', 'activity']
   has_friendly_id :name, :use_slug => true, :scope => :user, :reserved_words => RESERVED_NAMES, :approximate_ascii => true
 
@@ -69,6 +71,25 @@ class Album < ActiveRecord::Base
   after_create  :add_creator_as_admin
 
   default_scope :order => "`albums`.updated_at DESC"
+
+
+  # safe way to find albums that prevents users from
+  # discovering a hidden albums by guessing its default name
+  def self.safe_find(id, user = nil)
+    if(user)
+      album = user.albums.find(id)
+    else
+      album = Album.find(id)
+    end
+
+    if id.to_s.starts_with(Album::DEFAULT_NAME.parameterize) && album.name.parameterize != id
+        raise(ActiveRecord::RecordNotFound)
+    end
+
+    return album
+  end
+
+
 
   # need to override basic destroy behavior since
   # we have to know when we are being destroyed in

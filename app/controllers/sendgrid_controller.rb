@@ -88,8 +88,7 @@ class SendgridController < ApplicationController
         @album = nil
         begin
           user = User.find_by_username(user_username)
-          #@album = Album.find_by_name_and_user_id(album_name, user.id )
-          @album = user.albums.find(album_name)
+          @album = Album.safe_find(album_name, user)
         rescue ActiveRecord::RecordNotFound => e
           # NEW ALBUM BY EMAIL
           # if album_name is 'new' and the account owner is emailing photos, create a new
@@ -242,7 +241,7 @@ class SendgridController < ApplicationController
 
     # Create new album
     album  = GroupAlbum.new( )
-    album.name = ( params[:subject] && (params[:subject].length > 0) ? params[:subject] : "New Album By Email")
+    album.name = ( params[:subject] && (params[:subject].length > 0) ? params[:subject] : Album::DEFAULT_NAME)
     album.user_id = user.id
     return nil unless( album.save )
 
