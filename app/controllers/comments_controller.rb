@@ -133,7 +133,7 @@ private
       @photo = Photo.find(params[:photo_id])
       @album = @photo.album
     else
-      @album = Album.safe_find(params[:album_id])
+      @album = Album.find(params[:album_id])
     end
   end
 

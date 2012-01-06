@@ -73,17 +73,21 @@ class Album < ActiveRecord::Base
   default_scope :order => "`albums`.updated_at DESC"
 
 
+
   # safe way to find albums that prevents users from
   # discovering a hidden albums by guessing its default name
-  def self.safe_find(id, user = nil)
-    if(user)
-      album = user.albums.find(id)
-    else
-      album = Album.find(id)
-    end
+  def self.safe_find(user, album_id)
+    album = user.albums.find(album_id)
 
-    if id.to_s.starts_with?(Album::DEFAULT_NAME.parameterize) && album.name.parameterize != id
+    # if id starts with the default album name, then we need to check if the album name
+    # is still the default or if it has changed
+    if album_id.to_s.starts_with?(Album::DEFAULT_NAME.parameterize)
+
+      # need to strip off the FriendlyId slug version/sequence number
+      # which comes after the "--" and then compare
+      if album.name.parameterize != album_id.split('--')[0]
         raise(ActiveRecord::RecordNotFound)
+      end
     end
 
     return album
