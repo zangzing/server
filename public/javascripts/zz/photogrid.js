@@ -753,14 +753,16 @@
         sort_by_name_desc: function( no_layout ){
             var self = this;
             this._sort( function( a, b ){
-                if( a.caption == b.caption ){
+                var acaption_lowercase  = a.caption.toLowerCase();
+                var bcaption_lowercase = b.caption.toLowerCase()
+                if(  acaption_lowercase == bcaption_lowercase ){
                     return self._capture_date_desc_comp( a, b);
                 }else if( a.caption == null || a.caption == '' || a.caption.length <= 0){
                     return 1;
                 }else if( b.caption == null || b.caption == '' || b.caption.length <= 0){
                     return -1;
                 }
-                return  ( a.caption.toLowerCase() < b.caption.toLowerCase() ? 1 : -1);
+                return  ( acaption_lowercase < bcaption_lowercase ? 1 : -1);
             });
             if( typeof no_layout == 'undefined'){
                 this.resetLayout(400, 'easeInOutCubic', true);
