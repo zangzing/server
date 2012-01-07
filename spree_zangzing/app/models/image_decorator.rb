@@ -8,8 +8,8 @@ Image.class_eval do
                     :default_style => :product,
                     :storage => :s3,
                     :bucket => 'products.zz',
-                    :s3_credentials => { :access_key_id =>     Server::Application.config.s3_access_key_id,
-                                         :secret_access_key => Server::Application.config.s3_secret_access_key },
+                    :s3_credentials => { :access_key_id =>     Server::Application.config.aws_access_key_id,
+                                         :secret_access_key => Server::Application.config.aws_secret_access_key },
                     :url =>  ":s3_domain_url",
                     :path => "/products/:id/:style/:basename.:extension"
 
