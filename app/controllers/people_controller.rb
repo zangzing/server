@@ -52,9 +52,9 @@ private
   def require_album
     begin
       if params[:user_id]
-        @album = User.find( params[:user_id] ).albums.find( params[:album_id] )
+        @album = Album.safe_find(User.find(params[:user_id]), params[:album_id])
       else
-        @album = Album.find( params[:album_id] )
+        @album = Album.find(params[:album_id])
       end
     rescue ActiveRecord::RecordNotFound => e
       album_not_found_redirect_to_owners_homepage(params[:user_id])

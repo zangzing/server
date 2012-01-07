@@ -37,7 +37,7 @@ end
 
 
 Factory.define :album do |this|
-  this.name        {"Foo bar album #{next_id}"}
+  this.name        Album::DEFAULT_NAME
 #  album.association :user
   this.after_build do |this, proxy|
     this.user ||= Factory.create(:user)
