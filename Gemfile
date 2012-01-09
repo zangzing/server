@@ -40,6 +40,7 @@ gem 'gibbon',         '0.1.2'                          # MailChimp API
 gem 'instagram'                                       # Instagram
 gem 'dropbox'                                         # Dropbox
 gem 'money'
+gem 'addressable'                                     # Better URL parser
 
 gem 'vpim'                                            # VCard creator
 gem 'rpm_contrib'                                     # For New Relic Performance Instrumentation

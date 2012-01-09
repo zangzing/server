@@ -57,6 +57,9 @@
             var self = this;
             var o = self.options;
 
+            if( o.currentPhotoId == 'first'){
+               o.currentPhotoId = o.photos[0].id;
+            }
 
             //scroll direction
             if (o.singlePictureMode) {

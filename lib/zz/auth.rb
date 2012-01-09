@@ -238,9 +238,9 @@ module ZZ
         begin
           #will throw an exception if params[:album_id] is not defined or album not found
           if user_scoped && params[:user_id]
-            @album = User.find( params[:user_id] ).albums.find(params[:album_id] )
+            @album = Album.safe_find(User.find(params[:user_id]), params[:album_id])
           else
-            @album = Album.find( params[:album_id] )
+            @album = Album.find(params[:album_id])
           end
         rescue ActiveRecord::RecordNotFound => e
           msg = "This operation requires an album, we could not find one because: "+e.message

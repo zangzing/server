@@ -41,7 +41,7 @@ class Connector::DropboxFoldersController < Connector::DropboxController
         }
       end
     end
-    contents.compact
+    JSON.fast_generate(contents.compact)
   end
   
   def self.import_whole_folder(api, params)
@@ -99,8 +99,8 @@ class Connector::DropboxFoldersController < Connector::DropboxController
       end
       if photos_count > 0
         zz_album = create_album(identity, File.split(current_folder).last, params[:privacy])
-        photos = import_whole_folder(api, params.merge(:path => current_folder, :album_id => zz_album.id))
-        zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
+        zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
+        fire_async('import_whole_folder', params.merge(:path => current_folder, :album_id => zz_album.id))
       end
     end
     identity.update_attribute(:last_import_all, Time.now)

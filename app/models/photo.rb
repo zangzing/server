@@ -50,7 +50,7 @@ class Photo < ActiveRecord::Base
                   :updated_at, :image_content_type, :headline, :error_message, :image_bucket,
                   :orientation, :height, :suspended, :longitude, :pos, :image_path, :image_updated_at,
                   :generate_queued_at, :width, :state, :source, :deleted_at, :for_print, :original_suffix, :size_version,
-                  :crc32
+                  :crc32, :import_context
 
   # this is just a placeholder used by the connectors to track some extra state
   # now that we do batch operations

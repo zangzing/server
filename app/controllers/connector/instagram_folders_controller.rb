@@ -10,11 +10,12 @@ class Connector::InstagramFoldersController < Connector::InstagramController
         {
           :name => 'My Photos', :type => 'folder', :id => 'my-photos',
           :open_url => instagram_photos_path(:target => 'my-photos', :format => 'json'), :add_url => instagram_folder_action_path(:target => 'my-photos', :action => 'import', :format => 'json')
-        },
-        {
-          :name => 'People I Follow', :type => 'folder', :id => 'i-follow',
-          :open_url => instagram_folders_path(:target => 'i-follow', :format => 'json'), :add_url => nil
         }
+        #,
+        #{
+        #  :name => 'People I Follow', :type => 'folder', :id => 'i-follow',
+        #  :open_url => instagram_folders_path(:target => 'i-follow', :format => 'json'), :add_url => nil
+        #}
       ]
     else
       followers = call_with_error_adapter do

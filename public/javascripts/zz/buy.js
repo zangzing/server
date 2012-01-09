@@ -767,7 +767,7 @@ zz.buy = zz.buy || {};
 
 
         var selected_photos = zz.local_storage.get('zz.buy.selected_photos') || [];
-        selected_photos.push(photo_json);
+        selected_photos.push(get_serializable_photo_json(photo_json));
         zz.local_storage.set('zz.buy.selected_photos', selected_photos);
 
         zz.pubsub.publish(EVENTS.ADD_SELECTED_PHOTO);
@@ -1162,8 +1162,8 @@ zz.buy = zz.buy || {};
 
 
 
-        photo_element.find('.photo-image').attr('src', photo_json.thumb_url)
-                                          .css({width: size.width, height: size.height});
+        photo_element.find('.photo-image').attr('src', photo_json.thumb_url);
+        photo_element.find('.photo-image').css({width: size.width, height: size.height});
 
 
         photo_element.find('.photo-delete-button').click(function(){
@@ -1240,9 +1240,10 @@ zz.buy = zz.buy || {};
         return zz.local_storage.get('zz.buy.selected_photos') || [];
     }
 
-    function set_selected_photos(photos){
-        zz.local_storage.set('zz.buy.selected_photos', photos);
-    }
+// this is not used
+//    function set_selected_photos(photos){
+//        zz.local_storage.set('zz.buy.selected_photos', photos);
+//    }
 
 
     function add_selected_photos_to_cart(callback){
@@ -1359,8 +1360,6 @@ zz.buy = zz.buy || {};
 
 
     function show_glamour_page(product_id){
-        var template = $('<div class="glamouf"')
-
         zz.routes.store.get_glamour_page_html(product_id, function(html){
 
 
@@ -1417,6 +1416,14 @@ zz.buy = zz.buy || {};
 
     function has_bad_photos(){
         return $('.buy-screens .configure-product-screen.bad-photos').length > 0;
+    }
+
+    function get_serializable_photo_json(photo_json){
+        return {
+            id: photo_json.id,
+            thumb_url: photo_json.thumb_url,
+            aspect_ratio: photo_json.aspect_ratio
+        };
     }
 
 

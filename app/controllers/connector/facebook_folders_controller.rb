@@ -29,11 +29,28 @@ class Connector::FacebookFoldersController < Connector::FacebookController
       #album_list.reject! { |a| a[:type] == 'profile' } #Remove 'Profile Pictures'
       unless album_list.empty?
         if album_list.first[:updated_time]
-          album_list.sort!{|a, b| b[:updated_time] <=> a[:updated_time] }
+          begin
+            album_list.sort!{|a, b|
+              b[:updated_time] <=> a[:updated_time]
+            }
+          rescue Exception => ex
+            # we have seen rare cases where facebook returns bad values and we can't sort
+            # in this case, just leave unsorted
+            Rails.logger.info small_back_trace(ex)
+          end
         end
+
         if target=='me/friends' #Sort by last names
-          album_list = album_list.sort_by { |friend| friend[:name].split(' ').last }
+          begin
+            album_list = album_list.sort_by { |friend| friend[:name].split(' ').last }
+          rescue Exception => ex
+            # we have seen rare cases where facebook returns bad values and we can't sort
+            # in this case, just leave unsorted
+            Rails.logger.info small_back_trace(ex)
+          end
         end
+
+
         @folders = album_list.map do |f|
           {
             :name => f[:name] || "Created #{f[:created_time].strftime('%d %b %Y')}",
@@ -101,8 +118,8 @@ class Connector::FacebookFoldersController < Connector::FacebookController
     unless album_list.empty?
       album_list.each do |fb_album|
         zz_album = create_album(identity, fb_album[:name], params[:privacy])
-        photos = import_folder(api_client, params.merge(:fb_album_id => fb_album[:id], :album_id => zz_album.id))
-        zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id, :photos => photos}
+        zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
+        fire_async('import_folder', params.merge(:fb_album_id =>  fb_album[:id], :album_id => zz_album.id))
       end
     end
 

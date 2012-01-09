@@ -59,11 +59,6 @@
                     <%=j AlbumACL.get_acls_for_user( current_user.id, AlbumACL::VIEWER_ROLE ).map{ |acl| "#{acl.acl_id}:'#{acl.role.name}'"}.join(',') %>
                 <%end%>
             };
-            var all_albums_title       = '<%=escape_javascript (current_user == @user? 'All Albums' : "All of #{@user.posessive_short_name} Albums") %>';
-            var my_albums_title        = '<%=escape_javascript (current_user == @user? 'My Albums' : "#{@user.posessive_short_name} Albums") %>';
-            var invited_albums_title   = '<%=escape_javascript (current_user == @user? 'Invited Albums' : "") %>';
-            var liked_albums_title     = '<%=escape_javascript (current_user == @user? 'Liked Albums' : "#{@user.posessive_short_name} Liked Albums") %>';
-            var following_albums_title = '<%=escape_javascript (current_user == @user? 'Followed Albums' : "#{@user.posessive_short_name} Followed Albums") %>';
 
             zz.homepage.init( is_current_users_homepage,
                                 my_albums_path,
@@ -72,12 +67,7 @@
                                 liked_users_albums_path,
                                 invited_albums_path,
                                 session_user_invited_albums_path,
-                                current_user_membership,
-                                all_albums_title,
-                                my_albums_title,
-                                invited_albums_title,
-                                liked_albums_title,
-                                following_albums_title
+                                current_user_membership
             );
         })();
             

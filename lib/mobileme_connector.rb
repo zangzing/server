@@ -84,6 +84,7 @@ class MobilemeConnector
 
 protected
   def parse_cookies(set_cookie_header)
+    return {} unless set_cookie_header
     set_cookie_header.scan(/([a-z0-9\-_\.]+)=([a-z0-9=:]+);/i).inject({}) do |hsh, kuk|
       hsh[kuk[0]] = kuk[1]
       hsh
@@ -131,7 +132,15 @@ protected
     # this won't clear cookies and won't retry
     raise MobilemeError.new(response.status, response.body) if response.status != 200
 
-    LogEntry.create(:source_id=>0, :source_type=>"MobileMeConnector", :details=>"#{api_path} \n\n #{response.headers.inspect} \n\n #{response.body}")
+    begin
+      LogEntry.create(:source_id=>0, :source_type=>"MobileMeConnector", :details=>"#{api_path} \n\n #{response.headers.inspect} \n\n #{response.body}")
+    rescue Exception => ex
+      # we have seen some errors here if the text is large than the
+      # mysql max packet size
+      Rails.logger.info small_back_trace(ex)
+    end
+
+
 
     json_response = MultiJson.decode(response.body)
 

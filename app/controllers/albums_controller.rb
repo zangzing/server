@@ -38,7 +38,7 @@ class AlbumsController < ApplicationController
     if params[:album_type].nil?
       render :text => "Error No Album Type Supplied. Please Choose Album Type.", :status=>500 and return
     end
-    @album  = params[:album_type].constantize.new(:name => "New Album")
+    @album  = params[:album_type].constantize.new(:name => Album::DEFAULT_NAME)
     @album.user = current_user
     unless @album.save
       current_user.albums << @album
@@ -118,34 +118,155 @@ class AlbumsController < ApplicationController
     end
   end
 
+  # shared code for album update and creation that
+  # throws a friendly error message from the exception or error
+  # If it gets an exception it doesn't understand it simply
+  # returns that exception
+  def friendly_error(ex, name = nil)
+    if ex.is_a?(FriendlyId::ReservedError)
+      ZZAPIError.new("Sorry, \"#{name}\" is a reserved album name please try a different one")
+    elsif ex.is_a?(FriendlyId::BlankError)
+      ZZAPIError.new("Your album name must contain at least 1 letter or number")
+    elsif ex.is_a?(ActiveModel::Errors)
+      ZZAPIError.new(ex)
+    else
+      ex
+    end
+  end
+
+
+  # update an album
+  #
+  # The zz_api update album method.  Updates the specified album.
+  #
+  # This is called as (PUT):
+  #
+  # /zz_api/albums/:album_id
+  #
+  # You must have an album admin role as determined by the current logged in users rights.
+  #
+  # the expected parameters are (items marked with * are the defaults):
+  #
+  # {
+  # :name => the album name
+  # :privacy => the album privacy can be (public*, hidden, password)
+  # :cover_photo_id => the optional cover photo id
+  # :who_can_download => who is allowed to download (everyone*,viewers,contributors,owner)
+  # :who_can_upload => who is allowed to upload (everyone,viewers,contributors*,owner)
+  # :who_can_buy => who is allowed to buy (everyone*,viewers,contributors,owner)
+  # }
+  #
+  # Returns the modified album in the following form:
+  #
+  # {
+  #    :id => album_id,
+  #    :name => album_name,
+  #    :email => album.email,
+  #    :user_name => album_user_name,
+  #    :user_id => album_user_id,
+  #    :album_path => album_pretty_path(album_user_name, album_friendly_id),
+  #    :profile_album => is_profile_album,
+  #    :c_url =>  cover url,
+  #    :cover_id => cover_id,
+  #    :cover_base => cover_base same as a photo returned where cover_sizes are the substitution sizes,
+  #    :cover_sizes => cover_sizes,
+  #    :photos_count => album.photos_count,
+  #    :photos_ready_count => album.photos_ready_count,
+  #    :cache_version => album.cache_version_key,
+  #    :updated_at => album.updated_at.to_i,
+  #    :cover_date => cover_date.to_i,
+  #    :my_role => album.my_role, # valid values are Viewer, Contrib, Admin - if null and you are the owner then Admin
+  #    :privacy => album.privacy,
+  #    :all_can_contrib => true if everyone can contribute,
+  #    :who_can_download => who can download
+  #    :who_can_upload => who can upload
+  #    :who_can_buy => who can buy
+  # }
+  #
   def zz_api_update
     return unless require_user && require_album && require_album_admin_role
     zz_api do
       begin
-       updates = {}
-       updates[:name]           = params[:name] if params[:name]
-       updates[:privacy]        = params[:privacy] if params[:privacy]
-       updates[:cover_photo_id] = params[:cover_photo_id] if params[:cover_photo_id]
-       if !@album.update_attributes( updates )
-         # Place the message portion of the first error in an exception
-         # Right now there is only space for one error in the custom error object
-         # when we can pass a hash in the custom error object it will be preferred to
-         # raising a new exception
-         # Take the first error in the array (there is at least one) then take the message (second) not the fieldname
-         raise Exception.new( @album.errors.first.second )
-       end
-      rescue FriendlyId::ReservedError
-        raise Exception.new( "Sorry, \"#{params[:name]}\" is a reserved album name please try a different one" )
-      rescue FriendlyId::BlankError
-        raise Exception.new( "Your album name must contain at least 1 letter or number" )
+        fields = filter_params(params, [:name, :privacy, :cover_photo_id, :who_can_upload, :who_can_download, :who_can_buy])
+        if !@album.update_attributes( fields )
+          # shows the first error, web client side currently doesn't deal with hash
+          # once it does, can pass full error format by just passing ex directly inside
+          # ZZAPIError
+          raise ZZAPIError.new(@album.errors.first.second)
+        end
+      rescue ZZAPIError => ex
+        raise ex                # don't convert to friendly if already a ZZAPIError
+      rescue Exception => ex
+        raise friendly_error(ex, fields[:name])
       end
-      album = {
-              :name     => @album.name,
-              :email    => @album.email,
-              :url      => album_pretty_url(@album),
-              :cover_id => ( @album.cover ? @album.cover.id : nil ),
-              :c_url    => ( @album.cover ? @album.cover.thumb_url : nil)
-          }
+      # build the result
+      Album.albums_to_hash([@album])[0]   # hand back the single album result
+    end
+  end
+
+  # create a new album
+  #
+  # The zz_api create album method.  Creates a new album
+  # tied to the current user.
+  #
+  # This is called as (POST):
+  #
+  # /zz_api/albums/create
+  #
+  # Where :user_id is derived from your current account session.
+  #
+  # the expected parameters are (items marked with * are the defaults):
+  #
+  # {
+  # :name => the album name
+  # :privacy => the album privacy can be (public*, hidden, password)
+  # :who_can_download => who is allowed to download (everyone*,viewers,contributors,owner)
+  # :who_can_upload => who is allowed to upload (everyone,viewers,contributors*,owner)
+  # :who_can_buy => who is allowed to buy (everyone*,viewers,contributors,owner)
+  # }
+  #
+  # Returns an album in the following form:
+  #
+  # {
+  #    :id => album_id,
+  #    :name => album_name,
+  #    :email => album.email,
+  #    :user_name => album_user_name,
+  #    :user_id => album_user_id,
+  #    :album_path => album_pretty_path(album_user_name, album_friendly_id),
+  #    :profile_album => is_profile_album,
+  #    :c_url =>  cover url,
+  #    :cover_id => cover_id,
+  #    :cover_base => cover_base same as a photo returned where cover_sizes are the substitution sizes,
+  #    :cover_sizes => cover_sizes,
+  #    :photos_count => album.photos_count,
+  #    :photos_ready_count => album.photos_ready_count,
+  #    :cache_version => album.cache_version_key,
+  #    :updated_at => album.updated_at.to_i,
+  #    :cover_date => cover_date.to_i,
+  #    :my_role => album.my_role, # valid values are Viewer, Contrib, Admin - if null and you are the owner then Admin
+  #    :privacy => album.privacy,
+  #    :all_can_contrib => true if everyone can contribute,
+  #    :who_can_download => who can download
+  #    :who_can_upload => who can upload
+  #    :who_can_buy => who can buy
+  # }
+  #
+  def zz_api_create
+    return unless require_user
+    zz_api do
+      begin
+        fields = filter_params(params, [:name, :privacy, :who_can_upload, :who_can_download, :who_can_buy])
+        fields[:user_id] = current_user.id
+        album = Album.new(fields)
+        unless album.save
+          raise friendly_error(album.errors)
+        end
+      rescue Exception => ex
+        raise friendly_error(ex, fields[:name])
+      end
+      # build the result
+      Album.albums_to_hash([album])[0]   # hand back the single album result
     end
   end
 
@@ -508,6 +629,37 @@ class AlbumsController < ApplicationController
       UploadBatch.close_batch( current_user.id, album_id)
     end
     render :nothing => true
+  end
+
+  # close a batch
+  #
+  # Closes the batch specified by the :album_id.
+  #
+  # This is called as (PUT):
+  #
+  # /zz_api/albums/:album_id/close_batch
+  #
+  # Where :album_id is the album you want to close.
+  #
+  #
+  # You must be logged in and have album contributor privileges to close the batch.
+  #
+  # Returns an empty hash
+  #
+  def zz_api_close_batch
+    return unless require_user && require_album && require_album_contributor_role
+    zz_api do
+      album_id = @album.id
+      if album_id
+        # get it but don't create it if doesn't exist
+        current_batch = UploadBatch.get_current_and_touch(current_user.id, album_id, false)
+        if current_batch
+          current_batch.close_immediate
+        end
+      end
+      # just an empty result
+      {}
+    end
   end
 
 # Receives and processes a user's request for access into a password protected album

@@ -24,6 +24,9 @@ class Connector::ConnectorController < ApplicationController
   end
 
 
+  # this one is called from an controller action
+  # browser will poll for response
+  # does not retry on failure
   def fire_async_response(class_method)
     response_id = AsyncResponse.new_response_id
     ZZ::Async::ConnectorWorker.enqueue(response_id, service_identity.id, self.class.name, class_method, params)
@@ -31,9 +34,17 @@ class Connector::ConnectorController < ApplicationController
     render :json => {:message => "poll-for-response"}
   end
 
+
+  # this one is called from within another worker
+  # results will not be sent to browser
+  # will retry on failure
   def self.fire_async(class_method, params)
+    all_params = {
+      :allow_retry => true
+    }
+    all_params.merge!(params)
     response_id = AsyncResponse.new_response_id
-    ZZ::Async::ConnectorWorker.enqueue(response_id, params[:identity].id, self.name, class_method, params)
+    ZZ::Async::ConnectorWorker.enqueue(response_id, params[:identity].id, self.name, class_method, all_params)
   end
 
 
@@ -97,7 +108,7 @@ class Connector::ConnectorController < ApplicationController
     end
 
     def create_album(identity, name, privacy = Album::PUBLIC)
-      raise ArgumentError.new("Invalid album privacy setting - #{privacy}") unless Album::PRIVACIES.values.include?(privacy)
+      raise ArgumentError.new("Invalid album privacy setting - #{privacy}") unless Album::PRIVACIES.include?(privacy)
       album_type = 'PersonalAlbum'
       album = album_type.constantize.new(:name => name[0..40], :privacy => privacy) # limit name to 40 chars
       album.user = identity.user

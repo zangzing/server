@@ -251,6 +251,17 @@ class ApplicationController < ActionController::Base
     session[:guest_token] = nil
   end
 
+  # takes the params passed and applies the valid_params array
+  # as a filter of which ones we accept and then produces
+  # a new hash with the filtered params
+  def filter_params(params, valid_keys)
+    filtered = {}
+    valid_keys.each do |key|
+      filtered[key] = params[key] if params.has_key?(key)
+    end
+    filtered
+  end
+
   # wraps a zz api call and ensures that
   # we handle exceptions cleanly and put into proper
   # format - does the render so expects the block

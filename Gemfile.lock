@@ -296,6 +296,7 @@ PLATFORMS
 DEPENDENCIES
   SystemTimer
   activerecord-import (~> 0.2)
+  addressable
   authlogic (= 3.0.0)
   aws-s3
   bitly

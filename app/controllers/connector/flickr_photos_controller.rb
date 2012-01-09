@@ -1,24 +1,31 @@
 class Connector::FlickrPhotosController < Connector::FlickrController
   
   def self.list_photos(api_client, params)
-    photos_response = call_with_error_adapter do
-      if params[:set_id]=='my-stream'
-        api_client.people.getPhotos :user_id => 'me', :page => params[:page], :per_page => MY_STREAM_PER_PAGE, :extras => 'date_upload,original_format,url_m,url_z,url_l,url_o'
-      else
-        api_client.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,url_m,url_z,url_l,url_o', :media => 'photos'
+    total_pages = nil
+    current_page = 0
+    @photos = []
+    begin
+      current_page += 1
+      photos_response = call_with_error_adapter do
+        if params[:set_id]=='my-stream'
+          api_client.people.getPhotos :user_id => 'me', :page => params[:page], :per_page => MY_STREAM_PER_PAGE, :extras => 'date_upload,original_format,url_m,url_z,url_l,url_o'
+        else
+          api_client.photosets.getPhotos :photoset_id => params[:set_id], :extras => 'original_format,url_m,url_z,url_l,url_o', :media => 'photos', :per_page => PHOTOSET_PAGE_SIZE, :page => current_page
+        end
       end
-    end
-    @photos = photos_response.photo.map do |p|
-      {
-        :name => p.title,
-        :id   => p.id,
-        :type => 'photo',
-        :thumb_url =>  get_photo_url(p, :thumb),
-        :screen_url =>  get_photo_url(p, :screen),
-        :add_url => flickr_photo_action_path(params.merge(:photo_id =>p.id, :action => 'import', :format => 'json')),
-        :source_guid => make_source_guid(p)
-      }
-    end
+      total_pages ||= photos_response.pages
+      @photos += photos_response.photo.map do |p|
+        {
+          :name => p.title,
+          :id   => p.id,
+          :type => 'photo',
+          :thumb_url =>  get_photo_url(p, :thumb),
+          :screen_url =>  get_photo_url(p, :screen),
+          :add_url => flickr_photo_action_path(params.merge(:photo_id =>p.id, :action => 'import', :format => 'json')),
+          :source_guid => make_source_guid(p)
+        }
+      end
+    end while current_page < total_pages
     JSON.fast_generate(@photos)
   end
   

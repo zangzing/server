@@ -2,6 +2,7 @@ class Connector::DropboxController < Connector::ConnectorController
   require 'dropbox'
 
   def self.api_from_identity(identity)
+    raise InvalidToken unless identity.credentials
     Dropbox::Session.deserialize(identity.credentials).tap {|api| api.mode = :metadata_only }
   end
 

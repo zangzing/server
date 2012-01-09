@@ -63,12 +63,12 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
               :source => 'mobileme'
       })
 
-      photo.temp_url = get_photo_url(photo_data, :full)
+      photo.temp_url = get_photo_url(photo_data, :full, password_protected?(album_contents))
       photos << photo
     end
 
     # bulk insert
-    bulk_insert(photos, :headers_making_method => 'Connector::MobilemeController.get_fresh_headers')
+    bulk_insert(photos, {:headers_making_method => 'Connector::MobilemeController.get_fresh_headers', :url_making_method => 'Connector::MobilemeController.get_downloadable_photo_url'})
 
   end
 
@@ -108,7 +108,7 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
             :source => 'mobileme'
     )
 
-    ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(photo_data, :full), :headers_making_method => 'Connector::MobilemeController.get_fresh_headers' )
+    ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(photo_data, :full, password_protected?(album_contents)), {:headers_making_method => 'Connector::MobilemeController.get_fresh_headers', :url_making_method => 'Connector::MobilemeController.get_downloadable_photo_url'})
 
     Photo.to_json_lite(photo)
   end

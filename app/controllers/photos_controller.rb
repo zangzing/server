@@ -29,10 +29,10 @@ class PhotosController < ApplicationController
         i_s = index.to_s
         create_photo = {
             :source_guid => source_guid_map[i_s],
-            :caption => caption_map[i_s],
+            :caption => safe_hash_default(caption_map, i_s, ""),
             :size => file_size_map[i_s],
-            :capture_date => capture_date_map[i_s],
-            :source => source_map[i_s],
+            :capture_date => safe_hash_default(capture_date_map, i_s, 0),
+            :source => safe_hash_default(source_map, i_s, nil),
             :rotate_to => rotate_to_map[i_s]
         }
         create_photos << create_photo

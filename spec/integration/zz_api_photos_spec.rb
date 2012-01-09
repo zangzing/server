@@ -33,7 +33,7 @@ describe "ZZ API" do
         photos << photo
       end
 
-      ret_photos = zz_api_post zz_api_create_photos_path(album.id), { :agent_id => agent_id, :photos => photos }, 200, false, false
+      ret_photos = zz_api_post zz_api_create_photos_path(album.id), { :agent_id => agent_id, :photos => photos }, 200, false
       ret_photos.length.should == wanted_photo_count
 
       photo1 = ret_photos[0]
