@@ -5,8 +5,7 @@ class ReferenceDataMover
 
   def initialize
     #Initialize connection to S3
-    s3_keys = YAML.load(File.read("#{Rails.root}/config/s3.yml"))[Rails.env]
-    @s3 = RightAws::S3.new(s3_keys['access_key_id'], s3_keys['secret_access_key'], {:logger       =>Logger.new(STDOUT)})
+    @s3 = RightAws::S3.new(PhotoGenHelper.aws_access_key_id, PhotoGenHelper.aws_secret_access_key, {:logger       =>Logger.new(STDOUT)})
     @bucket = @s3.bucket('products.zz')
     @db_config = Rails.application.config.database_configuration[Rails.env]
     @deploy_group = ZZDeployEnvironment.env.zz[:deploy_group_name]
