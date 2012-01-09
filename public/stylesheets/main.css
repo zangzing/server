@@ -163,12 +163,24 @@ div#container {
 /* article join banner
  -----------------------------------------------------------------------------*/
 #article-join-banner {
+    position: relative;
     width: 975px;
     height:75px;
     margin: 2em auto;
     padding: 1em;
     border: 1px solid #CCC;
 }
+
+#article-join-banner .close-button{
+    position:absolute;
+    right:10px;
+    top:7px;
+    height:21px;
+    width:21px;
+    background: url("/images/btn-close-join-banner.png") no-repeat scroll top right;
+    cursor:pointer;
+}
+
 
 #article-join-banner .field {
 	position: relative;
@@ -393,6 +405,7 @@ div#headline {
 ----------------------------------------------------------------------------- */
 
 #article {
+/* TODO: either remove left/right and set w:100% and fix the comments drawer or change the album animation to use right: width */
     overflow-y:auto;
     overflow-x:hidden;
     position: absolute;
