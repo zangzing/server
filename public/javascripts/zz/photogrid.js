@@ -65,7 +65,7 @@
             }
 
             // Large album optimization flag
-            self.large_album = self.photo_count.length > 2000 ;
+            self.large_album = self.photo_count > 2000 ;
             if( self.large_album ){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Wowsers! Your album has "+self.photo_count+" photos. It will take us a minute or two to display it. Please be patient", 350, 150);
             }
@@ -962,7 +962,7 @@
                 // create the caption sort key
                 var caption_sort_key;
                 if( photos[i].caption == null || photos[i].caption == ''){
-                    caption_sort_key = '                                        '+date_sort_key;
+                    caption_sort_key = '                    '+date_sort_key;
                 }else{
                     caption_sort_key = photos[i].caption.toLowerCase()+date_sort_key;
                 }
