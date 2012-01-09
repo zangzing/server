@@ -631,7 +631,7 @@
             }
         },
 
-        resetLayout: function(duration, easing, showIfVisible) {
+        resetLayout: function(duration, easing, showIfVisible, callback) {
             var self = this,
                 o = self.options,
                 el = self.element;
@@ -649,17 +649,28 @@
                 duration = 0;
                 easing = 0;
             }
-            for( var i=0; i < self.photo_count ; i++){
-                var position = self._layoutPhoto( self._get_photo(i), i, duration, easing, showIfVisible );
-                if( position ){
-                    top_of_last_row = position.top;
-                }
-            }
+
+            var batch_size = 200;
+            var layout_some_photos = function(i) {
+               if (i < self.photo_count) { //recursion termination condition
+                   //layout a batch of photos
+                   for (var j = i; j < i + batch_size && j < self.photo_count; j++) {
+                       self._layoutPhoto( self._get_photo(j), j, duration, easing, showIfVisible );
+                   }
+                    // Queue next batch for processing
+                   //  Even a 0 timeout lets the system process any pending stuff and then this.
+                   setTimeout( function(){ layout_some_photos(i + batch_size); }, 0);
+               }else{
+                   if(!_.isUndefined( callback ) ){
+                       callback();
+                   }
+               }
+            };
+            layout_some_photos(0);
 
             if(!self.options.singlePictureMode){
-                var top = top_of_last_row + 330; // add the right of the rollover frame
                 var scroll_padding = $('<div class="scroll-padding"></div>');
-                scroll_padding.css({top: top});
+                scroll_padding.css({top: 330 }); // add the right of the rollover frame
                 el.append(scroll_padding);
             }
 
@@ -857,15 +868,16 @@
         _timed_out_layout: function(){
             var self = this;
             if( self.large_album ){
-                setTimeout( function(){
-                    self.element.hide();
-                    self.resetLayout(200, 'easeInOutCubic', true);
+                self.element.hide();
+            }
+            self.resetLayout(200, 'easeInOutCubic', true, function(){
+                if( self.large_album ){
                     self.element.fadeIn('fast');
                     self.large_album_dialog.close();
-                }, 1);
-            } else {
-                setTimeout( function(){ self.resetLayout(400, 'easeInOutCubic', true); });
-            }
+                } else {
+                    self.resetLayout(400, 'easeInOutCubic', true);
+                }
+            });
         },
 
         _sort: function( key_function ){
