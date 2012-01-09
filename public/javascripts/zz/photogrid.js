@@ -779,24 +779,26 @@
         },
 
         sort_by_date_asc: function( no_layout ){
-             var self = this;
-             if( self.large_album && typeof no_layout == 'undefined'){
+            var self = this;
+            if( self.large_album && typeof no_layout == 'undefined'){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Hot Diggety! Did you take all of these? Sorting them for you, give us a minute", 350,150);
-             }
-            switch(  self.current_sort  ){
-                case 'date-asc':
-                    break;
-                case 'date-desc':
-                    self.photo_array.reverse();
-                    break;
-                default:
-                    self._sort(  function (){ return this.date_sort_key; });
-                    break;
             }
+            setTimeout( function(){
+                switch(  self.current_sort  ){
+                    case 'date-asc':
+                        break;
+                    case 'date-desc':
+                        self.photo_array.reverse();
+                        break;
+                    default:
+                        self._sort(  function (){ return this.date_sort_key; });
+                        break;
+                }
 
-            if( typeof no_layout == 'undefined'){
-                self._timed_out_layout();
-             }
+                if( typeof no_layout == 'undefined'){
+                    self._timed_out_layout();
+                }
+            },10);
         },
 
         sort_by_date_desc: function( no_layout ){
@@ -804,65 +806,71 @@
             if( self.large_album && typeof no_layout == 'undefined'){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Blimey! Ordering a double-stack of pics. Give us a minute", 350,150);
             }
-            switch(  self.current_sort  ){
-                   case 'date-asc':
-                       self.photo_array.reverse();
-                       break;
-                   case 'date-desc':
-                       break;
-                   default:
-                       self._sort(  function (){ return this.date_sort_key; });
-                       self.photo_array.reverse();
-                       break;
-            }
-            if( typeof no_layout == 'undefined'){
-                self._timed_out_layout();
-            }
+            setTimeout( function(){
+                switch(  self.current_sort  ){
+                    case 'date-asc':
+                        self.photo_array.reverse();
+                        break;
+                    case 'date-desc':
+                        break;
+                    default:
+                        self._sort(  function (){ return this.date_sort_key; });
+                        self.photo_array.reverse();
+                        break;
+                }
+                if( typeof no_layout == 'undefined'){
+                    self._timed_out_layout();
+                }
+            },10);
         },
 
         sort_by_name_asc: function(no_layout){
-                    var self = this;
-                    if( self.large_album && typeof no_layout == 'undefined'){
-                        self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Woooha! We are sorting a ton of photos. Give us a minute", 350,150);
-                    }
-
-                    switch(  self.current_sort  ){
-                        case 'name-asc':
-                            break;
-                        case 'name-desc':
-                            self.photo_array.reverse();
-                            break;
-                        default:
-                            self._sort(  function(){ return this.caption_sort_key; });
-                            break;
+            var self = this;
+            if( self.large_album && typeof no_layout == 'undefined'){
+                self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Woooha! We are sorting a ton of photos. Give us a minute", 350,150);
+            }
+            setTimeout( function(){
+                switch(  self.current_sort  ){
+                    case 'name-asc':
                         break;
-                    }
-
-                    if( typeof no_layout == 'undefined'){
-                       self._timed_out_layout();
-                    }
-                },
+                    case 'name-desc':
+                        self.photo_array.reverse();
+                        break;
+                    default:
+                        self._sort(  function(){ return this.caption_sort_key; });
+                        break;
+                }
+                if( typeof no_layout == 'undefined'){
+                    self._timed_out_layout();
+                }
+            },10);
+        },
 
         sort_by_name_desc: function( no_layout ){
             var self = this;
             if(  self.large_album && typeof no_layout == 'undefined' ){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Yeeeepeee! We are shuffling a bundle of photos. Give us a minute", 350,150);
             }
+            setTimeout( function(){
+                switch(  self.current_sort  ){
+                    case 'name-asc':
+                        self.photo_array.reverse();
 
-            switch(  self.current_sort  ){
-                case 'name-asc':
-                    self.photo_array.reverse();
-                    break;
-                case 'name-desc':
-                    break;
-                default:
-                    self._sort(  function (){ return this.caption_sort_key; });
-                    self.photo_array.reverse();
-                    break;
-            }
-            if( typeof no_layout == 'undefined'){
-                self._timed_out_layout();
-            }
+                        break;
+                    case 'name-desc':
+                        break;
+                    default:
+
+                        self._sort(  function (){ return this.caption_sort_key; });
+                        self.photo_array.reverse();
+
+
+                        break;
+                }
+                if( typeof no_layout == 'undefined'){
+                    self._timed_out_layout();
+                }
+            }, 10);
         },
 
         _timed_out_layout: function(){
