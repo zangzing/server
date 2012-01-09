@@ -54,14 +54,20 @@
                 o = self.options,
                 el = self.element;
 
+            // - create photo_array and photo_hash
+            // - free memory taken by o.photos by clearing it
+            // for performance improvement
+            self._process_photos();
+            o.photos = new Array();
+
             if( o.currentPhotoId == 'first'){
-                o.currentPhotoId = o.photos[0].id;
+                o.currentPhotoId = self.photo_array[0].id;
             }
 
             // Large album optimization flag
-            self.large_album = o.photos.length > 2000 ;
+            self.large_album = self.photo_count.length > 2000 ;
             if( self.large_album ){
-                self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Wowsers! Your album has a ton of photos. It will take us a minute or two to display it. Please be patient", 350, 150);
+                self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Wowsers! Your album has "+self.photo_count+" photos. It will take us a minute or two to display it. Please be patient", 350, 150);
             }
 
             // decide scroll direction
@@ -133,7 +139,9 @@
                     allowDelete: o.allowDelete,
                     onDelete: function() {
                         var i = self.indexOfPhoto( photo.id );
-                        o.photos.splice( i, 1);
+                        self.photo_array.splice( i, 1);
+                        delete self.photo_hash[photo.id];
+                        self.photo_count--;
                         if (o.showThumbscroller) {
                             self.thumbscroller.removePhoto( i );
                         }
@@ -142,7 +150,9 @@
 
                     allowEditCaption: o.allowEditCaption,
                     onChangeCaption: function(caption) {
+                        var i = self.indexOfPhoto( photo.id );
                         photo.caption = caption;
+                        self.photo_array[i].caption_sort_key = caption+self.photo_array[i].date_sort_key;
                         self.current_sort = 'none';
                         return o.onChangeCaption(index, photo, caption);
                     },
@@ -259,11 +269,11 @@
             var batch_size = 60;
             var time_lapse = 1; //milliseconds between batches
             var create_some_photos = function(i) {
-                if (i < o.photos.length) { //recursion termination condition
+                if (i < self.photo_count) { //recursion termination condition
 
                     //create a batch of photos
-                    for (var j = i; j < i + batch_size && j < o.photos.length; j++) {
-                       create_photo(j, o.photos[j]);
+                    for (var j = i; j < i + batch_size && j < self.photo_count; j++) {
+                       create_photo(j, self._get_photo(j));
                     }
 
                     // Display the grid after the first batch is ready
@@ -275,17 +285,18 @@
                                 index = self.indexOfPhoto(o.currentPhotoId);
                             }
                             if( index >= batch_size ){ // create photo if not in first batch
-                                create_photo(index, o.photos[index]);
+                                create_photo(index, self._get_photo( index ) );
                             }
                             self._show_and_arm();
-                            o.photos[index].ui_photo.loadIfVisible();
+                            self._get_photo( index ).ui_photo.loadIfVisible();
                         }else{
                             // Grid View - Show as soon as we have first screen ready
+                            // loadif visible for first screen only
                             if( !self.large_album ){
                                 setTimeout( function(){
                                     self._show_and_arm();
                                     for (var k = i; k < j ; k++) {
-                                        o.photos[k].ui_photo.loadIfVisible();
+                                        self._get_photo(k).ui_photo.loadIfVisible();
                                     }
                                 }, time_lapse);
                             }
@@ -302,8 +313,8 @@
                         setTimeout( function(){
                             self._show_and_arm();
                             self.large_album_dialog.close();
-                            for (var k = 0; k < o.photos.length ; k++) {
-                                o.photos[k].ui_photo.loadIfVisible();
+                            for (var k = 0; k < self.photo_count ; k++) {
+                                self._get_photo(k).ui_photo.loadIfVisible();
                             }
                             self._trigger('ready');
                         }, time_lapse);
@@ -385,11 +396,11 @@
                 }
             };
 
-            if( o.photos.length > 0 ){
+            if( self.photo_count > 0 ){
                 //Insert add all button (must be called before sort)
                 if( o.addAllButton ){
                     add_all_button.src = zz.routes.image_url('/images/blank.png');
-                    o.photos.unshift(add_all_button); //insert add all button at the begining of array
+                    self._insert_add_all_button();
                 }
                 //sort the photos for the grid
                 if( o.sort ){
@@ -448,26 +459,15 @@
                         height: el.height(),
                         width: el.width()
                     };
-                    for( var i=0; i < o.photos.length; i++){
-                        if( !_.isUndefined( o.photos[i].ui_photo) ){
-                            o.photos[i].ui_photo.loadIfVisible( containerDimensions );
+                    for( var i=0; i < self.photo_count ; i++){
+                        var photo = self._get_photo(i);
+                        if( !_.isUndefined( photo.ui_photo) ){
+                            photo.ui_photo.loadIfVisible( containerDimensions );
                         }
                     }
                 }, 200);
             });
             self._trigger('visible');
-        },
-
-        findFirstScrollableContainer: function(){
-            var self = this;
-            var container = self.element;
-
-            for(;;){
-                if(container.css('overflow-y') == 'auto'){
-                    return container;
-                }
-                container = container.parent();
-            }
         },
 
         hideThumbScroller: function() {
@@ -487,25 +487,24 @@
                 var index = self.indexOfPhoto(self.currentPhotoId());
                 index++;
 
-                if (index > self.options.photos.length - 1) {
+                if (index > self.photo_count - 1) {
                     // if at the end, then go to beginning
                     index = 0;
                     animateDuration = 0;
                 }
 
-                var id = self.options.photos[index].id;
+                var photo = self._get_photo(index);
                 if( self.options.allowEditCaption ){
-                    self.options.photos[index].ui_photo.resetCaption();
+                    photo.ui_photo.resetCaption();
                 }
                 self.nextPrevActive = true;
-                self.scrollToPhoto(id, animateDuration, true, function() {
+                self.scrollToPhoto( photo.id, animateDuration, true, function() {
                     self.nextPrevActive = false;
                      if( !_.isUndefined( afterScroll )){
-                        afterScroll(self.options.photos[index] );
+                        afterScroll( photo );
                     }
                 });
             }
-
         },
 
         previousPicture: function( afterScroll ) {
@@ -519,19 +518,19 @@
 
                 if (index < 0) {
                     // go to the end
-                    index = self.options.photos.length-1;
+                    index = self.photo_count-1;
                     var animateDuration = 0;
                 }
 
-                var id = self.options.photos[index].id;
+                var photo = self._get_photo( index );
                 if( self.options.allowEditCaption ){
-                    self.options.photos[index].ui_photo.resetCaption();
+                    photo.ui_photo.resetCaption();
                 }
                 self.nextPrevActive = true;
-                self.scrollToPhoto(id, animateDuration, true, function() {
+                self.scrollToPhoto(photo.id, animateDuration, true, function() {
                     self.nextPrevActive = false;
                     if( !_.isUndefined( afterScroll )){
-                        afterScroll(self.options.photos[index] );
+                        afterScroll( photo );
                     }
                 });
             }
@@ -541,50 +540,46 @@
             var self = this;
             var index = self.indexOfPhoto(id);
             index++;
-            if (index > self.options.photos.length - 1){
+            if (index > self.photo_count - 1){
                 // if at the end, then go to beginning
                 index = 0;
             }
-            return self.options.photos[index];
+            return self._get_photo( index );
         },
 
         previousPhoto: function( id ){
             var self = this;
             var index = self.indexOfPhoto(id);
             index--;
-
             if (index < 0){
                 // go to the end
-                index = self.options.photos.length-1;
+                index = self.photo_count-1;
             }
-
-            return self.options.photos[index];
+            return self._get_photo( index );
         },
 
 
         currentPhotoId: function() {
-            var self = this;
-            if (self.options.currentPhotoId) {
-                return self.options.currentPhotoId;
-            }
-            else {
-                if (self.options.photos.length > 0) {
-                    return self.options.photos[0].id;
-                }
-                else {
+            var self = this,
+                o = self.options;
+            if (o.currentPhotoId) {
+                return o.currentPhotoId;
+            }else {
+                if (self.photo_count > 0) {
+                    return self.photo_array[0].id;
+                } else {
                     return null;
                 }
             }
-
         },
 
         indexOfPhoto: function(photoId) {
             //todo: this function won't work after a drag-drop reorder
-            var self = this;
+            var self = this,
+                wanted_id = photoId.toString();
 
-
-            for (var i = 0; i < self.options.photos.length; i++) {
-                if (self.options.photos[i].id == photoId) {
+            for (var i = 0; i < self.photo_count; i++) {
+                if (self.photo_array[i].id == wanted_id) {
                     return i;
                 }
             }
@@ -595,22 +590,21 @@
             var self = this,
                 o = self.options;
 
-            if (o.photos.length == 0) {
+            if (self.photo_count == 0) {
                 return;
             }
-
 
             var index = self.indexOfPhoto(photoId);
 
             if (index == -1) {
                 index = 0;
-                photoId = o.photos[0].id;
+                photoId = self.photo_array[0].id;
             }
 
             var onFinishAnimate = function() {
-                o.photos[index].ui_photo.loadIfVisible();
+                self._get_photo( index ).ui_photo.loadIfVisible();
                 o.currentPhotoId = photoId;
-                o.onScrollToPhoto( index, o.photos[index]);
+                o.onScrollToPhoto( index, self._get_photo( index ));
                 if (typeof callback !== 'undefined') {
                     callback();
                 }
@@ -650,12 +644,13 @@
 
             var top_of_last_row = 0;
 
-            if( o.photos.length > 200 ){
+            //do not animate albums with over 200 photos
+            if( self.photo_count > 200 ){
                 duration = 0;
                 easing = 0;
             }
-            for( var i=0; i < o.photos.length ; i++){
-                var position = self._layoutPhoto( o.photos[i], i, duration, easing, showIfVisible );
+            for( var i=0; i < self.photo_count ; i++){
+                var position = self._layoutPhoto( self._get_photo(i), i, duration, easing, showIfVisible );
                 if( position ){
                     top_of_last_row = position.top;
                 }
@@ -678,7 +673,7 @@
             // calculate the position for this index
             var position = this.positionForIndex(index);
 
-            //todo: moght want to check that things have actuall changed before setting new properties
+            //todo: moght want to check that things have actually changed before setting new properties
             if (duration && duration > 0 ) {
                 photo.ui_cell.animate(position, duration, easing, function(){
                     if( showIfVisible ){
@@ -709,7 +704,6 @@
             }
         },
 
-
         cells: function() {
             return this.element.children('.photogrid-cell');
         },
@@ -717,9 +711,8 @@
         cellsPerRow: function() {
             var self = this;
             if (self.options.singlePictureMode) {
-                return self.options.photos.length;
-            }
-            else {
+                return self.photo_count;
+            }else {
                 return Math.floor(self.width / self.options.cellWidth);
             }
         },
@@ -783,10 +776,10 @@
                 case 'date-asc':
                     break;
                 case 'date-desc':
-                    self.options.photos.reverse();
+                    self.photo_array.reverse();
                     break;
                 default:
-                    this._sort( this._capture_date_asc_comp );
+                    self._sort(  function (){ return this.date_sort_key; });
                     break;
             }
 
@@ -802,18 +795,42 @@
             }
             switch(  self.current_sort  ){
                    case 'date-asc':
-                       self.options.photos.reverse();
+                       self.photo_array.reverse();
                        break;
                    case 'date-desc':
                        break;
                    default:
-                       this._sort( this._capture_date_desc_comp );
+                       self._sort(  function (){ return this.date_sort_key; });
+                       self.photo_array.reverse();
                        break;
             }
             if( typeof no_layout == 'undefined'){
                 self._timed_out_layout();
             }
         },
+
+        sort_by_name_asc: function(no_layout){
+                    var self = this;
+                    if( self.large_album && typeof no_layout == 'undefined'){
+                        self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Woooha! We are sorting a ton of photos. Give us a minute", 350,150);
+                    }
+
+                    switch(  self.current_sort  ){
+                        case 'name-asc':
+                            break;
+                        case 'name-desc':
+                            self.photo_array.reverse();
+                            break;
+                        default:
+                            self._sort(  function(){ return this.caption_sort_key; });
+                            break;
+                        break;
+                    }
+
+                    if( typeof no_layout == 'undefined'){
+                       self._timed_out_layout();
+                    }
+                },
 
         sort_by_name_desc: function( no_layout ){
             var self = this;
@@ -823,105 +840,17 @@
 
             switch(  self.current_sort  ){
                 case 'name-asc':
-                    self.options.photos.reverse();
+                    self.photo_array.reverse();
                     break;
                 case 'name-desc':
                     break;
                 default:
-                    this._sort( function( a, b ){
-                        var acaption_lowercase  = a.caption.toLowerCase();
-                        var bcaption_lowercase = b.caption.toLowerCase()
-                        if(  acaption_lowercase == bcaption_lowercase ){
-                            return self._capture_date_desc_comp( a, b);
-                        }else if( a.caption == null || a.caption == '' || a.caption.length <= 0){
-                            return 1;
-                        }else if( b.caption == null || b.caption == '' || b.caption.length <= 0){
-                            return -1;
-                        }
-                        return  ( acaption_lowercase < bcaption_lowercase ? 1 : -1);
-                    });
-                break;
+                    self._sort(  function (){ return this.caption_sort_key; });
+                    self.photo_array.reverse();
+                    break;
             }
             if( typeof no_layout == 'undefined'){
                 self._timed_out_layout();
-            }
-        },
-
-        sort_by_name_asc: function(no_layout){
-            var self = this;
-            if( self.large_album && typeof no_layout == 'undefined'){
-                self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Woooha! We are sorting a ton of photos. Give us a minute", 350,150);
-            }
-
-            switch(  self.current_sort  ){
-                case 'name-asc':
-                    break;
-                case 'name-desc':
-                    self.options.photos.reverse();
-                    break;
-                default:
-                    self.sort_by_name_desc( false );
-                    self.options.photos.reverse();
-                break;
-            }
-
-//            function reverse_char(astring){
-//                return String.fromCharCode.apply(String,
-//                    _.map( astring.toLowerCase().split(''), function (c) {
-//                        return 0xffff - c.charCodeAt();
-//                    }));
-//            }
-//
-//            this._sort( function( a, b ){
-//                var arcap = reverse_char( a.caption );
-//                var brcap = reverse_char( b.caption );
-//                if( arcap == brcap ){
-//                    //if caption equal go to capture date
-//                    return self._capture_date_asc_comp( a, b);
-//                }else if( arcap == null || arcap == '' || arcap.length <= 0){
-//                    return -1;
-//                }else if( brcap == null || brcap == '' || brcap.length <= 0){
-//                    return 1;
-//                }
-//                return ( arcap > brcap? -1 : 1 );
-//            } );
-            if( typeof no_layout == 'undefined'){
-               self._timed_out_layout();
-            }
-        },
-
-        _capture_date_desc_comp: function ( a, b ){
-            if( a.capture_date == b.capture_date ){
-                //if capture date equal go to created at
-                if( a.created_at == b.created_at ){
-                    return( a.id < b.id ? 1 : -1 );
-                }else{
-                    return( a.created_at < b.created_at ? 1 : -1 );
-                }
-            }else if( a.capture_date == null || a.capture_date <= 0 ){
-                return 1;
-            }else if( b.capture_date == null || a.capture_date <= 0 ){
-                return -1;
-            }else{
-                return( a.capture_date < b.capture_date ? 1 : -1 );
-            }
-        },
-
-        _capture_date_asc_comp: function ( a, b ){
-            if( a.capture_date == b.capture_date ){
-                //if capture_date equal or null go to created_at
-                if( a.created_at == b.created_at ){
-                    // if created_at equal go to id
-                    return( a.id > b.id ? 1 : -1 );
-                }else{
-                    return( a.created_at > b.created_at ? 1 : -1 );
-                }
-            }else if( a.capture_date == null || a.capture_date <= 0 ){
-                return -1;
-            }else if( b.capture_date == null || a.capture_date <= 0 ){
-                return 1;
-            }else{
-                return( a.capture_date > b.capture_date ? 1 : -1 );
             }
         },
 
@@ -939,13 +868,17 @@
             }
         },
 
-        _sort: function( comparator ){
+        _sort: function( key_function ){
             if( this.options.addAllButton ){
-                this.options.photos.shift();                  // - remove add all button from the begining of array
-                this.options.photos.sort( comparator );       // - sort
-                this.options.photos.unshift(add_all_button);  // - insert add all button at the begining of array
-            }else{
-                this.options.photos.sort( comparator );
+                this._remove_add_all_button();                  // - remove add all button from the begining of array
+            }
+            var save = Object.prototype.toString;
+            Object.prototype.toString = key_function;
+            this.photo_array.sort();
+            Object.prototype.toString = save;
+
+            if( this.options.addAllButton ){
+                this._insert_add_all_button();  // - insert add all button at the begining of array
             }
         },
 
@@ -964,7 +897,8 @@
                 }
 
                 //remove any 'special' photos (eg blank one used for drag and drop on edit screen
-                var photos = $.map(o.photos, function(photo, index) {
+                var photos = $.map(self.photo_array, function(lwphoto, index) {
+                    var photo = self._get_photo( index );
                     return (photo.type != 'blank' ? photo : null);
                 });
 
@@ -1001,7 +935,63 @@
             }
         },
 
+        // Creates an array of lwphoto_array lightweight objects that contain
+        // -id = photo id
+        // -date_sort_key = capture_date_as_string+id_as_string
+        // -caption_sort_key = caption+date_sort_key
+        // the order of the photos is now preserved in this array not the options.photos
+        // This method also processes options.photos and creates a photo_hash indexed by id
+        // so we can quickly access photos using info from the lwphoto_array
+        _process_photos: function(){
+            var self = this,
+                o = self.options,
+                photos = o.photos;
 
+            self.photo_array = new Array();
+            self.photo_hash = {};
+            self.photo_count = photos.length;
+            for( var i= 0; i < self.photo_count; i++){
+                var id_string = photos[i].id.toString();
+                // create the date sort key
+                var date_sort_key;
+                if( photos[i].capture_date == null || photos[i].capture_date == ''){
+                    date_sort_key = '0000-00-00T00:00:00-00:00'+id_string;
+                }else{
+                    date_sort_key = photos[i].capture_date.toString()+id_string;
+                }
+                // create the caption sort key
+                var caption_sort_key;
+                if( photos[i].caption == null || photos[i].caption == ''){
+                    caption_sort_key = '                                        '+date_sort_key;
+                }else{
+                    caption_sort_key = photos[i].caption.toLowerCase()+date_sort_key;
+                }
+
+                //create the hash and the array
+                self.photo_hash[ id_string ] = photos[i];
+                self.photo_array.push( {
+                    id              : id_string ,
+                    date_sort_key   : date_sort_key,
+                    caption_sort_key: caption_sort_key
+                } );
+            }
+        },
+
+        _get_photo: function( index ){
+            return this.photo_hash[ this.photo_array[index].id ];
+        },
+
+        _insert_add_all_button: function(){
+            self.photo_array.unshift(add_all_button); //insert add all button at the begining of array
+            self.photo_hash[ add_all_button.id ] = add_all_button
+            self.photo_count++;
+        },
+
+        _remove_add_all_button: function(){
+            self.photo_array.shift(); //insert add all button at the begining of array
+            delete self.photo_hash[ add_all_button.id ];
+            self.photo_count--;
+        },
         destroy: function() {
             if (this.thumbscrollerElement) {
                 this.thumbscrollerElement.remove();
