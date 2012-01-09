@@ -65,7 +65,7 @@
             }
 
             // Large album optimization flag
-            self.large_album = self.photo_count > 2000 ;
+            self.large_album = self.photo_count > 100 ;
             if( self.large_album ){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Wowsers! Your album has "+self.photo_count+" photos. It will take us a minute or two to display it. Please be patient", 350, 150);
             }
@@ -406,7 +406,7 @@
                 if( o.sort ){
                     self.sort_by( o.sort, true ); //no layout
                 }else{
-                    self.current_sort = 'date-asc'
+                    self.current_sort = 'date-asc';
                 }
 
                 //optimize parameters for large albums
@@ -650,7 +650,10 @@
                 easing = 0;
             }
 
-            var batch_size = 200;
+            var batch_size = self.photo_count;
+            if(self.large_album){
+                batch_size = 500;
+            }
             var layout_some_photos = function(i) {
                if (i < self.photo_count) { //recursion termination condition
                    //layout a batch of photos
@@ -843,7 +846,7 @@
                 if( typeof no_layout == 'undefined'){
                     self._timed_out_layout();
                 }
-            },10);
+            },1);
         },
 
         sort_by_name_desc: function( no_layout ){
@@ -855,22 +858,18 @@
                 switch(  self.current_sort  ){
                     case 'name-asc':
                         self.photo_array.reverse();
-
                         break;
                     case 'name-desc':
                         break;
                     default:
-
                         self._sort(  function (){ return this.caption_sort_key; });
                         self.photo_array.reverse();
-
-
                         break;
                 }
                 if( typeof no_layout == 'undefined'){
                     self._timed_out_layout();
                 }
-            }, 10);
+            }, 1);
         },
 
         _timed_out_layout: function(){
@@ -1003,7 +1002,7 @@
 
         _insert_add_all_button: function(){
             self.photo_array.unshift(add_all_button); //insert add all button at the begining of array
-            self.photo_hash[ add_all_button.id ] = add_all_button
+            self.photo_hash[ add_all_button.id ] = add_all_button;
             self.photo_count++;
         },
 
