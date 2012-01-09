@@ -21,11 +21,13 @@ var zz = zz || {};
 
     	// If we aren't hiding join banner, add it to the page
     	var should_hide_banner = (zz.session.current_user_id != null) || $.cookie('hide_join_banner') == "true";      	
-    	if(!should_hide_banner) {
+    	if(true) { // TODO~!!!!! 
     		var large_banner = $(window).width() > 800;
     		
-            $('#article').prepend('<div id="article-join-banner"></div>');
-            $("#article-join-banner").html(banner_html(large_banner));
+            $('#header').after('<div id="header-join-banner"></div>');
+            $("#article").prepend('<div class="spacer"></div>')
+            //$('#article').prepend('<div id="header-join-banner"></div>');
+            $("#header-join-banner").html(banner_html(large_banner));
             
     		if(large_banner) {
     			setup_banner();
@@ -76,30 +78,27 @@ var zz = zz || {};
         }
     }
 
-    };
+    };0
     
     
     // Private:
 
     function setup_banner(){
+    	
+    	// Show Banner
+    	
+    	// Add padding to article so we don't block elements
+    	//$("#article").addClass("joinshift");
+    	
     	$('.field label').inFieldLabels();
     	
-    	$('#article-join-banner .join-form').first().attr("action", 'https://'+document.domain+zz.routes.users.create_user_url());
+    	$('#header-join-banner .join-form').first().attr("action", 'https://'+document.domain+zz.routes.users.create_user_url());
 	
-    	zz.login.add_validation( $('#article-join-banner .join-form') );
+    	zz.login.add_validation( $('#header-join-banner .join-form') );
     	
-    	$('#article-join-banner .join-form').submit(function(){
+    	$('#header-join-banner .join-form').submit(function(){
     		//zz.login.on_form_submit('TODO-STRING'); // TODO: something like homepage.join.click
     	});
-    	
-        $('#article-join-banner .close-button').click(function() {
-            $('#article-join-banner').fadeOut(200, function() {
-                //create cookie that expires in 1 hour or when user quits browser
-                var exp = new Date();
-                exp.setTime(exp.getTime() + 60 * 60 * 1000);
-                jQuery.cookie('hide_join_banner', 'true', {expires: exp});
-            });
-        });
         
     }
     
@@ -109,7 +108,7 @@ var zz = zz || {};
     
     
     
-    // This goes inside of #article-join-banner
+    // This goes inside of #header-join-banner
     function banner_html(isLarge){
     	
     	if(isLarge){
@@ -123,8 +122,7 @@ var zz = zz || {};
 		                '<div class="field"><label for="user_password">Password</label><input type="password" name="user[password]" id="user_password" value="" maxlength="40" /></div>' +
 		                '<button type="submit" id="signup" class="big shiny default">Join for Free</button>' +
 		                '</form>' +
-		            '</div>' + 
-		            '<div class="close-button"></div>'
+		            '</div>'
 		            ;
     	}
     	
@@ -139,8 +137,8 @@ var zz = zz || {};
     	var message;
     	
     	if(isLarge){
-    		if(zz.page.displayed_user_first_name){
-        		message = zz.page.displayed_user_first_name + " is using ZangZing.";
+    		if(zz.page.displayed_user_name){
+        		message = zz.page.displayed_user_name + " is using ZangZing.";
         	} else {
         		message = "ZangZing is a free and easy photo sharing service.";
         	}

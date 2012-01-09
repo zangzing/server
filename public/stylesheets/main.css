@@ -104,74 +104,25 @@ div#container {
 }
 
 
-/* join banner
+/* join banner off header
  -----------------------------------------------------------------------------*/
-.show-join-banner #join-banner{
-    position: relative;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    height: 38px;
-    background-color: #333;
-    display:block;
-}
-
-#join-banner{
-    display:none;
-}
-
-
-#join-banner #banner-text{
-    position:relative;
-    top:10px;
-    font-size:14px;
-    color:#fff;
-/*font-weight:500;*/
-}
-
-
-#join-banner #close-button{
-    position:absolute;
-    right:10px;
-    top:7px;
-    height:21px;
-    width:21px;
-    background: url("/images/btn-close-join-banner.png") no-repeat scroll top right;
-    cursor:pointer;
-}
-
-#join-banner #close-button:hover{
-    background: url("/images/btn-close-join-banner.png") no-repeat scroll right -21px;
-}
-
-#join-banner #join-button{
-    position:absolute;
-    top:4px;
-    right:45px;
-    width:75px;
-}
-
-
-#join-banner #signin-button{
-    position:absolute;
-    top:4px;
-    right:40px;
-    width:60px;
-    display:none;
-}
-
-/* article join banner
- -----------------------------------------------------------------------------*/
-#article-join-banner {
-    position: relative;
-    width: 975px;
+#header-join-banner {
+  	position: absolute;
+  	top: 57px; /* 60px header - 2px header top - 1px header shadow */
+    width: 845px;
     height:75px;
-    margin: 2em auto;
-    padding: 1em;
-    border: 1px solid #CCC;
+    
+    background-color: #fff8de;
+    border: 1px solid #e2d6b5;
+    
+	-moz-border-radius-bottomleft:5px;
+	-moz-border-radius-bottomright:5px;
+	-webkit-border-bottom-left-radius: 5px;
+	-webkit-border-bottom-right-radius: 5px;
 }
 
-#article-join-banner .close-button{
+
+#header-join-banner .close-button{
     position:absolute;
     right:10px;
     top:7px;
@@ -182,24 +133,24 @@ div#container {
 }
 
 
-#article-join-banner .field {
+#header-join-banner .field {
 	position: relative;
 	display: inline-block;
 	margin: 0 10px 0 0;
 }
 
-#article-join-banner .ie7 .field {
+#header-join-banner .ie7 .field {
 	display:inline;
 }
 
-#article-join-banner form .field label {
+#header-join-banner form .field label {
 	position: absolute;
 	top: 10px;
 	left: 10px;
 	color: #999;
 }
 
-#article-join-banner form input {
+#header-join-banner form input {
 		width: 136px;  /*for 4 fields */
 		padding: 8px 10px 9px;
 		border: 1px solid #000;
@@ -208,19 +159,19 @@ div#container {
 		-webkit-border-radius: 5px;
 	}
 	
-#article-join-banner form input.error {
+#header-join-banner form input.error {
 		background-color:#fddbda;
 		border-color:#fd514f;
 	}
 	
-#article-join-banner form button {
+#header-join-banner form button {
 		vertical-align:middle;
 		min-width: 88px;
 	}
 
 
 	
-#article-join-banner form .field label.error {
+#header-join-banner form .field label.error {
 	top:41px;
 	bottom:42px;
 	left:50%;
@@ -405,7 +356,6 @@ div#headline {
 ----------------------------------------------------------------------------- */
 
 #article {
-/* TODO: either remove left/right and set w:100% and fix the comments drawer or change the album animation to use right: width */
     overflow-y:auto;
     overflow-x:hidden;
     position: absolute;
@@ -415,3 +365,6 @@ div#headline {
     right:0px;
 }
 
+#article .spacer {
+	height: 75px;
+}

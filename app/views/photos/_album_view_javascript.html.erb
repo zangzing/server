@@ -8,7 +8,7 @@
     zz.page.current_user_can_contribute = <%=  @album.can_user_contribute?( current_user ) %>;
     zz.page.current_user_can_buy_photos = <%=  @album.can_user_buy_photos?( current_user ) %>;
     zz.page.displayed_user_id           = '<%= @album.user.id %>';
-    zz.page.displayed_user_first_name   = '<%= escape_javascript @album.user.first_name %>';    
+    zz.page.displayed_user_name   		= '<%= escape_javascript @album.user.name %>';    
     zz.page.album_base_url              = '/<%=escape_javascript @album.user.username%>/<%=escape_javascript @album.friendly_id%>';
     zz.page.album_name                  = '<%= escape_javascript raw(@album.name) %>';
     zz.page.back_to_home_page_url       = '<%= back_to_home_page_url @album %>';
