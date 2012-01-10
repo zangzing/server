@@ -9,6 +9,7 @@ zz.buttonset = {};
 (function($){
     zz.buttonset.init = function( default_action ){
         $('.zz-buttonset').attr('disabled','');
+        $('.zz-setbutton').unbind('click');
         $('#view-sort-bar div.set-title').attr('disabled','');
         $('.zz-setbutton')
             .unbind('click')

@@ -9,8 +9,8 @@
     var photogrid_droppablecell_template =  $('<div class="photogrid-cell"><div class="photogrid-droppable"></div></div>');
     var photogrid_cell_template =  $('<div class="photogrid-cell"></div>');
     var add_all_button = { id: 'add-all-photos',  caption: '', type: 'blank' };
-    var LARGE_ALBUM_THRESHOLD  = 100;
-    var LARGE_ALBUM_BATCH_SIZE = 10;
+    var LARGE_ALBUM_THRESHOLD  = 1500;
+    var LARGE_ALBUM_BATCH_SIZE = 250;
 
     $.widget('ui.zz_photogrid', {
         options: {
