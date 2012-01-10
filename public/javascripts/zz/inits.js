@@ -24,9 +24,14 @@ var zz = zz || {};
     	if(true) { // TODO~!!!!! 
     		var large_banner = $(window).width() > 800;
     		
+    		var is_photos_page = zz.page.album_id != null; // Use this as a hack to proxy whether there is .photogrid
+    		
             $('#header').after('<div id="header-join-banner"></div>');
-            $("#article").prepend('<div class="spacer"></div>')
-            //$('#article').prepend('<div id="header-join-banner"></div>');
+            
+            if( !is_photos_page ){
+            	$("#article").prepend('<div class="spacer"></div>');	
+            }
+          
             $("#header-join-banner").html(banner_html(large_banner));
             
     		if(large_banner) {
@@ -90,7 +95,7 @@ var zz = zz || {};
     	// Add padding to article so we don't block elements
     	//$("#article").addClass("joinshift");
     	
-    	$('.field label').inFieldLabels();
+    	$('.join-form li label').inFieldLabels();
     	
     	$('#header-join-banner .join-form').first().attr("action", 'https://'+document.domain+zz.routes.users.create_user_url());
 	
@@ -110,24 +115,27 @@ var zz = zz || {};
     
     // This goes inside of #header-join-banner
     function banner_html(isLarge){
-    	
+    	var html = "";
     	if(isLarge){
-		    return  '<div class="logo"></div>' +
+		    html = '<div class="picture"><span><img src="'+ join_picture() +'"></img></span></div>' +
 		    		'<div class="header">'+join_message(isLarge)+'</div>' +    
 		            '<div class="feature">' +
 		                '<form method="post" class="join-form" enctype="multipart/form-data" action="foo">' +
-		                '<div class="field"><label for="user_name">First &amp; Last Name</label><input type="text" name="user[name]" id="user_name" value="" /></div>' +
-		                '<div class="field"><label for="user_username">Username</label><input type="text" name="user[username]" id="user_username" value="" /></div>' +
-		                '<div class="field"><label for="user_email">Email address</label><input type="text" name="user[email]" id="user_email" value="" /></div>' +
-		                '<div class="field"><label for="user_password">Password</label><input type="password" name="user[password]" id="user_password" value="" maxlength="40" /></div>' +
-		                '<button type="submit" id="signup" class="big shiny default">Join for Free</button>' +
+		                '<ul>' +
+		                '<li><label for="user_name">First &amp; Last Name</label><input type="text" name="user[name]" id="user_name" value="" /></li>' +
+		                '<li><label for="user_username">Username</label><input type="text" name="user[username]" id="user_username" value="" /></li>' +
+		                '<li><label for="user_email">Email address</label><input type="text" name="user[email]" id="user_email" value="" /></li>' +
+		                '<li><label for="user_password">Password</label><input type="password" name="user[password]" id="user_password" value="" maxlength="40" /></li>' +
+		                '<li><button type="submit" id="signup" class="big shiny default">Join for Free</button></li>' +
+		                '</ul>' +
 		                '</form>' +
 		            '</div>'
 		            ;
+    	} else  {
+    		// else return small banner	
     	}
     	
-    	// else return small banner
-    	return ''; // TODO:
+    	return html;
     	
     }
     
@@ -147,6 +155,14 @@ var zz = zz || {};
     	}
     	
     	return message;
+    }
+    
+    function join_picture(){
+    	var img = "/images/zangzing-logo-black.png";
+    	if(false){
+    		
+    	}
+    	return img;
     }
 
 }());
