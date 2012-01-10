@@ -324,7 +324,8 @@
                     if( self.large_album && !o.singlePictureMode ){
                         self._show_and_arm();
                         self.large_album_dialog.close();
-                        for (var k = 0; k < self.photo_count ; k++) {
+                        // only load the first 100 since album is at the top, scroll resize will take care of the rest
+                        for (var k = 0; k < 100 ; k++) {
                             var photo = self._get_photo(k);
                             if( !_.isUndefined(photo.ui_photo)){
                                 photo.ui_photo.loadIfVisible();
@@ -652,22 +653,41 @@
 
             el.find('.scroll-padding').remove();
 
-            var top_of_last_row = 0;
+
 
             //do not animate albums with over 200 photos
             if( self.photo_count > 200 ){
                 duration = 0;
                 easing = 0;
             }
+            var last_position;
 
-            for( var i=0; i < self.photo_count ; i++){
-                var position = self._layoutPhoto( self._get_photo(i), i, duration, easing, showIfVisible );
-                if( position ){
-                    top_of_last_row = position.top;
+            if( self.large_album ){
+               self.element.hide();
+                for( var i=0; i < self.photo_count ; i++){
+                    var photo = self._get_photo(i);
+                    last_position = self._layoutPhoto( photo, i, 0, 0, false );
+                }
+                self.element.fadeIn('fast');
+                self.large_album_dialog.close();
+                // draw the top
+                var offset = self.element.offset();
+                var height = self.element.height();
+                var width = self.element.width();
+                if( showIfVisible ){
+                    for( i=0; i < self.photo_count ; i++){
+                        self._get_photo(i).ui_photo.loadIfVisibleFast(offset, height, width );
+                    }
+                }
+            }else{
+                for( var k=0; k < self.photo_count ; k++){                                 
+                    last_position = self._layoutPhoto( self._get_photo(k), k, duration, easing, showIfVisible );
                 }
             }
 
+
             if(!self.options.singlePictureMode){
+                var top_of_last_row = last_position.top;
                 var top = top_of_last_row + 330; // add the right of the rollover frame
                 var scroll_padding = $('<div class="scroll-padding"></div>');
                 scroll_padding.css({top: top});
@@ -793,7 +813,9 @@
                     break;
                 case 'date-desc':
                     self.photo_array.reverse();
-                    self._timed_out_layout(layout);
+                    if(layout){
+                        self.resetLayout(100, 'easeInOutCubic', true);
+                    }
                     self.current_sort = 'date-asc';
                     if( !_.isUndefined( callback )){
                         callback();
@@ -803,7 +825,9 @@
                     self._sort(
                         function (){ return this.date_sort_key; },
                         function(){
-                            self._timed_out_layout(layout);
+                            if(layout){
+                                self.resetLayout(100, 'easeInOutCubic', true);
+                            }
                             self.current_sort = 'date-asc';
                             if( !_.isUndefined( callback )){
                                 callback();
@@ -821,7 +845,9 @@
             switch(  self.current_sort  ){
                 case 'date-asc':
                     self.photo_array.reverse();
-                    self._timed_out_layout( layout );
+                    if(layout){
+                        self.resetLayout(100, 'easeInOutCubic', true);
+                    }
                     self.current_sort = 'date-desc';
                     if( !_.isUndefined( callback )){
                         callback();
@@ -837,7 +863,9 @@
                         function (){ return this.date_sort_key; },
                         function(){
                             self.photo_array.reverse();
-                            self._timed_out_layout( layout );
+                            if(layout){
+                                self.resetLayout(100, 'easeInOutCubic', true);
+                            }
                             self.current_sort = 'date-desc';
                             if( !_.isUndefined( callback )){
                                 callback();
@@ -861,7 +889,9 @@
                     break;
                 case 'name-desc':
                     self.photo_array.reverse();
-                    self._timed_out_layout( layout );
+                    if(layout){
+                        self.resetLayout(100, 'easeInOutCubic', true);
+                    }
                     self.current_sort = 'name-asc';
                     if( !_.isUndefined( callback )){
                         callback();
@@ -871,7 +901,9 @@
                     self._sort(
                         function(){ return this.caption_sort_key; },
                         function(){
-                            self._timed_out_layout(layout);
+                            if(layout){
+                                self.resetLayout(100, 'easeInOutCubic', true);
+                            }
                             self.current_sort = 'name-asc';
                             if( !_.isUndefined( callback )){
                                 callback();
@@ -889,7 +921,9 @@
             switch(  self.current_sort  ){
                 case 'name-asc':
                     self.photo_array.reverse();
-                    self._timed_out_layout(layout);
+                    if(layout){
+                        self.resetLayout(100, 'easeInOutCubic', true);
+                    }
                     self.current_sort = 'name-desc';
                     if( !_.isUndefined( callback )){
                         callback();
@@ -905,7 +939,9 @@
                         function(){ return this.caption_sort_key; },
                         function(){
                             self.photo_array.reverse();
-                            self._timed_out_layout(layout);
+                            if(layout){
+                                self.resetLayout(100, 'easeInOutCubic', true);
+                            }
                             self.current_sort = 'name-desc';
                             if( !_.isUndefined( callback )){
                                 callback();
@@ -915,19 +951,6 @@
             }
         },
 
-        _timed_out_layout: function( layout ){
-            var self = this;
-            if(layout){
-                if( self.large_album ){
-                    self.element.hide();
-                }
-                self.resetLayout(100, 'easeInOutCubic', true);
-                if( self.large_album ){
-                    self.element.fadeIn('fast');
-                    self.large_album_dialog.close();
-                }
-            }
-        },
 
         _sort: function( key_function, callback ){
             var self = this,
@@ -1016,9 +1039,9 @@
                 o = self.options,
                 photos = o.photos;
 
-            self.photo_array = new Array();
-            self.photo_hash = {};
             self.photo_count = photos.length;
+            self.photo_array = [self.photo_count];
+            self.photo_hash = {};
             for( var i= 0; i < self.photo_count; i++){
                 var id_string = photos[i].id.toString();
                 // create the date sort key
@@ -1038,11 +1061,11 @@
 
                 //create the hash and the array
                 self.photo_hash[ id_string ] = photos[i];
-                self.photo_array.push( {
+                self.photo_array[i]={
                     id              : id_string ,
                     date_sort_key   : date_sort_key,
                     caption_sort_key: caption_sort_key
-                } );
+                };
             }
         },
 

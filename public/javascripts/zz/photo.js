@@ -433,6 +433,37 @@ zz.template_cache = zz.template_cache || {};
             }
         },
 
+
+        loadIfVisibleFast: function( offset, height, width ){
+            if (!this.imageLoaded) {
+                if (this._inLazyLoadRegionFast(offset, height, width)) {
+                    this._loadImage();
+                }
+            }
+        },
+
+        _inLazyLoadRegionFast: function(offset, height, width) {
+            var threshold = this.options.lazyLoadThreshold;
+            
+            var elementOffset = $(this.element).offset(); //todo: expensive call. cache/pass-in if possible; maybe can cache after grid resize
+            var elementWidth = this.options.maxWidth;
+            var elementHeight = this.options.maxHeight;
+
+            var foldBottom = offset.top + height;
+            var foldRight = offset.left + width;
+            var foldTop = offset.top;
+            var foldLeft = offset.left;
+
+
+            var left = (foldLeft >= elementOffset.left + threshold + elementWidth);
+            var above = (foldTop >= elementOffset.top + threshold + elementHeight);
+            var right = (foldRight <= elementOffset.left - threshold);
+            var below = (foldBottom <= elementOffset.top - threshold);
+
+            return (!left) && (!right) && (!above) && (!below);
+        },
+
+
         changeSrc: function(json_photo) {
             var self = this,
                 o = self.options;
@@ -548,8 +579,6 @@ zz.template_cache = zz.template_cache || {};
             var below = (foldBottom <= elementOffset.top - threshold);
 
             return (!left) && (!right) && (!above) && (!below);
-
-
         },
 
         resetCaption: function( caption ){
