@@ -626,25 +626,29 @@ zz.album = {};
     }
 
     function init_sort_bar( grid ){
+        var sort_done = function(sort){
+             zz.local_storage.set_album_sort( zz.page.album_id, sort );
+             zz.buttonset.init();
+        };
+
+
+
         $('#view-sort-bar').bind("buttonset-click",function( event, action ){
+            zz.buttonset.disable('Working on your sort, please be patient, its a big bunch of photos');
             ZZAt.track('album.'+action+'.click');
             switch( action ){
                 case'sort-name-up':
-                    grid.sort_by_name_asc( true );
-                    zz.local_storage.set_album_sort( zz.page.album_id, 'name-asc' );
+                    grid.sort_by_name_asc( true, function(){ sort_done('name-asc')});
                     break;
                 case'sort-name-down':
-                    grid.sort_by_name_desc( true );
-                    zz.local_storage.set_album_sort( zz.page.album_id, 'name-desc' );
+                    grid.sort_by_name_desc( true, function(){ sort_done('name-desc')});
                     break;
                 case'sort-date-down':
-                    grid.sort_by_date_desc( true );
-                    zz.local_storage.set_album_sort( zz.page.album_id, 'date-desc' );
+                    grid.sort_by_date_desc( true, function(){ sort_done('date-desc')});
                     break;
                 case'sort-date-up':
                 default:
-                    grid.sort_by_date_asc( true );
-                    zz.local_storage.set_album_sort( zz.page.album_id, 'date-asc' );
+                    grid.sort_by_date_asc( true, function(){ sort_done('date-asc')});
                     break;
             }
         });

@@ -62,6 +62,7 @@
             self._process_photos();
             o.photos = new Array();
 
+
             if( o.currentPhotoId == 'first'){
                 o.currentPhotoId = self.photo_array[0].id;
             }
@@ -87,9 +88,11 @@
                 el.touchScrollY();
             }
 
-            // save the current container size before we hide it
+            // save the current container size and
+            // init position calculator before we hide it
             self.width = parseInt(el.css('width'));
             self.height = parseInt(el.css('height'));
+            self._initPosForIndex();
             el.hide(); //hide it for speed inserting photos
 
             //choose template for cells and size it as desired
@@ -449,6 +452,7 @@
                 resizeTimer = setTimeout(function() {
                     self.width = parseInt(el.css('width'));
                     self.height = parseInt(el.css('height'));
+                    self._initPosForIndex();
                     self.resetLayout(0,0, true); //no duration, no easing, yes loadIfVisible
                 }, 100);
             });
@@ -724,34 +728,35 @@
             }
         },
 
+
+        _initPosForIndex: function(){
+            var self = this;
+            self.cells_per_row = self.cellsPerRow();
+            self.padding_left = 0;
+            if(self.options.centerPhotos){
+                self.padding_left = Math.floor((self.width - (self.cells_per_row * self.options.cellWidth)) / 2);
+                self.padding_left = self.padding_left - (20 / 2); //account for scroller //todo: use constant or lookup value for scroller width
+            }
+            self.cell_height = self.options.cellHeight;
+            self.padding_top = self.options.topPadding;
+            self.cell_width = self.options.cellWidth;
+        },
+
         positionForIndex: function(index) {
             var self = this;
 
             if (self.options.singlePictureMode) {
                 return {
                     top: 0,
-                    left: (index * self.options.cellWidth)
-
+                    left: (index * self.cell_width)
                 };
-            }
-            else {
-                var cellsPerRow = self.cellsPerRow();
-                var row = Math.floor(index / cellsPerRow);
-                var col = index % cellsPerRow;
-
-
-                var paddingLeft = 0;
-
-                if(self.options.centerPhotos){
-                    paddingLeft = Math.floor((self.width - (cellsPerRow * self.options.cellWidth)) / 2);
-                    paddingLeft = paddingLeft - (20 / 2); //account for scroller //todo: use constant or lookup value for scroller width
-                }
-
-
+            } else {
+                var row = ((index / self.cells_per_row)|0); //faster then Math.floor
+                var col = index % self.cells_per_row;
 
                 return {
-                    top: row * self.options.cellHeight + self.options.topPadding,
-                    left: paddingLeft + (col * self.options.cellWidth)
+                    top: row * self.cell_height + self.padding_top,
+                    left: self.padding_left + (col * self.cell_width)
                 };
             }
         },
