@@ -34,11 +34,11 @@ var zz = zz || {};
         });
         
         if($('body').hasClass('show-join-banner')){
-        	ZZAt.track('join.topbanner.show');
+            ZZAt.track('join.topbanner.show');
         }
 
         $('#join-banner #join-button').click(function() {
-        	ZZAt.track('join.topbanner.click');
+            ZZAt.track('join.topbanner.click');
             document.location.href = '/join';
         });
 
