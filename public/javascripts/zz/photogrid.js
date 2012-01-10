@@ -939,6 +939,7 @@
                 var save = Object.prototype.toString;
                 Object.prototype.toString = key_function;
                 self.photo_array.sort();
+                alert("sort done!");
                 Object.prototype.toString = save;
 
                 if( o.addAllButton ){
