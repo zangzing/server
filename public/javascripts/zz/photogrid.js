@@ -937,11 +937,11 @@
                     self._remove_add_all_button();                  // - remove add all button from the begining of array
                 }
                 var save = Object.prototype.toString;
+                console.log("about to begin sort");
                 Object.prototype.toString = key_function;
                 self.photo_array.sort();
-                alert("sort done!");
                 Object.prototype.toString = save;
-
+                console.log("sort done!");
                 if( o.addAllButton ){
                     self._insert_add_all_button();  // - insert add all button at the begining of array
                 }
