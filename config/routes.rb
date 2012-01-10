@@ -13,6 +13,7 @@ Server::Application.routes.draw do
   get    '/unsubscribe/:id'    => 'subscriptions#unsubscribe', :as => :unsubscribe
 
   get    '/invite'  => 'invitations#show', :as => :invitation
+  get    '/invite_friends'  => 'invitations#invite_friends', :as => :invite_friends
 
   # the whole site has /service in front of it except for users
   scope '/service' do

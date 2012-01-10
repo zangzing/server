@@ -44,6 +44,7 @@
               </tr>
 
               <tr>
+              <tr>
                 <td> <%= user_form.label :user_name %> </td>
                 <td>
                   <span id="user_username" class="no-edit-field"> <span class="blue"><%= @user.username %></span> </span>
@@ -78,6 +79,55 @@
             </table>
       </div>
     </li>
+
+
+    <li class="item tab add">
+      <div class="header tab-centered">
+        Invitations
+      </div>
+
+      <div class="indented content">
+        <table id="invitations-accounts-table">
+          <%
+            @user.sent_invitations.each do |invitation|
+          %>
+              <tr>
+                <td><%= "#{invitation.invited_user.name} #{invitation.invited_user.email}" %></td>
+                <td></td>
+                <td></td>
+              </tr>
+          <%
+             end
+          %>
+        </table>
+      </div>
+
+
+      <div class="description">
+        <% if @user.received_invitations %>
+        You received 250MB for joining from an invitation<br><br>
+        <% end %>
+
+        Receive 500GB of space for each of your friends that you invite (up to a total of 16BG)
+      </div>
+      <div class="indented content">
+        <table id="invitations-accounts-table">
+          <%
+            @user.sent_invitations.each do |invitation|
+          %>
+              <tr>
+                <td><%= "#{invitation.invited_user.name} #{invitation.invited_user.email}" %></td>
+                <td></td>
+                <td></td>
+              </tr>
+          <%
+             end
+          %>
+        </table>
+      </div>
+    </li>
+
+
 
     <li class="item tab add">
       <div class="header tab-centered">

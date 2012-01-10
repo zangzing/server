@@ -312,6 +312,13 @@ zz.toolbars = {
             ZZAt.track('acctmenu.getstarted.click');
             window.open('/about/getting-started','GettingStarted','width=1000,height=1000,scrollbars=1');
         });
+
+        $('#acct-invite-friends-btn').click(function() {
+            ZZAt.track('acctmenu.invite-friends.click');
+            zz.routes.users.goto_invite_friends_screen();
+        });
+
+
         $('#acct-settings-btn').click(function() {
             zz.toolbars._disable_buttons();
             ZZAt.track('acctmenu.settings.click');

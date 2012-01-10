@@ -80,7 +80,12 @@ var zz = zz || {};
                 else{
                     document.location.href = '/signin';
                 }
+            },
+
+            goto_invite_friends_screen: function(){
+                document.location.href = 'invite_friends'
             }
+
         },
 
         albums: {
