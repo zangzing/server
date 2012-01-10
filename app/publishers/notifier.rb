@@ -216,8 +216,18 @@ class Notifier < ActionMailer::Base
   end
 
 
-  def invite_to_join(from_user_id, to_email_address, invite_url)
+  def invite_to_join(from_user_id, to_email_address, invite_url, template_id = nil)
+    @user = User.find_by_id(from_user_id)
+    @recipient = to_email_address
+    @invite_url = invite_url
+    create_message( __method__, template_id,  @recipient, { :user_id => @user.id } )
+  end
 
+  def joined_from_invite(invitation_id, template_id = nil)
+    @invitation = Invitation.find_by_id(invitation_id)
+    @user = @invitation.invited_user
+    @recipient = @invitation.invited_user
+    create_message( __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
 
 end
