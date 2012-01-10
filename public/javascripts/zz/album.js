@@ -630,20 +630,20 @@ zz.album = {};
             ZZAt.track('album.'+action+'.click');
             switch( action ){
                 case'sort-name-up':
-                    grid.sort_by_name_asc();
+                    grid.sort_by_name_asc( true );
                     zz.local_storage.set_album_sort( zz.page.album_id, 'name-asc' );
                     break;
                 case'sort-name-down':
-                    grid.sort_by_name_desc();
+                    grid.sort_by_name_desc( true );
                     zz.local_storage.set_album_sort( zz.page.album_id, 'name-desc' );
                     break;
                 case'sort-date-down':
-                    grid.sort_by_date_desc();
+                    grid.sort_by_date_desc( true );
                     zz.local_storage.set_album_sort( zz.page.album_id, 'date-desc' );
                     break;
                 case'sort-date-up':
                 default:
-                    grid.sort_by_date_asc();
+                    grid.sort_by_date_asc( true );
                     zz.local_storage.set_album_sort( zz.page.album_id, 'date-asc' );
                     break;
             }

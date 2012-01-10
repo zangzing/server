@@ -65,7 +65,7 @@
             }
 
             // Large album optimization flag
-            self.large_album = self.photo_count > 100 ;
+            self.large_album = self.photo_count > 1500 ;
             if( self.large_album ){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Wowsers! Your album has "+self.photo_count+" photos. It will take us a minute or two to display it. Please be patient", 350, 150);
             }
@@ -172,7 +172,7 @@
                 cell.appendTo(el);
                 photo.ui_cell = cell;
                 photo.ui_photo = cell.data().zz_photo;
-                self._layoutPhoto( photo, index );
+                self._layoutPhoto( photo, index, 0, '', false );
 
                 //setup drag and drop if allowed
                 if (o.allowReorder) {
@@ -267,7 +267,7 @@
             // - Once first batch is on screen then build, and insert the rest of the photos at your leisure
             // - Add timeout every batch to prevent lockout warnings
             var batch_size = 60;
-            var time_lapse = 1; //milliseconds between batches
+            var time_lapse = 10; //milliseconds between batches
             var create_some_photos = function(i) {
                 if (i < self.photo_count) { //recursion termination condition
 
@@ -293,12 +293,10 @@
                             // Grid View - Show as soon as we have first screen ready
                             // loadif visible for first screen only
                             if( !self.large_album ){
-                                setTimeout( function(){
                                     self._show_and_arm();
-                                    for (var k = i; k < j ; k++) {
-                                        self._get_photo(k).ui_photo.loadIfVisible();
+                                    for(var l = 0; l < j ; l++) {
+                                        self._get_photo(l).ui_photo.loadIfVisible();
                                     }
-                                }, time_lapse);
                             }
                         }
                     }
@@ -310,14 +308,12 @@
                 } else {
                     //All photos have been created, add bells and whistles
                     if( self.large_album ){
-                        setTimeout( function(){
-                            self._show_and_arm();
-                            self.large_album_dialog.close();
-                            for (var k = 0; k < self.photo_count ; k++) {
-                                self._get_photo(k).ui_photo.loadIfVisible();
-                            }
-                            self._trigger('ready');
-                        }, time_lapse);
+                        self._show_and_arm();
+                        self.large_album_dialog.close();
+                        for (var k = 0; k < self.photo_count ; k++) {
+                            self._get_photo(k).ui_photo.loadIfVisible();
+                        }
+                        self._trigger('ready');
                     }
 
                     //hideNativeScroller
@@ -404,7 +400,7 @@
                 }
                 //sort the photos for the grid
                 if( o.sort ){
-                    self.sort_by( o.sort, true ); //no layout
+                    self.sort_by( o.sort, false ); //no layout
                 }else{
                     self.current_sort = 'date-asc';
                 }
@@ -631,9 +627,8 @@
             }
         },
 
-        resetLayout: function(duration, easing, showIfVisible, callback) {
+        resetLayout: function(duration, easing, showIfVisible) {
             var self = this,
-                o = self.options,
                 el = self.element;
 
             if (duration === undefined) {
@@ -650,30 +645,17 @@
                 easing = 0;
             }
 
-            var batch_size = self.photo_count;
-            if(self.large_album){
-                batch_size = 500;
+            for( var i=0; i < self.photo_count ; i++){
+                var position = self._layoutPhoto( self._get_photo(i), i, duration, easing, showIfVisible );
+                if( position ){
+                    top_of_last_row = position.top;
+                }
             }
-            var layout_some_photos = function(i) {
-               if (i < self.photo_count) { //recursion termination condition
-                   //layout a batch of photos
-                   for (var j = i; j < i + batch_size && j < self.photo_count; j++) {
-                       self._layoutPhoto( self._get_photo(j), j, duration, easing, showIfVisible );
-                   }
-                    // Queue next batch for processing
-                   //  Even a 0 timeout lets the system process any pending stuff and then this.
-                   setTimeout( function(){ layout_some_photos(i + batch_size); }, 0);
-               }else{
-                   if(!_.isUndefined( callback ) ){
-                       callback();
-                   }
-               }
-            };
-            layout_some_photos(0);
 
             if(!self.options.singlePictureMode){
+                var top = top_of_last_row + 330; // add the right of the rollover frame
                 var scroll_padding = $('<div class="scroll-padding"></div>');
-                scroll_padding.css({top: 330 }); // add the right of the rollover frame
+                scroll_padding.css({top: top});
                 el.append(scroll_padding);
             }
 
@@ -763,142 +745,148 @@
             }
         },
 
-        sort_by: function( sort_method, no_layout ){
+        sort_by: function( sort_method, layout ){
             switch( sort_method ){
                 case'name-asc':
-                    this.sort_by_name_asc(no_layout);
+                    this.sort_by_name_asc(layout);
                     break;
                 case'name-desc':
-                    this.sort_by_name_desc(no_layout);
+                    this.sort_by_name_desc(layout);
                     break;
                 case'date-desc':
-                    this.sort_by_date_desc(no_layout);
+                    this.sort_by_date_desc(layout);
                     break;
                 case'date-asc':
                 default:
-                    this.sort_by_date_asc(no_layout);
+                    this.sort_by_date_asc(layout);
                     break;
             }
         },
 
-        sort_by_date_asc: function( no_layout ){
+        sort_by_date_asc: function( layout ){
             var self = this;
-            if( self.large_album && typeof no_layout == 'undefined'){
+            if( self.large_album && layout ){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Hot Diggety! Did you take all of these? Sorting them for you, give us a minute", 350,150);
             }
-            setTimeout( function(){
-                switch(  self.current_sort  ){
-                    case 'date-asc':
-                        break;
-                    case 'date-desc':
-                        self.photo_array.reverse();
-                        break;
-                    default:
-                        self._sort(  function (){ return this.date_sort_key; });
-                        break;
-                }
 
-                if( typeof no_layout == 'undefined'){
-                    self._timed_out_layout();
-                }
-            },10);
+            switch(  self.current_sort  ){
+                case 'date-asc':
+                    break;
+                case 'date-desc':
+                    self.photo_array.reverse();
+                    self._timed_out_layout(layout);
+                    break;
+                default:
+                    self._sort(
+                        function (){ return this.date_sort_key; },
+                        function(){ self._timed_out_layout(layout);
+                        });
+                    break;
+            }
         },
 
-        sort_by_date_desc: function( no_layout ){
+        sort_by_date_desc: function( layout ){
             var self = this;
-            if( self.large_album && typeof no_layout == 'undefined'){
+            if( self.large_album && layout ){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Blimey! Ordering a double-stack of pics. Give us a minute", 350,150);
             }
-            setTimeout( function(){
-                switch(  self.current_sort  ){
-                    case 'date-asc':
-                        self.photo_array.reverse();
-                        break;
-                    case 'date-desc':
-                        break;
-                    default:
-                        self._sort(  function (){ return this.date_sort_key; });
-                        self.photo_array.reverse();
-                        break;
-                }
-                if( typeof no_layout == 'undefined'){
-                    self._timed_out_layout();
-                }
-            },10);
+            switch(  self.current_sort  ){
+                case 'date-asc':
+                    self.photo_array.reverse();
+                    self._timed_out_layout( layout );
+                    break;
+                case 'date-desc':
+                    break;
+                default:
+                    self._sort(
+                        function (){ return this.date_sort_key; },
+                        function(){
+                            self.photo_array.reverse();
+                            self._timed_out_layout( layout );
+                        });
+                    break;
+            }
         },
 
-        sort_by_name_asc: function(no_layout){
+        sort_by_name_asc: function( layout ){
             var self = this;
-            if( self.large_album && typeof no_layout == 'undefined'){
+            if( self.large_album && layout){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Woooha! We are sorting a ton of photos. Give us a minute", 350,150);
             }
-            setTimeout( function(){
-                switch(  self.current_sort  ){
-                    case 'name-asc':
-                        break;
-                    case 'name-desc':
-                        self.photo_array.reverse();
-                        break;
-                    default:
-                        self._sort(  function(){ return this.caption_sort_key; });
-                        break;
-                }
-                if( typeof no_layout == 'undefined'){
-                    self._timed_out_layout();
-                }
-            },1);
+
+            switch(  self.current_sort  ){
+                case 'name-asc':
+                    break;
+                case 'name-desc':
+                    self.photo_array.reverse();
+                    self._timed_out_layout( layout );
+                    break;
+                default:
+                    self._sort(
+                        function(){ return this.caption_sort_key; },
+                        function(){
+                            self._timed_out_layout(layout);
+                        });
+                    break;
+            }
         },
 
-        sort_by_name_desc: function( no_layout ){
+        sort_by_name_desc: function( layout ){
             var self = this;
-            if(  self.large_album && typeof no_layout == 'undefined' ){
+            if(  self.large_album && layout ){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Yeeeepeee! We are shuffling a bundle of photos. Give us a minute", 350,150);
             }
-            setTimeout( function(){
-                switch(  self.current_sort  ){
-                    case 'name-asc':
-                        self.photo_array.reverse();
-                        break;
-                    case 'name-desc':
-                        break;
-                    default:
-                        self._sort(  function (){ return this.caption_sort_key; });
-                        self.photo_array.reverse();
-                        break;
-                }
-                if( typeof no_layout == 'undefined'){
-                    self._timed_out_layout();
-                }
-            }, 1);
+            switch(  self.current_sort  ){
+                case 'name-asc':
+                    self.photo_array.reverse();
+                    self._timed_out_layout(layout);
+                    break;
+                case 'name-desc':
+                    break;
+                default:
+                    self._sort(
+                        function(){ return this.caption_sort_key; },
+                        function(){
+                            self.photo_array.reverse();
+                            self._timed_out_layout(layout);
+                        });
+                    break;
+            }
         },
 
-        _timed_out_layout: function(){
+        _timed_out_layout: function( layout ){
             var self = this;
-            if( self.large_album ){
-                self.element.hide();
-            }
-            self.resetLayout(200, 'easeInOutCubic', true, function(){
+            if(layout){
+                if( self.large_album ){
+                    self.element.hide();
+                }
+                self.resetLayout(100, 'easeInOutCubic', true);
                 if( self.large_album ){
                     self.element.fadeIn('fast');
                     self.large_album_dialog.close();
-                } else {
-                    self.resetLayout(400, 'easeInOutCubic', true);
                 }
-            });
+            }
         },
 
-        _sort: function( key_function ){
-            if( this.options.addAllButton ){
-                this._remove_add_all_button();                  // - remove add all button from the begining of array
-            }
-            var save = Object.prototype.toString;
-            Object.prototype.toString = key_function;
-            this.photo_array.sort();
-            Object.prototype.toString = save;
+        _sort: function( key_function, callback ){
+            var self = this,
+                o = self.options;
+            setTimeout( function(){
+                if( o.addAllButton ){
+                    self._remove_add_all_button();                  // - remove add all button from the begining of array
+                }
+                var save = Object.prototype.toString;
+                Object.prototype.toString = key_function;
+                self.photo_array.sort();
+                Object.prototype.toString = save;
 
-            if( this.options.addAllButton ){
-                this._insert_add_all_button();  // - insert add all button at the begining of array
-            }
+                if( o.addAllButton ){
+                    self._insert_add_all_button();  // - insert add all button at the begining of array
+                }
+                if( !_.isUndefined( callback )){
+                    callback();
+                }
+            }, 10);
         },
 
         _setupThumbScroller: function(){
