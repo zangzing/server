@@ -130,10 +130,9 @@ class SampleDataLoader
 
   def initializeS3
     puts "      Initializing connection to S3..."
-    @s3creds = YAML::load(ERB.new(File.read("#{Rails.root}/config/s3.yml")).result)[Rails.env].recursively_symbolize_keys!
      AWS::S3::Base.establish_connection!(
-             :access_key_id => @s3creds[:access_key_id],
-            :secret_access_key =>@s3creds[:secret_access_key]
+             :access_key_id => PhotoGenHelper.aws_access_key_id,
+            :secret_access_key => PhotoGenHelper.aws_secret_access_key
      )
       @s3buckets = ['1.zz', '2.zz', '3.zz', '4.zz']
      puts "      S3 connection up"

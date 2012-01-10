@@ -14,13 +14,18 @@ class PhotoGenHelper
     # ensure our photo upload directory is ready to go
     `mkdir -p #{zconfig.photo_resize_dir}`
 
+    # get the amazon keys
+    json = File.read("/var/chef/amazon.json")
+    ak = JSON.parse(json).recursively_symbolize_keys!
+    zconfig.aws_access_key_id = ak[:aws_access_key_id]
+    zconfig.aws_secret_access_key = ak[:aws_secret_access_key]
+
+    # now get the rest of the s3 config
     s3config = YAML::load(ERB.new(File.read("#{Rails.root}/config/s3.yml")).result)[Rails.env].recursively_symbolize_keys!
-    zconfig.s3_access_key_id = s3config[:access_key_id]
-    zconfig.s3_secret_access_key = s3config[:secret_access_key]
     zconfig.s3_buckets = s3config[:buckets]
     zconfig.s3_reduced_redundancy = s3config[:reduced_redundancy]
 
-    @@s3 = RightAws::S3Interface.new(zconfig.s3_access_key_id, zconfig.s3_secret_access_key, {:logger => Rails.logger})
+    @@s3 = RightAws::S3Interface.new(zconfig.aws_access_key_id, zconfig.aws_secret_access_key, {:logger => Rails.logger})
   end
 
   def self.s3
@@ -43,12 +48,12 @@ class PhotoGenHelper
    zconfig.photo_resize_dir
   end
 
-  def self.s3_access_key_id
-    zconfig.s3_access_key_id
+  def self.aws_access_key_id
+    zconfig.aws_access_key_id
   end
 
-  def self.s3_secret_access_key
-    zconfig.s3_secret_access_key
+  def self.aws_secret_access_key
+    zconfig.aws_secret_access_key
   end
 
   def self.s3_buckets

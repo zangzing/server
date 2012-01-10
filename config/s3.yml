@@ -1,13 +1,11 @@
 #
 # s3.yml
 #
-# Credentials for s3 account
+# Credentials for aws are now stored in /var/chef/amazon.json
 #
 
 
 common: &common
-  access_key_id: AKIAJZR7WODGPXONMRVA
-  secret_access_key: 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
   buckets: [d.1.zz, d.2.zz]
   reduced_redundancy: false
 
