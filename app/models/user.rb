@@ -57,6 +57,13 @@ class User < ActiveRecord::Base
   has_many :client_applications, :dependent => :destroy 
   has_many :tokens, :class_name=>"OauthToken",:order=>"authorized_at desc",:include=>[:client_application]
 
+  #invitations
+  has_many :sent_invitations, :class_name => "Invitation", :foreign_key => "user_id"
+  has_many :received_invitations, :class_name => "Invitation", :foreign_key => "invited_user_id"
+
+
+
+
   #SPREE
   has_many   :addresses
   has_many   :creditcards

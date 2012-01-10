@@ -214,5 +214,11 @@ class Notifier < ActionMailer::Base
     @recipient = ( rcp_user ? rcp_user : send_notification_to_user_id_or_address )
     create_message( __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
+
+
+  def invite_to_join(from_user_id, to_email_address, invite_url)
+
+  end
+
 end
 

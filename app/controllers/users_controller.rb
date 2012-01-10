@@ -119,6 +119,12 @@ class UsersController < ApplicationController
         add_javascript_action('show_welcome_dialog') unless( session[:return_to] )
         send_zza_event_from_client('user.join')
         redirect_back_or_default user_pretty_url( @new_user )
+
+        # process invitation if there was one
+        if current_tracking_token
+          TrackedLink.handle_join(@new_user, current_tracking_token)
+        end
+
         return
       end
     else
