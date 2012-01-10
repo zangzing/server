@@ -32,8 +32,13 @@ var zz = zz || {};
                 jQuery.cookie('hide_join_banner', 'true', {expires: expires});
             });
         });
+        
+        if($('body').hasClass('show-join-banner')){
+        	ZZAt.track('join.topbanner.show');
+        }
 
         $('#join-banner #join-button').click(function() {
+        	ZZAt.track('join.topbanner.click');
             document.location.href = '/join';
         });
 
