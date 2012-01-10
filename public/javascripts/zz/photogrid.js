@@ -273,7 +273,7 @@
             // - Once first batch is on screen then build, and insert the rest of the photos at your leisure
             // - Add timeout every batch to prevent lockout warnings
             var batch_size = 60;
-            var time_lapse = 10; //milliseconds between batches
+            var time_lapse = 0; //milliseconds between batches
             //console.log('create-some-photos photo_count is'+self.photo_count );
             var create_some_photos = function(i) {
                 //console.log('create-some-photos batch '+i+'-'+ ( i+batch_size-1) );
