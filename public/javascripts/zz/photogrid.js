@@ -9,8 +9,8 @@
     var photogrid_droppablecell_template =  $('<div class="photogrid-cell"><div class="photogrid-droppable"></div></div>');
     var photogrid_cell_template =  $('<div class="photogrid-cell"></div>');
     var add_all_button = { id: 'add-all-photos',  caption: '', type: 'blank' };
-    var LARGE_ALBUM_THRESHOLD  = 1500;
-    var LARGE_ALBUM_BATCH_SIZE = 250;
+    var LARGE_ALBUM_THRESHOLD  = 100;
+    var LARGE_ALBUM_BATCH_SIZE = 10;
 
     $.widget('ui.zz_photogrid', {
         options: {
@@ -92,6 +92,7 @@
             // init position calculator before we hide it
             self.width = parseInt(el.css('width'));
             self.height = parseInt(el.css('height'));
+            self.offset = el.offset();
             self._initPosForIndex();
             el.hide(); //hide it for speed inserting photos
 
@@ -298,7 +299,7 @@
                                 create_photo(index, current_photo );
                             }
                             self._show_and_arm();
-                            current_photo.ui_photo.loadIfVisible();
+                            current_photo.ui_photo.loadIfVisibleFast(self.offset, self.height, self.width );
                             if( self.large_album ){
                                 self.large_album_dialog.close();
                             }
@@ -308,7 +309,7 @@
                             if( !self.large_album ){
                                 self._show_and_arm();
                                 for(var l = i; l < j ; l++) {
-                                    self._get_photo(l).ui_photo.loadIfVisible();
+                                    self._get_photo(l).ui_photo.loadIfVisibleFast(self.offset, self.height, self.width );
                                 }
                             }
                         }
@@ -328,7 +329,7 @@
                         for (var k = 0; k < 100 ; k++) {
                             var photo = self._get_photo(k);
                             if( !_.isUndefined(photo.ui_photo)){
-                                photo.ui_photo.loadIfVisible();
+                                photo.ui_photo.loadIfVisibleFast(self.offset, self.height, self.width );
                             }
                         }
                     }
@@ -453,6 +454,7 @@
                 resizeTimer = setTimeout(function() {
                     self.width = parseInt(el.css('width'));
                     self.height = parseInt(el.css('height'));
+                    self.offset = el.offset();
                     self._initPosForIndex();
                     self.resetLayout(0,0, true); //no duration, no easing, yes loadIfVisible
                 }, 100);
@@ -671,9 +673,9 @@
                 self.element.fadeIn('fast');
                 self.large_album_dialog.close();
                 // draw the top
-                var offset = self.element.offset();
-                var height = self.element.height();
-                var width = self.element.width();
+                var offset = self.offset;
+                var height = self.height;
+                var width = self.width;
                 if( showIfVisible ){
                     for( i=0; i < self.photo_count ; i++){
                         self._get_photo(i).ui_photo.loadIfVisibleFast(offset, height, width );
@@ -814,7 +816,7 @@
                 case 'date-desc':
                     self.photo_array.reverse();
                     if(layout){
-                        self.resetLayout(100, 'easeInOutCubic', true);
+                        self.resetLayout(250, 'easeInOutCubic', true);
                     }
                     self.current_sort = 'date-asc';
                     if( !_.isUndefined( callback )){
@@ -826,7 +828,7 @@
                         function (){ return this.date_sort_key; },
                         function(){
                             if(layout){
-                                self.resetLayout(100, 'easeInOutCubic', true);
+                                self.resetLayout(250, 'easeInOutCubic', true);
                             }
                             self.current_sort = 'date-asc';
                             if( !_.isUndefined( callback )){
@@ -846,7 +848,7 @@
                 case 'date-asc':
                     self.photo_array.reverse();
                     if(layout){
-                        self.resetLayout(100, 'easeInOutCubic', true);
+                        self.resetLayout(250, 'easeInOutCubic', true);
                     }
                     self.current_sort = 'date-desc';
                     if( !_.isUndefined( callback )){
@@ -864,7 +866,7 @@
                         function(){
                             self.photo_array.reverse();
                             if(layout){
-                                self.resetLayout(100, 'easeInOutCubic', true);
+                                self.resetLayout(250, 'easeInOutCubic', true);
                             }
                             self.current_sort = 'date-desc';
                             if( !_.isUndefined( callback )){
@@ -890,7 +892,7 @@
                 case 'name-desc':
                     self.photo_array.reverse();
                     if(layout){
-                        self.resetLayout(100, 'easeInOutCubic', true);
+                        self.resetLayout(250, 'easeInOutCubic', true);
                     }
                     self.current_sort = 'name-asc';
                     if( !_.isUndefined( callback )){
@@ -902,7 +904,7 @@
                         function(){ return this.caption_sort_key; },
                         function(){
                             if(layout){
-                                self.resetLayout(100, 'easeInOutCubic', true);
+                                self.resetLayout(250, 'easeInOutCubic', true);
                             }
                             self.current_sort = 'name-asc';
                             if( !_.isUndefined( callback )){
@@ -922,7 +924,7 @@
                 case 'name-asc':
                     self.photo_array.reverse();
                     if(layout){
-                        self.resetLayout(100, 'easeInOutCubic', true);
+                        self.resetLayout(250, 'easeInOutCubic', true);
                     }
                     self.current_sort = 'name-desc';
                     if( !_.isUndefined( callback )){
@@ -940,7 +942,7 @@
                         function(){
                             self.photo_array.reverse();
                             if(layout){
-                                self.resetLayout(100, 'easeInOutCubic', true);
+                                self.resetLayout(250, 'easeInOutCubic', true);
                             }
                             self.current_sort = 'name-desc';
                             if( !_.isUndefined( callback )){
