@@ -113,6 +113,7 @@ div#container {
     width: 846px;
     height:75px;
     margin-left: -423px;
+    text-align:left;
     
     background-color: #fff8de;
     border: 1px solid #e2d6b5;
@@ -123,12 +124,11 @@ div#container {
 	-webkit-border-bottom-right-radius: 5px;
 }
 
-
 #header-join-banner .picture {
 	float:left;
-	height: 61px;
-	width: 61px;
-	padding: 7px;
+	height: 62px;
+	width: 62px;
+	padding: 6px 10px;
 }
 
 #header-join-banner .picture span {
@@ -152,14 +152,21 @@ div#container {
 
 #header-join-banner .header {
 	height: 16px;
-	margin-left: 75px;
+	margin-left: 74px;
 	padding: 10px;
-	text-align:left;
-	font-size: 16px;	
+	
+	font-size: 16px;
+	font-weight: 200;
+	color: #0A0A0A; 
 }
 
+#header-join-banner strong {
+	font-weight: 500;
+}
+
+
 #header-join-banner .feature {
-	margin-left: 75px;
+	margin-left: 74px;
 }
 
 #header-join-banner li {
@@ -170,16 +177,21 @@ div#container {
 	vertical-align:middle;
 }
 
-/* TODO: */
+
+#header-join-banner li:last-child {
+	margin: 0;
+}
+
 #header-join-banner .ie7 li {
 	display:inline;
 }
 
 #header-join-banner form li label {
 	position: absolute;
-	top: 10px;
-	left: 10px;
+	top: 9px;
+	left: 11px;
 	color: #999;
+
 }
 
 #header-join-banner form input {
@@ -200,6 +212,7 @@ div#container {
 #header-join-banner form button {
 	display: inline-block;
 	height: 30px;
+	width: 110px;
 	border: 1px solid #318e2c;
 	padding: 2px 10px;
 

@@ -19,9 +19,8 @@ var zz = zz || {};
 
      template: function() {
 
-    	// If we aren't hiding join banner, add it to the page
-    	var should_hide_banner = (zz.session.current_user_id != null) || $.cookie('hide_join_banner') == "true";      	
-    	if(true) { // TODO~!!!!! 
+    	// If we aren't hiding join banner, add it to the page      	
+    	if(!should_hide_banner()) { 
     		var large_banner = $(window).width() > 800;
     		
     		var is_photos_page = zz.page.album_id != null; // Use this as a hack to proxy whether there is .photogrid
@@ -139,14 +138,12 @@ var zz = zz || {};
     	
     }
     
-
-    
     function join_message(isLarge){
     	var message;
     	
     	if(isLarge){
     		if(zz.page.displayed_user_name){
-        		message = zz.page.displayed_user_name + " is using ZangZing.";
+        		message = "<strong>" + zz.page.displayed_user_name + "</strong> is using ZangZing. Join for free and follow " + zz.page.displayed_user_name + ".";
         	} else {
         		message = "ZangZing is a free and easy photo sharing service.";
         	}
@@ -158,11 +155,16 @@ var zz = zz || {};
     }
     
     function join_picture(){
-    	var img = "/images/zangzing-logo-black.png";
-    	if(false){
-    		
+    	var img = "/images/zangzing-logo-black.png"; // TODO: change default
+    	if(zz.page.displayed_user_pic_url != "/images/profile-default-55.png"){
+    		img = zz.page.displayed_user_pic_url;
     	}
     	return img;
+    }
+    
+    function should_hide_banner() {
+    	// Not currently using: $.cookie('hide_join_banner') == "true";	
+    	return (zz.session.current_user_id != null)
     }
 
 }());
