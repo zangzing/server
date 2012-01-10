@@ -658,7 +658,7 @@
 
 
             //do not animate albums with over 200 photos
-            if( self.photo_count > 200 ){
+            if( self.photo_count > 300 ){
                 duration = 0;
                 easing = 0;
             }
@@ -973,7 +973,7 @@
                 if( !_.isUndefined( callback )){
                     callback();
                 }
-            }, 10);
+            }, 0);
         },
 
         _setupThumbScroller: function(){
