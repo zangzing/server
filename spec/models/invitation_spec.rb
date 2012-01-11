@@ -30,8 +30,7 @@ describe Invitation do
     it "should return correct url" do
       resque_jobs(resque_filter) do
         user = Factory.create(:user)
-        TrackedLink.set_test_token('test_token')
-        Invitation.get_invitation_link_for_copy_paste(user).should == 'http://localhost/invite?ref=test_token'
+        Invitation.get_invitation_link_for_copy_paste(user).should match(/http:\/\/localhost\/invite\?ref=.*/i)
       end
     end
   end
@@ -40,8 +39,7 @@ describe Invitation do
     it "should return correct url" do
       resque_jobs(resque_filter) do
         user = Factory.create(:user)
-        TrackedLink.set_test_token('test_token')
-        Invitation.get_invitation_link_for_facebook(user).should == 'http://localhost/invite?ref=test_token'
+        Invitation.get_invitation_link_for_facebook(user).should match(/http:\/\/localhost\/invite\?ref=.*/i)
       end
     end
   end
@@ -51,8 +49,7 @@ describe Invitation do
       resque_jobs(resque_filter) do
 
         user = Factory.create(:user)
-        TrackedLink.set_test_token('test_token')
-        Invitation.get_invitation_link_for_twitter(user).should == 'http://localhost/invite?ref=test_token'
+        Invitation.get_invitation_link_for_twitter(user).should match(/http:\/\/localhost\/invite\?ref=.*/i)
       end
     end
   end
