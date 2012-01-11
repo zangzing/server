@@ -38,8 +38,9 @@ var zz = zz || {};
         }
 
         $('#join-banner #join-button').click(function() {
-            ZZAt.track('join.topbanner.click');
-            document.location.href = '/join';
+        	document.location.href = '/join';
+        	ZZAt.track('join.topbanner.click');
+            
         });
 
         $('#join-banner #signin-button').click(function() {
