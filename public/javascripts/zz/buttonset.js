@@ -9,10 +9,9 @@ zz.buttonset = {};
 (function($){
     zz.buttonset.init = function( default_action ){
         $('.zz-buttonset').attr('disabled','');
-        $('.zz-setbutton').unbind('click');
         $('#view-sort-bar div.set-title').attr('disabled','');
         $('.zz-setbutton')
-            .unbind('click')
+            .unbind('mousedown')
             .hover(
             function(){
                 $(this).addClass("hover-state");
@@ -75,7 +74,7 @@ zz.buttonset = {};
             .unbind('hover')
             .unbind('mousedown');
         if(!_.isUndefined(message)){
-            $('.zz-setbutton').click( function(){ alert(message) });
+            $('.zz-setbutton').mousedown( function(){ alert(message) });
         }
         $('#view-sort-bar div.set-title').attr('disabled','disabled');
     }
