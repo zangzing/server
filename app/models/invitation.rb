@@ -2,7 +2,7 @@ class Invitation < ActiveRecord::Base
   belongs_to :user
   belongs_to :invited_user, :class_name => "User", :foreign_key => "invited_user_id"
 
-  has_one :tracked_link
+  belongs_to :tracked_link
 
   STATUS_COMPLETE = 'complete'
   STATUS_PENDING = 'pending'

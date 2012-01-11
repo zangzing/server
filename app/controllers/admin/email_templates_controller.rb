@@ -204,6 +204,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
 
   def test_joined_from_invite(template_id)
     invitation = Invitation.create_invitation_for_email(sender, 'test@test.zangzing.com')
+    invitation = Invitation.handle_join_from_invitation(current_user, invitation.tracked_link.tracking_token)
     Notifier.joined_from_invite(invitation.id, template_id)
   end
 

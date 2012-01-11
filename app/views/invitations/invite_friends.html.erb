@@ -51,7 +51,7 @@
                     return;
                 }
 
-                var dialog = zz.dialog.show_spinner_progress_dialog('Sending invitations...');
+                var dialog = zz.dialog.show_spinner_progress_dialog('Sending invitations ' + zz.contact_list.get_email_addresses().length + ' invitations...');
 
                 zz.routes.invitations.send_by_email(zz.contact_list.get_email_addresses(), function(){
                     dialog.close();

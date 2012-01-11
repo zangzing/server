@@ -86,29 +86,12 @@
         Invitations
       </div>
 
-      <div class="indented content">
-        <table id="invitations-accounts-table">
-          <%
-            @user.sent_invitations.each do |invitation|
-          %>
-              <tr>
-                <td><%= "#{invitation.invited_user.name} #{invitation.invited_user.email}" %></td>
-                <td></td>
-                <td></td>
-              </tr>
-          <%
-             end
-          %>
-        </table>
-      </div>
-
-
       <div class="description">
         <% if @user.received_invitations %>
         You received 250MB for joining from an invitation<br><br>
         <% end %>
 
-        Receive 500GB of space for each of your friends that you invite (up to a total of 16BG)
+        Receive 250GB of space for each of your friends that you invite (up to a total of 16BG)
       </div>
       <div class="indented content">
         <table id="invitations-accounts-table">
@@ -116,9 +99,9 @@
             @user.sent_invitations.each do |invitation|
           %>
               <tr>
-                <td><%= "#{invitation.invited_user.name} #{invitation.invited_user.email}" %></td>
-                <td></td>
-                <td></td>
+                <td><%= "#{invitation.tracked_link.shared_to_address}" %></td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td><%= "#{invitation.status}" %></td>
               </tr>
           <%
              end

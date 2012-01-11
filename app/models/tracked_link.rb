@@ -18,7 +18,7 @@ class TrackedLink < ActiveRecord::Base
     tracked_link.user = user
     tracked_link.link_type = type
     tracked_link.shared_to = shared_to
-    tracked_link.shared_to_address = shared_to_address
+    tracked_link.shared_to_address = shared_to_address || shared_to
     tracked_link.url = url
     for i in (1..10)
       begin
