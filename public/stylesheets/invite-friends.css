@@ -1,0 +1,115 @@
+
+/* email
+ ********************/
+
+.invite-friends .invite-by-email  {
+    position: relative;
+    height:250px;
+    margin-left:100px;
+    margin-right:100px;
+    margin-top: 100px;
+}
+
+.invite-friends .invite-by-email .title{
+    position: absolute;
+    left: 100px;
+    font-size: 20px;
+    top: 5px;
+    color: #888;
+}
+
+.invite-friends .invite-by-email .import{
+    position: absolute;
+    right: 100px;
+}
+
+
+.invite-friends .invite-by-email .submit-button  {
+    position: absolute;
+    left: 100px;
+    top: 160px;
+}
+
+.invite-friends .invite-by-email .to {
+    position: absolute;
+    height:100px;
+    left:100px;
+    right:100px;
+    top: 50px;
+    border: 1px solid #ccc;
+
+}
+
+
+
+/* facebook and twitter
+ ********************/
+
+.invite-friends .invite-by-social{
+    position: relative;
+    height:70px;
+    margin-left:100px;
+    margin-right:100px;
+    height: 200px
+}
+
+.invite-friends .invite-by-social .title{
+    position: absolute;
+    left: 100px;
+    font-size: 20px;
+    top: 5px;
+    color: #888;
+}
+
+.invite-friends .invite-by-social .message{
+    position: absolute;
+    top: 30px;
+    left: 100px;
+    width: 400px;
+    height:50px;
+    border: 1px solid #ccc;
+}
+
+.invite-friends .invite-by-social .facebook-button{
+    position: absolute;
+    left: 100px;
+    top: 100px
+}
+
+.invite-friends .invite-by-social .twitter-button{
+    position: absolute;
+    left: 300px;
+    top: 100px
+
+}
+
+
+/* copy-paste
+ ********************/
+
+.invite-friends .invite-by-copy-paste{
+    position: relative;
+    height:70px;
+    margin-left:100px;
+    margin-right:100px;
+}
+
+.invite-friends .invite-by-copy-paste .title{
+    position: absolute;
+    left: 100px;
+    font-size: 20px;
+    top: 5px;
+    color: #888;
+}
+
+.invite-friends .invite-by-copy-paste .link{
+    position: absolute;
+    left: 100px;
+    font-size: 20px;
+    top: 35px;
+    color: #888;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    padding:5px;
+    width: 400px;
+}

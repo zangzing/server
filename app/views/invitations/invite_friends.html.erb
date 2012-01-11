@@ -1,6 +1,87 @@
+<div class="invite-friends">
+
+  <div class="invite-by-email">
+    <div class="header">
+      <div class="title">Invite by Email</div>
+      <div class="import"><span>Import from </span>
+        <a data-service="google" class="gray-square-button contacts-btn"><span><div class="off"></div>Google</span></a>
+        <a data-service="local" class="gray-square-button contacts-btn"><span><div class="off"></div>Local</span></a>
+        <a data-service="yahoo" class="gray-square-button contacts-btn"><span><div class="off"></div>Yahoo</span></a>
+        <a data-service="mslive" class="gray-square-button contacts-btn"><span><div class="off"></div>Hotmail</span></a>
+      </div>
+    </div>
+    <div class="to"><input class="contact-list"></div>
+
+    <a class="submit-button green-button"><span>Send Invitations</span></a>
+  </div>
+
+  <div class="invite-by-social">
+    <div class="title">Invite on Facebook or Twitter</div>
+    <textarea class="message">I am using @ZangZing to share my photos. Join for free and we both get 250MB of bonus space!</textarea>
+    <a class="facebook-button green-button"><span>Share on Facebook</span></a>
+    <a class="twitter-button green-button"><span>Share on Twitter</span></a>
+  </div>
 
 
-copy and paste: <%= @invite_url_for_copy_paste %>
+  <div class="invite-by-copy-paste">
+    <div class="title">Share link</div>
+    <input type=text class="link" value="<%= @invite_url_for_copy_paste %>"/>
+  </div>
 
 
+</div>
+
+<% content_for :page_javascript do %>
+
+    <script>
+        $(document).ready(function() {
+
+            // invite by email section
+            zz.contact_list.create(zz.session.current_user_id, $('.invite-by-email .contact-list'), $('.invite-by-email .contacts-btn'));
+
+            $('.invite-by-email .submit-button').click(function(){
+
+                if(zz.contact_list.get_email_addresses().length==0){
+                    alert("Please enter one or more email addresses.");
+                    return;
+                }
+
+                if (zz.contact_list.has_errors()) {
+                    alert('Please correct the highlighted addresses.');
+                    return;
+                }
+
+                var dialog = zz.dialog.show_spinner_progress_dialog('Sending invitations...');
+
+                zz.routes.invitations.send_by_email(zz.contact_list.get_email_addresses(), function(){
+                    dialog.close();
+                    zz.contact_list.clear();
+                });
+
+            });
+
+            // invite by socual
+            var get_message = function(){
+                return $('.invite-by-social .message').val();
+            }
+
+            var open_share_window = function(url){
+                window.open(url, 'send-invitation', 'status=0,toolbar=0,width=900,height=700');
+            }
+
+            $('.invite-by-social .facebook-button').click(function(){
+                var url = zz.routes.invitations.get_send_to_facebook_url(get_message());
+                open_share_window(url);
+            });
+
+            $('.invite-by-social .twitter-button').click(function(){
+                var url = zz.routes.invitations.get_send_to_twitter_url(get_message());
+                open_share_window(url);
+            });
+
+
+        });
+    </script>
+
+<% end %>
 

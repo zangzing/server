@@ -6,6 +6,23 @@ var zz = zz || {};
 
         path_prefix: '/service',
 
+        invitations:{
+            send_by_email: function(email_addresses, success, error){
+                do_post('/service/invitations/send_to_email', {'emails':email_addresses}, success, error);
+            },
+
+            get_send_to_facebook_url: function(message){
+                return '/service/invitations/send_to_facebook?message=' + encodeURIComponent(message);
+            },
+
+            get_send_to_twitter_url: function(message){
+                return '/service/invitations/send_to_twitter?message=' + encodeURIComponent(message);
+            }
+
+
+
+        },
+
         store: {
             get_products: function(success, error){
                 do_get('/store/products.json', {}, success, error);
