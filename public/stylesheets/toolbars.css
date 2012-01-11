@@ -678,7 +678,7 @@
     right: 290px;
     width: 58px;
     height: 55px;
-    background: url("/images/embed/toolbars/btn-footer-share.png") no-repeat scroll 0px 0px transparent;
+    background: url("/images/embed/toolbars/btn-footer-more.png") no-repeat scroll 0px 0px transparent;
     cursor: pointer;
 }
 #footer #more-button:hover   { background-position: 0  -55px; }
