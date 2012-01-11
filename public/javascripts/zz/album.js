@@ -156,6 +156,13 @@ zz.album = {};
 
                 onDelete: function(index, photo) {
                     zz.routes.call_delete_photo(photo.id);
+                    for( var i = 0; i< photos.length; i++){
+                        if( photos[i].id == photo.id ){
+                            photos.splice(i,1);
+                            zz.page.album_cache_version_key='';
+                            break;
+                        }
+                     }
                     return true;
                 },
 
@@ -168,7 +175,6 @@ zz.album = {};
                         data: {'photo[caption]': caption, _method: 'put'},
                         error: function(error) {
                         }
-
                     });
                     return true;
                 }
@@ -177,18 +183,24 @@ zz.album = {};
             gridElement.bind('zz_photogridready', function(){
                 //init sort bar when grid is ready
                 init_sort_bar(grid);
-            });
+
 
 
 
             if (buy_mode && zz.page.current_user_can_buy_photos) {
                 var addAllButton = $('<img class="add-all-button" src="' + zz.routes.image_url('/images/folders/add_all_photos.png') + '">');
                 addAllButton.click(function() {
-                      zz.buy.add_all_photos( grid.options.photos );
+                      var photo_array = [ grid.photo_count ];
+                      for( var i = 0; i< grid.photo_count; i++){
+                        photo_array[i] = grid._get_photo( i );
+                      }
+                      zz.buy.add_all_photos( photo_array );
                       //zz.buy.add_all_photos_from_current_album();
                 });
                 gridElement.find('.photogrid-cell:first').append(addAllButton);
             }
+                });
+
         });
     }
 
@@ -261,6 +273,13 @@ zz.album = {};
                     },
                     onDelete: function(index, photo) {
                         zz.routes.call_delete_photo(photo.id);
+                        for( var i = 0; i< photos.length; i++){
+                            if( photos[i].id == photo.id ){
+                                photos.splice(i,1);
+                                zz.page.album_cache_version_key='';
+                                break;
+                            }
+                        }
                         return true;
                     }
                 }).data().zz_photogrid;
@@ -471,6 +490,13 @@ zz.album = {};
                     showThumbscroller: false,
                     onDelete: function(index, photo) {
                         zz.routes.call_delete_photo(photo.id);
+                        for( var i = 0; i< photos.length; i++){
+                            if( photos[i].id == photo.id ){
+                                photos.splice(i,1);
+                                zz.page.album_cache_version_key='';
+                                break;
+                            }
+                        }
                         return true;
                     },
                     infoMenuTemplateResolver: info_menu_template_resolver,

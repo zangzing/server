@@ -8,7 +8,6 @@
 
     var photogrid_droppablecell_template =  $('<div class="photogrid-cell"><div class="photogrid-droppable"></div></div>');
     var photogrid_cell_template =  $('<div class="photogrid-cell"></div>');
-    var add_all_button = { id: 'add-all-photos',  caption: '', type: 'blank' };
     var LARGE_ALBUM_THRESHOLD  = 1500;
     var LARGE_ALBUM_BATCH_SIZE = 250;
 
@@ -411,7 +410,6 @@
             if( self.photo_count > 0 ){
                 //Insert add all button (must be called before sort)
                 if( o.addAllButton ){
-                    add_all_button.src = zz.routes.image_url('/images/blank.png');
                     self._insert_add_all_button();
                 }
 
@@ -814,22 +812,18 @@
                     }
                     break;
                 case 'date-desc':
-                    self.photo_array.reverse();
-                    if(layout){
-                        self.resetLayout(250, 'easeInOutCubic', true);
-                    }
-                    self.current_sort = 'date-asc';
-                    if( !_.isUndefined( callback )){
-                        callback();
-                    }
+                    self._reverse( layout, function(){
+                        self.current_sort = 'date-asc';
+                        if( !_.isUndefined( callback )){
+                            callback();
+                        }
+                    });
                     break;
                 default:
                     self._sort(
                         function (){ return this.date_sort_key; },
+                        layout,
                         function(){
-                            if(layout){
-                                self.resetLayout(250, 'easeInOutCubic', true);
-                            }
                             self.current_sort = 'date-asc';
                             if( !_.isUndefined( callback )){
                                 callback();
@@ -846,14 +840,12 @@
             }
             switch(  self.current_sort  ){
                 case 'date-asc':
-                    self.photo_array.reverse();
-                    if(layout){
-                        self.resetLayout(250, 'easeInOutCubic', true);
-                    }
-                    self.current_sort = 'date-desc';
-                    if( !_.isUndefined( callback )){
-                        callback();
-                    }
+                    self._reverse(layout, function(){
+                        self.current_sort = 'date-desc';
+                        if( !_.isUndefined( callback )){
+                            callback();
+                        }
+                    });
                     break;
                 case 'date-desc':
                     if( !_.isUndefined( callback )){
@@ -861,13 +853,10 @@
                     }
                     break;
                 default:
-                    self._sort(
+                    self._sort_and_reverse(
                         function (){ return this.date_sort_key; },
+                        layout,
                         function(){
-                            self.photo_array.reverse();
-                            if(layout){
-                                self.resetLayout(250, 'easeInOutCubic', true);
-                            }
                             self.current_sort = 'date-desc';
                             if( !_.isUndefined( callback )){
                                 callback();
@@ -890,22 +879,18 @@
                     }
                     break;
                 case 'name-desc':
-                    self.photo_array.reverse();
-                    if(layout){
-                        self.resetLayout(250, 'easeInOutCubic', true);
-                    }
-                    self.current_sort = 'name-asc';
-                    if( !_.isUndefined( callback )){
-                        callback();
-                    }
+                    self._reverse( layout, function(){
+                        self.current_sort = 'name-asc';
+                        if( !_.isUndefined( callback )){
+                            callback();
+                        }
+                    });
                     break;
                 default:
                     self._sort(
                         function(){ return this.caption_sort_key; },
+                        layout,
                         function(){
-                            if(layout){
-                                self.resetLayout(250, 'easeInOutCubic', true);
-                            }
                             self.current_sort = 'name-asc';
                             if( !_.isUndefined( callback )){
                                 callback();
@@ -917,33 +902,28 @@
 
         sort_by_name_desc: function( layout, callback ){
             var self = this;
-            if(  self.large_album && layout ){
+
+            if( self.large_album && layout ){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Yeeeepeee! We are shuffling a bundle of photos. Give us a minute", 350,150);
             }
+
             switch(  self.current_sort  ){
                 case 'name-asc':
-                    self.photo_array.reverse();
-                    if(layout){
-                        self.resetLayout(250, 'easeInOutCubic', true);
-                    }
-                    self.current_sort = 'name-desc';
-                    if( !_.isUndefined( callback )){
-                        callback();
-                    }
+                    self._reverse( layout, function(){
+                        self.current_sort = 'name-desc';
+                        if( !_.isUndefined( callback )){
+                            callback();
+                        }
+                    });
                     break;
                 case 'name-desc':
-                    if( !_.isUndefined( callback )){
                         callback();
-                    }
                     break;
                 default:
-                    self._sort(
+                    self._sort_and_reverse(
                         function(){ return this.caption_sort_key; },
+                        layout,
                         function(){
-                            self.photo_array.reverse();
-                            if(layout){
-                                self.resetLayout(250, 'easeInOutCubic', true);
-                            }
                             self.current_sort = 'name-desc';
                             if( !_.isUndefined( callback )){
                                 callback();
@@ -953,26 +933,61 @@
             }
         },
 
-
-        _sort: function( key_function, callback ){
+        _reverse: function( layout, callback ){
             var self = this,
                 o = self.options;
             setTimeout( function(){
-                if( o.addAllButton ){
-                    self._remove_add_all_button();                  // - remove add all button from the begining of array
-                }
-                var save = Object.prototype.toString;
-                console.log("about to begin sort");
-                Object.prototype.toString = key_function;
-                self.photo_array.sort();
-                Object.prototype.toString = save;
-                console.log("sort done!");
-                if( o.addAllButton ){
-                    self._insert_add_all_button();  // - insert add all button at the begining of array
+                self._remove_add_all_button();                  // - remove add all button from the begining of array
+                self.photo_array.reverse();
+                self._insert_add_all_button();  // - insert add all button at the begining of array
+                if(layout){
+                      self.resetLayout(250, 'easeInOutCubic', true);
                 }
                 if( !_.isUndefined( callback )){
                     callback();
                 }
+            }, 0);
+        },
+
+
+        _sort: function( key_function, layout, callback ){
+            var self = this,
+                o = self.options;
+            setTimeout( function(){
+                 self._remove_add_all_button();                  // - remove add all button from the begining of array
+                var save = Object.prototype.toString;
+                Object.prototype.toString = key_function;
+                self.photo_array.sort();
+                Object.prototype.toString = save;
+                self._insert_add_all_button();  // - insert add all button at the begining of array
+                if(layout){
+                      self.resetLayout(250, 'easeInOutCubic', true);
+                }
+                if( !_.isUndefined( callback )){
+                    callback();
+                }
+            }, 0);
+        },
+
+        _sort_and_reverse: function( key_function, layout, callback){
+            var self = this,
+                o = self.options;
+            setTimeout( function(){
+                self._remove_add_all_button();                  // - remove add all button from the begining of array
+                var save = Object.prototype.toString;
+                Object.prototype.toString = key_function;
+                self.photo_array.sort();
+                Object.prototype.toString = save;
+                setTimeout( function(){
+                    self.photo_array.reverse();
+                    self._insert_add_all_button();  // - insert add all button at the begining of array
+                    if(layout){
+                        self.resetLayout(250, 'easeInOutCubic', true);
+                    }
+                    if( !_.isUndefined( callback )){
+                        callback();
+                    }
+                })
             }, 0);
         },
 
@@ -1045,7 +1060,13 @@
             self.photo_array = [self.photo_count];
             self.photo_hash = {};
             for( var i= 0; i < self.photo_count; i++){
-                var id_string = photos[i].id.toString();
+                var id_string;
+                if( _.isUndefined( photos[i].id ) ){
+                    id_string = 'not-a-photo-'+i;
+                    photos[i].id = id_string;
+                }else{
+                    id_string = photos[i].id.toString();
+                }
                 // create the date sort key
                 var date_sort_key;
                 if( photos[i].capture_date == null || photos[i].capture_date == ''){
@@ -1069,6 +1090,11 @@
                     caption_sort_key: caption_sort_key
                 };
             }
+
+            //add the add-all-photos button to hash if needed
+            if( o.addAllButton ){
+                this.photo_hash[ 'add-all-photos' ] = { id: 'add-all-photos',  caption: '', type: 'blank', src:  zz.routes.image_url('/images/blank.png') };
+            }
         },
 
         _get_photo: function( index ){
@@ -1076,15 +1102,17 @@
         },
 
         _insert_add_all_button: function(){
-            self.photo_array.unshift(add_all_button); //insert add all button at the begining of array
-            self.photo_hash[ add_all_button.id ] = add_all_button;
-            self.photo_count++;
+            if( this.options.addAllButton ){
+                this.photo_array.unshift(this.photo_hash[ 'add-all-photos' ]); //insert add all button at the begining of array
+                this.photo_count++;
+            }
         },
 
         _remove_add_all_button: function(){
-            self.photo_array.shift(); //insert add all button at the begining of array
-            delete self.photo_hash[ add_all_button.id ];
-            self.photo_count--;
+            if( this.options.addAllButton ){
+                this.photo_array.shift(); //remove the add all button from the begining of array
+                this.photo_count--;
+            }
         },
         destroy: function() {
             if (this.thumbscrollerElement) {
