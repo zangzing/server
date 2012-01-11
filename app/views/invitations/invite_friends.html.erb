@@ -41,7 +41,9 @@
 
             $('.invite-by-email .submit-button').click(function(){
 
-                if(zz.contact_list.get_email_addresses().length==0){
+                var email_addresses = zz.contact_list.get_email_addresses();
+
+                if(email_addresses.length==0){
                     alert("Please enter one or more email addresses.");
                     return;
                 }
@@ -51,11 +53,19 @@
                     return;
                 }
 
-                var dialog = zz.dialog.show_spinner_progress_dialog('Sending invitations ' + zz.contact_list.get_email_addresses().length + ' invitations...');
+                var plural = email_addresses.length==1 ? "" : "s";
 
-                zz.routes.invitations.send_by_email(zz.contact_list.get_email_addresses(), function(){
-                    dialog.close();
-                    zz.contact_list.clear();
+                var progress_dialog = zz.dialog.show_spinner_progress_dialog('Sending ' + zz.contact_list.get_email_addresses().length + ' invitation#{plural}...'.replace('#{plural}', plural));
+
+                zz.routes.invitations.send_by_email(email_addresses, function(){
+                    var finished_dialog = zz.dialog.show_spinner_progress_dialog('Invitation#{plural} sent.'.replace('#{plural}', plural));
+                    progress_dialog.close();
+
+                    setTimeout(function(){
+                        finished_dialog.close();
+                        zz.contact_list.clear();
+
+                    },2000);
                 });
 
             });
