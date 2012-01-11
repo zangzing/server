@@ -19,6 +19,7 @@ Server::Application.configure do
   # set up logger
   path = config.paths.log.to_a.first
   config.logger = ActiveSupport::BufferedLogger.new(path)
+  config.log_level = :debug
 
   # Show full error reports and disable caching
   config.consider_all_requests_local = true

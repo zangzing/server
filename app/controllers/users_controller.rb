@@ -136,6 +136,11 @@ class UsersController < ApplicationController
         redirect_to inactive_url and return
       end
     end
+    
+    if params[:follow_user_id] and User.exists? params[:follow_user_id] 
+      Like.add(@new_user.id, params[:follow_user_id], Like::USER)
+    end
+    
     render :action=>:join,  :layout => false
   end
 
