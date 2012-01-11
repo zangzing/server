@@ -183,23 +183,19 @@ zz.album = {};
             gridElement.bind('zz_photogridready', function(){
                 //init sort bar when grid is ready
                 init_sort_bar(grid);
-
-
-
-
-            if (buy_mode && zz.page.current_user_can_buy_photos) {
-                var addAllButton = $('<img class="add-all-button" src="' + zz.routes.image_url('/images/folders/add_all_photos.png') + '">');
-                addAllButton.click(function() {
-                      var photo_array = [ grid.photo_count ];
-                      for( var i = 0; i< grid.photo_count; i++){
-                        photo_array[i] = grid._get_photo( i );
-                      }
-                      zz.buy.add_all_photos( photo_array );
-                      //zz.buy.add_all_photos_from_current_album();
-                });
-                gridElement.find('.photogrid-cell:first').append(addAllButton);
-            }
-                });
+                if (buy_mode && zz.page.current_user_can_buy_photos) {
+                    var addAllButton = $('<img class="add-all-button" src="' + zz.routes.image_url('/images/folders/add_all_photos.png') + '">');
+                    addAllButton.click(function() {
+                        var photo_array = [ grid.photo_count ];
+                        for( var i = 0; i< grid.photo_count; i++){
+                            photo_array[i] = grid._get_photo( i );
+                        }
+                        zz.buy.add_all_photos( photo_array );
+                        //zz.buy.add_all_photos_from_current_album();
+                    });
+                    gridElement.find('.photogrid-cell:first').append(addAllButton);
+                }
+            });
 
         });
     }
