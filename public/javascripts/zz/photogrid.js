@@ -41,8 +41,6 @@
             currentPhotoId: null,          // Scroll Picture View to this photo
             onScrollToPhoto: jQuery.noop,  // picture view scroll callback
 
-            lazyLoadThreshold: null,
-
             showButtonBar: false,           // Should the rollover button bar be displayed (photochooser or picture view)
             rolloverFrameContainer: $('#article'), //Where to attach the rollover button bar
             infoMenuTemplateResolver: null, // Function used to decide which buttons should show on the info menu.
@@ -61,12 +59,12 @@
             self._process_photos();
             o.photos = new Array();
 
-
+            // Set the current id to first photo if we want 'first' photo
             if( o.currentPhotoId == 'first'){
                 o.currentPhotoId = self.photo_array[0].id;
             }
 
-            // Large album optimization flag
+            //  Set Large album optimization flag and bring up 'it will be slow' dialog
             self.large_album = self.photo_count > LARGE_ALBUM_THRESHOLD ;
             if( self.large_album ){
                 self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Wowsers! Your album has "+self.photo_count+" photos. It will take us a minute or two to display it. Please be patient", 350, 150);
@@ -88,7 +86,7 @@
             }
 
             // save the current container size and
-            // init position calculator before we hide it
+            // init position calculator before we hide element
             self.width = parseInt(el.css('width'));
             self.height = parseInt(el.css('height'));
             self.offset = el.offset();
@@ -114,12 +112,12 @@
             }
 
             //max dimenstions for photos
-            var max_width = Math.floor(o.cellWidth - 50);
-            var max_height = Math.floor(o.cellHeight - 50 - 5); //35 accounts for height if caption. this is also set in photo.js
+            var max_width = ((o.cellWidth - 50)|0); //use (x|0) instead of Math.floor
+            var max_height = ((o.cellHeight - 50 - 5)|0); //35 accounts for height if caption. this is also set in photo.js
 
             // This function creates a single photo cell and appends it to the grid.
-            // It is called below inside a loop that regularly allows the system to
-            // process other events.
+            // It is called below in create_some_photos, inside a loop that regularly
+            // allows the system to process other events.
             var create_photo = function(index, photo) {
                 var cell = template.clone();
                 cell.zz_photo({
@@ -140,6 +138,12 @@
                     context:     o.context,
                     maxWidth:    max_width,
                     maxHeight:   max_height,
+
+                    scrollContainer:            el,
+                    lazyLoadThreshold:          o.lazyLoadThreshold,
+                    showButtonBar:              o.showButtonBar,
+                    infoMenuTemplateResolver:   o.infoMenuTemplateResolver,
+                    rolloverFrameContainer:     o.rolloverFrameContainer,
 
                     allowDelete: o.allowDelete,
                     onDelete: function() {
@@ -164,14 +168,7 @@
 
                     onClick: function(action) {
                         o.onClickPhoto(index, photo, cell, action);
-                    },
-
-                    scrollContainer: el,
-                    lazyLoadThreshold: o.lazyLoadThreshold,
-
-                    showButtonBar: o.showButtonBar,
-                    infoMenuTemplateResolver: o.infoMenuTemplateResolver,
-                    rolloverFrameContainer: o.rolloverFrameContainer
+                    }
                 });
                 // Append cell, lay it out in the right spot and save the ui components
                 cell.appendTo(el);
@@ -271,6 +268,10 @@
             // - Show element and draw photos as soon as first batch is ready
             // - Once first batch is on screen then build, and insert the rest of the photos at your leisure
             // - Add timeout every batch to prevent lockout warnings
+            // Large albums are treated differently
+            // - Element is hidden and large album message displayed
+            // - The album is completely built while hidden
+            // - Message is removed and album displayed
             var batch_size = 60;
             var time_lapse = 0; //milliseconds between batches
             //console.log('create-some-photos photo_count is'+self.photo_count );
@@ -286,7 +287,6 @@
                     // Display the grid after the first batch is ready
                     //console.log('create-some-photos photos created j counter is now '+j);
                     if( i < batch_size ){
-                        //console.log('create-some-photos first batch');
                         //  Single picture view - Display the selected photo
                         if( o.singlePictureMode  ){
                             var index = 0;
@@ -298,7 +298,11 @@
                                 create_photo(index, current_photo );
                             }
                             self._show_and_arm();
+                            self.offset = el.offset();
+                            self.height = el.height();
+                            self.width =  el.width();
                             current_photo.ui_photo.loadIfVisibleFast(self.offset, self.height, self.width );
+                            //current_photo.ui_photo.loadIfVisible();
                             if( self.large_album ){
                                 self.large_album_dialog.close();
                             }
@@ -307,23 +311,30 @@
                             // loadif visible for first screen only
                             if( !self.large_album ){
                                 self._show_and_arm();
+                                self.offset = el.offset();
+                                self.height = el.height();
+                                self.width =  el.width();
                                 for(var l = i; l < j ; l++) {
-                                    self._get_photo(l).ui_photo.loadIfVisibleFast(self.offset, self.height, self.width );
+                                    self._get_photo(l).ui_photo.loadIfVisibleFast( self.offset, self.height, self.width  );
+                                    //self._get_photo(l).ui_photo.loadIfVisible();
                                 }
                             }
                         }
                     }
 
                     // Queue next batch for processing
-                    //  Even a 0 timeout lets the system process any pending stuff and then this.
+                    // A 0 timeout lets the system process any pending stuff and then this.
                     setTimeout( function(){ create_some_photos(i + batch_size); }, time_lapse);
-                    //console.log('create-some-photos queued next batch starting at '+(i+batch_size));
+
                 } else {
-                    //console.log('create-some-photos closing batch, no photos built in this one');
                     //All photos have been created, add bells and whistles
                     if( self.large_album && !o.singlePictureMode ){
+                        // large albums were hidden, now it is time to show and tell
                         self._show_and_arm();
                         self.large_album_dialog.close();
+                        self.offset = el.offset();
+                        self.height = el.height();
+                        self.width =  el.width();
                         // only load the first 100 since album is at the top, scroll resize will take care of the rest
                         for (var k = 0; k < 100 ; k++) {
                             var photo = self._get_photo(k);
