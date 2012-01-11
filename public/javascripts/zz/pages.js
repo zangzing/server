@@ -313,7 +313,7 @@ zz.pages.group_tab = {
     PERSON_TEMPLATE: function(){
        return '<div class="person">' +
                     '<div class="profile">' +
-                        '<img data-src="/images/default_profile.png" src="/images/default_profile.png">' +
+                        '<img data-src="/images/profile-default-55.png" src="/images/profile-default-55.png">' +
                     '</div>' +
                     '<div class="name"></div>' +
                     '<select class="permission" size="1">' +

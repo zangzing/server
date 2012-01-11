@@ -79,8 +79,6 @@ module ZZ
       # Redirects the user to the desired location after log in. If no stored location then to the default location
       def redirect_back_or_default(default)
         redirect_to(session[:return_to] || default)
-        Rails.logger.debug "SESSION RETURN:"
-        Rails.logger.debug session[:return_to]
         session[:return_to] = nil
       end
 

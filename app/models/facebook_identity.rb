@@ -44,7 +44,7 @@ class FacebookIdentity < Identity
         if user.profile_album.cover
           picture     = user.profile_album.cover.thumb_url
         else
-          picture     = "http://#{Server::Application.config.application_host}/images/default_profile.png"
+          picture     = "http://#{Server::Application.config.application_host}/images/profile-default-55.png"
         end
       else
         post( like.url, message)  #generic post
