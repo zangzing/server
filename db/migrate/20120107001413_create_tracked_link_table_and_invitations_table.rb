@@ -6,7 +6,7 @@ class CreateTrackedLinkTableAndInvitationsTable < ActiveRecord::Migration
       t.string :url, :default => false
       t.string :shared_to, :default => false
       t.string :shared_to_address, :default => false
-      t.column :user_id, :bigint, :null => false
+      t.column :user_id, :bigint, :null => true
       t.integer :visit_count, :default => 0
       t.integer :join_count, :default => 0
     end

@@ -29,6 +29,10 @@ Server::Application.routes.draw do
 
     get    '/health_check'            => 'pages#health_check',      :as => :health_check
     
+    #invitations
+    get    '/invitations/send_to_facebook' => 'invitations#send_to_facebook'  , :as=>'send_invitations_to_facebook'
+    get    '/invitations/send_to_facebook' => 'invitations#send_to_twitter'   , :as=>'send_invitations_to_twitter'
+    post   '/invitations/send_to_facebook' => 'invitations#send_to_email'     , :as=>'send_invitations_to_email'
 
     #users
     get    '/users/new'                 => 'users#new',               :as => :new_user
