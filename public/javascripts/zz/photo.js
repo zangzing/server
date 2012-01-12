@@ -601,16 +601,17 @@ zz.template_cache = zz.template_cache || {};
                 }
 
                 self.captionElement.text(caption);
-                self.captionElement.ellipsis();
                 self.isEditingCaption = false;
+                self.captionElement.ellipsis();
                 if( self.options.showButtonBar ){
                     self.element.mouseenter( self._mouseEnterHandler );
-                }else{
-                    if( self.options.allowEditCaption ){
-                        self.captionElement.unbind('click').click(function() {
-                            self.editCaption();
-                        });}
                 }
+                if( self.options.allowEditCaption ){
+                    self.captionElement.unbind('click').click(function() {
+                        self.editCaption();
+                    });
+                }
+
             }
         },
 
