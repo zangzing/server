@@ -1,5 +1,12 @@
-<div class="invite-friends">
+<div class="invite-friends-header">
+    <div class="title">Invite Your Friends to ZangZing</div>
+    <div class="description">
+      For each friend that joins, you and your friend<br>
+      will each get 250MB of free space, up to 10GB
+    </div>
+</div>
 
+<div class="invite-friends">
   <div class="invite-by-email">
     <div class="header">
       <div class="title">Invite by Email</div>
@@ -24,17 +31,20 @@
 
 
   <div class="invite-by-copy-paste">
-    <div class="title">Share link</div>
+    <div class="title">Share a link</div>
     <input type=text class="link" value="<%= @invite_url_for_copy_paste %>"/>
   </div>
-
-
 </div>
 
 <% content_for :page_javascript do %>
 
     <script>
         $(document).ready(function() {
+            //header
+            $('#header .back-button').click(function(){
+            });
+
+
 
             // invite by email section
             zz.contact_list.create(zz.session.current_user_id, $('.invite-by-email .contact-list'), $('.invite-by-email .contacts-btn'));

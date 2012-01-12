@@ -3,6 +3,7 @@ class InvitationsController < ApplicationController
   def invite_friends
     return unless require_user
 
+    @show_back_button = true
     @invite_url_for_copy_paste = Invitation.get_invitation_link_for_copy_paste(current_user)
   end
 

@@ -61,6 +61,10 @@
     <a id="back-button" class="back-button"><span>Back</span></a>
     <a id="top-add-photos-button" class="green-add-button"><span>Add Photos</span></a>
   </div>
+<% elsif @show_back_button %>
+  <div id="top-breadcrumb">
+    <a id="back-button" class="back-button"><span>Back</span></a>
+  </div>
 <% end %>
 
 <% if @is_homepage_view && current_user == @user %>
