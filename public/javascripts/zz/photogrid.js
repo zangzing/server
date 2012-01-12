@@ -388,30 +388,32 @@
 
                         //capture all events
                         $(document.documentElement).keydown(function(event) {
-                            if (event.keyCode === 40) {
-                                //down
-                                self.nextPicture();
-                            }
-                            else if (event.keyCode === 39) {
-                                //right
-                                self.nextPicture();
-                            }
-                            else if (event.keyCode === 34) {
-                                //page down
-                                self.nextPicture();
-                            }
-                            else if (event.keyCode === 38) {
-                                //up
-                                self.previousPicture();
-                            }
-                            else if (event.keyCode === 37) {
-                                //left
-                                self.previousPicture();
-                            }
-                            else if (event.keyCode === 33) {
-                                //page up
-                                self.previousPicture();
-                            }
+                        	if (event.target.nodeName.toLowerCase() === 'body') {
+	                            if (event.keyCode === 40) {
+	                                //down
+	                                self.nextPicture();
+	                            }
+	                            else if (event.keyCode === 39) {
+	                                //right
+	                                self.nextPicture();
+	                            }
+	                            else if (event.keyCode === 34) {
+	                                //page down
+	                                self.nextPicture();
+	                            }
+	                            else if (event.keyCode === 38) {
+	                                //up
+	                                self.previousPicture();
+	                            }
+	                            else if (event.keyCode === 37) {
+	                                //left
+	                                self.previousPicture();
+	                            }
+	                            else if (event.keyCode === 33) {
+	                                //page up
+	                                self.previousPicture();
+	                            }
+                        	}
                         });
 
                         //block events to grid

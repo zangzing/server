@@ -14,10 +14,9 @@ var zz = zz || {};
 (function(){
 	zz.login = {};
 	zz.login.add_validation = add_validation;
-	zz.login.on_form_submit = on_form_submit;
 
 	
-	//----------------------------------------------------
+	// Private ----------------------------------------------------
 	
 	// takes a jquery element
 	function add_validation(element) {
@@ -76,13 +75,6 @@ var zz = zz || {};
 			}, "Please check your input.");
 		}
 	}
-
-	// call this when form is submitted
-	function on_form_submit(tracking_string) {
-		ZZAt.track(tracking_string);
-	}
-
-
 
 
 }());

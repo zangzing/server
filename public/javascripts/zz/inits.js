@@ -29,10 +29,7 @@ var zz = zz || {};
             $("#header-join-banner").html(banner_html());
             
     		setup_banner();
-    		if(banner_resize() == 1){
-    			// Showing banner
-        		ZZAt.track("join.toolbarbanner.show");	
-    		}
+    		banner_resize();
     		
             $(window).resize(function(event) {
             	banner_resize();
@@ -91,12 +88,22 @@ var zz = zz || {};
     	
     	$('#header-join-banner .join-form').submit(function(){
     		ZZAt.track("join.toolbarbanner.click");
-    	});        
+    	});
+    	
+    	$('#header-join-banner .join-form .submit-button').click(function(){
+    		$('#header-join-banner .join-form').submit();
+        });
+
+        $('#header-join-banner .join-form').bind('keypress', function(e){
+            if ( e.keyCode == 13 ) {
+            	$("#header-join-banner .join-form").submit();
+            }
+        });
     }
     
     // This goes inside of #header-join-banner
     function banner_html(){
-		    html = '<div class="picture"><span><img src="'+ join_picture() +'"></img></span></div>' +
+		    html = '<div class="picture"><div><img src="'+ join_picture() +'" class="profile-photo"/><img class="bottom-shadow" src="/images/photo/bottom-full.png"/></div></div>' +
 		    		'<div class="header">'+join_message()+'</div>' +    
 		            '<div class="feature">' +
 		                '<form method="post" class="join-form" enctype="multipart/form-data" action="foo">' +
@@ -106,7 +113,7 @@ var zz = zz || {};
 		                '<li><label for="user_username">Username</label><input type="text" name="user[username]" id="user_username" value="" /></li>' +
 		                '<li><label for="user_email">Email address</label><input type="text" name="user[email]" id="user_email" value="" /></li>' +
 		                '<li><label for="user_password">Password</label><input type="password" name="user[password]" id="user_password" value="" maxlength="40" /></li>' +
-		                '<li><button type="submit" id="signup">Join for Free</button></li>' +
+		                '<li><a class="submit-button newgreen-button"><span>Join for Free</span></a></li>' +
 		                '</ul>' +
 		                '</form>' +
 		            '</div>'
@@ -148,11 +155,19 @@ var zz = zz || {};
     	if(should_show_large_banner()){ 
     		$("#header-join-banner").removeClass("none");
     		$(".join-banner-spacer").removeClass("none");
-    		return 1;
+    		
+    		// Only track the first time you see the banner.
+    		if($.cookie("shown_join_banner") == null) {
+                //create cookie that expires in 1 hour or when user quits browser
+                var expires = new Date();
+                expires.setTime(expires.getTime() + 60 * 60 * 1000);
+                jQuery.cookie('shown_join_banner', 'true', {expires: expires});
+
+    			ZZAt.track("join.toolbarbanner.show");
+    		}
     	} else {
     		$("#header-join-banner").addClass("none");
     		$(".join-banner-spacer").addClass("none");
-    		return 0;
     	}
     }
     
