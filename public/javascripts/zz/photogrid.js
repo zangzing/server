@@ -149,7 +149,7 @@
                     onDelete: function() {
                         var i = self.indexOfPhoto( photo.id );
                         self.photo_array.splice( i, 1);
-                        delete self.photo_hash[photo.id];
+                        delete self.photo_hash[photo.id.toString()];
                         self.photo_count--;
                         if (o.showThumbscroller) {
                             self.thumbscroller.removePhoto( i );

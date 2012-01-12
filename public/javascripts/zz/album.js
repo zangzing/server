@@ -255,7 +255,7 @@ zz.album = {};
                     context: buy_mode ? 'chooser-picture' : 'album-picture',
                     allowEditCaption: zz.page.current_user_can_edit, 
                     onChangeCaption:  change_caption_handler,
-                        
+
                     onDelete: function(index, photo) {
                         zz.routes.call_delete_photo(photo.id);
                         for( var i = 0; i< photos.length; i++){

@@ -391,6 +391,7 @@ zz.template_cache = zz.template_cache || {};
                                     o.photoGrid.element.trigger('scroll');
                                 }
                             }
+                            self.destroy();
                         });
                     });
                 }
@@ -476,6 +477,11 @@ zz.template_cache = zz.template_cache || {};
 
             o.previewSrc = json_photo.stamp_url;
             o.aspectRatio = null;
+            
+            //propagate the changes to the model
+            o.json.full_screen_url = json_photo.full_screen_url;
+            o.json.screen_url = json_photo.screen_url;
+            o.json.stamp_url = json_photo.stamp_url;
             self._loadImage();
         },
 
