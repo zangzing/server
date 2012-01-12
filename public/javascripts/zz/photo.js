@@ -482,6 +482,7 @@ zz.template_cache = zz.template_cache || {};
             o.json.full_screen_url = json_photo.full_screen_url;
             o.json.screen_url = json_photo.screen_url;
             o.json.stamp_url = json_photo.stamp_url;
+            zz.page.album_cache_version_key='';
             self._loadImage();
         },
 
