@@ -168,6 +168,20 @@
 
                     onClick: function(action) {
                         o.onClickPhoto(index, photo, cell, action);
+                    },
+
+                    changesrc: function( event, new_photo ){
+                        var photo = self.photo_hash[ new_photo.id.toString()];
+                        photo.full_screen_url = new_photo.full_screen_url;
+                        photo.screen_url = new_photo.screen_url;
+                        photo.stamp_url = new_photo.stamp_url;
+
+                        photo.src = new_photo.full_screen_url;
+                        photo.previewSrc = new_photo.stamp_url;
+                        photo.rolloverSrc = new_photo.rolloverSrc;
+                        photo.aspect_ratio = 0;
+
+                        self._trigger('changesrc', null, new_photo);
                     }
                 });
                 // Append cell, lay it out in the right spot and save the ui components
@@ -448,27 +462,28 @@
         // bind scrolling and window resizing
         _show_and_arm: function(){
             var self = this,
-                o    = self.options,
+                o = self.options,
                 el   = self.element;
 
             el.fadeIn('fast');
 
-            // Window Resize Handler
-            var resizeTimer = null;
-            $(window).resize(function(event) {
-                if (resizeTimer) {
-                    clearTimeout(resizeTimer);
-                    resizeTimer = null;
-                }
-                resizeTimer = setTimeout(function() {
-                    self.width = parseInt(el.css('width'));
-                    self.height = parseInt(el.css('height'));
-                    self.offset = el.offset();
-                    self._initPosForIndex();
-                    self.resetLayout(0,0, true); //no duration, no easing, yes loadIfVisible
-                }, 100);
-            });
-
+            // Window Resize Handler for grid view
+            if( o.context != 'chooser-picture' && o.context !=  'album-picture'){
+                var resizeTimer = null;
+                $(window).resize(function(event) {
+                    if (resizeTimer) {
+                        clearTimeout(resizeTimer);
+                        resizeTimer = null;
+                    }
+                    resizeTimer = setTimeout(function() {
+                        self.width = parseInt(el.css('width'));
+                        self.height = parseInt(el.css('height'));
+                        self.offset = el.offset();
+                        self._initPosForIndex();
+                        self.resetLayout(0,0, true); //no duration, no easing, yes loadIfVisible
+                    }, 100);
+                });
+            }
             // Scroll Handler
             var scrollTimer = null;
             el.scroll(function(event) {

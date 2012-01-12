@@ -26,6 +26,8 @@ zz.template_cache = zz.template_cache || {};
             onDelete: jQuery.noop,        //model
             maxHeight: 120,               //context
             maxWidth: 120,                //context
+            rotatedHeight: 0,
+            rotatedWidth: 0,
 
             allowEditCaption: false,      //context
             onChangeCaption: jQuery.noop, //model
@@ -469,24 +471,23 @@ zz.template_cache = zz.template_cache || {};
             var self = this,
                 o = self.options;
 
-            var dateString = '?'+new Date().getTime();
+
             if( o.context == 'album-picture' ) {
-                o.src = json_photo.full_screen_url+dateString;
+                o.src = json_photo.full_screen_url;
             }else{
-                o.src = json_photo.screen_url+dateString;
+                o.src = json_photo.screen_url;
             }
 
-            o.previewSrc  = json_photo.stamp_url+dateString;
-            o.rolloverSrc = json_photo.rolloverSrc+dateString;
+            o.previewSrc  = json_photo.stamp_url;
+            o.rolloverSrc = json_photo.rolloverSrc;
             o.aspectRatio = 0;
             
             //propagate the changes to the model
-            o.json.full_screen_url = json_photo.full_screen_url+dateString;
-            o.json.screen_url = json_photo.screen_url+dateString;
-            o.json.stamp_url = json_photo.stamp_url+dateString;
-            zz.page.album_cache_version_key='';
+            o.json.full_screen_url = json_photo.full_screen_url;
+            o.json.screen_url = json_photo.screen_url;
+            o.json.stamp_url = json_photo.stamp_url;
+            self._trigger('changesrc', null, json_photo);
             self._loadImage();
-            self.imageLoaded = false;
         },
 
         _loadImage: function() {

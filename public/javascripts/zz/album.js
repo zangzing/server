@@ -22,9 +22,6 @@ zz.album = {};
         zz.buy.toggle_visibility_with_buy_mode($('#footer #comments-button'));
         zz.buy.toggle_visibility_with_buy_mode($('#footer #more-button'));
 
-        zz.buy.on_change_buy_mode(function(){
-            render_picture_view();
-        });
 
         zz.buy.on_change_selected_photos(function(){
             update_checkmarks_on_photos();
@@ -37,15 +34,10 @@ zz.album = {};
             ZZAt.track('photo.buy.toolbar.click');
         });
 
+       // setup comments drawer
 
-        // setup comments drawer
-        zz.comments.init_toolbar_button_and_drawer(current_photo_id, function(){
-            render_picture_view();
-        });
-
-
+        render_picture_view();
         is_single_picture_view = true;
-
     };
 
     zz.album.is_single_picture_view = function(){
@@ -150,6 +142,7 @@ zz.album = {};
                 infoMenuTemplateResolver: info_menu_template_resolver,
                 rolloverFrameContainer:   gridElement,
 
+
                 onClickPhoto: function(index, photo, element, action) {
                     if(!buy_mode){
                         zz.album.goto_single_picture(photo.id);
@@ -174,6 +167,19 @@ zz.album = {};
                         }
                      }
                     return true;
+                },
+
+                changesrc: function( event, new_photo ){
+                        for( var i = 0; i< photos.length; i++){
+                            if( photos[i].id == new_photo.id ){
+                                photos[i].full_screen_url = new_photo.full_screen_url;
+                                photos[i].screen_url = new_photo.screen_url;
+                                photos[i].stamp_url = new_photo.stamp_url;
+                                zz.logger.debug('srcs replaced');
+                                break;
+                            }
+                        }
+
                 },
 
                 allowEditCaption: zz.page.current_user_can_edit,
@@ -219,7 +225,9 @@ zz.album = {};
                 $('#article .photogrid').remove();
                 $('#article').append(gridElement);
 
-                var grid = gridElement.zz_photogrid({
+
+                 var grid;
+                 gridElement.zz_photogrid({
                     photos: photos,
                     sort: zz.local_storage.get_album_sort( zz.page.album_id ),
                     allowDelete: false,
@@ -266,10 +274,26 @@ zz.album = {};
                             }
                         }
                         return true;
+                    },
+
+                    changesrc: function( event, new_photo ){
+                        for( var i = 0; i< photos.length; i++){
+                            if( photos[i].id == new_photo.id ){
+                                photos[i].full_screen_url = new_photo.full_screen_url;
+                                photos[i].screen_url = new_photo.screen_url;
+                                photos[i].stamp_url = new_photo.stamp_url;
+                                
+                                photos[i].src = new_photo.full_screen_url;
+                                photos[i].previewSrc = new_photo.stamp_url;
+                                photos[i].rolloverSrc = new_photo.rolloverSrc;
+                                break;
+                            }
+                        }
                     }
-                }).data().zz_photogrid;
+                });
 
                 gridElement.bind('zz_photogridready', function(){
+                    grid = gridElement.data().zz_photogrid;
                     $('#footer #next-button').unbind('click');
                     $('#footer #next-button').show().click(function() {
                         grid.nextPicture();
@@ -298,6 +322,17 @@ zz.album = {};
                     render();
                 }, 100);
             });
+
+            // setup buy drawer and comments drawer
+            zz.buy.on_change_buy_mode(function(){
+                  render();
+             });
+            zz.comments.init_toolbar_button_and_drawer(current_photo_id, function(){
+                render();
+            });
+
+
+
 
             //info-button
             $('#more-button').click( function(){
