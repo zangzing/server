@@ -24,11 +24,25 @@
 }
 
 
-.invite-friends .invite-by-email .submit-button  {
+.invite-friends .invite-by-email .submit-button{
     position: absolute;
     left: 100px;
+    width: 137px;
+    height: 39px;
     top: 160px;
+    background: url('/images/invite-friends/email-share-button.png') no-repeat 0px 0px;
+    cursor: pointer;
 }
+
+.invite-friends .invite-by-email .submit-button:hover{
+    background: url('/images/invite-friends/email-share-button.png') no-repeat 0px -39px;
+}
+
+.invite-friends .invite-by-email .submit-button:active{
+    background: url('/images/invite-friends/email-share-button.png') no-repeat 0px -78px;
+}
+
+
 
 .invite-friends .invite-by-email .to {
     position: absolute;
@@ -70,18 +84,44 @@
     border: 1px solid #ccc;
 }
 
+
 .invite-friends .invite-by-social .facebook-button{
     position: absolute;
     left: 100px;
-    top: 100px
+    width: 137px;
+    height: 39px;
+    top: 100px;
+    background: url('/images/invite-friends/facebook-share-button.png') no-repeat 0px 0px;
+    cursor: pointer;
 }
+
+.invite-friends .invite-by-social .facebook-button:hover{
+    background: url('/images/invite-friends/facebook-share-button.png') no-repeat 0px -39px;
+}
+
+.invite-friends .invite-by-social.facebook-button:active{
+    background: url('/images/invite-friends/facebook-share-button.png') no-repeat 0px -78px;
+}
+
 
 .invite-friends .invite-by-social .twitter-button{
     position: absolute;
-    left: 300px;
-    top: 100px
-
+    left: 244px;
+    top: 100px;
+    width: 137px;
+    height: 39px;
+    background: url('/images/groups/twitter-share-button.png') no-repeat 0px 0px;
+    cursor: pointer;
 }
+
+.invite-friends .invite-by-social .twitter-button:hover{
+    background: url('/images/groups/twitter-share-button.png') no-repeat 0px -39px;
+}
+
+.invite-friends .invite-by-social .twitter-button:active{
+    background: url('/images/groups/twitter-share-button.png') no-repeat 0px -78px;
+}
+
 
 
 /* copy-paste
