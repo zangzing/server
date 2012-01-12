@@ -486,6 +486,7 @@ zz.template_cache = zz.template_cache || {};
             o.json.stamp_url = json_photo.stamp_url+dateString;
             zz.page.album_cache_version_key='';
             self._loadImage();
+            self.imageLoaded = false;
         },
 
         _loadImage: function() {
