@@ -469,19 +469,21 @@ zz.template_cache = zz.template_cache || {};
             var self = this,
                 o = self.options;
 
+            var dateString = '?'+new Date().getTime();
             if( o.context == 'album-picture' ) {
-                o.src = json_photo.full_screen_url;
+                o.src = json_photo.full_screen_url+dateString;
             }else{
-                o.src = json_photo.screen_url;
+                o.src = json_photo.screen_url+dateString;
             }
 
-            o.previewSrc = json_photo.stamp_url;
-            o.aspectRatio = null;
+            o.previewSrc  = json_photo.stamp_url+dateString;
+            o.rolloverSrc = json_photo.rolloverSrc+dateString;
+            o.aspectRatio = 0;
             
             //propagate the changes to the model
-            o.json.full_screen_url = json_photo.full_screen_url;
-            o.json.screen_url = json_photo.screen_url;
-            o.json.stamp_url = json_photo.stamp_url;
+            o.json.full_screen_url = json_photo.full_screen_url+dateString;
+            o.json.screen_url = json_photo.screen_url+dateString;
+            o.json.stamp_url = json_photo.stamp_url+dateString;
             zz.page.album_cache_version_key='';
             self._loadImage();
         },
