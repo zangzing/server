@@ -163,7 +163,9 @@
                         photo.caption = caption;
                         self.photo_array[i].caption_sort_key = caption+self.photo_array[i].date_sort_key;
                         self.current_sort = 'none';
-                        return o.onChangeCaption(index, photo, caption);
+                        //console.log('captioni updated in photogrid');
+                        o.onChangeCaption(index, photo, caption);
+                        return true;
                     },
 
                     onClick: function(action) {
