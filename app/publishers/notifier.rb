@@ -223,10 +223,12 @@ class Notifier < ActionMailer::Base
     create_message( __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
 
-  def joined_from_invite(invitation_id, template_id = nil)
+
+  def joined_from_invite(invitation_id, received_bonus, template_id = nil)
     @invitation = Invitation.find_by_id(invitation_id)
     @user = @invitation.invited_user
     @recipient = @invitation.invited_user
+    @received_bonus = received_bonus
     create_message( __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
 

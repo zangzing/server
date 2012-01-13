@@ -102,3 +102,45 @@
     top: -2px;
 }
 
+
+
+/* Plan and Storage */
+#account-settings .storage-meter{
+    position:relative;
+    width: 700px;
+    height: 28px;
+
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    border: 1px solid #CCC;
+}
+
+#account-settings .storage-meter .used{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    bottom: 0px;
+    background-color: #dddddd;
+    width: 0%;
+}
+
+#account-settings .storage-meter .label{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    color: #333;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    padding-top: 4px;
+}
+
+

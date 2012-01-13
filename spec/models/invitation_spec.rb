@@ -55,7 +55,7 @@ describe Invitation do
   end
 
   describe "#handle_join_from_invitation" do
-    it "should create new completed invitation for copy/paste invitation" do
+    it "should create new completed invitation and update user bonus storage for copy/paste invitation" do
       resque_jobs(resque_filter) do
         from_user = Factory.create(:user)
         to_user = Factory.create(:user)
@@ -74,6 +74,11 @@ describe Invitation do
         to_user.received_invitations.first.status.should == Invitation::STATUS_COMPLETE
 
         ActionMailer::Base.deliveries.length.should == 1
+
+
+        User.find(from_user.id).bonus_storage.should == User::BONUS_STORAGE_MB_PER_INVITE
+        User.find(to_user.id).bonus_storage.should == User::BONUS_STORAGE_MB_PER_INVITE
+
 
       end
     end

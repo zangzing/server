@@ -7,6 +7,7 @@ class Invitation < ActiveRecord::Base
   STATUS_COMPLETE = 'complete'
   STATUS_PENDING = 'pending'
 
+
   def self.send_invitation_to_email(from_user, to_address)
 
     invitation = create_invitation_for_email(from_user, to_address)
@@ -61,7 +62,18 @@ class Invitation < ActiveRecord::Base
     invitation.invited_user = new_user
     invitation.save!
 
-    ZZ::Async::Email.enqueue(:joined_from_invite, invitation.id)
+
+    # can the user use any extra storage?
+    can_use_bonus_storage = invitation.user.bonus_storage < User::MAX_BONUS_MB
+
+
+    # give the bonus storage (do it atomically)
+    User.update_counters invitation.user.id, :bonus_storage => User::BONUS_STORAGE_MB_PER_INVITE
+    User.update_counters invitation.invited_user.id, :bonus_storage => User::BONUS_STORAGE_MB_PER_INVITE
+
+
+    ZZ::Async::Email.enqueue(:joined_from_invite, invitation.id, can_use_bonus_storage)
+
 
     return invitation
   end

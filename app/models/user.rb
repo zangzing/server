@@ -101,6 +101,10 @@ class User < ActiveRecord::Base
 
   has_friendly_id :username
 
+  BONUS_STORAGE_MB_PER_INVITE = 250
+  MAX_BONUS_MB = 10 * 1024
+  BASE_FREE_STORAGE = 2 * 1024
+
   Identity::UI_INFO.keys.each do |service_name|
     define_method("identity_for_#{service_name}") do
       identity = self.identities.find(:first, :conditions => {:identity_source => service_name.to_s})
@@ -346,6 +350,38 @@ class User < ActiveRecord::Base
   end
   
 
+
+
+
+
+
+  def usable_bonus_storage
+    [MAX_BONUS_MB, bonus_storage].min
+  end
+
+
+  def storage_used
+    sql = "select sum(photos.image_file_size) from ( " +
+              "select photos.* from photos, albums where photos.album_id = albums.id and albums.user_id = #{id} " +
+              "union " +
+              "select photos.* from photos where photos.user_id = #{id} " +
+           ") as photos"
+
+    row = User.connection.execute(sql).first
+    if row[0].nil?
+      return 0
+    else
+      return row[0].to_int / (1024 * 1024)
+    end
+  end
+
+
+  def total_storage
+    BASE_FREE_STORAGE + usable_bonus_storage
+  end
+
+
+
   private
   def old_password_valid?
     if (require_password? || (old_password && old_password.length > 0) ) && !new_record? && !valid_password?(old_password)
@@ -419,6 +455,8 @@ class User < ActiveRecord::Base
         Cache::Album::Manager.shared.user_albums_acl_modified(id)
      end
   end
+
+
 
   # returns an array of auto like ids
   # this method is only called by auto_like_ids

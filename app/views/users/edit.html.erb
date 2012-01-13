@@ -80,6 +80,23 @@
       </div>
     </li>
 
+    <li class="item tab add">
+      <div class="header tab-centered">
+        Account Plan
+      </div>
+
+      <div class="description">
+
+
+        <div class='storage-meter'>
+            <div class='used' style='width:<%= current_user.percent_storage_used %>%'></div>
+            <div class='label'><%= current_user.percent_storage_used %>% of space used - <%= current_user.storage_used%>GB of <%= current_user.total_storage%>GB</div>
+        </div>
+      </div>
+
+    </li>
+
+
 
     <li class="item tab add">
       <div class="header tab-centered">
