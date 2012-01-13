@@ -12,7 +12,7 @@ var zz = zz || {};
 
 
 (function(){
-	zz.login = {};
+	zz.login = zz.login || {};
 	zz.login.add_validation = add_validation;
 
 	

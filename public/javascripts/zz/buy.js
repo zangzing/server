@@ -516,6 +516,7 @@ zz.buy = zz.buy || {};
         if(!zz.buy.is_buy_mode_active() && zz.session.cart_item_count > 0 && jQuery.cookie('hide_checkout_banner') != 'true'){
 
             $('#checkout-banner').show();
+            zz.login.hide_join_banner();
 
             if(zz.session.cart_item_count == 1){
                 $('#checkout-banner .message').text('You have ' + zz.session.cart_item_count + ' item in your cart.');
@@ -535,6 +536,8 @@ zz.buy = zz.buy || {};
                 $('#checkout-banner').animate({top:-20}, 200);
 
                 ZZAt.track('buy.checkout-banner.close.click');
+                
+                zz.login.show_join_banner();
 
             });
 
@@ -570,6 +573,7 @@ zz.buy = zz.buy || {};
         }
         else{
             $('#checkout-banner').hide();
+            zz.login.show_join_banner();
         }
 
     }
