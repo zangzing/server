@@ -21,7 +21,7 @@ class GroupsController < ApplicationController
   #   :id => the group id
   #   :user_id => the owning user
   #   :name => the name
-  #   :self_group => true if special group representing the owning user
+  #   :wrapped_user_id => if non nil this is group wraps a user - in a UI only the user info should be shown
   # }
   def zz_api_create
     return unless require_user
@@ -58,15 +58,15 @@ class GroupsController < ApplicationController
   #   :id => the group id
   #   :user_id => the owning user
   #   :name => the name
-  #   :self_group => true if special group representing the owning user
+  #   :wrapped_user_id => if non nil this is group wraps a user - in a UI only the user info should be shown
   # }
   def zz_api_update
     return unless require_user && require_owned_group
 
     zz_api do
       fields = filter_params(params, [:name])
-      @group.update_attributes(fields)
-      unless group.save
+
+      unless @group.update_attributes(fields)
         raise ZZAPIError.new(group.errors)
       end
       @group.as_hash
@@ -109,7 +109,7 @@ class GroupsController < ApplicationController
   #   :id => the group id
   #   :user_id => the owning user
   #   :name => the name
-  #   :self_group => true if special group representing the owning user
+  #   :wrapped_user_id => if non nil this is group wraps a user - in a UI only the user info should be shown
   # }
   def zz_api_info
     return unless require_user && require_owned_group
@@ -141,7 +141,7 @@ class GroupsController < ApplicationController
   #   :id => the group id
   #   :user_id => the owning user
   #   :name => the name
-  #   :self_group => true representing a special single user group - in a UI only the user info should be shown
+  #   :wrapped_user_id => if non nil this is group wraps a user - in a UI only the user info should be shown
   #   :member_info {
   #      :id => member id
   #      :group_id => group we belong to,

@@ -1,7 +1,7 @@
 class GroupMember < ActiveRecord::Base
-  attr_accessible  :group_id, :user_id, :twitter, :facebook, :email_id
+  attr_accessible  :group_id, :user_id, :email_id
 
-  has_many :users
+  belongs_to :user
 
   def self.max_insert_size
     @@safe_max_size ||= RawDB.safe_max_size(connection)
@@ -13,10 +13,9 @@ class GroupMember < ActiveRecord::Base
   # does an update on all of the rows specified in
   # a minimal number of queries
   def self.fast_update_members(rows)
-    db = connection
     base_cmd = "INSERT INTO #{quoted_table_name}(group_id, user_id, email_id) VALUES "
     end_cmd = "ON DUPLICATE KEY UPDATE email_id = VALUES(email_id)"
-    RawDB.fast_insert(db, max_insert_size, rows, base_cmd, end_cmd)
+    RawDB.fast_insert(connection, max_insert_size, rows, base_cmd, end_cmd)
   end
 
   # returns an array of hashes given an array of groups
@@ -28,12 +27,13 @@ class GroupMember < ActiveRecord::Base
     result
   end
 
-  # returns a single group in hash form
+  # returns a single member in hash form
   def as_hash
     user = self.user
     {
       :id => self.id,
       :group_id => self.group_id,
+      :email_id => self.email_id,
       :user => {
           :id => user.id,
           :username => user.username,
@@ -47,7 +47,6 @@ class GroupMember < ActiveRecord::Base
           :last_name => user.last_name,
           :automatic => user.automatic,
       },
-      :email_id => self.email_id,
     }
   end
 end

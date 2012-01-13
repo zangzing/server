@@ -41,7 +41,7 @@ class RawDB
       row.each do |value|
         vcmd << ',' unless first
         first = false
-        vcmd << db.quote(value.to_s)
+        vcmd << (value.nil? ? 'NULL' : db.quote(value.to_s))
       end
       vcmd << ')'
       cmd << vcmd
