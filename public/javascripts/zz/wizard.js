@@ -55,7 +55,7 @@ zz.wizard = {
             },
             name: {  //group album
                 id: 'name',
-                next: 'edit',
+                next: 'group',
                 title: 'Name Album',
                 type: 'full',
 
@@ -67,18 +67,18 @@ zz.wizard = {
                 }
             },
 
-            edit: {
-                next: 'group',
-                title: 'Edit Album',
-                type: 'partial',
-
-                init: function(container, callback) {
-                    zz.pages.edit_album_tab.init(container, callback);
-                },
-                bounce: function(success, failure) {
-                    zz.pages.edit_album_tab.bounce(success, failure);
-                }
-            },
+//            edit: {
+//                next: 'group',
+//                title: 'Edit Album',
+//                type: 'partial',
+//
+//                init: function(container, callback) {
+//                    zz.pages.edit_album_tab.init(container, callback);
+//                },
+//                bounce: function(success, failure) {
+//                    zz.pages.edit_album_tab.bounce(success, failure);
+//                }
+//            },
 
             group: {
                 next: 0,

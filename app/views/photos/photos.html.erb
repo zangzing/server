@@ -18,12 +18,24 @@
 <% end %>
 
 
-<% content_for :page_javascript do %>
 
-    <%= render :partial => "photos/album_view_javascript" %>
+
+
+
+<%= render :partial => "photos/album_view_javascript" %>
     
-    <script type="text/javascript">
-        $(document).ready(function(){
+<% content_for :zz_js_document_ready do %>
+                
+            zz.album.sort_bar_template = $(
+                    '<div id="view-sort-bar">'+
+                    '   <div id="sort">'+
+                    '       <div class="set-title">SORT</div>'+
+                    '       <div class="zz-buttonset">'+
+                    '           <div data-action="sort-date" class="zz-setbutton default-state left-end arrow-up"><div class="arrow">Date</div></div>'+
+                    '           <div data-action="sort-name" class="zz-setbutton default-state right-end arrow-up"><div class="arrow">Name</div></div>'+
+                    '       </div>'+
+                    '   </div>'+
+                    '</div>');
 
             if (document.location.href.indexOf('#!') !== -1) {
                 var photo_id = null;
@@ -44,7 +56,4 @@
             else {
                 zz.album.init_grid_view();
             }
-
-        });
-    </script>
 <% end %>

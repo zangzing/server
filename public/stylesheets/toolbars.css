@@ -668,3 +668,19 @@
 #footer #buy-button:hover    { background-position: 0 -55px;  }
 #footer #buy-button.selected { background-position: 0 -110px; }
 #footer #buy-button.disabled { background-position: 0 0; }
+
+/*           Info Button
+ ***************************************************/
+#footer #more-button{
+    position: absolute;
+    display: none;
+    top: 1px;
+    right: 290px;
+    width: 58px;
+    height: 55px;
+    background: url("/images/embed/toolbars/btn-footer-more.png") no-repeat scroll 0px 0px transparent;
+    cursor: pointer;
+}
+#footer #more-button:hover   { background-position: 0  -55px; }
+#footer #more-button.selected{ background-position: 0 -110px; }
+#footer #more-button.disabled{ background-position: 0 0; }

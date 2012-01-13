@@ -92,6 +92,19 @@
     top: 45px;
 }
 
+.spinner-dialog-content{
+    position: relative;
+    top:15px;
+    font-size:16px;
+    text-align: center;
+    padding: 5px 10px;
+}
+
+.spinner-dialog-content #dspin_here{
+    position: relative;
+    top: 80px;
+}
+
 
 
 /*      FLASH DIALOG

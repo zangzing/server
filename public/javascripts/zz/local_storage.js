@@ -40,5 +40,18 @@ zz.local_storage = zz.local_storage || {};
         return cache;
     };
 
+    zz.local_storage.set_album_sort = function( album_id, sort ){
+        zz.local_storage.set( 'sort_'+album_id, sort);
+    };
+
+    zz.local_storage.get_album_sort = function( album_id ){
+        var sort = zz.local_storage.get( 'sort_'+album_id );
+
+        if( sort ){
+            return sort;
+        }else{
+            return 'date-asc';
+        }
+    }
 })();
 

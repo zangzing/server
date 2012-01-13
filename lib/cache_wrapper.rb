@@ -11,8 +11,10 @@ class CacheWrapper
   #
   def self.write(key, value, options = {})
 
-    arg_verify = options[:verify]
-    verify = arg_verify.nil? ? false : arg_verify
+    verify = !!options[:verify]
+    log = !!options[:log]
+
+    Rails.logger.info("CacheWrapper write: #{key}") if log
 
     write_ok = false
     # try up to limit times, each time we fail we
@@ -20,12 +22,12 @@ class CacheWrapper
     2.times do |attempt|
       nowait(key) if attempt > 0  # turn off wait state since we are trying again
       write_ok = cache.write(key, value, options)
-      Rails.logger.error("Memcache write attempt: #{attempt+1} failed for key: #{key}") unless write_ok
+      Rails.logger.error("CacheWrapper write attempt: #{attempt+1} failed for key: #{key}") unless write_ok
       if write_ok && verify
         # verify it
         check_data = cache.read(key)
         write_ok = value == check_data
-        Rails.logger.error("Memcache write with verify attempt: #{attempt+1} failed for key: #{key}") unless write_ok
+        Rails.logger.error("CacheWrapper write with verify attempt: #{attempt+1} failed for key: #{key}") unless write_ok
       end
       break if write_ok
     end
@@ -42,8 +44,17 @@ class CacheWrapper
     @@cache ||= Rails.cache
   end
 
-  def self.read(key)
-    cache.read(key)
+  def self.read(key, log = false)
+    Rails.logger.info("CacheWrapper fetch: #{key}") if log
+    value = cache.read(key)
+    if log
+      if value
+        Rails.logger.info("CacheWrapper hit: #{key}")
+      else
+        Rails.logger.info("CacheWrapper miss: #{key}")
+      end
+    end
+    value
   end
 
   def self.delete(key)
@@ -52,17 +63,15 @@ class CacheWrapper
 
   # init the cache, if memcache we use it directly
   # since we don't want the local cache behavior behind it
-  def self.initialize_cache(cache_type, config, timeout)
+  def self.initialize_cache(cache_type, config, opts, *params)
     @@cache = nil
     if cache_type == :mem_cache_store
-      opts = {}
       # don't normally need logging so leave off for now
       #opts[:logger] = config.logger
-      opts[:timeout] = timeout
       # bypass rails wrappers
       @@cache = MemCacheWrapper.new(MemCache.new(MemcachedConfig.server_list, opts))
     else
-      config.cache_store = cache_type
+      config.cache_store = cache_type, *params
     end
   end
 
@@ -117,7 +126,7 @@ class MemCacheWrapper
       result = block.call
     rescue Exception => ex
       # log the error
-      Rails.logger.error "CacheWrapper, call failed: #{ex.message}"
+      Rails.logger.error "MemCacheWrapper, call failed: #{ex.message}"
     end
     result
   end

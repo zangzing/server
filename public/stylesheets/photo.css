@@ -372,6 +372,21 @@
     text-shadow: white 1px 1px 0px;
 }
 
+.photo-caption .caption-editor{
+    position:absolute;
+    top:0px;
+    left:0px;
+    width: 100%;
+    height: 100%;
+}
+
+.photo-caption .caption-editor-inner{
+    position:relative;
+    margin: 0 auto;
+    width: 220px;
+    height: 30px;
+}
+
 .photo-caption .edit-caption-border{
     position:absolute;
     top:0px;
@@ -379,8 +394,7 @@
     height:30px;
     width:190px;
     background-image:url(/images/edit-caption-border.png);
-    background-repeat:no-repeat;
-
+    background-repeat:no-repeat;    
 }
 
 .photo-caption input{
@@ -396,13 +410,12 @@
     padding-top:4px;
     font-size:12px;
     color: #636363;
-
+    overflow:  hidden;
 }
 
 .ua-ie .photo-caption input{
     padding-top:4px;
     padding-right:10px;
-
 }
 
 .photo-caption input:focus{
