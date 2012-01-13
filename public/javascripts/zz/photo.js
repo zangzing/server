@@ -336,29 +336,27 @@ zz.template_cache = zz.template_cache || {};
                 if( o.allowEditCaption ){
                     if( self.isEditingCaption ){
                         //If editing caption is active when mouseover happens turn it off
-                        self.captionElement.text(o.caption);
-                        self.captionElement.ellipsis();
+                        self.resetCaption();
                     }
-                    rollover_clone.find('div.photo-caption').unbind('click').click(function(event) {
+                    rollover_clone.find('div.photo-caption').unbind('click.edit_caption').bind('click.edit_caption',function(event) {
                         self.editCaption();
                     });
                 }
                 button_bar.center_x();
             };
 
+            el.append(self.captionElement).append(self.borderElement);
+
             if (o.showButtonBar) {
                 el.mouseenter(self._mouseEnterHandler);
             }else{
                 if( o.allowEditCaption ){
-                    self.captionElement.unbind('click').click(function(event) {
-                        self.editCaption();
-                    });
+                    self.captionElement.ellipsis();
+                    self.setupCaptionEdit();
                 }
             }
 
             // insert elements into DOM
-            el.append(self.captionElement).append(self.borderElement);
-
             if (o.context.indexOf('chooser') === 0) {
                 self.updateChecked();
             }
@@ -431,7 +429,6 @@ zz.template_cache = zz.template_cache || {};
             if (!self.imageLoaded) {
                 if (self._inLazyLoadRegion(containerDimensions)) {
                     self._loadImage();
-                    self.captionElement.ellipsis();
                 }
             }
         },
@@ -592,6 +589,16 @@ zz.template_cache = zz.template_cache || {};
             return (!left) && (!right) && (!above) && (!below);
         },
 
+        setupCaptionEdit: function(){
+            var self = this;
+            if( self.options.allowEditCaption ){
+                self.captionElement.unbind('click.edit_caption');
+                self.captionElement.bind('click.edit_caption',function() {
+                    self.editCaption();
+                });
+            }
+        },
+
         resetCaption: function( caption ){
             var self = this;
             if (self.isEditingCaption){
@@ -603,15 +610,10 @@ zz.template_cache = zz.template_cache || {};
                 self.captionElement.text(caption);
                 self.isEditingCaption = false;
                 self.captionElement.ellipsis();
+                self.setupCaptionEdit();
                 if( self.options.showButtonBar ){
                     self.element.mouseenter( self._mouseEnterHandler );
                 }
-                if( self.options.allowEditCaption ){
-                    self.captionElement.unbind('click').click(function() {
-                        self.editCaption();
-                    });
-                }
-
             }
         },
 
