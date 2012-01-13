@@ -124,7 +124,7 @@ class GroupsController < ApplicationController
   #
   # This is called as (GET):
   #
-  # /zz_api/groups/wrap_user
+  # /zz_api/groups/user/wrap
   #
   # Executed in the context of the current signed in user
   #
@@ -143,6 +143,7 @@ class GroupsController < ApplicationController
   #   :name => the name
   #   :self_group => true representing a special single user group - in a UI only the user info should be shown
   #   :member_info {
+  #      :id => member id
   #      :group_id => group we belong to,
   #      :user => {
   #          :id => users id,
@@ -177,7 +178,7 @@ class GroupsController < ApplicationController
       raise ArgumentError.new("User not found by email or user_id") if user.nil?
 
       # find or create the group and update email
-      group = find_or_create_wrapped_user(current_user.id, user.id, email)
+      group = Group.find_or_create_wrapped_user(current_user.id, user.id, email)
       result = group.as_hash
       result[:member_info] = group.group_members.first.as_hash
       result

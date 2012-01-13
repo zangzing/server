@@ -67,8 +67,8 @@ end
 # wrapper around get that preps for api call
 # if expect_ok is set we also return the response
 # in json form
-def zz_api_get(path, expect_code = 200, secure = false)
-  get build_full_path_if_needed(path, secure), nil, zz_api_headers
+def zz_api_get(path, expect_code = 200, secure = false, params = nil)
+  get build_full_path_if_needed(path, secure), params, zz_api_headers
   zz_api_response(response, expect_code)
 end
 
@@ -79,11 +79,17 @@ def zz_api_response(response, expect_code)
   j = response.body.length <= 1 ? {} : Hash.recursively_symbolize_graph!(zz_api_response_parse(response.body))
 
   if expect_code == 200
+    show_error(j) if response.status != expect_code
     response.status.should eql(200)
   else
+    show_error(j) if response.status != expect_code
     j[:code].should eql(expect_code)
   end
   j
+end
+
+def show_error(j)
+  puts "Unexpected error code: #{j[:code]}, message: #{j[:message]}"
 end
 
 def zz_api_response_parse(body)

@@ -32,6 +32,7 @@ class GroupMember < ActiveRecord::Base
   def as_hash
     user = self.user
     {
+      :id => self.id,
       :group_id => self.group_id,
       :user => {
           :id => user.id,

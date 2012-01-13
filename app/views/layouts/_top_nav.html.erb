@@ -14,20 +14,12 @@
             </div>
 
             <% if @album.cover %>
-                <% content_for :page_javascript do %>
-                    <script type="text/javascript">
-                        $(document).ready(function(){
+                <% content_for :zz_js_document_ready do %>
                             zz.toolbars.load_album_cover('<%= @album.cover.thumb_url%>');
-                        })
-                    </script>
                 <% end %>
             <% elsif @album.type == 'ProfileAlbum' %>
-                <% content_for :page_javascript do %>
-                    <script type="text/javascript">
-                        $(document).ready(function(){
+                <% content_for :zz_js_document_ready do %>
                             zz.toolbars.load_album_cover('<%= ProfileAlbum.default_profile_small_url %>');
-                        })
-                    </script>
                 <% end %>
             <% end %>
 

@@ -216,7 +216,7 @@ zz.pages.edit_album_tab = {
                     return true;
 
                 },
-                allowReorder: true,
+                allowReorder: false, //disabled custom ordering when we added sort
                 onChangeOrder: function(photo_id, before_id, after_id) {
                     var data = {};
 

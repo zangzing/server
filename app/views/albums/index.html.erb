@@ -13,21 +13,21 @@
     <div id="view">
         <div class="set-title">VIEW</div>
         <div class="zz-buttonset">
-            <div id="view-all-btn"       class="zz-setbutton default-state left-end"><div>All</div></div>
-            <div id="view-my-btn"        class="zz-setbutton default-state"><div><%=( current_user?(@user) ? 'My' : truncate( @user.posessive_short_name, :length => 15 ) )%></div></div>
+            <div data-action="view-all"       class="zz-setbutton default-state left-end"><div>All</div></div>
+            <div data-action="view-my"        class="zz-setbutton default-state"><div><%=( current_user?(@user) ? 'My' : truncate( @user.posessive_short_name, :length => 15 ) )%></div></div>
             <% if current_user?( @user ) %>
-                <div id="view-invited-btn"  class="zz-setbutton default-state"><div>Invited</div></div>
+                <div data-action="view-invited"  class="zz-setbutton default-state"><div>Invited</div></div>
             <%end%>
-            <div id="view-liked-btn"     class="zz-setbutton default-state"><div>Liked</div></div>
-            <div id="view-following-btn" class="zz-setbutton default-state right-end"><div>Following</div></div>
+            <div data-action="view-liked"     class="zz-setbutton default-state"><div>Liked</div></div>
+            <div data-action="view-following" class="zz-setbutton default-state right-end"><div>Following</div></div>
         </div>
     </div>
     <div id="sort">
         <div class="set-title">SORT</div>
         <div class="zz-buttonset">
-            <div id="sort-recent-btn" class="zz-setbutton default-state left-end "><div>Recent</div></div>
-            <div id="sort-date-btn" class="zz-setbutton default-state arrow-up"><div class="arrow">Date</div></div>
-            <div id="sort-name-btn" class="zz-setbutton default-state right-end arrow-up"><div class="arrow">Name</div></div>
+            <div data-action="sort-recent" class="zz-setbutton default-state left-end "><div>Recent</div></div>
+            <div data-action="sort-date" class="zz-setbutton default-state arrow-up"><div class="arrow">Date</div></div>
+            <div data-action="sort-name" class="zz-setbutton default-state right-end arrow-up"><div class="arrow">Name</div></div>
         </div>
     </div>
 </div>
