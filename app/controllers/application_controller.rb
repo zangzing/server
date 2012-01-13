@@ -262,6 +262,11 @@ class ApplicationController < ActionController::Base
     filtered
   end
 
+  # wraps an active model error with a ZZAPIError
+  # by extracting the full error text array
+  def active_model_error(err)
+    return ZZAPIError
+  end
   # wraps a zz api call and ensures that
   # we handle exceptions cleanly and put into proper
   # format - does the render so expects the block

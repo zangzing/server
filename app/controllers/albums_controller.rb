@@ -134,29 +134,18 @@ class AlbumsController < ApplicationController
     end
   end
 
-
-  # update an album
   #
-  # The zz_api update album method.  Updates the specified album.
+  # The zz_api album info method method.  Gets info about a single album owned by the
+  # passe
   #
-  # This is called as (PUT):
+  # This is called as (GET):
   #
   # /zz_api/albums/:album_id
   #
   # You must have an album admin role as determined by the current logged in users rights.
   #
-  # the expected parameters are (items marked with * are the defaults):
   #
-  # {
-  # :name => the album name
-  # :privacy => the album privacy can be (public*, hidden, password)
-  # :cover_photo_id => the optional cover photo id
-  # :who_can_download => who is allowed to download (everyone*,viewers,contributors,owner)
-  # :who_can_upload => who is allowed to upload (everyone,viewers,contributors*,owner)
-  # :who_can_buy => who is allowed to buy (everyone*,viewers,contributors,owner)
-  # }
-  #
-  # Returns the modified album in the following form:
+  # Returns the album info in the following form:
   #
   # {
   #    :id => album_id,
@@ -181,13 +170,52 @@ class AlbumsController < ApplicationController
   #    :who_can_download => who can download
   #    :who_can_upload => who can upload
   #    :who_can_buy => who can buy
+  #    :stream_to_twitter => stream to twitter
+  #    :stream_to_facebook => stream to facebook
+  #    :stream_to_email => stream to email
   # }
+  #
+  def zz_api_album_info
+    return unless require_user && require_album && require_album_admin_role
+    zz_api do
+      # build the result
+      @album.as_hash
+    end
+  end
+
+  # update an album
+  #
+  # The zz_api update album method.  Updates the specified album.
+  #
+  # This is called as (PUT):
+  #
+  # /zz_api/albums/:album_id
+  #
+  # You must have an album admin role as determined by the current logged in users rights.
+  #
+  # the expected parameters are (items marked with * are the defaults):
+  #
+  # {
+  # :name => the album name
+  # :privacy => the album privacy can be (public*, hidden, password)
+  # :cover_photo_id => the optional cover photo id
+  # :who_can_download => who is allowed to download (everyone*,viewers,contributors,owner)
+  # :who_can_upload => who is allowed to upload (everyone,viewers,contributors*,owner)
+  # :who_can_buy => who is allowed to buy (everyone*,viewers,contributors,owner)
+  # :stream_to_twitter => true if you want to stream updates to twitter
+  # :stream_to_facebook => true if you want to stream updates to facebook
+  # :stream_to_email => stream to email
+  # }
+  #
+  # Returns the modified album in the following form:
+  # See zz_api_album_info for return values
   #
   def zz_api_update
     return unless require_user && require_album && require_album_admin_role
     zz_api do
       begin
-        fields = filter_params(params, [:name, :privacy, :cover_photo_id, :who_can_upload, :who_can_download, :who_can_buy])
+        fields = filter_params(params, [:name, :privacy, :cover_photo_id, :who_can_upload, :who_can_download,
+                                        :who_can_buy, :stream_to_twitter, :stream_to_facebook, :stream_to_email])
         if !@album.update_attributes( fields )
           # shows the first error, web client side currently doesn't deal with hash
           # once it does, can pass full error format by just passing ex directly inside
@@ -200,7 +228,7 @@ class AlbumsController < ApplicationController
         raise friendly_error(ex, fields[:name])
       end
       # build the result
-      Album.albums_to_hash([@album])[0]   # hand back the single album result
+      @album.as_hash
     end
   end
 
@@ -223,42 +251,24 @@ class AlbumsController < ApplicationController
   # :who_can_download => who is allowed to download (everyone*,viewers,contributors,owner)
   # :who_can_upload => who is allowed to upload (everyone,viewers,contributors*,owner)
   # :who_can_buy => who is allowed to buy (everyone*,viewers,contributors,owner)
+  # :stream_to_twitter => true if you want to stream updates to twitter
+  # :stream_to_facebook => true if you want to stream updates to facebook
+  # :stream_to_email => stream to email
   # }
   #
   # Returns an album in the following form:
-  #
-  # {
-  #    :id => album_id,
-  #    :name => album_name,
-  #    :email => album.email,
-  #    :user_name => album_user_name,
-  #    :user_id => album_user_id,
-  #    :album_path => album_pretty_path(album_user_name, album_friendly_id),
-  #    :profile_album => is_profile_album,
-  #    :c_url =>  cover url,
-  #    :cover_id => cover_id,
-  #    :cover_base => cover_base same as a photo returned where cover_sizes are the substitution sizes,
-  #    :cover_sizes => cover_sizes,
-  #    :photos_count => album.photos_count,
-  #    :photos_ready_count => album.photos_ready_count,
-  #    :cache_version => album.cache_version_key,
-  #    :updated_at => album.updated_at.to_i,
-  #    :cover_date => cover_date.to_i,
-  #    :my_role => album.my_role, # valid values are Viewer, Contrib, Admin - if null and you are the owner then Admin
-  #    :privacy => album.privacy,
-  #    :all_can_contrib => true if everyone can contribute,
-  #    :who_can_download => who can download
-  #    :who_can_upload => who can upload
-  #    :who_can_buy => who can buy
-  # }
+  # See zz_api_album_info for return values
   #
   def zz_api_create
     return unless require_user
     zz_api do
       begin
-        fields = filter_params(params, [:name, :privacy, :who_can_upload, :who_can_download, :who_can_buy])
+        fields = filter_params(params, [:name, :privacy, :who_can_upload, :who_can_download,
+                                        :who_can_buy, :stream_to_twitter, :stream_to_facebook, :stream_to_email])
         fields[:user_id] = current_user.id
-        album = Album.new(fields)
+        album = GroupAlbum.new(fields)
+        # treat as an error rather than auto rename when duplicate
+        album.skip_duplicate_name_check = true
         unless album.save
           raise friendly_error(album.errors)
         end
@@ -266,103 +276,144 @@ class AlbumsController < ApplicationController
         raise friendly_error(ex, fields[:name])
       end
       # build the result
-      Album.albums_to_hash([album])[0]   # hand back the single album result
+      album.as_hash
     end
   end
 
-
-  # returns JSON used to populate
-  # the "Group" tab
-  def edit_group
+  # return the sharing info for the given album
+  #
+  # This is called as (GET):
+  #
+  # /zz_api/albums/:album_id/sharing_edit
+  #
+  # You must have an album admin role as determined by the current logged in users rights.
+  #
+  # Returns the sharing info in the following form:
+  #
+  # {
+  #  :user => {
+  #   :has_facebook_token => true if facebook token set up
+  #   :has_twitter_token => true if twitter token set up
+  #   },
+  #   :album => standard album info see hash album,
+  #   :group => [
+  #   {
+  #     :id => group id,
+  #     :user_id => id of the group owner
+  #     :name => name of the group, or if the self group, the users primary email,
+  #     :permission => contributor or viewer,
+  #     :profile_photo_url => profile photo if self group
+  #   }
+  #   ...
+  #   ],
+  #   :share => {
+  #        :facebook => {
+  #           :message => default message
+  #           :title => title,
+  #           :url => url back to the album,
+  #           :description => post description,
+  #           :photo => link to cover photo or nil
+  #        },
+  #        :twitter => {
+  #            :message => default message
+  #        }
+  # }
+  #
+  def zz_api_sharing_edit
     return unless require_user && require_album && require_album_admin_role
-    hash = {
-        :user => {
-          :has_facebook_token => !current_user.identity_for_facebook.credentials_valid?.nil?,
-          :has_twitter_token => !current_user.identity_for_twitter.credentials_valid?.nil?
-        },
-        :album => @album.as_json,
-        :group => get_group_members,
-        :share => {
-               :facebook => {
-                  :message => "",
-                  :title => "#{@album.name} by #{@album.user.name}",
-                  :url => album_pretty_url(@album),
-                  :description => SystemSetting[:facebook_post_description],
-                  :photo => @album.cover ? @album.cover.thumb_url : nil
-               },
-               :twitter => {
-                   :message => "Check out #{@album.user.posessive_name} #{@album.name} Album on @ZangZing #{bitly_url(album_pretty_url(@album))}"
-               }
-            }
-        }
-    
-
-    render :json => hash
+    zz_api do
+      hash = {
+          :user => {
+            :has_facebook_token => !current_user.identity_for_facebook.credentials_valid?.nil?,
+            :has_twitter_token => !current_user.identity_for_twitter.credentials_valid?.nil?
+          },
+          :album => @album.as_hash,
+          :group => get_group_members,
+          :share => {
+                 :facebook => {
+                    :message => "",
+                    :title => "#{@album.name} by #{@album.user.name}",
+                    :url => album_pretty_url(@album),
+                    :description => SystemSetting[:facebook_post_description],
+                    :photo => @album.cover ? @album.cover.thumb_url : nil
+                 },
+                 :twitter => {
+                     :message => "Check out #{@album.user.posessive_name} #{@album.name} Album on @ZangZing #{bitly_url(album_pretty_url(@album))}"
+                 }
+          }
+      }
+    end
   end
 
   # change a group member from contributor to viewer
   # or vice-versa
-  def update_group_member
+  def zz_api_update_sharing_member
     return unless require_user && require_album && require_album_admin_role
-    user_id = params[:member][:id]
+    zz_api do
+      user_id = params[:member][:id]
 
-    if params[:member][:permission] == 'contributor'
-      role = AlbumACL::CONTRIBUTOR_ROLE
-    else
-      role = AlbumACL::VIEWER_ROLE
+      if params[:member][:permission] == 'contributor'
+        role = AlbumACL::CONTRIBUTOR_ROLE
+      else
+        role = AlbumACL::VIEWER_ROLE
+      end
+
+      @album.acl.add_user(user_id, role)
+      nil
     end
-
-    @album.acl.add_user(user_id, role)
-    render :json => ''
   end
 
   # remove member from group
-  def delete_group_member
+  def zz_api_delete_sharing_member
     return unless require_user && require_album && require_album_admin_role
-    user_id = params[:member][:id]
-    @album.acl.remove_user(user_id)
-    render :json => ''
+    zz_api do
+      user_id = params[:member][:id]
+      @album.acl.remove_user(user_id)
+      nil
+    end
   end
 
 
-  def add_group_members
+  def zz_api_add_sharing_members
     return unless require_user && require_album && require_album_admin_role
 
-    emails,errors = Share.validate_email_list(  params[:emails] )
-    if errors.length > 0
-      #todo: just ignore errors. might want to fix this alter
+    zz_api do
+      emails,errors = Share.validate_email_list(  params[:emails] )
+      if errors.length > 0
+        #todo: just ignore errors. might want to fix this alter
+      end
+
+      if params[:permission] == 'contributor'
+        type = Share::TYPE_CONTRIBUTOR_INVITE
+      else
+        type = Share::TYPE_VIEWER_INVITE
+      end
+
+      Share.create!(    :user =>         current_user,
+                        :subject =>     @album,
+                        :subject_url => album_pretty_url(@album),
+                        :service =>     Share::SERVICE_EMAIL,
+                        :recipients =>  emails,
+                        :share_type =>  type,
+                        :message    =>  params[:message])
+
+      if type == Share::TYPE_CONTRIBUTOR_INVITE
+         emails.each { |email| @album.add_contributor( email )}
+      else
+         emails.each { |email| @album.add_viewer( email )}
+      end
+
+      zza.track_event('album.share.email')
+      get_group_members
     end
-
-    if params[:permission] == 'contributor'
-      type = Share::TYPE_CONTRIBUTOR_INVITE
-    else
-      type = Share::TYPE_VIEWER_INVITE
-    end
-
-    Share.create!(    :user =>         current_user,
-                      :subject =>     @album,
-                      :subject_url => album_pretty_url(@album),
-                      :service =>     Share::SERVICE_EMAIL,
-                      :recipients =>  emails,
-                      :share_type =>  type,
-                      :message    =>  params[:message])
-
-    if type == Share::TYPE_CONTRIBUTOR_INVITE
-       emails.each { |email| @album.add_contributor( email )}
-    else
-       emails.each { |email| @album.add_viewer( email )}
-    end
-
-    zza.track_event('album.share.email')
-
-    render :json => get_group_members
   end
 
-  def group_members
+  def sharing_members
     return unless require_user && require_album && require_album_admin_role
-    render :json => get_group_members
+    zz_api do
+      get_group_members
+    end
   end
-
 
 
   # This is effectively the users homepage
@@ -616,6 +667,29 @@ class AlbumsController < ApplicationController
       render :json => "Album deleted" and return
     else
       render :json => @album.errors, :status=>500 and return
+    end
+  end
+
+  #
+  # The zz_api album destroy method.  Deletes the album and all photos within.
+  #
+  # This is called as (DELETE):
+  #
+  # /zz_api/albums/:album_id
+  #
+  # You must have an album admin role as determined by the current logged in users rights.
+  #
+  #
+  # Returns nothing.
+  #
+  def zz_api_destroy
+    return unless require_user && require_album && require_album_admin_role
+    zz_api do
+      # Album is found when the before filter calls authorized user
+      if @album.destroy == false
+        raise ZZAPIError.new(@album.errors.full_messages, 500)
+      end
+      nil # nothing to return
     end
   end
 

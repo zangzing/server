@@ -2,11 +2,15 @@
 class ZZAPIError < StandardError
   attr_reader :result, :code
 
-  # the message here can be a string, array or hash
+  # the message here can be a string, array or hash, or ActiveModel Error
   # for consistency you should generally use a single string,
   # an array of strings or as last resort a custom hash
   def initialize(result, code = 409)
-    @result = result
+    if result.is_a?(ActiveModel::Errors)
+      @result = result.full_messages
+    else
+      @result = result
+    end
     @code = code
   end
 

@@ -49,6 +49,7 @@ class User < ActiveRecord::Base
 
   has_many :identities,          :dependent => :destroy
   has_many :contacts,            :through => :identities, :class_name => "Contact"
+  has_many :groups,              :dependent => :destroy
 
   has_many :shares
   has_many :activities,          :dependent => :destroy
@@ -172,19 +173,24 @@ class User < ActiveRecord::Base
     MailingList.subscribe_new_user id
   end
 
+  def self.create_automatic(email, name = '')
+    name = ( name == '' ? email.split('@')[0] : name )
+    # create an automatic user with a random password
+    user = User.new(  :automatic => true,
+                         :email => email,
+                         :name => name,
+                         :username => UUIDTools::UUID.random_create.to_s.gsub('-','').to_s,
+                         :password => UUIDTools::UUID.random_create.to_s);
+    user.reset_perishable_token
+    user.save_without_session_maintenance
+    user
+  end
+
   def self.find_by_email_or_create_automatic( email, name='' )
     user = User.find_by_email( email )
     if user.nil?
-
-      name = ( name == '' ? email.split('@')[0] : name )
-      #user not fount create an automatic user with a random password
-      user = User.new(  :automatic => true,
-                           :email => email,
-                           :name => name,
-                           :username => UUIDTools::UUID.random_create.to_s.gsub('-','').to_s,
-                           :password => UUIDTools::UUID.random_create.to_s);
-      user.reset_perishable_token
-      user.save_without_session_maintenance
+      #user not found, create an automatic user with a random password
+      user = create_automatic(email, name)
     end
     return user
   end

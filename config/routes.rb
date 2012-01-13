@@ -76,15 +76,8 @@ Server::Application.routes.draw do
     put    '/albums/:album_id'                     => 'albums#update',              :as => :update_album
     delete '/albums/:album_id'                     => 'albums#destroy',             :as => :delete_album
     post   'albums/:album_id/request_access'       => 'albums#request_access',      :as => :request_album_access
-    get    '/albums/:album_id/edit_group'          => 'albums#edit_group'
     get    '/albums/:album_id/add_photos'          => 'albums#add_photos',          :as => :album_add_photos
     get    '/albums/:album_id/wizard/:step'        => 'albums#wizard',              :as => :album_wizard
-
-    #todo: these are not very REST-ful
-    post   '/albums/:album_id/add_group_members'   => 'albums#add_group_members'
-    put    '/albums/:album_id/update_group_member' => 'albums#update_group_member'
-    delete '/albums/:album_id/delete_group_member' => 'albums#delete_group_member'
-    get    '/albums/:album_id/group_members'       => 'albums#group_members'
 
     #shares
     get    '/albums/:album_id/shares'             => 'shares#index',            :as => :album_shares
@@ -417,7 +410,14 @@ Server::Application.routes.draw do
     get    '/users/:user_id/invited_albums'            => 'albums#zz_api_invited_albums',            :as => :zz_api_invited_albums
     post   '/users/albums/create'                      => 'albums#zz_api_create',                    :as => :zz_api_create_album
     put    '/albums/:album_id'                         => 'albums#zz_api_update',                    :as => :zz_api_update_album
+    get    '/albums/:album_id'                         => 'albums#zz_api_album_info',                :as => :zz_api_album_info
+    delete '/albums/:album_id'                         => 'albums#zz_api_destroy',                   :as => :zz_api_destroy_album
     put    '/albums/:album_id/close_batch'             => 'albums#zz_api_close_batch',               :as => :zz_api_close_batch
+    get    '/albums/:album_id/sharing_edit'            => 'albums#zz_api_sharing_edit',              :as => :zz_api_sharing_edit_album
+    post   '/albums/:album_id/add_sharing_members'     => 'albums#zz_api_add_sharing_members',       :as => :zz_api_add_sharing_members_album
+    put    '/albums/:album_id/update_sharing_member'   => 'albums#zz_api_update_sharing_member',     :as => :zz_api_update_sharing_member_album
+    delete '/albums/:album_id/delete_sharing_member'   => 'albums#zz_api_delete_sharing_member',     :as => :zz_api_delete_sharing_member_album
+    get    '/albums/:album_id/sharing_members'         => 'albums#zz_api_sharing_members',           :as => :zz_api_sharing_members_album
 
     #photos
     get    '/albums/:album_id/photos'                  => 'photos#zz_api_photos',                    :as => :zz_api_photos
@@ -428,6 +428,16 @@ Server::Application.routes.draw do
 
     #users
     get    '/users/:user_id/info' => 'users#zz_api_user_info',                  :as => :zz_api_user_info
+
+    #groups
+    post   '/groups/create'                            => 'groups#zz_api_create',                    :as => :zz_api_create_group
+    delete '/groups/:group_id'                         => 'groups#zz_api_destroy',                   :as => :zz_api_destroy_group
+    put    '/groups/:group_id'                         => 'groups#zz_api_update',                    :as => :zz_api_update_group
+    get    '/groups/wrap_user'                         => 'groups#zz_api_wrap_user',                 :as => :zz_api_wrap_user_group
+    get    '/groups/:group_id'                         => 'groups#zz_api_info',                      :as => :zz_api_info_group
+    get    '/groups/:group_id/members'                 => 'groups#zz_api_members',                   :as => :zz_api_members_group
+    put    '/groups/:group_id/update_members'          => 'groups#zz_api_update_members',            :as => :zz_api_update_members_group
+    put    '/groups/:group_id/remove_members'          => 'groups#zz_api_remove_members',            :as => :zz_api_remove_members_group
 
 
     #identities

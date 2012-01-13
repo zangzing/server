@@ -3,7 +3,7 @@ require 'test_utils'
 
 include PrettyUrlHelper
 
-describe "ZZ API" do
+describe "ZZ API Albums" do
 
   describe "credentials" do
     it "should fail to login" do
@@ -83,11 +83,20 @@ describe "ZZ API" do
             :who_can_upload => "contributors",
             :who_can_download => 'viewers',
             :who_can_buy => 'contributors',
+            :stream_to_twitter => true,
+            :stream_to_facebook => false,
         }
         j = zz_api_post zz_api_create_album_path, params, 200, false
         zz_verify_all_fields_match(j, params)
         db_check = Album.find( j[:id] )
         db_check.id.should == j[:id]
+        # now fetch it via the api
+        album = zz_api_get zz_api_album_info_path(j[:id])
+        album[:id].should == j[:id]
+        params[:stream_to_twitter].should == album[:stream_to_twitter]
+
+        # should fail to create again since same name
+        j = zz_api_post zz_api_create_album_path, params, 409, false
       end
 
       it "should fail validation" do
@@ -97,6 +106,22 @@ describe "ZZ API" do
             :who_can_upload => "bad value",
         }
         j = zz_api_post zz_api_create_album_path, params, 409, false
+      end
+
+      it "should delete an album" do
+        params = {
+            :name => "Freddy Frump's Album",
+            :privacy => "hidden",
+            :who_can_upload => "contributors",
+            :who_can_download => 'viewers',
+            :who_can_buy => 'contributors',
+            :stream_to_twitter => true,
+            :stream_to_facebook => false,
+        }
+        j = zz_api_post zz_api_create_album_path, params, 200, false
+        j = zz_api_delete zz_api_destroy_album_path(j[:id]), nil, 200
+        db_check = Album.find_by_id(j[:id])
+        db_check.should == nil
       end
     end
 

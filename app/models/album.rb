@@ -124,7 +124,16 @@ class Album < ActiveRecord::Base
     album.id == album_id
   end
 
+  def skip_duplicate_name_check=(val)
+    @skip_duplicate_name_check = val
+  end
+
+  def skip_duplicate_name_check?
+    @skip_duplicate_name_check ||= false
+  end
+
   def uniquify_name
+    return if skip_duplicate_name_check?
     @uname = name
     @i = 0
 
@@ -698,12 +707,20 @@ class Album < ActiveRecord::Base
           :all_can_contrib => album.everyone_can_contribute?,
           :who_can_download => album.who_can_download, #Valid values are viewers, owner, everyone
           :who_can_upload => album.who_can_upload,
-          :who_can_buy => album.who_can_buy
+          :who_can_buy => album.who_can_buy,
+          :stream_to_facebook => album.stream_to_facebook,
+          :stream_to_twitter => album.stream_to_twitter,
+          :stream_to_email => album.stream_to_email,
       }
       fast_albums << hash_album
     end
 
     return fast_albums
+  end
+
+  # single album hash
+  def as_hash
+    Album.albums_to_hash([self])[0]
   end
 
 private

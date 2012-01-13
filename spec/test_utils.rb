@@ -55,6 +55,14 @@ def zz_api_put(path, body, expect_code = 200, secure = false)
   zz_api_response(response, expect_code)
 end
 
+# wrapper around post that preps for api call
+# if expect_ok is set we also return the response
+# in json form
+def zz_api_delete(path, body, expect_code = 200, secure = false)
+  body = body.nil? ? nil : zz_api_body(body)
+  delete build_full_path_if_needed(path, secure), body, zz_api_headers
+  zz_api_response(response, expect_code)
+end
 
 # wrapper around get that preps for api call
 # if expect_ok is set we also return the response
