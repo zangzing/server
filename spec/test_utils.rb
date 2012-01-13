@@ -59,8 +59,8 @@ end
 # wrapper around get that preps for api call
 # if expect_ok is set we also return the response
 # in json form
-def zz_api_get(path, expect_code = 200, secure = false)
-  get build_full_path_if_needed(path, secure), nil, zz_api_headers
+def zz_api_get(path, expect_code = 200, secure = false, params = nil)
+  get build_full_path_if_needed(path, secure), params, zz_api_headers
   zz_api_response(response, expect_code)
 end
 

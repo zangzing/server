@@ -125,11 +125,13 @@
                         "preloadBefore=1&" +
                         "alwaysUseFullscreenImages=true&" +
                         "startImageIndex=#{start_index}"
-
+        # note the use of %26 instead of &, this is needed to treat the sort_param as part of the photos_json url and not another param
+        # due to the way the flash player tacks them all together
+        flash_sort_param = @sort_param.nil? ? '' : "%26#{@sort_param}"
         %>
 
       
-        <param name="flashvars" value="source=<%=album_photos_json_url @album%>?ver=<%=@album.cache_version_key%>&<%=flash_params%>"/>
+        <param name="flashvars" value="source=<%=album_photos_json_url @album%>?ver=<%=@album.cache_version_key%><%=flash_sort_param%>&<%=flash_params%>"/>
     </object>
     <div id="logo_for_embedded"></div>
     <div id="scrim"></div>
@@ -139,6 +141,7 @@
     <%= include_javascripts :zz %>
     <%= include_javascripts :movie %>
 
+    <% js_sort_param = @sort_param.nil? ? '' : "&#{@sort_param}" %>
 
     <script type="text/javascript">
 
@@ -151,7 +154,7 @@
             $.CustomSimpleFade.init({
 
                 appendToID:			'movie',
-                source:				'<%=album_photos_json_url @album%>?ver=<%=@album.cache_version_key%>',
+                source:				'<%=album_photos_json_url @album%>?ver=<%=@album.cache_version_key%><%=js_sort_param%>',
                 width: $(window).width(),
                 height: $(window).height(),
 

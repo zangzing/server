@@ -80,8 +80,7 @@
                     _zza.track_event2(event, properties);
 
                     if (typeof(console) != 'undefined') {
-                        console.log('ZZA event: ' + event);
-                        console.log('ZZA properties: ' + properties);
+                        console.log('ZZA event: ' + event +" with prperties"+properties);
                     }
                 }
             }

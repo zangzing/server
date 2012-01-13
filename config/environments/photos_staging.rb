@@ -39,7 +39,7 @@ Server::Application.configure do
   config.bench_test_allowed = true
 
   # use memcached
-  CacheWrapper.initialize_cache(:mem_cache_store, config, 1.5)
+  CacheWrapper.initialize_cache(:mem_cache_store, config, {:timeout => 1.5})
 
   # mail logger is too verbose, shut it off
   config.action_mailer.logger = nil
