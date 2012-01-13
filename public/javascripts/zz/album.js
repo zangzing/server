@@ -54,7 +54,6 @@ zz.album = {};
     zz.album.goto_single_picture = function(photo_id){
         //get rid of scrollbars before animate transition
         $('.photogrid').css({overflow: 'hidden'});
-        $('#article').css('width',$('#article').width());        
         $('#article').css({overflow: 'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
         $('#header #top-breadcrumb').fadeOut(200);
         document.location.href = zz.page.album_base_url + '/photos/#!' + photo_id;
@@ -120,7 +119,7 @@ zz.album = {};
 
             var gridElement = $('<div class="photogrid"></div>');
 
-            $('#article').append(gridElement);
+            $('#article').html(gridElement);
             $('#article').css('overflow', 'hidden');
 
             // add placeholder for add-all button
@@ -411,7 +410,6 @@ zz.album = {};
                     cellHeight: 230,
                     onClickPhoto: function(index, photo, element, action) {
                         if(!buy_mode){
-                            $('#article').css('width',$('#article').width());                        	
                             $('#article').css({overflow: 'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
                             $('#header #top-breadcrumb').fadeOut(200);
                             document.location.href = zz.page.album_base_url + '/photos/#!' + photo.id;
