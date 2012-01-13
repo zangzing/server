@@ -65,7 +65,7 @@ class Photo < ActiveRecord::Base
   has_many :likers,         :through => :like_mees, :class_name => "User",  :source => :user
 
   # when retrieving a search from the DB it will always be ordered by created date descending a.k.a Latest first
-  default_scope :order => 'capture_date ASC, created_at ASC, id ASC'
+  default_scope :order => 'capture_date ASC, id ASC'
 
   before_create :init_for_create
 
