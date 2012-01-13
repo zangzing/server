@@ -87,10 +87,18 @@
 
       <div class="description">
 
+        <%
+            storage_used_gb = @user.storage_used / 1024.00  # expensive call, so cache
+            total_storage_gb = @user.total_storage / 1024.00
+            percent_used = (100 * storage_used_gb / total_storage_gb).to_i
+
+        %>
+
+
 
         <div class='storage-meter'>
-            <div class='used' style='width:<%= current_user.percent_storage_used %>%'></div>
-            <div class='label'><%= current_user.percent_storage_used %>% of space used - <%= current_user.storage_used%>GB of <%= current_user.total_storage%>GB</div>
+            <div class='used' style='width:<%= percent_used %>%'></div>
+            <div class='label'><%= percent_used %>% of space used - <%= number_with_precision(storage_used_gb, :precision => 2, :strip_insignificant_zeros => true) %> GB of <%= number_with_precision(total_storage_gb, :precision=> 2, :strip_insignificant_zeros => true)%> GB</div>
         </div>
       </div>
 

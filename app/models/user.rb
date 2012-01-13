@@ -101,7 +101,7 @@ class User < ActiveRecord::Base
 
   has_friendly_id :username
 
-  BONUS_STORAGE_MB_PER_INVITE = 250
+  BONUS_STORAGE_MB_PER_INVITE = 0.25 * 1024
   MAX_BONUS_MB = 10 * 1024
   BASE_FREE_STORAGE = 2 * 1024
 
@@ -361,7 +361,7 @@ class User < ActiveRecord::Base
 
 
   def storage_used
-    sql = "select sum(photos.image_file_size) from ( " +
+    sql = "select sum(photos.image_file_size) / 1024 / 1024 from ( " +
               "select photos.* from photos, albums where photos.album_id = albums.id and albums.user_id = #{id} " +
               "union " +
               "select photos.* from photos where photos.user_id = #{id} " +
@@ -371,7 +371,7 @@ class User < ActiveRecord::Base
     if row[0].nil?
       return 0
     else
-      return row[0].to_int / (1024 * 1024)
+      return row[0].to_int
     end
   end
 

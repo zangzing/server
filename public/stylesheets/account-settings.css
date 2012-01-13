@@ -128,6 +128,8 @@
     bottom: 0px;
     background-color: #dddddd;
     width: 0%;
+    background: url('/images/account-settings/storage-meter.png') scroll repeat-x 0 0;
+
 }
 
 #account-settings .storage-meter .label{
