@@ -65,7 +65,7 @@ class Photo < ActiveRecord::Base
   has_many :likers,         :through => :like_mees, :class_name => "User",  :source => :user
 
   # when retrieving a search from the DB it will always be ordered by created date descending a.k.a Latest first
-  default_scope :order => 'pos ASC, created_at ASC'
+  default_scope :order => 'capture_date ASC, created_at ASC, id ASC'
 
   before_create :init_for_create
 
@@ -917,7 +917,7 @@ class Photo < ActiveRecord::Base
   # we invalidate the browsers cache for
   # old items.
   def self.hash_schema_version
-    'v7'
+    'v8'
   end
 
   # this method packages up the fields
@@ -955,7 +955,9 @@ class Photo < ActiveRecord::Base
       :width => photo.width,
       :height => photo.height,
       :rotated_width => photo.rotated_width,
-      :rotated_height => photo.rotated_height
+      :rotated_height => photo.rotated_height,
+      :capture_date => photo.capture_date,
+      :created_at => photo.created_at
     }
   end
 

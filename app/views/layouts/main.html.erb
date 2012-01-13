@@ -116,10 +116,18 @@
 
 
     <script type="text/javascript">
-
         var zz = zz || {};
-        zz.session = zz.session || {};
 
+        zz.config = zz.config || {};
+        zz.config.win_download_url       = '<%= ZangZingConfig.config[:agent_download_url_win] %>';
+        zz.config.mac_download_url       = '<%= ZangZingConfig.config[:agent_download_url_mac] %>';
+        zz.config.agent_port             = '<%= ZangZingConfig.config[:agent_port] %>';
+        zz.config.rails_asset_id         = '<%= ENV["RAILS_ASSET_ID"] %>';
+        zz.config.rails_asset_host       = '<%= ActionController::Base.asset_host %>';
+        zz.config.facebook_app_id        = '<%=FACEBOOK_API_KEYS[:app_id]%>';
+        zz.config.rails_env              = '<%= ENV["RAILS_ENV"] %>';
+
+        zz.session = zz.session || {};
         <%  if signed_in?  -%>
         zz.session.current_user_id       = '<%= current_user.id %>';
         zz.session.current_user_name     = '<%= escape_javascript current_user.username %>';
@@ -131,24 +139,17 @@
         zz.session.cart_item_count       = <%= current_order ? current_order.cart_count : 0 %>
 
         zz.page = zz.page || {};
-        zz.page.rails_controller_name    = '<%= controller.controller_name %>';
-        zz.page.rails_action_name        = '<%= controller.action_name %>';
-        zz.page.rails_authenticity_token = '<%= form_authenticity_token %>';
+        zz.page.rails_controller_name       = '<%= controller.controller_name %>';
+        zz.page.rails_action_name           = '<%= controller.action_name %>';
+        zz.page.rails_authenticity_token    = '<%= form_authenticity_token %>';
         <%= yield :zz_js_page_variables%>
-
-        zz.config = zz.config || {};
-        zz.config.win_download_url       = '<%= ZangZingConfig.config[:agent_download_url_win] %>';
-        zz.config.mac_download_url       = '<%= ZangZingConfig.config[:agent_download_url_mac] %>';
-        zz.config.agent_port             = '<%= ZangZingConfig.config[:agent_port] %>';
-        zz.config.rails_asset_id         = '<%= ENV["RAILS_ASSET_ID"] %>';
-        zz.config.rails_asset_host       = '<%= ActionController::Base.asset_host %>';
-        zz.config.facebook_app_id        = '<%=FACEBOOK_API_KEYS[:app_id]%>';
-        zz.config.rails_env              = '<%= ENV["RAILS_ENV"] %>';
 
         $(document).ready(function(){
             zz.init.template();
-            <%= perform_javascript_actions %>
             zz.buy.init();
+            <%= perform_javascript_actions %>
+
+            <%= yield :zz_js_document_ready%>
         });
 
     </script>

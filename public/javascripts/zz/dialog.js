@@ -70,9 +70,13 @@ zz.dialog ={};
         return dialog;
     };
 
-    zz.dialog.show_spinner_progress_dialog = function(message) {
-        var template = '<span class="progress-dialog-content"><div id="dspin_here"></div>' + message + '</span>';
-        var dialog = zz.dialog.show_dialog(template, { width: 300, height: 90, modal: true, autoOpen: true, cancelButton: false });
+    zz.dialog.show_spinner_progress_dialog = function(message, width, height) {
+        if( _.isUndefined( width) ){
+            var width = 300;
+            var height = 130;
+        }
+        var template = '<div class="spinner-dialog-content"><div id="dspin_here"></div>' + message + '</div>';
+        var dialog = zz.dialog.show_dialog(template, { width: width, height: height, modal: true, autoOpen: true, cancelButton: false });
         new Spinner({ lines: 12,
                           length: 6,
                           width: 3,
@@ -85,9 +89,13 @@ zz.dialog ={};
         return dialog;
     };
 
-    zz.dialog.show_progress_dialog = function(message) {
+    zz.dialog.show_progress_dialog = function(message, width, height) {
+         if( _.isUndefined( width) ){
+            var width = 300;
+            var height = 90;
+        }
         var template = '<span class="progress-dialog-content"><img src="/images/loading.gif">' + message + '</span>';
-        var dialog = zz.dialog.show_dialog(template, { width: 300, height: 90, modal: true, autoOpen: true, cancelButton: false });
+        var dialog = zz.dialog.show_dialog(template, { width: width, height: height, modal: true, autoOpen: true, cancelButton: false });
         return dialog;
     };
 
@@ -114,7 +122,7 @@ zz.dialog ={};
                     },
                     function(){
                         pdialog.close();
-                        zz.dialog.show_flash_dialog('Unable to send the message at the moment. Please try again later.')
+                        zz.dialog.show_flash_dialog('Unable to send the message at the moment. Please try again later.');
                     });
             }
         });
