@@ -48,7 +48,23 @@ class KodakConnector
     result
   end
 
+  def user_ssid
+    @user_ssid ||= get_user_ssid
+  end
+
   #Low-level calls
+  def get_user_ssid
+    homepage_uri = URI.parse("http://www.kodakgallery.com/gallery/creativeapps/photoPicker/albums.jsp")
+    http = Net::HTTP.new(homepage_uri.host, homepage_uri.port)
+    request = Net::HTTP::Get.new(homepage_uri.request_uri, {'cookie' => @auth_cookies})
+    begin
+      response = http.request(request)
+    rescue
+      raise HttpCallFail
+    end
+    raise KodakError.new(response.code, response.message) if response.code != '200'
+    response.body =~ /esg\.ident\.model\.ssId = '(\d{4,})';/ ? $1 : nil
+  end
 
   def send_request(url)
     service_uri = URI.parse("#{REST_API_URL}#{url}")
