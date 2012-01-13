@@ -401,26 +401,28 @@
 
                         //capture keys
                         $(document.documentElement).keydown(function(event) {
-                            switch( event.keyCode ){
-                                case 40: //down
-                                    self.nextPicture();
-                                    break;
-                                case 39:  //right
-                                    self.nextPicture();
-                                    break;
-                                case 34: //page down
-                                    self.nextPicture();
-                                    break;
-                                case 38: //up
-                                    self.previousPicture();
-                                    break;
-                                case 37: //left
-                                    self.previousPicture();
-                                    break;
-                                case 33: //page up
-                                    self.previousPicture();
-                                    break;
-                            }
+                        	if (event.target.nodeName.toLowerCase() !== 'input' && event.target.nodeName.toLowerCase() !== 'textarea'){
+	                            switch( event.keyCode ){
+	                                case 40: //down
+	                                    self.nextPicture();
+	                                    break;
+	                                case 39:  //right
+	                                    self.nextPicture();
+	                                    break;
+	                                case 34: //page down
+	                                    self.nextPicture();
+	                                    break;
+	                                case 38: //up
+	                                    self.previousPicture();
+	                                    break;
+	                                case 37: //left
+	                                    self.previousPicture();
+	                                    break;
+	                                case 33: //page up
+	                                    self.previousPicture();
+	                                    break;
+	                            }
+                        	}
                         });
                     }
 
