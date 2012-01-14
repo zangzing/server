@@ -598,13 +598,16 @@ puts "Time in batch_photo_create with #{photo_count} photos: #{end_time - start_
 
   # define the acceptable types of sorts and the field order here
   def sort_fields_hash
-    name_fields = [:caption, :capture_date, :creation_date, :id]
-    date_fields = [:capture_date, :creation_date, :id]
+    name_fields = [:caption, :capture_date, :created_at, :id]
+    date_fields = [:capture_date, :created_at, :id]
+    recent_fields = [:created_at, :id]
     sort_fields = {
         'name-asc' => name_fields,
         'name-desc' => name_fields,
         'date-asc' => date_fields,
         'date-desc' => date_fields,
+        'recent-asc' => recent_fields,
+        'recent-desc' => recent_fields,
     }
   end
 
