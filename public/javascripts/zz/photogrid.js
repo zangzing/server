@@ -478,10 +478,15 @@
                         resizeTimer = null;
                     }
                     resizeTimer = setTimeout(function() {
+                    	
+                    	
                         self.width = parseInt(el.css('width'));
                         self.height = parseInt(el.css('height'));
                         self.offset = el.offset();
                         self._initPosForIndex();
+                        
+                    	self.padding_top = zz.album.get_top_padding();
+                        
                         self.resetLayout(0,0, true); //no duration, no easing, yes loadIfVisible
                     }, 100);
                 });
@@ -795,7 +800,7 @@
 
             if (self.options.singlePictureMode) {
                 return {
-                    top: 0,
+                    top: self.padding_top,
                     left: (index * self.cell_width)
                 };
             } else {

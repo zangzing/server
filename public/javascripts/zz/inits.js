@@ -16,6 +16,9 @@ var zz = zz || {};
     zz.login = zz.login || {};
     zz.login.hide_join_banner = hide_banner;
     zz.login.show_join_banner = check_show_banner;
+    zz.login.is_banner_visible = false;
+    zz.login.join_spacer = spacer_html;
+    zz.login.join_spacer_height = 75;
     
     zz.init = {
     		
@@ -29,7 +32,7 @@ var zz = zz || {};
             if( !is_photos_page ){
             	$("#article").prepend('<div class="join-banner-spacer"></div>');	
             }
-          
+            
             $("#header-join-banner").html(banner_html());
             
     		setup_banner();
@@ -141,6 +144,10 @@ var zz = zz || {};
     	return html;
     	
     }
+    
+    function spacer_html(){
+    	return '<div class="join-banner-spacer"></div>';
+    }
 
 	function join_message(){
 		var message;
@@ -192,11 +199,13 @@ var zz = zz || {};
     function hide_banner(){
     	$("#header-join-banner").addClass("none");
 		$(".join-banner-spacer").addClass("none");
+		zz.login.is_banner_visible = false;
     }
     
     function show_banner(){
 		$("#header-join-banner").removeClass("none");
 		$(".join-banner-spacer").removeClass("none");
+		zz.login.is_banner_visible = true;
 		
 		// Only track the first time you see the banner.
 		if($.cookie("shown_join_banner") == null) {
@@ -212,6 +221,8 @@ var zz = zz || {};
     function check_show_banner(){
     	if(should_show_banner()){
     		banner_refresh();
+    	} else {
+    		hide_banner();
     	}
     }
  

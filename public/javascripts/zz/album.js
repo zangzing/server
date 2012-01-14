@@ -47,6 +47,7 @@ zz.album = {};
     zz.album.goto_single_picture = function(photo_id){
         //get rid of scrollbars before animate transition
         $('.photogrid').css({overflow: 'hidden'});
+        $('#article').css('width',$('#article').width());
         $('#article').css({overflow: 'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
         $('#header #top-breadcrumb').fadeOut(200);
         document.location.href = zz.page.album_base_url + '/photos/#!' + photo_id;
@@ -91,6 +92,13 @@ zz.album = {};
             ZZAt.track('album.buy.toolbar.click');
         });
     };
+    
+    zz.album.get_top_padding = function() {
+        if(zz.login.is_banner_visible){
+        	return 45 + zz.login.join_spacer_height;
+        }
+        return 45;
+    }
 
 
     /*           Private Stuff
@@ -111,16 +119,20 @@ zz.album = {};
         load_photos_json('grid', function(photos) {
 
             var buy_mode = zz.buy.is_buy_mode_active();
-
+            
             //no movie mode if no photos
             if (photos.length == 0) {
                 $('#footer #play-button').addClass('disabled');
             }
 
-
             var gridElement = $('<div class="photogrid"></div>');
 
             $('#article').html(gridElement).css('overflow', 'hidden');
+            
+            // Add join banner spacer now to set up html
+            // Call show to determine whether or not to actually show the banner
+            gridElement.append( zz.login.join_spacer );
+            zz.login.show_join_banner();
 
             // Add sort buttons
             var sort_bar = zz.album.sort_bar_template.clone();
@@ -133,7 +145,7 @@ zz.album = {};
                 context:      buy_mode ? 'chooser-grid' : 'album-grid',
                 cellWidth:    230,
                 cellHeight:   230,
-                topPadding:   45, //make room for sort bar
+                topPadding:   zz.album.get_top_padding(),
 
 
                 showButtonBar:            !buy_mode,
@@ -225,6 +237,11 @@ zz.album = {};
                 $('#article .photogrid').remove();
                 $('#article').append(gridElement);
 
+                // render is called on resize so don't need to call zz.login.show_join_banner()
+                var top_padding = 0;
+                if(zz.login.is_banner_visible){
+                	top_padding = zz.login.join_spacer_height;
+                }
 
                  var grid;
                  gridElement.zz_photogrid({
@@ -233,7 +250,8 @@ zz.album = {};
                     allowDelete: false,
                     allowReorder: false,
                     cellWidth: gridElement.width(),
-                    cellHeight: gridElement.height() - 20,
+                    cellHeight: gridElement.height() - 20 - top_padding,
+                    topPadding: top_padding,
 
                     onClickPhoto: function(index, photo, element, action) {
                         if(!buy_mode){
@@ -319,6 +337,7 @@ zz.album = {};
                 }
 
                 resizeTimer = setTimeout(function() {
+                	
                     render();
                 }, 100);
             });
@@ -485,6 +504,7 @@ zz.album = {};
 
                     onClickPhoto: function(index, photo, element, action) {
                         if(!buy_mode){
+                        	$('#article').css('width',$('#article').width());
                             $('#article').css({overflow: 'hidden'}).animate({left: -1 * $('#article').width()}, 500, 'easeOutQuart');
                             $('#header #top-breadcrumb').fadeOut(200);
                             document.location.href = zz.page.album_base_url + '/photos/#!' + photo.id;
