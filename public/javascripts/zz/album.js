@@ -733,8 +733,8 @@ zz.album = {};
         });
 
         switch( zz.local_storage.get_album_sort( zz.page.album_id) ){
-            case 'recent-asc':  zz.buttonset.init('sort-recent-asc');   break;
-            case 'recent-desc': zz.buttonset.init('sort-recent-desc');  break;
+            case 'recent-asc':  zz.buttonset.init('sort-recent-up');   break;
+            case 'recent-desc': zz.buttonset.init('sort-recent-down');  break;
             case 'name-asc':    zz.buttonset.init('sort-name-up');      break;
             case 'name-desc':   zz.buttonset.init('sort-name-down');    break;
             case 'date-desc':   zz.buttonset.init('sort-date-down');    break;

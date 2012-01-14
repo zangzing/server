@@ -887,7 +887,7 @@
                     });
                     break;
                 default:
-                    self._sort(
+                    self._sort_and_reverse(
                         function (){ return this.recent_sort_key; },
                         layout,
                         function(){
