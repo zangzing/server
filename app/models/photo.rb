@@ -222,6 +222,11 @@ class Photo < ActiveRecord::Base
   def init_for_create
     set_guid_for_path
     set_default_position
+    if self.capture_date.nil?
+      # always make sure we have a capture date but if we had to set it, use the suspended flag to mark that it was originally null
+      self.capture_date = Time.now
+      self.suspended = 1
+    end
     # assign a large random number to original suffix up to max unsigned 32 bit integer
     # we do this to ensure no one can guess the original from one of the smaller size photos
     self.original_suffix = rand(4294967295)
@@ -307,8 +312,20 @@ class Photo < ActiveRecord::Base
     data = PhotoInfo.get_image_metadata(self.source_path)
     self.photo_info = PhotoInfo.factory(data)
     if exif = data['EXIF']
+
       val =  exif['DateTimeOriginal']
-      self.capture_date = (DateTime.parse(val) rescue nil) unless val.nil?
+      parsed_date = DateTime.parse(val) rescue nil
+      if parsed_date
+        # a valid date so update and indicate set via exif
+        self.capture_date = parsed_date
+        self.suspended = 0
+      end
+      # finally make sure we never end up with a case where capture date is null
+      if self.capture_date.nil?
+        self.capture_date = self.created_at
+        self.suspended = 1  # mark that capture date was null
+      end
+
       val = exif['Orientation']
       self.orientation = decode_orientation(val) unless val.nil?
       val = exif['GPSLatitude']
