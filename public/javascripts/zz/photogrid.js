@@ -813,8 +813,11 @@
 
         sort_by: function( sort_method, layout, callback ){
             switch( sort_method ){
-                case'recent':
-                    this.sort_by_recent(layout, callback);
+                case'recent-asc':
+                    this.sort_by_recent_asc(layout, callback);
+                    break;
+                case'recent-desc':
+                    this.sort_by_recent_desc(layout, callback);
                     break;
                 case'name-asc':
                     this.sort_by_name_asc(layout, callback);
