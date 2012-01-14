@@ -710,6 +710,12 @@ zz.album = {};
             zz.buttonset.disable('Working on your sort, please be patient, its a big bunch of photos');
             ZZAt.track('album.'+action+'.click');
             switch( action ){
+                case'sort-recent-up':
+                    grid.sort_by_recent_asc( true, function(){ sort_done('recent-asc')});
+                    break;
+                case'sort-recent-down':
+                    grid.sort_by_recent_desc( true, function(){ sort_done('recent-desc')});
+                    break;
                 case'sort-name-up':
                     grid.sort_by_name_asc( true, function(){ sort_done('name-asc')});
                     break;
@@ -727,9 +733,11 @@ zz.album = {};
         });
 
         switch( zz.local_storage.get_album_sort( zz.page.album_id) ){
-            case 'name-asc': zz.buttonset.init('sort-name-up'); break;
-            case 'name-desc':zz.buttonset.init('sort-name-down'); break;
-            case 'date-desc':zz.buttonset.init('sort-date-down'); break;
+            case 'recent-asc':  zz.buttonset.init('sort-recent-up');   break;
+            case 'recent-desc': zz.buttonset.init('sort-recent-down');  break;
+            case 'name-asc':    zz.buttonset.init('sort-name-up');      break;
+            case 'name-desc':   zz.buttonset.init('sort-name-down');    break;
+            case 'date-desc':   zz.buttonset.init('sort-date-down');    break;
             case 'date-asc':
             default: zz.buttonset.init('sort-date-up'); break;
         }

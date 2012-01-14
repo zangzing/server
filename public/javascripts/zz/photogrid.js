@@ -813,6 +813,12 @@
 
         sort_by: function( sort_method, layout, callback ){
             switch( sort_method ){
+                case'recent-asc':
+                    this.sort_by_recent_asc(layout, callback);
+                    break;
+                case'recent-desc':
+                    this.sort_by_recent_desc(layout, callback);
+                    break;
                 case'name-asc':
                     this.sort_by_name_asc(layout, callback);
                     break;
@@ -825,6 +831,74 @@
                 case'date-asc':
                 default:
                     this.sort_by_date_asc(layout, callback);
+                    break;
+            }
+        },
+
+        sort_by_recent_asc: function( layout, callback ){
+            var self = this;
+            if( self.large_album && layout ){
+                self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Woooha! We are sorting a ton of photos. Give us a minute", 350,150);
+            }
+
+            switch(  self.current_sort  ){
+                case 'recent-asc':
+                    if( !_.isUndefined( callback )){
+                        callback();
+                    }
+                    break;
+                case 'recent-desc':
+                    self._reverse( layout, function(){
+                        self.current_sort = 'recent-asc';
+                        if( !_.isUndefined( callback )){
+                            callback();
+                        }
+                    });
+                    break;
+                default:
+                    self._sort(
+                        function (){ return this.recent_sort_key; },
+                        layout,
+                        function(){
+                            self.current_sort = 'recent-asc';
+                            if( !_.isUndefined( callback )){
+                                callback();
+                            }
+                        });
+                    break;
+            }
+
+        },
+        sort_by_recent_desc: function( layout, callback ){
+            var self = this;
+            if( self.large_album && layout ){
+                self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Yikes! We are sorting a ton of photos. Give us a minute", 350,150);
+            }
+
+            switch(  self.current_sort  ){
+                case 'recent-desc':
+                    if( !_.isUndefined( callback )){
+                        callback();
+                    }
+                    break;
+                case 'recent-asc':
+                    self._reverse( layout, function(){
+                        self.current_sort = 'recent-desc';
+                        if( !_.isUndefined( callback )){
+                            callback();
+                        }
+                    });
+                    break;
+                default:
+                    self._sort_and_reverse(
+                        function (){ return this.recent_sort_key; },
+                        layout,
+                        function(){
+                            self.current_sort = 'recent-desc';
+                            if( !_.isUndefined( callback )){
+                                callback();
+                            }
+                        });
                     break;
             }
         },
@@ -1090,6 +1164,7 @@
             self.photo_array = [self.photo_count];
             self.photo_hash = {};
             for( var i= 0; i < self.photo_count; i++){
+                //id
                 var id_string;
                 if( _.isUndefined( photos[i].id ) ){
                     id_string = 'not-a-photo-'+i;
@@ -1097,12 +1172,21 @@
                 }else{
                     id_string = photos[i].id.toString();
                 }
+
+                // create the recent sort key
+                var recent_sort_key;
+                if( photos[i].created_at == null || photos[i].created_at == ''){
+                    recent_sort_key = '0000-00-00T00:00:00-00:00'+id_string;
+                }else{
+                    recent_sort_key = photos[i].created_at.toString()+id_string;
+                }
+
                 // create the date sort key
                 var date_sort_key;
                 if( photos[i].capture_date == null || photos[i].capture_date == ''){
-                    date_sort_key = '0000-00-00T00:00:00-00:00'+id_string;
+                    date_sort_key = '0000-00-00T00:00:00-00:00'+recent_sort_key;
                 }else{
-                    date_sort_key = photos[i].capture_date.toString()+id_string;
+                    date_sort_key = photos[i].capture_date.toString()+recent_sort_key;
                 }
                 // create the caption sort key
                 var caption_sort_key;
@@ -1116,6 +1200,7 @@
                 self.photo_hash[ id_string ] = photos[i];
                 self.photo_array[i]={
                     id              : id_string ,
+                    recent_sort_key : recent_sort_key,
                     date_sort_key   : date_sort_key,
                     caption_sort_key: caption_sort_key
                 };
