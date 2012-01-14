@@ -95,18 +95,6 @@ zz.album = {};
 
     /*           Private Stuff
      ***************************************************/
-    function change_caption_handler(index, photo, caption) {
-        $.ajax({
-            type: 'POST',
-            dataType: 'json',
-            url: zz.routes.path_prefix + '/photos/' + photo.id + '.json',
-            data: {'photo[caption]': caption, _method: 'put'},
-            error: function(error) {
-            }
-        });
-        return true;
-    }
-
     function render_grid_view(){
         load_photos_json('grid', function(photos) {
 
@@ -175,7 +163,6 @@ zz.album = {};
                                 photos[i].full_screen_url = new_photo.full_screen_url;
                                 photos[i].screen_url = new_photo.screen_url;
                                 photos[i].stamp_url = new_photo.stamp_url;
-                                zz.logger.debug('srcs replaced');
                                 break;
                             }
                         }
@@ -183,7 +170,23 @@ zz.album = {};
                 },
 
                 allowEditCaption: zz.page.current_user_can_edit,
-                onChangeCaption: change_caption_handler
+                onChangeCaption: function (index, photo, caption) {
+                         $.ajax({
+                             type: 'POST',
+                             url: zz.routes.path_prefix + '/photos/' + photo.id + '.json',
+                             data: {'photo[caption]': caption, _method: 'put'},
+                             dataType: 'text',
+                             success: function(){
+                                 for( var i = 0; i< photos.length; i++){
+                                     if( photos[i].id == photo.id ){
+                                         photos[i].caption = caption;
+                                         break;
+                                     }
+                                 }
+                             }
+                         });
+                         return true;
+                     }
             }).data().zz_photogrid;
 
             gridElement.bind('zz_photogridready', function(){
@@ -261,10 +264,28 @@ zz.album = {};
                         ZZAt.track('photo.view', {id: current_photo_id});
                     },
                     context: buy_mode ? 'chooser-picture' : 'album-picture',
-                    allowEditCaption: zz.page.current_user_can_edit, 
-                    onChangeCaption:  change_caption_handler,
-
-                    onDelete: function(index, photo) {
+                    allowEditCaption: zz.page.current_user_can_edit,
+                     onChangeCaption: function (index, photo, caption) {
+                         //console.log('caption change ajax call in picture view');
+                         $.ajax({
+                             type: 'POST',
+                             dataType: 'text',
+                             url: zz.routes.path_prefix + '/photos/' + photo.id + '.json',
+                             data: {'photo[caption]': caption, _method: 'put'},
+                             success: function(){
+                                 //console.log('caption change success, finding photo to update in picture view');
+                                 for( var i = 0; i< photos.length; i++){
+                                     if( photos[i].id == photo.id ){
+                                         photos[i].caption = caption;
+                                         //console.log('caption updated in album.js render picture view');
+                                         break;
+                                     }
+                                 }
+                             }
+                         });
+                         return true;
+                     },
+                     onDelete: function(index, photo) {
                         zz.routes.call_delete_photo(photo.id);
                         for( var i = 0; i< photos.length; i++){
                             if( photos[i].id == photo.id ){
@@ -512,7 +533,26 @@ zz.album = {};
                     },
 
                     allowEditCaption:   zz.page.current_user_can_edit,
-                    onChangeCaption:    change_caption_handler
+                    onChangeCaption: function (index, photo, caption) {
+                        //console.log('caption change ajax call in timeline view');
+                        $.ajax({
+                            type: 'POST',
+                            dataType: 'text',
+                            url: zz.routes.path_prefix + '/photos/' + photo.id + '.json',
+                            data: {'photo[caption]': caption, _method: 'put'},
+                            success: function(){
+                                //console.log('caption change success, finding photo to update in timeline view');
+                                for( var i = 0; i< photos.length; i++){
+                                    if( photos[i].id == photo.id ){
+                                        photos[i].caption = caption;
+                                        //console.log('caption updated in album.js render timeline view');
+                                        break;
+                                    }
+                                }
+                            }
+                        });
+                        return true;
+                    }
                 }).data().zz_photogrid;
 
                 $(element).bind('zz_photogridready', function(){
@@ -670,6 +710,12 @@ zz.album = {};
             zz.buttonset.disable('Working on your sort, please be patient, its a big bunch of photos');
             ZZAt.track('album.'+action+'.click');
             switch( action ){
+                case'sort-recent-up':
+                    grid.sort_by_recent_asc( true, function(){ sort_done('recent-asc')});
+                    break;
+                case'sort-recent-down':
+                    grid.sort_by_recent_desc( true, function(){ sort_done('recent-desc')});
+                    break;
                 case'sort-name-up':
                     grid.sort_by_name_asc( true, function(){ sort_done('name-asc')});
                     break;
@@ -687,9 +733,11 @@ zz.album = {};
         });
 
         switch( zz.local_storage.get_album_sort( zz.page.album_id) ){
-            case 'name-asc': zz.buttonset.init('sort-name-up'); break;
-            case 'name-desc':zz.buttonset.init('sort-name-down'); break;
-            case 'date-desc':zz.buttonset.init('sort-date-down'); break;
+            case 'recent-asc':  zz.buttonset.init('sort-recent-up');   break;
+            case 'recent-desc': zz.buttonset.init('sort-recent-down');  break;
+            case 'name-asc':    zz.buttonset.init('sort-name-up');      break;
+            case 'name-desc':   zz.buttonset.init('sort-name-down');    break;
+            case 'date-desc':   zz.buttonset.init('sort-date-down');    break;
             case 'date-asc':
             default: zz.buttonset.init('sort-date-up'); break;
         }
