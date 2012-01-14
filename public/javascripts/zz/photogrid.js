@@ -152,7 +152,7 @@
                         delete self.photo_hash[photo.id.toString()];
                         self.photo_count--;
                         if (o.showThumbscroller) {
-                            self.thumbscroller.removePhoto( i );
+                            self.thumbscrollerElement.data().zz_thumbtray.removePhoto( i );
                         }
                         return o.onDelete(index, photo);
                     },
@@ -163,7 +163,9 @@
                         photo.caption = caption;
                         self.photo_array[i].caption_sort_key = caption+self.photo_array[i].date_sort_key;
                         self.current_sort = 'none';
-                        return o.onChangeCaption(index, photo, caption);
+                        //console.log('captioni updated in photogrid');
+                        o.onChangeCaption(index, photo, caption);
+                        return true;
                     },
 
                     onClick: function(action) {
@@ -430,6 +432,15 @@
                     if (o.currentPhotoId !== null) {
                         self.scrollToPhoto(o.currentPhotoId, 0, false);
                     }
+
+                    //add bottom scroll padding to display rollover frame
+                    if(!self.options.singlePictureMode){
+                        var top_of_last_row = self.positionForIndex( self.photo_count-1 ).top;
+                        var top = top_of_last_row + 250; // add the height of the rollover frame
+                        var scroll_padding = $('<div class="scroll-padding">&nbsp</div>');
+                        scroll_padding.css({top: top});
+                        el.append(scroll_padding);
+                    }
                     self._trigger('ready');
                 }
             };
@@ -512,6 +523,7 @@
                     }
                 }, 200);
             });
+
             self._trigger('visible');
         },
 
@@ -539,9 +551,7 @@
                 }
 
                 var photo = self._get_photo(index);
-                if( self.options.allowEditCaption ){
-                    photo.ui_photo.resetCaption();
-                }
+
                 self.nextPrevActive = true;
                 self.scrollToPhoto( photo.id, animateDuration, true, function() {
                     self.nextPrevActive = false;
@@ -568,9 +578,6 @@
                 }
 
                 var photo = self._get_photo( index );
-                if( self.options.allowEditCaption ){
-                    photo.ui_photo.resetCaption();
-                }
                 self.nextPrevActive = true;
                 self.scrollToPhoto(photo.id, animateDuration, true, function() {
                     self.nextPrevActive = false;
@@ -684,7 +691,7 @@
                 duration = 0;
             }
 
-            el.find('.scroll-padding').remove();
+            //el.find('.scroll-padding').remove();
 
 
 
@@ -717,18 +724,14 @@
                     last_position = self._layoutPhoto( self._get_photo(k), k, duration, easing, showIfVisible );
                 }
             }
-
-
+            //position bottom padding to allow space for rollover frame
             if(!self.options.singlePictureMode){
                 var top_of_last_row = last_position.top;
-                var top = top_of_last_row + 330; // add the right of the rollover frame
-                var scroll_padding = $('<div class="scroll-padding"></div>');
-                scroll_padding.css({top: top});
-                el.append(scroll_padding);
+                var top = top_of_last_row + 250; // add the height of the rollover frame
+                $('.scroll-padding').css({top: top});
             }
-
         },
-
+        
         _layoutPhoto: function( photo, index, duration, easing, showIfVisible ){
             if (  _.isUndefined( photo.ui_photo ) || _.isUndefined( photo.ui_cell ) ){
                 return;
@@ -736,6 +739,7 @@
 
             // calculate the position for this index
             var position = this.positionForIndex(index);
+
 
             //todo: moght want to check that things have actually changed before setting new properties
             if (duration && duration > 0 ) {
@@ -816,6 +820,12 @@
 
         sort_by: function( sort_method, layout, callback ){
             switch( sort_method ){
+                case'recent-asc':
+                    this.sort_by_recent_asc(layout, callback);
+                    break;
+                case'recent-desc':
+                    this.sort_by_recent_desc(layout, callback);
+                    break;
                 case'name-asc':
                     this.sort_by_name_asc(layout, callback);
                     break;
@@ -828,6 +838,74 @@
                 case'date-asc':
                 default:
                     this.sort_by_date_asc(layout, callback);
+                    break;
+            }
+        },
+
+        sort_by_recent_asc: function( layout, callback ){
+            var self = this;
+            if( self.large_album && layout ){
+                self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Woooha! We are sorting a ton of photos. Give us a minute", 350,150);
+            }
+
+            switch(  self.current_sort  ){
+                case 'recent-asc':
+                    if( !_.isUndefined( callback )){
+                        callback();
+                    }
+                    break;
+                case 'recent-desc':
+                    self._reverse( layout, function(){
+                        self.current_sort = 'recent-asc';
+                        if( !_.isUndefined( callback )){
+                            callback();
+                        }
+                    });
+                    break;
+                default:
+                    self._sort(
+                        function (){ return this.recent_sort_key; },
+                        layout,
+                        function(){
+                            self.current_sort = 'recent-asc';
+                            if( !_.isUndefined( callback )){
+                                callback();
+                            }
+                        });
+                    break;
+            }
+
+        },
+        sort_by_recent_desc: function( layout, callback ){
+            var self = this;
+            if( self.large_album && layout ){
+                self.large_album_dialog = zz.dialog.show_spinner_progress_dialog("Yikes! We are sorting a ton of photos. Give us a minute", 350,150);
+            }
+
+            switch(  self.current_sort  ){
+                case 'recent-desc':
+                    if( !_.isUndefined( callback )){
+                        callback();
+                    }
+                    break;
+                case 'recent-asc':
+                    self._reverse( layout, function(){
+                        self.current_sort = 'recent-desc';
+                        if( !_.isUndefined( callback )){
+                            callback();
+                        }
+                    });
+                    break;
+                default:
+                    self._sort_and_reverse(
+                        function (){ return this.recent_sort_key; },
+                        layout,
+                        function(){
+                            self.current_sort = 'recent-desc';
+                            if( !_.isUndefined( callback )){
+                                callback();
+                            }
+                        });
                     break;
             }
         },
@@ -1044,7 +1122,7 @@
                     return (photo.type != 'blank' ? photo : null);
                 });
 
-                self.thumbscroller = self.thumbscrollerElement.zz_thumbtray({
+                self.thumbscrollerElement.zz_thumbtray({
                     photos: photos,
                     srcAttribute: 'previewSrc',
                     showSelection: false,
@@ -1058,7 +1136,7 @@
                             }
                         }
                     }
-                }).data().zz_thumbtray;
+                });
 
                 el.scroll(function(event) {
                     if (! self.animateScrollActive) {
@@ -1070,7 +1148,7 @@
                         } else {
                             index = Math.floor(el.scrollTop() / o.cellHeight * self.cellsPerRow());
                         }
-                        self.thumbscroller.setSelectedIndex(index);
+                        self.thumbscrollerElement.data().zz_thumbtray.setSelectedIndex(index);
                         nativeScrollActive = false;
                     }
                 });
@@ -1093,6 +1171,7 @@
             self.photo_array = [self.photo_count];
             self.photo_hash = {};
             for( var i= 0; i < self.photo_count; i++){
+                //id
                 var id_string;
                 if( _.isUndefined( photos[i].id ) ){
                     id_string = 'not-a-photo-'+i;
@@ -1100,12 +1179,21 @@
                 }else{
                     id_string = photos[i].id.toString();
                 }
+
+                // create the recent sort key
+                var recent_sort_key;
+                if( photos[i].created_at == null || photos[i].created_at == ''){
+                    recent_sort_key = '0000-00-00T00:00:00-00:00'+id_string;
+                }else{
+                    recent_sort_key = photos[i].created_at.toString()+id_string;
+                }
+
                 // create the date sort key
                 var date_sort_key;
                 if( photos[i].capture_date == null || photos[i].capture_date == ''){
-                    date_sort_key = '0000-00-00T00:00:00-00:00'+id_string;
+                    date_sort_key = '0000-00-00T00:00:00-00:00'+recent_sort_key;
                 }else{
-                    date_sort_key = photos[i].capture_date.toString()+id_string;
+                    date_sort_key = photos[i].capture_date.toString()+recent_sort_key;
                 }
                 // create the caption sort key
                 var caption_sort_key;
@@ -1119,6 +1207,7 @@
                 self.photo_hash[ id_string ] = photos[i];
                 self.photo_array[i]={
                     id              : id_string ,
+                    recent_sort_key : recent_sort_key,
                     date_sort_key   : date_sort_key,
                     caption_sort_key: caption_sort_key
                 };
