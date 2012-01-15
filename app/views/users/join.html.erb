@@ -37,7 +37,6 @@
       <a id= "back-to-signin-button" href="/signin" class="gray-button"><span>Sign In</span></a>
       <div id="header-hairline"></div>
 
-	<!-- TODO: change id to class -->
       <form id="join-form" method="post" enctype="multipart/form-data" action=<%=create_user_url%>>
         <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
         <% if flash[:error] %>

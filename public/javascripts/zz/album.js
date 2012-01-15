@@ -363,12 +363,20 @@ zz.album = {};
                 }, 100);
             });
 
+            // register callback before calling comments
+            zz.comments.on_open_comments(function(){
+            	render();
+            });
+            
+            zz.comments.on_close_comments(function(){
+            	render();
+            });
+            
             // setup buy drawer and comments drawer
             zz.buy.on_change_buy_mode(function(){
                   render();
              });
             zz.comments.init_toolbar_button_and_drawer(current_photo_id, function(){
-                render();
             });
 
 
