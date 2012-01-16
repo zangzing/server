@@ -243,7 +243,7 @@ zz.album = {};
                 // render is called on resize so don't need to call zz.login.show_join_banner()
                 var top_padding = 0;
                 if(zz.login.is_banner_visible){
-                	top_padding = zz.login.join_spacer_height;
+                	top_padding += zz.login.join_spacer_height;
                 }
 
                  var grid;
@@ -378,9 +378,6 @@ zz.album = {};
              });
             zz.comments.init_toolbar_button_and_drawer(current_photo_id, function(){
             });
-
-
-
 
             //info-button
             $('#more-button').click( function(){
