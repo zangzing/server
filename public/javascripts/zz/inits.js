@@ -25,7 +25,7 @@ var zz = zz || {};
      template: function() {
 
     	if(should_show_banner()) { 
-    		var is_photos_page = zz.page.album_id != null; // Use this as a hack to determine whether there is .photogrid 		
+    		var is_photos_page = (zz.page.album_id != null) && (zz.page.rails_controller_name == 'photos'); // Use this as a hack to determine whether there will be .photogrid 		
             
     		$('#header').after('<div id="header-join-banner"></div>');
             
