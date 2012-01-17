@@ -9,6 +9,9 @@ class CreateTrackedLinkTableAndInvitationsTable < ActiveRecord::Migration
       t.column :user_id, :bigint, :null => true
       t.integer :visit_count, :default => 0
       t.integer :join_count, :default => 0
+      t.datetime :created_at
+      t.datetime :updated_at
+
     end
     add_index :tracked_links, :user_id
     add_index :tracked_links, :tracking_token, :unique => true
@@ -19,6 +22,8 @@ class CreateTrackedLinkTableAndInvitationsTable < ActiveRecord::Migration
       t.column :tracked_link_id, :bigint, :null => true
       t.string :email, :default => false
       t.string :status, :default => false
+      t.datetime :created_at
+      t.datetime :updated_at
     end
     add_index :invitations, :user_id
     add_index :invitations, :invited_user_id

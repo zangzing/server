@@ -128,19 +128,20 @@
 
       </div>
       <div class="indented content">
-        <table id="invitations-accounts-table">
           <%
             @user.sent_invitations.each do |invitation|
           %>
-              <tr>
-                <td><%= "#{invitation.tracked_link.shared_to_address}" %></td>
-                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td><%= "#{invitation.status}" %></td>
-              </tr>
+
+              <% if invitation.status == Invitation::STATUS_PENDING %>
+                  <div class="invitation">
+                    <div class="email-address"><%= "#{invitation.tracked_link.shared_to_address}" %> was invited on <%= invitation.created_at.strftime("%B %d, %Y")%></div>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><%= "#{invitation.status}" %></td>
+                  </div>
+              <% end %>
           <%
              end
           %>
-        </table>
       </div>
     </li>
 
