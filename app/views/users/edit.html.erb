@@ -94,7 +94,8 @@
 
         %>
 
-
+        <div class='bold-text'>ZangZing10</div>
+        <p>Premium account billing starts June 30. <a href="">Learn more</a> or <a href="<%=invite_friends_url%>">invite friends</a> and you both get free space.</p>
 
         <div class='storage-meter'>
             <div class='used' style='width:<%= percent_used %>%'></div>
@@ -108,15 +109,23 @@
 
     <li class="item tab add">
       <div class="header tab-centered">
-        Invitations
+        Invite Status
       </div>
 
       <div class="description">
-        <% if @user.received_invitations %>
-        You received 250MB for joining from an invitation<br><br>
+        <%
+           if @user.bonus_storage
+               # do a little math to make 0.25GB show as 250MB rather than 256MB
+               usable_bonus_storage_mb = number_with_precision((@user.usable_bonus_storage * 1000 / 1024), :precision => 2, :strip_insignificant_zeros => true)
+
+        %>
+        <div class='bold-text'>Congrats! You’ve earned <%= usable_bonus_storage_mb %> MB of free space.</div>
         <% end %>
 
-        Receive 250GB of space for each of your friends that you invite (up to a total of 16BG)
+        <p>For every friend who joins ZangZing, you and your friend each get 250MB of free space up to 8GB.</p>
+        <br>
+        <a href="<%=invite_friends_url%>">Invite friends to ZangZing</a>
+
       </div>
       <div class="indented content">
         <table id="invitations-accounts-table">
@@ -142,9 +151,9 @@
         Linked Accounts
       </div>
       <div class="description">
-        Linking ZangZing to third party accounts enables you to upload photos from other websites
-        and import contacts. By linking to Twitter or Facebook, you can choose to post albums,
-        photos, or comments to these websites.
+        Linking ZangZing to third party accounts enables you to upload photos from other websites and import contacts.
+        By linking to Twitter or Facebook, you can choose to post albums, photos, or comments to these websites.
+        We promise to never post or send messages unless you have requested it.
       </div>
       <div class="indented content">
         <table id="linked-accounts-table">

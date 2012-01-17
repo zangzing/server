@@ -1,7 +1,7 @@
       <tr class="on_off">
         <th>
           <%=f.label :want_invites_email, 'Invitations'%><br>
-          <div class="sub-th">e.g.  when someone shares an album with you or invites you to contribute photos into an album</div>
+          <div class="sub-th">When someone shares or invites you to contribute photos into an album</div>
         </th>
         <td>
           <%=f.check_box :want_invites_email%>
@@ -11,7 +11,7 @@
       <tr class="on_off">
         <th>
           <%=f.label :want_social_email, 'Social'%><br>
-          <div class="sub-th">e.g. when new photos have been added or when someone "likes you", "likes your album", or "follows you"</div>
+          <div class="sub-th">When new photos have been added, someone likes you or your album, or follows you</div>
         </th>
         <td>
           <%=f.check_box :want_social_email%>
@@ -21,7 +21,7 @@
       <tr class="on_off">
         <th>
           <%=f.label :want_status_email, 'Confirmations'%><br>
-          <div class="sub-th">e.g. when your photos have been successfully uploaded to an album</div>
+          <div class="sub-th">When your photos have been uploaded to an album</div>
         </th>
         <td >
           <%=f.check_box :want_status_email%>
@@ -31,7 +31,7 @@
       <tr class="on_off">
         <th>
           <%=f.label :want_news_email, 'ZangZing News' %><br>
-          <div class="sub-th">e.g. new feature announcements or updates on ZangZing</div>
+          <div class="sub-th">New feature announcements or updates on ZangZing</div>
         </th>
         <td>
           <%=f.check_box :want_news_email%>
@@ -40,7 +40,7 @@
       <tr class="on_off">
         <th>
           <%=f.label :want_marketing_email, 'Marketing Messages'  %> <br>
-          <div class="sub-th">e.g. seasonal sales or offers from partners</div>
+          <div class="sub-th">Infrequent promotions or offers</div>
         </th>
         <td >
           <%=f.check_box :want_marketing_email%>
@@ -51,16 +51,19 @@
     <% content_for :page_stylesheet  do %>
         <style type="text/css">
             th {
-                width: 400px;
+                width: 560px;
                 font-size: 14px;
-                color: #888888;
+                color: #333;
                 text-align: left;
                 padding: 10px 0px;
-                vertical-align: top; }
+                vertical-align: top;
+                font-weight: bold;
+            }
             .sub-th{
-                font-size: 12px;
-                color: #888;
-                margin:  0 10px;
+                font-size: 14px;
+                color: #333;
+                /*margin:  0 0px;*/
+                font-weight: normal
             }
             #save-button{
                 margin: 10px 0;

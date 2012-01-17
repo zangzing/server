@@ -10,9 +10,15 @@
 }
 
 #account-settings .content{
-    color:#888888;
+    color:#333;
     font-size: 14px;
 }
+
+#account-settings .content label{
+    font-weight: bold;
+}
+
+
 
 #account-settings .field_with_errors{
     display: inline-block;
@@ -119,6 +125,7 @@
     -moz-border-radius: 3px;
     border-radius: 3px;
     border: 1px solid #CCC;
+    margin-top: 20px;
 }
 
 #account-settings .storage-meter .used{
@@ -145,4 +152,11 @@
     padding-top: 4px;
 }
 
+
+
+#account-settings .bold-text{
+   font-size: 14px;
+   font-weight: bold;
+   color:#000;
+}
 
