@@ -100,17 +100,15 @@ var zz = zz || {};
 	
     	zz.login.add_validation( $('#header-join-banner .join-form') );
     	
-    	$('#header-join-banner .join-form').submit(function(){
-    		ZZAt.track("join.toolbarbanner.click");
-    	});
-    	
     	$('#header-join-banner .join-form .submit-button').click(function(){
     		$('#header-join-banner .join-form').submit();
+    		ZZAt.track("join.toolbarbanner.click");
         });
 
         $('#header-join-banner .join-form').bind('keypress', function(e){
             if ( e.keyCode == 13 ) {
             	$("#header-join-banner .join-form").submit();
+            	ZZAt.track("join.toolbarbanner.click");
             }
         });
         
