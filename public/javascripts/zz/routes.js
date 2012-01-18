@@ -80,6 +80,9 @@ var zz = zz || {};
                 else{
                     document.location.href = '/signin';
                 }
+            },
+            create_user_url: function(){
+            	return zz.routes.path_prefix + '/users';
             }
         },
 

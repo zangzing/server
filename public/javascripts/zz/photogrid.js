@@ -403,26 +403,28 @@
 
                         //capture keys
                         $(document.documentElement).keydown(function(event) {
-                            switch( event.keyCode ){
-                                case 40: //down
-                                    self.nextPicture();
-                                    break;
-                                case 39:  //right
-                                    self.nextPicture();
-                                    break;
-                                case 34: //page down
-                                    self.nextPicture();
-                                    break;
-                                case 38: //up
-                                    self.previousPicture();
-                                    break;
-                                case 37: //left
-                                    self.previousPicture();
-                                    break;
-                                case 33: //page up
-                                    self.previousPicture();
-                                    break;
-                            }
+                        	if (event.target.nodeName.toLowerCase() !== 'input' && event.target.nodeName.toLowerCase() !== 'textarea'){
+	                            switch( event.keyCode ){
+	                                case 40: //down
+	                                    self.nextPicture();
+	                                    break;
+	                                case 39:  //right
+	                                    self.nextPicture();
+	                                    break;
+	                                case 34: //page down
+	                                    self.nextPicture();
+	                                    break;
+	                                case 38: //up
+	                                    self.previousPicture();
+	                                    break;
+	                                case 37: //left
+	                                    self.previousPicture();
+	                                    break;
+	                                case 33: //page up
+	                                    self.previousPicture();
+	                                    break;
+	                            }
+                        	}
                         });
                     }
 
@@ -487,10 +489,15 @@
                         resizeTimer = null;
                     }
                     resizeTimer = setTimeout(function() {
+                    	
+                    	
                         self.width = parseInt(el.css('width'));
                         self.height = parseInt(el.css('height'));
                         self.offset = el.offset();
                         self._initPosForIndex();
+                        
+                    	self.padding_top = zz.album.get_top_padding();
+                        
                         self.resetLayout(0,0, true); //no duration, no easing, yes loadIfVisible
                     }, 100);
                 });
@@ -797,7 +804,7 @@
 
             if (self.options.singlePictureMode) {
                 return {
-                    top: 0,
+                    top: self.padding_top,
                     left: (index * self.cell_width)
                 };
             } else {
