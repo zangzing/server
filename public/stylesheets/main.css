@@ -138,7 +138,7 @@ div#container {
 	padding: 6px 10px;
 }
 
-#header-join-banner .picture div {
+#header-join-banner .picture .container {
 	box-shadow: 0px 0px 3px #aaa;
     -webkit-box-shadow: 0px 0px 3px #aaa;
     -moz-box-shadow: 0px 0px 3px #aaa;
@@ -148,10 +148,15 @@ div#container {
     position: relative;
 }
 
-#header-join-banner .picture div img.profile-photo {
+#header-join-banner .picture .container .mask {
+	overflow:hidden;
 	height: 48px;
 	width: 48px;
 	border: 2px solid white;	
+}
+
+#header-join-banner .picture div img.profile-photo {
+	position:relative;
 }
 
 #header-join-banner .picture div img.bottom-shadow{

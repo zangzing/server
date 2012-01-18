@@ -2,7 +2,7 @@
 zz.page.is_user_homepage         =  <%= current_user?( @user )%>;
         zz.page.displayed_user_id        = '<%= @user.id %>';
         zz.page.displayed_user_base_url  = '<%= escape_javascript user_path( @user )%>';
-        zz.page.displayed_user_name		 = '<%= escape_javascript @user.name.strip %>';
+        zz.page.displayed_user_name		 = '<%= truncate(@user.name.strip, :length=>22) %>';
         zz.page.displayed_user_pic_url   = '<%= escape_javascript @user.profile_photo_url %>';
         zz.page.displayed_user_possessive= '<%= escape_javascript @user.posessive_short_name%>';
 <% end %>

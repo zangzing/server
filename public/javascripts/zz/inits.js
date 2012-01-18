@@ -87,6 +87,13 @@ var zz = zz || {};
     // Private -------------------------------------------------------------------------------------------
 
     function setup_banner(){
+    	
+    	zz.image_utils.pre_load_image(join_picture(), function(image) {
+    		var css = zz.image_utils.scale_center_and_crop(image, {width: 48, height: 48});
+    		$("#header-join-banner .picture div img.profile-photo").css(css);
+    	});
+    	
+    	
     	$('.join-form li label').inFieldLabels();
     	
     	$('#header-join-banner .join-form').first().attr("action", 'https://'+document.domain+zz.routes.users.create_user_url());
@@ -126,7 +133,7 @@ var zz = zz || {};
     
     // This goes inside of #header-join-banner
     function banner_html(){
-		    html = '<div class="picture"><div><img src="'+ join_picture() +'" class="profile-photo"/><img class="bottom-shadow" src="/images/photo/bottom-full.png"/></div></div>' +
+		    html = '<div class="picture"><div class="container"><div class="mask"><img src="'+ join_picture() +'" class="profile-photo"/></div><img class="bottom-shadow" src="/images/photo/bottom-full.png"/></div></div>' +
 		    		'<div class="header">'+join_message()+'</div>' +    
 		            '<div class="feature">' +
 		                '<form method="post" class="join-form" enctype="multipart/form-data" action="foo">' +
