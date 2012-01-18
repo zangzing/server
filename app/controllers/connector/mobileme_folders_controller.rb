@@ -7,15 +7,27 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
       api.get_albums_list
     end
     folders = []
-    album_list.each do |album|
-      album_id = album.path.match(/\d+$/)[0]
-      folders << {
-        :name => album.title,
-        :type => 'folder',
-        :id  => album_id,
-        :open_url => mobileme_photos_path(:mm_album_id => album_id, :action => :photos, :format => :json),
-        :add_url  => mobileme_photos_path(:mm_album_id => album_id, :action => :import_album, :format => :json)
-      }
+    album_list.each do |entry|
+      album_id = entry.path.match(/\d+$/)[0]
+      folders << if entry['type'] =~ /Album$/
+        {
+          :name => entry.title,
+          :type => 'folder',
+          :id  => album_id,
+          :open_url => mobileme_photos_path(:mm_album_id => album_id, :action => :photos, :format => :json),
+          :add_url  => mobileme_photos_path(:mm_album_id => album_id, :action => :import_album, :format => :json)
+        }
+      else # For videos and, possibly, photos in the gallery root
+        {
+          :name => entry.title,
+          :id   => entry.guid,
+          :type => entry['type'].downcase,
+          :thumb_url => password_protected?(album_contents) ? PWD_PROTECTED_STATIC_ICON : get_photo_url(entry, :thumb),
+          :screen_url => password_protected?(album_contents) ? PWD_PROTECTED_STATIC_ICON : get_photo_url(entry, :screen),
+          :add_url => mobileme_photos_path(:mm_album_id => 'root', :action => :import_photo, :photo_id => entry.guid, :format => :json),
+          :source_guid => make_source_guid(entry)
+        }
+      end
     end
     JSON.fast_generate(folders)
   end
@@ -26,11 +38,11 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
     end
     photos = []
     album_contents.each do |photo_data|
-      next if photo_data['type']!='Photo'
+      next if photo_data['type']=='Album'
       photo = {
         :name => photo_data.title,
         :id   => photo_data.guid,
-        :type => 'photo',
+        :type => photo_data['type'].downcase,
         :thumb_url => password_protected?(album_contents) ? PWD_PROTECTED_STATIC_ICON : get_photo_url(photo_data, :thumb),
         :screen_url => password_protected?(album_contents) ? PWD_PROTECTED_STATIC_ICON : get_photo_url(photo_data, :screen),
         :add_url => mobileme_photos_path(:mm_album_id => params[:mm_album_id], :action => :import_photo, :photo_id => photo_data.guid, :format => :json),
@@ -49,7 +61,7 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     album_contents.each do |photo_data|
-      next if photo_data['type']!='Photo'
+      next if photo_data['type']=='Album'
       photo = Photo.new_for_batch(current_batch, {
               :id => Photo.get_next_id,
               :caption => photo_data.title,
@@ -108,7 +120,13 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
             :source => 'mobileme'
     )
 
-    ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(photo_data, :full, password_protected?(album_contents)), {:headers_making_method => 'Connector::MobilemeController.get_fresh_headers', :url_making_method => 'Connector::MobilemeController.get_downloadable_photo_url'})
+    options = {:headers_making_method => 'Connector::MobilemeController.get_fresh_headers', :url_making_method => 'Connector::MobilemeController.get_downloadable_photo_url'}
+    url = get_photo_url(photo_data, :full, password_protected?(album_contents))
+    ZZ::Async::GeneralImport.enqueue( photo.id, url.is_a?(Hash) ? url[:image] : url, options)
+    if url.is_a?(Hash) # Enqueue video import here
+      ZZ::Async::GeneralImport.enqueue( photo.id, url[:original_video], options.merge(:video => 'original')) unless url[:original_video].blank?
+      ZZ::Async::GeneralImport.enqueue( photo.id, url[:preview_video], options.merge(:video => 'preview')) unless url[:preview_video].blank?
+    end
 
     Photo.to_json_lite(photo)
   end

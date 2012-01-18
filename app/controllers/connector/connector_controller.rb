@@ -87,7 +87,11 @@ class Connector::ConnectorController < ApplicationController
 
       # must send after all saved
       photos.each do |photo|
-        ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url, options )
+        ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url.is_a?(Hash) ? photo.temp_url[:image] : photo.temp_url, options)
+        if photo.temp_url.is_a?(Hash) # Enqueue video import here
+          ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url[:original_video], options.merge(:video => 'original')) unless photo.temp_url[:original_video].blank?
+          ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url[:preview_video], options.merge(:video => 'preview')) unless photo.temp_url[:preview_video].blank?
+        end
       end
 
       Photo.to_json_lite(photos)

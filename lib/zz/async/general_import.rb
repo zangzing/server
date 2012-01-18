@@ -62,7 +62,13 @@ module ZZ
 
             # now, import the file from remote site...
             file_path = RemoteFile.read_remote_file(direct_image_url, PhotoGenHelper.photo_upload_dir, headers)
-            photo.file_to_upload = file_path
+            if options['video']='original'
+              photo.video_file_original = file_path
+            elsif options['video']='preview'
+              photo.video_file_preview = file_path
+            else
+              photo.file_to_upload = file_path
+            end
             photo.import_context = nil # since we succeeded, we can get ditch the context info
             photo.save
           end

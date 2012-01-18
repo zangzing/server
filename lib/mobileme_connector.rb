@@ -57,15 +57,11 @@ class MobilemeConnector
   end
 
   def get_albums_list(options = {})
-    request(:get, API_ENDPOINT % [@default_username], :depth => 1).reject do |e|
-      e['type'] == 'Movie'
-    end
+    request(:get, API_ENDPOINT % [@default_username], :depth => 1)
   end
 
   def get_album_contents(album_id, options = {})
-    request(:get, "#{API_ENDPOINT % [@default_username]}/#{album_id}", :depth => 'album').reject do |e|
-      e['type'] == 'Movie'
-    end
+    request(:get, "#{API_ENDPOINT % [@default_username]}/#{album_id}", :depth => 'album')
   end
 
   def cookies_as_string(cookie_hash = nil)

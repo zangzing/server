@@ -54,7 +54,7 @@ class Photo < ActiveRecord::Base
 
   # this is just a placeholder used by the connectors to track some extra state
   # now that we do batch operations
-  attr_accessor :temp_url, :inserting_for_batch, :temp_file_placeholder, :s3_upload_options
+  attr_accessor :temp_url, :inserting_for_batch, :temp_file_placeholder, :s3_upload_options, :video_file_original, :video_file_preview
 
   has_one :photo_info, :dependent => :destroy
   belongs_to :album, :touch => :photos_last_updated_at, :counter_cache => true

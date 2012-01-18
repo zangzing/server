@@ -24,3 +24,4 @@ logs/*.log
 spec/support/db_init/*.seedbackup
 .project
 .settings/*
+config/duhast_config.zip

@@ -107,7 +107,11 @@ protected
           full_url = convert_to_public_url(full_url)
         end
 
-        return full_url
+        if photo_info['type']=='Video'
+          return {:image => full_url, :original_video => photo_info.largeMovieUrl || photo_info.videoUrl, :preview_video => photo_info.refMovieUrl}
+        else
+          return full_url
+        end
 
       else
         raise "invalid size param: #{size}"
