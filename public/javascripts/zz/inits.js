@@ -213,16 +213,7 @@ var zz = zz || {};
 		$("#header-join-banner").removeClass("none");
 		$(".join-banner-spacer").removeClass("none");
 		zz.login.is_banner_visible = true;
-		
-		// Only track the first time you see the banner.
-		if($.cookie("shown_join_banner") == null) {
-            //create cookie that expires in 1 hour or when user quits browser
-            var expires = new Date();
-            expires.setTime(expires.getTime() + 60 * 60 * 1000);
-            jQuery.cookie('shown_join_banner', 'true', {expires: expires});
-
-			ZZAt.track("join.toolbarbanner.show");
-		}
+		ZZAt.track("join.toolbarbanner.show");
     }
     
     function check_show_banner(){
