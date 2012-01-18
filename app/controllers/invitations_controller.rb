@@ -1,5 +1,11 @@
 class InvitationsController < ApplicationController
 
+  def send_reminder
+    return unless require_user
+    Invitation.send_reminder(params[:invitation_id])
+    render :json=>JSON.fast_generate({})
+  end
+
   def invite_friends
     return unless require_user
 

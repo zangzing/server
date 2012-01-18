@@ -18,6 +18,23 @@ class Invitation < ActiveRecord::Base
 
   end
 
+  def self.send_reminder(invitation_id)
+    # todo: refactor this -- same as code above
+    invitation = Invitation.find_by_id(invitation_id)
+
+    if invitation.status != Invitation::STATUS_PENDING
+      raise "Sorry, you can't send a reminder for a completed invitation."
+    end
+
+    invitation_url = "#{get_invitation_url()}?ref=#{invitation.tracked_link.tracking_token}"
+
+    from_user = invitation.user
+    to_address = invitation.tracked_link.shared_to_address
+
+    ZZ::Async::Email.enqueue(:invite_to_join, from_user.id, to_address, invitation_url)
+  end
+
+
 
   def self.create_invitation_for_email(from_user, to_address)
     tracked_link = TrackedLink.create_tracked_link(from_user, get_invitation_url, TrackedLink::TYPE_INVITATION, TrackedLink::SHARED_TO_EMAIL, shared_to_address=to_address)
@@ -29,6 +46,7 @@ class Invitation < ActiveRecord::Base
 
     return invitation
   end
+
 
   def self.get_invitation_link_for_facebook(from_user)
     tracked_link = TrackedLink.create_tracked_link(from_user, get_invitation_url, TrackedLink::TYPE_INVITATION, TrackedLink::SHARED_TO_FACEBOOK)

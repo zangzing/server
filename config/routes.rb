@@ -33,6 +33,7 @@ Server::Application.routes.draw do
     get    '/invitations/send_to_facebook' => 'invitations#send_to_facebook'  , :as=>'send_invitations_to_facebook'
     get    '/invitations/send_to_twitter' => 'invitations#send_to_twitter'   , :as=>'send_invitations_to_twitter'
     post   '/invitations/send_to_email' => 'invitations#send_to_email'     , :as=>'send_invitations_to_email'
+    post   '/invitations/send_reminder' => 'invitations#send_reminder'     , :as=>'send_invitation_reminder'
 
     #users
     get    '/users/new'                 => 'users#new',               :as => :new_user

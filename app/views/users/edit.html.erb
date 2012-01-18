@@ -136,7 +136,7 @@
                   <div class="invitation">
                     <div class="email-address"><%= "#{invitation.tracked_link.shared_to_address}" %> was invited on <%= invitation.created_at.strftime("%B %d, %Y")%></div>
                     <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-                    <div><a href="#" class='send-reminder'>Send reminder invitation</a></div>
+                    <div><a href="#" class='send-reminder' data-invitation-id="<%=invitation.id%>">Send reminder invitation</a></div>
                   </div>
               <% end %>
           <%
@@ -324,6 +324,18 @@
                 upload_photos();
             });
 
+
+
+            // invitations
+            $('a.send-reminder').click(function(){
+                var element = $(this);
+                var invitation_id = element.attr('data-invitation-id');
+                var dialog = zz.dialog.show_progress_dialog("Sending reminder...");
+                zz.routes.invitations.send_reminder(invitation_id, function(){
+                    dialog.close();
+                    element.fadeOut('fast');
+                });
+            });
 
 
 

@@ -26,6 +26,22 @@ describe Invitation do
     end
   end
 
+  describe "#send_reminder" do
+    it "should reminder email" do
+      resque_jobs(resque_filter) do
+
+        user = Factory.create(:user)
+        invitation = Invitation.create_invitation_for_email(user, 'test@test.zangzing.com')
+        Invitation.send_reminder(invitation.id)
+
+        ActionMailer::Base.deliveries.length.should == 1
+
+      end
+    end
+  end
+
+
+
   describe "#get_invitation_link_for_copy_paste" do
     it "should return correct url" do
       resque_jobs(resque_filter) do
