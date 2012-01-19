@@ -42,10 +42,6 @@ class TrackedLink < ActiveRecord::Base
   def self.handle_join(user, tracking_token)
     tracked_link = TrackedLink.find_by_tracking_token(tracking_token)
     TrackedLink.increment_counter(:join_count, tracked_link.id)
-
-    if tracked_link.link_type == TrackedLink::TYPE_INVITATION
-      Invitation.handle_join_from_invitation(user, tracking_token)
-    end
   end
 
 

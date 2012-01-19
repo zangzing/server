@@ -67,8 +67,13 @@
 
                 var progress_dialog = zz.dialog.show_spinner_progress_dialog('Sending ' + email_addresses.length + ' invitation#{plural}...'.replace('#{plural}', plural));
 
-                zz.routes.invitations.send_by_email(email_addresses, function(){
-                    var finished_dialog = zz.dialog.show_spinner_progress_dialog('Invitation#{plural} sent.'.replace('#{plural}', plural));
+                zz.routes.invitations.send_by_email(email_addresses, function(json){
+                    var message = 'Invitation#{plural} sent.'.replace('#{plural}', plural);
+                    _.each(json.already_joined, function(email){
+                        message += "<br>" + email + " is already a ZangZing user."
+                    });
+
+                    var finished_dialog = zz.dialog.show_spinner_progress_dialog(message);
                     progress_dialog.close();
 
                     setTimeout(function(){

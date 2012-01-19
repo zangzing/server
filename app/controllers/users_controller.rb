@@ -125,6 +125,9 @@ class UsersController < ApplicationController
           TrackedLink.handle_join(@new_user, current_tracking_token)
         end
 
+        # process any other invitations tied to this email address
+        Invitation.process_invitations_for_new_user(@new_user, current_tracking_token)
+
         return
       end
     else

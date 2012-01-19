@@ -49,6 +49,25 @@ describe InvitationsController do
         ActionMailer::Base.deliveries.length.should == 2
       end
     end
+
+    it "should reject emails that belong to existing zz users" do
+      resque_jobs(resque_filter) do
+        user_1 = Factory.create(:user, :email => 'test1@test.zangzing.com')
+        user_2 = Factory.create(:user, :email => 'test2@test.zangzing.com')
+
+        xhr :post, :send_to_email, {:emails => [user_1.email, user_2.email, 'test3@test.zangzing.com']}
+
+        response.status.should be(200)
+
+        # should reject 2 email addresses because they already belong to users
+        body = JSON.parse(response.body)
+        body['already_joined'].length.should == 2
+
+        # should send email to 1 email that is not associated with user
+        ActionMailer::Base.deliveries.length.should == 1
+
+      end
+    end
   end
 
 

@@ -138,6 +138,18 @@
                     <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                     <div><a href="#" class='send-reminder' data-invitation-id="<%=invitation.id%>">Send reminder invitation</a></div>
                   </div>
+
+              <% elsif invitation.status == Invitation::STATUS_COMPLETE %>
+                <div class="invitation">
+                  <div class="email-address"><%= "#{invitation.tracked_link.shared_to_address}" %> joined on <%= invitation.invited_user.created_at.strftime("%B %d, %Y")%></div>
+                  <div><strong>Hooray!</strong> You both received 250MB of free space.</div>
+                </div>
+
+              <% elsif invitation.status == Invitation::STATUS_COMPLETE_BY_OTHER %>
+                <div class="invitation">
+                  <div class="email-address"><%= "#{invitation.tracked_link.shared_to_address}" %> accepted an invitation from another user%></div>
+                </div>
+
               <% end %>
           <%
              end

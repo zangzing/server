@@ -70,7 +70,7 @@ describe Invitation do
     end
   end
 
-  describe "#handle_join_from_invitation" do
+  describe "#process_invitations_for_new_user" do
     it "should create new completed invitation and update user bonus storage for copy/paste invitation" do
       resque_jobs(resque_filter) do
         from_user = Factory.create(:user)
@@ -82,7 +82,7 @@ describe Invitation do
 
         tracking_token = params[:ref]
 
-        Invitation.handle_join_from_invitation(to_user, tracking_token)
+        Invitation.process_invitations_for_new_user(to_user, tracking_token)
 
         from_user.sent_invitations.length.should == 1
         to_user.received_invitations.length.should == 1
@@ -96,7 +96,28 @@ describe Invitation do
         User.find(to_user.id).bonus_storage.should == User::BONUS_STORAGE_MB_PER_INVITE
 
 
-      end
+       end
     end
+
+    it "when no tracking token, it should find last invitation by email and invalidate the rest" do
+      to_email = 'test@test.zangzing.com'
+      Invitation.create_invitation_for_email(Factory.create(:user), to_email)
+      Invitation.create_invitation_for_email(Factory.create(:user), to_email)
+      Invitation.create_invitation_for_email(Factory.create(:user), to_email)
+      Invitation.create_invitation_for_email(Factory.create(:user), to_email)
+
+      new_user = Factory.create(:user, :email => to_email)
+
+      Invitation.process_invitations_for_new_user(new_user, nil)
+
+      invitations = Invitation.find(:all, :conditions=>{:email=>to_email})
+
+      invitations[0].status.should == Invitation::STATUS_COMPLETE_BY_OTHER
+      invitations[1].status.should == Invitation::STATUS_COMPLETE_BY_OTHER
+      invitations[2].status.should == Invitation::STATUS_COMPLETE_BY_OTHER
+      invitations[3].status.should == Invitation::STATUS_COMPLETE
+
+    end
+
   end
 end

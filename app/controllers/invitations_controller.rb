@@ -40,11 +40,17 @@ class InvitationsController < ApplicationController
 
     emails, errors = ZZ::EmailValidator.validate_email_list(params[:emails])
 
+    already_joined_emails = []
+
     emails.each do |email|
-      Invitation.send_invitation_to_email(current_user, email)
+      if User.find_by_email(email)
+        already_joined_emails << email
+      else
+        Invitation.send_invitation_to_email(current_user, email)
+      end
     end
 
-    render :json=>JSON.fast_generate({})
+    render :json=>JSON.fast_generate({:already_joined => already_joined_emails})
   end
 
 

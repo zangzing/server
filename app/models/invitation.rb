@@ -1,3 +1,15 @@
+class InvitedUserAlreadyExists < StandardError
+  def initialize(email)
+    super('User with email already exists')
+    @email = email
+  end
+
+  def email
+    @email
+  end
+
+end
+
 class Invitation < ActiveRecord::Base
   belongs_to :user
   belongs_to :invited_user, :class_name => "User", :foreign_key => "invited_user_id"
@@ -5,17 +17,18 @@ class Invitation < ActiveRecord::Base
   belongs_to :tracked_link
 
   STATUS_COMPLETE = 'complete'
+  STATUS_COMPLETE_BY_OTHER = 'complete-by-other'
   STATUS_PENDING = 'pending'
 
 
   def self.send_invitation_to_email(from_user, to_address)
-
-    invitation = create_invitation_for_email(from_user, to_address)
-
-    invitation_url = "#{get_invitation_url()}?ref=#{invitation.tracked_link.tracking_token}"
-
-    ZZ::Async::Email.enqueue(:invite_to_join, from_user.id, to_address, invitation_url)
-
+    if User.find_by_email(to_address)
+      raise InvitedUserAlreadyExists.new(to_address)
+    else
+      invitation = create_invitation_for_email(from_user, to_address)
+      invitation_url = "#{get_invitation_url()}?ref=#{invitation.tracked_link.tracking_token}"
+      ZZ::Async::Email.enqueue(:invite_to_join, from_user.id, to_address, invitation_url)
+    end
   end
 
   def self.send_reminder(invitation_id)
@@ -42,6 +55,7 @@ class Invitation < ActiveRecord::Base
     invitation.tracked_link = tracked_link
     invitation.user = from_user
     invitation.status = Invitation::STATUS_PENDING
+    invitation.email = to_address
     invitation.save!
 
     return invitation
@@ -63,34 +77,53 @@ class Invitation < ActiveRecord::Base
     return "#{get_invitation_url()}?ref=#{tracked_link.tracking_token}"
   end
 
-  def self.handle_join_from_invitation(new_user, tracking_token)
+
+  # if there is token, then look up invitation and 'complete'
+  # if no token, then look for invitations with matching email and 'complete'
+  # invalidate all other invitations to this email address
+  def self.process_invitations_for_new_user(new_user, tracking_token)
     tracked_link = TrackedLink.find_by_tracking_token(tracking_token)
 
-    # for emailed invitations, we created the invitation record up front.
-    # for the rest, we don't create until a user actually joins
-    if tracked_link.shared_to != TrackedLink::SHARED_TO_EMAIL
-      invitation = Invitation.new
-      invitation.tracked_link = tracked_link
-      invitation.user = tracked_link.user
+    if tracked_link
+      # lookup invitatiob based on tracking token
+
+      # for emailed invitations, we created the invitation record up front.
+      # for the rest, we don't create until a user actually joins
+      if tracked_link.shared_to != TrackedLink::SHARED_TO_EMAIL
+        invitation = Invitation.new
+        invitation.tracked_link = tracked_link
+        invitation.user = tracked_link.user
+      else
+        invitation = Invitation.find_by_tracked_link_id(tracked_link.id)
+      end
     else
-      invitation = Invitation.find_by_tracked_link_id(tracked_link.id)
+
+      # find most recent invitation by email
+      invitation = Invitation.find(:last, :conditions=>{:email=>new_user.email, :status=>Invitation::STATUS_PENDING})
     end
 
-    invitation.status = Invitation::STATUS_COMPLETE
-    invitation.invited_user = new_user
-    invitation.save!
+    if invitation
+      invitation.status = Invitation::STATUS_COMPLETE
+      invitation.invited_user = new_user
+      invitation.save!
+
+      # can the user use any extra storage?
+      can_use_bonus_storage = invitation.user.bonus_storage < User::MAX_BONUS_MB
 
 
-    # can the user use any extra storage?
-    can_use_bonus_storage = invitation.user.bonus_storage < User::MAX_BONUS_MB
+      # give the bonus storage (do it atomically)
+      User.update_counters invitation.user.id, :bonus_storage => User::BONUS_STORAGE_MB_PER_INVITE
+      User.update_counters invitation.invited_user.id, :bonus_storage => User::BONUS_STORAGE_MB_PER_INVITE
+
+      ZZ::Async::Email.enqueue(:joined_from_invite, invitation.id, can_use_bonus_storage)
+    end
 
 
-    # give the bonus storage (do it atomically)
-    User.update_counters invitation.user.id, :bonus_storage => User::BONUS_STORAGE_MB_PER_INVITE
-    User.update_counters invitation.invited_user.id, :bonus_storage => User::BONUS_STORAGE_MB_PER_INVITE
-
-
-    ZZ::Async::Email.enqueue(:joined_from_invite, invitation.id, can_use_bonus_storage)
+    # invalidate any other invitations for this email address
+    Invitation.find(:all, :conditions=>{:email=>new_user.email, :status=>Invitation::STATUS_PENDING}).each do |invalid_invitation|
+      invalid_invitation.status = Invitation::STATUS_COMPLETE_BY_OTHER
+      invalid_invitation.save
+    end
 
 
     return invitation
