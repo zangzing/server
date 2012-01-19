@@ -164,21 +164,21 @@
 /* invitations */
 #account-settings .invitation{
     position: relative;
-    height: 50px;
+    height: 55px;
     width: 700px;
-    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
 
 }
 
 #account-settings .invitation .profile-picture{
     position: absolute;
-    width:30px;
-    height:30px;
+    width:40px;
+    height:40px;
     top:5px;
 }
 
 #account-settings .invitation .details{
     position: absolute;
-    left:40px;
-    top:5px;
+    left:50px;
+    top:10px;
 }
