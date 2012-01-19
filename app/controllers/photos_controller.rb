@@ -348,9 +348,17 @@ class PhotosController < ApplicationController
 
   # returns the  movie view
   # @album is set by before_filter require_album
+  # you can pass sort options as in the photos_json
+  # method to determine sort order which is passed
+  # through and used to form the photos_json url via @sort_param
   def movie
     return unless require_album(true) && require_album_viewer_role
     @photos = @album.photos
+    sort = params[:sort]
+
+    # set up the sort param to be used in the movie view
+    @sort_param = sort.nil? ? nil : "sort=#{sort}"
+
     render 'movie', :layout => false
   end
 
@@ -362,55 +370,31 @@ class PhotosController < ApplicationController
 
 
 
-  # returns a json string of the album photos
-  # @album is set by before_filter require_album
-  def photos_loader
-     gzip_compress = ZangZingConfig.config[:memcached_gzip]
-     compressed = gzip_compress
-     ver = params[:ver]
-     no_cache = ver.nil? || ver == '0'
-     if stale?(:etag => @album) || no_cache
-      cache_version_key = @album.cache_version_key || 0
-
-      comp_flag = gzip_compress ? "Z1" : "Z0"
-      # change the vN parm below anytime you make a change
-      # to the basic cache structure such as adding new
-      # data to the returned info
-      cache_key = "Album.Photos.#{comp_flag}.#{@album.id}.#{cache_version_key}"
-
-      logger.debug 'cache key: ' + cache_key
-      json = CacheWrapper.read(cache_key)
-
-      if(json.nil?)
-        json = Photo.to_json_lite(@album.photos)
-
-        begin
-          #compress the content once before caching: save memory and save nginx from compressing every response
-          json = checked_gzip_compress(json, 'album.cache.corruption', "Key: #{cache_key}, AlbumId: #{@album.id}, UserId: #{@album.user_id}") if gzip_compress
-          CacheWrapper.write(cache_key, json, :expires_in => 72.hours)
-          compressed = gzip_compress
-          logger.debug 'caching photos_json: ' + cache_key
-        rescue Exception => ex
-          # log the message but continue
-          logger.error "Failed to cache: #{cache_key} due to #{ex.message}"
-          compressed = false
-        end
-
-      else
-        logger.debug 'using cached photos_json: ' + cache_key
-      end
-
-      render_cached_json(json, @album.public?, compressed)
-    else
-      logger.debug 'etag match, sending 304'
+  # store the json in compressed form if needed
+  # returns compressed state, json
+  def cache_photos_json(cache_key, json, gzip_compress)
+    compressed = false
+    begin
+      #compress the content once before caching: save memory and save nginx from compressing every response
+      json = checked_gzip_compress(json, 'album.cache.corruption', "Key: #{cache_key}, AlbumId: #{@album.id}, UserId: #{@album.user_id}") if gzip_compress
+      compressed = gzip_compress
+      CacheWrapper.write(cache_key, json, {:expires_in => 72.hours, :log => true})
+    rescue Exception => ex
+      # log the message but continue
+      logger.error "Failed to cache: #{cache_key} due to #{ex.message}"
     end
+    [compressed, json]
   end
 
+  # request the photos for an album
+  #
   def photos_json
     return unless require_album(true) && require_album_viewer_role
     photos_loader
   end
 
+  # request the photos for an album
+  #
   def zz_api_photos
     return unless require_album(true) && require_album_viewer_role
     zz_api_self_render do
@@ -610,6 +594,113 @@ end_time = Time.now
 puts "Time in batch_photo_create with #{photo_count} photos: #{end_time - start_time}"
 
     photos
+  end
+
+  # define the acceptable types of sorts and the field order here
+  def sort_fields_hash
+    name_fields = [:caption, :capture_date, :created_at, :id]
+    date_fields = [:capture_date, :created_at, :id]
+    recent_fields = [:created_at, :id]
+    sort_fields = {
+        'name-asc' => name_fields,
+        'name-desc' => name_fields,
+        'date-asc' => date_fields,
+        'date-desc' => date_fields,
+        'recent-asc' => recent_fields,
+        'recent-desc' => recent_fields,
+    }
+  end
+
+  def sort_fields
+    @@sort_fields ||= sort_fields_hash
+  end
+
+  def sort_fields_keys
+    @@sort_fields_keys ||= sort_fields.keys
+  end
+
+  def validate_sort_param(sort)
+    raise ArgumentError.new("Invalid sort type: #{sort}") unless sort_fields_keys.include?(sort)
+  end
+
+  def sort_photos(photos, sort_type)
+    fields = sort_fields[sort_type]
+    if fields
+      # see if order should be reversed
+      desc = !!sort_type.index('-desc')
+      photos = sort_by_fields(photos, fields, desc, true)
+    end
+    photos
+  end
+
+  # given a json string with photos, parse it, sort it, and store it
+  # returns compressed state and json
+  def sort_and_cache_photos_json(cache_key, json, sort_type, gzip_compress)
+    photos = JSON.parse(json)
+    Hash.recursively_symbolize_graph!(photos)
+    sorted_photos = sort_photos(photos, sort_type)
+    json = JSON.fast_generate(sorted_photos)
+    cache_photos_json(cache_key, json, gzip_compress)
+  end
+
+  # returns a json string of the album photos
+  # @album is set by before_filter require_album
+  #
+  # you can also pass an optional sort param with
+  # the values:
+  # name-desc, name-asc - sorts on (caption, capture_date, creation_date, id)
+  # date-desc, date-asc - sorts on (capture_date, creation_date, id)
+  #
+  def photos_loader
+    gzip_compress = ZangZingConfig.config[:memcached_gzip]
+    compressed = gzip_compress
+    ver = params[:ver]
+
+    cache_version_key = @album.cache_version_key || 0
+
+    comp_flag = gzip_compress ? "Z1" : "Z0"
+    # change the Photo.hash_schema_version method anytime you make a change
+    # to the basic cache structure such as adding new
+    # data to the returned info
+    cache_key = "Album.Photos.#{comp_flag}.#{@album.id}.#{cache_version_key}"
+
+    # if we have a sort key, try to fetch in sorted order directly from the cache first
+    sort_type = params[:sort]
+    if sort_type
+      validate_sort_param(sort_type)
+      sorted_key = "Album.Photos.#{comp_flag}.#{sort_type}.#{@album.id}.#{cache_version_key}"
+      json = CacheWrapper.read(sorted_key, true)
+      if json.nil?
+        # no key with sorted order, try to get the unsorted set
+        json = CacheWrapper.read(cache_key, true)
+        if json
+          # ok, we have a match so decompress, sort and store
+          json = ActiveSupport::Gzip.decompress(json) if gzip_compress
+          compressed, json = sort_and_cache_photos_json(sorted_key, json, sort_type, gzip_compress)
+        else
+          # not found in any form so pull them in from db in hashed form
+          photos = Photo.hash_all_photos(@album.photos)
+          # convert to json for unsorted form
+          json = JSON.fast_generate(photos)
+          # store unsorted form
+          cache_photos_json(cache_key, json, gzip_compress)
+
+          # now sort them and store
+          sorted_photos = sort_photos(photos, sort_type)
+          json = JSON.fast_generate(sorted_photos)
+          compressed, json = cache_photos_json(sorted_key, json, gzip_compress)
+        end
+      end
+    else
+      # not sorted
+      json = CacheWrapper.read(cache_key, true)
+      if(json.nil?)
+        # not found so pull from db and cache
+        json = Photo.to_json_lite(@album.photos)
+        compressed, json = cache_photos_json(cache_key, json, gzip_compress)
+      end
+    end
+    render_cached_json(json, @album.public?, compressed)
   end
 
 end

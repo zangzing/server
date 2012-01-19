@@ -16,7 +16,7 @@ var zz = zz || {};
 
     zz.pubsub.unsubscribe = function(event, callback){
         if(subscriptions[event]){
-            subscriptions[event] = _.without(subscriptions[event], [callback])    
+            subscriptions[event] = _.without(subscriptions[event], [callback]);
         }
     };
 

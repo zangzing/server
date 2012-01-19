@@ -384,7 +384,7 @@ zz.buy = zz.buy || {};
                    '<div class="scrim"></div>' +
                    '<div class="dialog">' +
                    '</div>' +
-                '</div>'
+                '</div>';
     };
 
     var BUY_SCREENS_TEMPLATE = function(){
@@ -516,6 +516,7 @@ zz.buy = zz.buy || {};
         if(!zz.buy.is_buy_mode_active() && zz.session.cart_item_count > 0 && jQuery.cookie('hide_checkout_banner') != 'true'){
 
             $('#checkout-banner').show();
+            zz.login.hide_join_banner();
 
             if(zz.session.cart_item_count == 1){
                 $('#checkout-banner .message').text('You have ' + zz.session.cart_item_count + ' item in your cart.');
@@ -535,6 +536,8 @@ zz.buy = zz.buy || {};
                 $('#checkout-banner').animate({top:-20}, 200);
 
                 ZZAt.track('buy.checkout-banner.close.click');
+                
+                zz.login.show_join_banner();
 
             });
 
@@ -570,6 +573,7 @@ zz.buy = zz.buy || {};
         }
         else{
             $('#checkout-banner').hide();
+            zz.login.show_join_banner();
         }
 
     }
@@ -653,16 +657,17 @@ zz.buy = zz.buy || {};
             }
         });
 
+        var serializable_photos_json = _.map( photos_json, function(photo){
+            return get_serializable_photo_json( photo );
+        });
+
 
         var selected_photos = zz.local_storage.get('zz.buy.selected_photos') || [];
-        selected_photos = selected_photos.concat(photos_json);
+        selected_photos = selected_photos.concat(serializable_photos_json);
 
         zz.local_storage.set('zz.buy.selected_photos', selected_photos);
 
         zz.pubsub.publish(EVENTS.ADD_SELECTED_PHOTO);
-
-
-
     };
 
     zz.buy.add_selected_photo = function(photo_json, element, callback){
@@ -904,7 +909,7 @@ zz.buy = zz.buy || {};
             }
 
             if(has_bad_photos()){
-                alert('One or more photos are not large enough for this product. Please remove the photos or select a different product.')
+                alert('One or more photos are not large enough for this product. Please remove the photos or select a different product.');
                 return;
             }
 
@@ -1075,17 +1080,15 @@ zz.buy = zz.buy || {};
 
     }
 
-    zz.buy.add_all_photos_from_current_album = function(){
-        zz.routes.photos.get_album_photos_json(zz.page.album_id, zz.page.album_cache_version_key, function(photos){
+    zz.buy.add_all_photos = function( photos_json ){
             ZZAt.track('buy.add-all-photos.click');
             var dialog = zz.dialog.show_progress_dialog("Adding photos...");
             _.delay(function(){
-                zz.buy.add_selected_photos(photos);
+                zz.buy.add_selected_photos(photos_json);
                 refresh_selected_photos_list();
                 scroll_to_bottom_of_selected_photos();
                 dialog.close();
             },100);
-        });
     }
 
     function refresh_selected_photos_list(){

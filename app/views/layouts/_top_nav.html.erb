@@ -14,27 +14,19 @@
             </div>
 
             <% if @album.cover %>
-                <% content_for :page_javascript do %>
-                    <script type="text/javascript">
-                        $(document).ready(function(){
+                <% content_for :zz_js_document_ready do %>
                             zz.toolbars.load_album_cover('<%= @album.cover.thumb_url%>');
-                        })
-                    </script>
                 <% end %>
             <% elsif @album.type == 'ProfileAlbum' %>
-                <% content_for :page_javascript do %>
-                    <script type="text/javascript">
-                        $(document).ready(function(){
+                <% content_for :zz_js_document_ready do %>
                             zz.toolbars.load_album_cover('<%= ProfileAlbum.default_profile_small_url %>');
-                        })
-                    </script>
                 <% end %>
             <% end %>
 
 
         <div id='album-name-and-owner'>
           <h2 id="album-header-title" class="ellipsis"><%= truncate((@album.name), :length => 40) %></h2>
-          <h3>by <a href="<%= user_pretty_url @album.user %>"><%="#{@album.user.first_name} #{@album.user.last_name}"%></a></h3>
+          <h3>by <a href="<%= user_pretty_url @album.user %>"><%=truncate("#{@album.user.first_name} #{@album.user.last_name}", :length=>40 )%></a></h3>
           <%if !current_user || current_user!=@album.user # do not show like for self%>
               <div id="owner-follow" class="zzlike zzlike-follow" data-zzid="<%=@album.user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
           <%end%>
@@ -80,7 +72,7 @@
          <%= render :partial => 'users/profile_photo', :locals => { :user => @user }    %>
         </div>
         <div id="user-name">
-            <h2 <%=( !current_user || current_user!=@user ? 'class=with-follow' : '' )%> ><%=truncate( "#{@user.first_name} #{@user.last_name}")%></h2>
+            <h2 <%=( !current_user || current_user!=@user ? 'class=with-follow' : '' )%> ><%=truncate( "#{@user.first_name} #{@user.last_name}", :length=>27)%></h2>
             <%if !current_user || current_user!=@user # do not show like for self%>
                 <div id="owner-follow" class="zzlike zzlike-follow" data-zzid="<%=@user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
             <%end%>

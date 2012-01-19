@@ -13,6 +13,7 @@
     -moz-box-shadow: 0 0 3px #aaa;
     background-color:#fff;
     text-align:center;
+    min-width: 100px;
 }
 
 .ua-ie .picon .stacked-image{

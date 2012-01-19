@@ -135,7 +135,8 @@ zz.toolbars = {
                 'background-color': '#000000',
                 opacity: 0
             }).appendTo('body').animate({opacity: 1}, 500, function() {
-                    document.location.href = zz.page.album_base_url + '/movie?start=' + zz.page.current_photo_index + '&return_to=' + encodeURIComponent(document.location.href);
+                    var sort = zz.local_storage.get_album_sort( zz.page.album_id );
+                    document.location.href = zz.page.album_base_url + '/movie?sort='+sort+'&start=' + zz.page.current_photo_index + '&return_to=' + encodeURIComponent(document.location.href);
                 });
         });
         zz.buy.toggle_visibility_with_buy_mode($('#footer #play-button'));
@@ -456,72 +457,72 @@ zz.toolbars = {
 
 
             var title_edit = function( title ){
-                    var edit = $('<div id="edit-album-title"><input id="album-title-input" class="album-title-input" type="text" name="album_title" ><div class="title-ok-button">OK</div>');
-                    var text_field = edit.find( '#album-title-input');
-                    var okButton =  edit.find('.title-ok-button');
-                    edit.width( title.width()+32);
-                    text_field.width( title.width() );
-                    $('#album-name-and-owner').append( edit );
+                var max_title = 50;
+                var edit = $('<div id="edit-album-title"><input id="album-title-input" class="album-title-input" type="text" name="album_title" ><div class="title-ok-button">OK</div>');
+                var text_field = edit.find( '#album-title-input');
+                var okButton =  edit.find('.title-ok-button');
+                edit.width( title.width()+32);
+                text_field.width( title.width() );
+                $('#album-name-and-owner').append( edit );
 
-                    var commit_title_change = function(evt){
-                        disarm_text_field();
-                        ZZAt.track('topnavbar.albumtitle.click');
+                var commit_title_change = function(evt){
+                    disarm_text_field();
+                    ZZAt.track('topnavbar.albumtitle.click');
 
-                        var new_title =  $.trim( text_field.val() );
-                        if( zz.page.album_name != new_title ){
-                            // send it to the back end
-                            zz.routes.albums.update( zz.page.album_id,{'name': new_title },
-                                function(data){
-                                    zz.page.album_name = new_title;
-                                    edit.remove();
-                                    title.text( new_title ).ellipsis(300);
-                                    title.unbind( 'click' ); //rebind click because ellipsis clears it in ie
-                                    title.click( function(){ title_edit( title ); } );
-                                },
-                                function(xhr){
-                                    zz.dialog.show_flash_dialog(JSON.parse(xhr.responseText).message, function(){arm_text_field();} );
-                                });
+                    var new_title =  $.trim( text_field.val() );
+                    if( zz.page.album_name != new_title && new_title.length <= max_title){
+                        // send it to the back end
+                        zz.routes.albums.update( zz.page.album_id,{'name': new_title },
+                            function(data){
+                                zz.page.album_name = new_title;
+                                edit.remove();
+                                title.text( new_title ).ellipsis(300);
+                                title.unbind( 'click' ); //rebind click because ellipsis clears it in ie
+                                title.click( function(){ title_edit( title ); } );
+                            },
+                            function(xhr){
+                                zz.dialog.show_flash_dialog(JSON.parse(xhr.responseText).message, function(){arm_text_field();} );
+                            });
+                    }else{
+                        edit.remove();
+                    }
+                };
+
+                var arm_text_field = function(){
+                    text_field.val( zz.page.album_name );
+                    okButton.text('OK');
+
+                    okButton.click(commit_title_change);
+                    text_field.blur(commit_title_change);
+                    text_field.keypress(function(event){
+                        var text = $(this).val();
+                        if(text.length > max_title ){
+                            alert("album name cannot exceed "+max_title+" characters");
+                            var new_text = text.substr(0, max_title);
+                            $(this).val(new_text);
+                            $(this).selectRange( max_title,max_title);
                         }else{
-                            edit.remove();
-                        }
-                    };
-
-                    var arm_text_field = function(){
-                        text_field.val( zz.page.album_name );
-                        okButton.text('OK');
-
-                        okButton.click(commit_title_change);
-                        text_field.blur(commit_title_change);
-                        text_field.keypress(function(event){
-                            var keycode = (event.keyCode ? event.keyCode : event.which);
+                            var keycode = (event.key_code ? event.key_code : event.which);
                             if(keycode == 13 || keycode == 9 ){ //enter or tab
                                 commit_title_change( event );
                             }else if( keycode == 27 ){  //escape
                                 edit.remove();
                             }
-                        });
+                        }
+                    });
 
-                        //limit input to 50 chars
-                        text_field.keyup(function(){
-                            var text = $(this).val();
-                            if(text.length > 50 ){
-                                var new_text = text.substr(0, 50);
-                                $(this).val(new_text);
-                                $(this).selectRange( 50,50);
-                            }
-                        });
-                        text_field.select();
-                        text_field.focus();
-                    };
+                    text_field.select();
+                    text_field.focus();
+                };
 
-                    var disarm_text_field = function(){
-                        okButton.unbind('click');
-                        text_field.unbind('blur')
-                            .unbind('keypress')
-                            .unbind('keyup');
-                    };
+                var disarm_text_field = function(){
+                    okButton.unbind('click');
+                    text_field.unbind('blur')
+                        .unbind('keypress')
+                        .unbind('keyup');
+                };
 
-                    arm_text_field();
+                arm_text_field();
             };
         }
     },

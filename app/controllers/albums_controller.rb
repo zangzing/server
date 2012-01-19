@@ -258,7 +258,7 @@ class AlbumsController < ApplicationController
       begin
         fields = filter_params(params, [:name, :privacy, :who_can_upload, :who_can_download, :who_can_buy])
         fields[:user_id] = current_user.id
-        album = Album.new(fields)
+        album = GroupAlbum.new(fields)
         unless album.save
           raise friendly_error(album.errors)
         end

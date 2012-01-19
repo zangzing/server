@@ -107,6 +107,10 @@ var zz = zz || {};
 
             goto_invite_friends_screen: function(){
                 document.location.href = '/invite_friends'
+            },
+
+            create_user_url: function(){
+            	return zz.routes.path_prefix + '/users';
             }
 
         },

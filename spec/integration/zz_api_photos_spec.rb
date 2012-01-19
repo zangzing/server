@@ -52,5 +52,62 @@ describe "ZZ API" do
       end
     end
 
+    describe "sort photos" do
+
+      def verify_order(photos, ordered_ids)
+        photos.length.should == ordered_ids.length
+        len = photos.length
+        cur = 0
+        while cur < len do
+          photos[cur][:id].should == ordered_ids[cur]
+          cur += 1
+        end
+      end
+
+      it "should sort photos" do
+        album = Factory.create(:album, :user => @user)
+        photos = []
+        photos << Factory.create(:photo, :user => @user, :album => album, :caption => "C", :capture_date => Time.at(10))
+        photos << Factory.create(:photo, :user => @user, :album => album, :caption => "B", :capture_date => Time.at(11))
+        photos << Factory.create(:photo, :user => @user, :album => album, :caption => "A", :capture_date => Time.at(12))
+        photos << Factory.create(:photo, :user => @user, :album => album, :caption => "c", :capture_date => Time.at(13))
+        photos << Factory.create(:photo, :user => @user, :album => album, :caption => "D", :capture_date => Time.at(14))
+        photos << Factory.create(:photo, :user => @user, :album => album, :caption => '', :capture_date => Time.at(15))
+        photos << Factory.create(:photo, :user => @user, :album => album, :caption => nil, :capture_date => Time.at(9))
+        order_by_name_asc = [
+            photos[6].id,
+            photos[5].id,
+            photos[2].id,
+            photos[1].id,
+            photos[0].id,
+            photos[3].id,
+            photos[4].id,
+        ]
+        order_by_name_desc = order_by_name_asc.reverse
+        order_by_date_asc = [
+            photos[6].id,
+            photos[0].id,
+            photos[1].id,
+            photos[2].id,
+            photos[3].id,
+            photos[4].id,
+            photos[5].id,
+        ]
+        order_by_date_desc = order_by_date_asc.reverse
+
+        ret_photos = zz_api_get zz_api_photos_path(album.id), 200, false, {:sort => 'name-asc'}
+        verify_order(ret_photos, order_by_name_asc)
+
+        ret_photos = zz_api_get zz_api_photos_path(album.id), 200, false, {:sort => 'name-desc'}
+        verify_order(ret_photos, order_by_name_desc)
+
+        ret_photos = zz_api_get zz_api_photos_path(album.id), 200, false, {:sort => 'date-asc'}
+        verify_order(ret_photos, order_by_date_asc)
+
+        ret_photos = zz_api_get zz_api_photos_path(album.id), 200, false, {:sort => 'date-desc'}
+        verify_order(ret_photos, order_by_date_desc)
+      end
+    end
+
   end
 end

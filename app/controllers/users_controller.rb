@@ -113,6 +113,10 @@ class UsersController < ApplicationController
           @guest.status = 'Active Account'
           @guest.save
         end
+        
+        if params[:follow_user_id] and User.exists? params[:follow_user_id]
+          Like.add(@new_user.id, params[:follow_user_id], Like::USER)
+        end
 
         flash[:success] = "Welcome to ZangZing!"
         @new_user.deliver_welcome!
@@ -145,6 +149,9 @@ class UsersController < ApplicationController
         redirect_to inactive_url and return
       end
     end
+    
+    
+    
     render :action=>:join,  :layout => false
   end
 

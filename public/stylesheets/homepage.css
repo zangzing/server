@@ -43,6 +43,9 @@
     height: 25px;
 }
 
+#view-sort-bar div.set-title[disabled=disabled]{
+    color: #aaaaaa;
+}
 #view-sort-bar div.set-title{
     display: inline-block;
     position:relative;
