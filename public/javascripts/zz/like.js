@@ -185,7 +185,7 @@ zz.like = {
                 $(this).unbind('click', zz.like.toggle).click(zz.like.toggle);
             });
         }
-    },
+    }
 
 //    display_social_dialog: function(subject_id) {
 //        $('#facebook_box').click(function() {
