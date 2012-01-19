@@ -78,8 +78,8 @@ zz.like = {
             url: url,
             data: { subject_type: subject_type, _method: type },
             success: function(html) {
-                $('body').append(html);
-                zz.like.display_social_dialog(subject_id);
+//                $('body').append(html);
+//                zz.like.display_social_dialog(subject_id);
             },
             error: function(xhr) {
                 if (xhr.status == 401) {
@@ -187,41 +187,41 @@ zz.like = {
         }
     },
 
-    display_social_dialog: function(subject_id) {
-        $('#facebook_box').click(function() {
-            if ($(this).is(':checked') && !$('#facebook_box').attr('authorized')) {
-                $(this).attr('checked', false);
-                zz.oauthmanager.login(zz.routes.path_prefix + '/facebook/sessions/new', function() {
-                    $('#facebook_box').attr('checked', true);
-                    $('#facebook_box').attr('authorized', 'yes');
-                });
-            }
-        });
-
-        $('#twitter_box').click(function() {
-            if ($(this).is(':checked') && !$('#twitter_box').attr('authorized')) {
-                $(this).attr('checked', false);
-                zz.oauthmanager.login(zz.routes.path_prefix + '/twitter/sessions/new', function() {
-                    $('#twitter_box').attr('checked', true);
-                    $('#twitter_box').attr('authorized', 'yes');
-                });
-            }
-        });
-
-        $('#social-like-dialog').zz_dialog({ autoOpen: false });
-        $('#ld-cancel').click(function() {
-            $('#social-like-dialog').zz_dialog('close');
-            $('#social-like-dialog').zz_dialog().empty().remove();
-        });
-
-        $('#ld-ok').click(function() {
-            $.ajax({ type: 'POST',
-                url: zz.routes.path_prefix + '/likes/' + subject_id + '/post',
-                data: $('#social_like_form_' + subject_id).serialize()
-            });
-            $('#social-like-dialog').zz_dialog('close');
-            $('#social-like-dialog').zz_dialog().empty().remove();
-        });
-        $('#social-like-dialog').zz_dialog('open');
-    }
+//    display_social_dialog: function(subject_id) {
+//        $('#facebook_box').click(function() {
+//            if ($(this).is(':checked') && !$('#facebook_box').attr('authorized')) {
+//                $(this).attr('checked', false);
+//                zz.oauthmanager.login(zz.routes.path_prefix + '/facebook/sessions/new', function() {
+//                    $('#facebook_box').attr('checked', true);
+//                    $('#facebook_box').attr('authorized', 'yes');
+//                });
+//            }
+//        });
+//
+//        $('#twitter_box').click(function() {
+//            if ($(this).is(':checked') && !$('#twitter_box').attr('authorized')) {
+//                $(this).attr('checked', false);
+//                zz.oauthmanager.login(zz.routes.path_prefix + '/twitter/sessions/new', function() {
+//                    $('#twitter_box').attr('checked', true);
+//                    $('#twitter_box').attr('authorized', 'yes');
+//                });
+//            }
+//        });
+//
+//        $('#social-like-dialog').zz_dialog({ autoOpen: false });
+//        $('#ld-cancel').click(function() {
+//            $('#social-like-dialog').zz_dialog('close');
+//            $('#social-like-dialog').zz_dialog().empty().remove();
+//        });
+//
+//        $('#ld-ok').click(function() {
+//            $.ajax({ type: 'POST',
+//                url: zz.routes.path_prefix + '/likes/' + subject_id + '/post',
+//                data: $('#social_like_form_' + subject_id).serialize()
+//            });
+//            $('#social-like-dialog').zz_dialog('close');
+//            $('#social-like-dialog').zz_dialog().empty().remove();
+//        });
+//        $('#social-like-dialog').zz_dialog('open');
+//    }
 };
