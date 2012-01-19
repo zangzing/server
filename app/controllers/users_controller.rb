@@ -124,12 +124,12 @@ class UsersController < ApplicationController
         send_zza_event_from_client('user.join')
         redirect_back_or_default user_pretty_url( @new_user )
 
-        # process invitation if there was one
+        # process tracking token if there was one
         if current_tracking_token
           TrackedLink.handle_join(@new_user, current_tracking_token)
         end
 
-        # process any other invitations tied to this email address
+        # process any invitations tied to this email address or tracking token
         Invitation.process_invitations_for_new_user(@new_user, current_tracking_token)
 
         return
