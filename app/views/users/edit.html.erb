@@ -114,13 +114,15 @@
 
       <div class="description">
         <%
-           if @user.bonus_storage
+           if @user.bonus_storage > 0
                # do a little math to make 0.25GB show as 250MB rather than 256MB
                usable_bonus_storage_mb = number_with_precision((@user.usable_bonus_storage * 1000 / 1024), :precision => 2, :strip_insignificant_zeros => true)
 
         %>
         <div class='bold-text'>Congrats! You’ve earned <%= usable_bonus_storage_mb %> MB of free space.</div>
-        <% end %>
+        <%
+           end
+        %>
 
         <p>For every friend who joins ZangZing, you and your friend each get 250MB of free space up to 8GB.</p>
         <br>
@@ -134,20 +136,40 @@
 
               <% if invitation.status == Invitation::STATUS_PENDING %>
                   <div class="invitation">
-                    <div class="email-address"><%= "#{invitation.tracked_link.shared_to_address}" %> was invited on <%= invitation.created_at.strftime("%B %d, %Y")%></div>
-                    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-                    <div><a href="#" class='send-reminder' data-invitation-id="<%=invitation.id%>">Send reminder invitation</a></div>
+                    <div class="profile-picture">
+                        <div class="mask">
+                             <img data-src="/images/profile-default-55.png" src="/images/profile-default-55.png">
+                        </div>
+                    </div>
+                    <div class="details">
+                        <div class="email-address"><%= "#{invitation.tracked_link.shared_to_address}" %> was invited on <%= invitation.created_at.strftime("%B %d, %Y")%></div>
+                        <div><a href="#" class='send-reminder' data-invitation-id="<%=invitation.id%>">Send reminder invitation</a></div>
+                    </div>
                   </div>
 
               <% elsif invitation.status == Invitation::STATUS_COMPLETE %>
                 <div class="invitation">
-                  <div class="email-address"><%= "#{invitation.tracked_link.shared_to_address}" %> joined on <%= invitation.invited_user.created_at.strftime("%B %d, %Y")%></div>
-                  <div><strong>Hooray!</strong> You both received 250MB of free space.</div>
+                  <div class="profile-picture">
+                      <div class="mask">
+                           <img data-src="<%= invitation.invited_user.profile_photo_url %>" src="/images/profile-default-55.png">
+                      </div>
+                  </div>
+                  <div class="details">
+                      <div class="email-address"><%= "#{invitation.tracked_link.shared_to_address}" %> joined on <%= invitation.invited_user.created_at.strftime("%B %d, %Y")%></div>
+                      <div><span class='bold-text'>Hooray!</span> You both received 250MB of free space.</div>
+                  </div>
                 </div>
 
               <% elsif invitation.status == Invitation::STATUS_COMPLETE_BY_OTHER %>
                 <div class="invitation">
-                  <div class="email-address"><%= "#{invitation.tracked_link.shared_to_address}" %> accepted an invitation from another user%></div>
+                  <div class="profile-picture">
+                      <div class="mask">
+                           <img data-src="<%= invitation.invited_user.profile_photo_url %>" src="/images/profile-default-55.png">
+                      </div>
+                  </div>
+                  <div class="details">
+                    <div class="email-address"><%= "#{invitation.tracked_link.shared_to_address}" %> accepted an invitation from another user%></div>
+                  </div>
                 </div>
 
               <% end %>
@@ -349,6 +371,7 @@
                 });
             });
 
+            zz.profile_pictures.init_profile_pictures($('.invitation .profile-picture'));
 
 
 
