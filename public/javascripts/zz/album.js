@@ -93,13 +93,6 @@ zz.album = {};
         });
     };
     
-    zz.album.get_top_padding = function() {
-        if(zz.login.is_banner_visible){
-        	return 45 + zz.login.join_spacer_height;
-        }
-        return 45;
-    }
-
 
     /*           Private Stuff
      ***************************************************/
@@ -119,13 +112,18 @@ zz.album = {};
             
             // Add join banner spacer now to set up html
             // Call show to determine whether or not to actually show the banner
-            gridElement.append( zz.login.join_spacer );
-            zz.login.show_join_banner();
+            gridElement.append( zz.joinbanner.join_spacer );
+            zz.joinbanner.show_join_banner();
 
             // Add sort buttons
             var sort_bar = zz.album.sort_bar_template.clone();
             gridElement.append( sort_bar );
             zz.buttonset.disable('ZangZing is preparing '+photos.length+' photos. Sort will be enabled when the album is ready.');
+            
+            var top_padding = 45;
+            if(zz.joinbanner.is_banner_visible){
+            	top_padding += zz.joinbanner.join_spacer_height;
+            }
 
             var grid = gridElement.zz_photogrid( {
                 photos:       photos,
@@ -133,7 +131,7 @@ zz.album = {};
                 context:      buy_mode ? 'chooser-grid' : 'album-grid',
                 cellWidth:    230,
                 cellHeight:   230,
-                topPadding:   zz.album.get_top_padding(),
+                topPadding:   top_padding,
 
 
                 showButtonBar:            !buy_mode,
@@ -240,10 +238,10 @@ zz.album = {};
                 $('#article .photogrid').remove();
                 $('#article').append(gridElement);
 
-                // render is called on resize so don't need to call zz.login.show_join_banner()
+                // render is called on resize so don't need to call zz.joinbanner.show_join_banner()
                 var top_padding = 0;
-                if(zz.login.is_banner_visible){
-                	top_padding += zz.login.join_spacer_height;
+                if(zz.joinbanner.is_banner_visible){
+                	top_padding += zz.joinbanner.join_spacer_height;
                 }
 
                  var grid;
