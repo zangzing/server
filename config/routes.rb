@@ -157,7 +157,7 @@ Server::Application.routes.draw do
     get    '/albums/:album_id/like'              => 'likes#like',            :as => :like_album
     get    '/photos/:photo_id/like'              => 'likes#like',            :as => :like_photo
     delete '/likes/:subject_id'                  => 'likes#destroy',           :as => :delete_like
-    post   '/likes/:subject_id/post'             => 'likes#post',              :as => :post_like
+    #post   '/likes/:subject_id/post'             => 'likes#post',              :as => :post_like
 
     #contacts
     get    '/users/:user_id/contacts'            => 'contacts#index',          :as => :user_contacts
