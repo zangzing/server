@@ -147,7 +147,7 @@ class GroupsController < ApplicationController
   #
   # This is called as (GET):
   #
-  # /zz_api/groups/:group_id
+  # /zz_api/groups/:group_id/members
   #
   # Executed in the context of the current signed in user
   #
@@ -157,7 +157,7 @@ class GroupsController < ApplicationController
   # [
   # {
   #  :group_id => group we belong to,
-  #  :user => see user info returned from zz_api_info
+  #  :user => see user portion of info returned from zz_api_info
   # }
   # ...
   # ]
@@ -173,7 +173,7 @@ class GroupsController < ApplicationController
   # Adds members in the group.  Will create automatic users
   # for emails that do not map to a current user.
   #
-  # This is called as (PUT):
+  # This is called as (POST):
   #
   # /zz_api/groups/:group_id/add_members
   #
@@ -217,7 +217,7 @@ class GroupsController < ApplicationController
 
   # Remove members from the group based on user_ids
   #
-  # This is called as (PUT):
+  # This is called as (DELETE):
   #
   # /zz_api/groups/:group_id/remove_members
   #
@@ -233,7 +233,7 @@ class GroupsController < ApplicationController
   #
   #
   # Returns:
-  # fetches and returns all members as in members call
+  # fetches and returns all members as in get members call
   #
   def zz_api_remove_members
     return unless require_user && require_owned_group

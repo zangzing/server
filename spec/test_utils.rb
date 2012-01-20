@@ -14,8 +14,10 @@ def zz_api_headers
   return {'HTTP_X_ZANGZING_API' => 'iphone', 'HTTP_ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json'}
 end
 
-def zz_api_debug=(value)
+def zz_api_debug(value)
+  old_state = zz_api_debug?
   @@zz_api_debug = value
+  old_state
 end
 
 def zz_api_debug?
@@ -40,7 +42,7 @@ end
 # in json form
 def zz_api_post(path, body, expect_code = 200, secure = false)
   body = body.nil? ? nil : zz_api_body(body)
-  zz_api_log "zz_api_post body: \n#{body}"
+  zz_api_log "zz_api_post: #{path}\n#{body}"
   post build_full_path_if_needed(path, secure), body, zz_api_headers
   zz_api_response(response, expect_code)
 end
@@ -50,7 +52,7 @@ end
 # in json form
 def zz_api_put(path, body, expect_code = 200, secure = false)
   body = body.nil? ? nil : zz_api_body(body)
-  zz_api_log "zz_api_put body: \n#{body}"
+  zz_api_log "zz_api_put: #{path}\n#{body}"
   put build_full_path_if_needed(path, secure), body, zz_api_headers
   zz_api_response(response, expect_code)
 end
@@ -60,6 +62,7 @@ end
 # in json form
 def zz_api_delete(path, body, expect_code = 200, secure = false)
   body = body.nil? ? nil : zz_api_body(body)
+  zz_api_log "zz_api_delete: #{path}\n#{body}"
   delete build_full_path_if_needed(path, secure), body, zz_api_headers
   zz_api_response(response, expect_code)
 end
@@ -68,6 +71,7 @@ end
 # if expect_ok is set we also return the response
 # in json form
 def zz_api_get(path, expect_code = 200, secure = false, params = nil)
+  zz_api_log "zz_api_get: #{path}\n#{params}"
   get build_full_path_if_needed(path, secure), params, zz_api_headers
   zz_api_response(response, expect_code)
 end

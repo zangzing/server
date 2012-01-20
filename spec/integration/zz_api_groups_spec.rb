@@ -10,6 +10,13 @@ describe "ZZ API Groups" do
       @user = User.find(@user_id)
     end
 
+    before(:all) do
+      @@old_debug_state = zz_api_debug(false)
+    end
+    after(:all) do
+      zz_api_debug(@@old_debug_state)
+    end
+
     it "should create a group" do
       group_name = "mytestgroup"
       j = zz_api_post zz_api_create_group_path, {:name => group_name}, 200
