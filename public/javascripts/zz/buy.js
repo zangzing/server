@@ -536,7 +536,7 @@ zz.buy = zz.buy || {};
 
                 ZZAt.track('buy.checkout-banner.close.click');
                 
-                zz.joinbanner.show_join_banner();
+                zz.joinbanner.banner_refresh();
 
             });
 
@@ -572,7 +572,7 @@ zz.buy = zz.buy || {};
         }
         else{
             $('#checkout-banner').hide();
-            zz.joinbanner.show_join_banner();
+            zz.joinbanner.banner_refresh();
         }
 
     }
