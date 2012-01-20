@@ -116,6 +116,10 @@ class Invitation < ActiveRecord::Base
       User.update_counters invitation.invited_user.id, :bonus_storage => User::BONUS_STORAGE_MB_PER_INVITE
 
       ZZ::Async::Email.enqueue(:joined_from_invite, invitation.id, can_use_bonus_storage)
+
+
+      # new user should follow user who invited...
+      Like.add(new_user.id, invitation.user.id, Like::USER)
     end
 
 
