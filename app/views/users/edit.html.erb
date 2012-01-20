@@ -165,7 +165,7 @@
                     </div>
                   </div>
                   <div class="details">
-                    <div class="email-address"><%= "#{invitation.tracked_link.shared_to_address}" %> joined on <%= invitation.invited_user.created_at.strftime("%B %d, %Y")%></div>
+                    <div class="email-address"><%= "#{invitation.invited_user.name}" %> joined on <%= invitation.invited_user.created_at.strftime("%B %d, %Y")%></div>
                     <%
                        if running_bonus_total <= User::MAX_BONUS_MB
                     %>
