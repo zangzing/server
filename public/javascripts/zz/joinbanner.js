@@ -103,12 +103,18 @@ var zz = zz || {};
     	$('#header-join-banner .join-form .submit-button').click(function(){
     		$('#header-join-banner .join-form').submit();
     		ZZAt.track("join.toolbarbanner.click");
+    		if(!$('#header-join-banner .join-form').valid()){
+    			ZZAt.track("join.toolbarbanner.invalid");
+    		}
         });
 
         $('#header-join-banner .join-form').bind('keypress', function(e){
             if ( e.keyCode == 13 ) {
             	$("#header-join-banner .join-form").submit();
             	ZZAt.track("join.toolbarbanner.click");
+            	if(!$('#header-join-banner .join-form').valid()){
+        			ZZAt.track("join.toolbarbanner.invalid");
+        		}
             }
         });
         
