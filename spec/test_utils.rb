@@ -82,7 +82,7 @@ def zz_api_response(response, expect_code)
     show_error(j) if response.status != expect_code
     response.status.should eql(200)
   else
-    show_error(j) if response.status != expect_code
+    show_error(j) if j[:code] != expect_code
     j[:code].should eql(expect_code)
   end
   j

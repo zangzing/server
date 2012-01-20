@@ -184,14 +184,9 @@ module ZZ
       # expects the group to exist and belong to the current user
       # returns the group found as @group
       def require_owned_group
-        begin
-          group_id = params[:group_id]
-          @group = Group.find(group_id)
-          if @group.user_id != current_user.id
-            render_json_error(nil, "Invalid operation, current user does not own group_id: #{group_id}", 401)
-            return false
-          end
-        rescue ActiveRecord::RecordNotFound => e
+        group_id = params[:group_id]
+        @group = Group.where('user_id = :user_id AND (name = :id OR id = :id)', :user_id => current_user.id, :id => group_id).first
+        if @group.nil?
           render_json_error(nil, "This operation requires a group but the group was not found", 404)
           return false
         end

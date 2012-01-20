@@ -81,6 +81,8 @@ class User < ActiveRecord::Base
   after_commit   :like_mr_zz, :on => :create
   after_commit   :subscribe_to_lists, :on => :create
 
+  after_create   :make_wrapped_group
+
   before_save    :queue_update_acls_with_id, :if => :email_changed?
   after_commit   :update_acls_with_id, :if => '@update_acls_with_id_queued'
 
@@ -375,6 +377,11 @@ class User < ActiveRecord::Base
   # we set a variable and then we do the update after commit
   def queue_update_acls_with_id
     @update_acls_with_id_queued = true
+  end
+
+  # after creating, make the wrapped group for this user
+  def make_wrapped_group
+    Group.create_wrapped_user(self.id)
   end
 
   # Replaces any occurrences of the new user's email

@@ -9,44 +9,31 @@ class GroupMember < ActiveRecord::Base
 
   # perform a bulk insert/update of group members
   # takes rows in the form
-  # [ [group_id, user_id, email_id], ... ]
+  # [ [group_id, user_id], ... ]
   # does an update on all of the rows specified in
   # a minimal number of queries
   def self.fast_update_members(rows)
-    base_cmd = "INSERT INTO #{quoted_table_name}(group_id, user_id, email_id) VALUES "
-    end_cmd = "ON DUPLICATE KEY UPDATE email_id = VALUES(email_id)"
+    base_cmd = "INSERT INTO #{quoted_table_name}(group_id, user_id) VALUES "
+    end_cmd = "ON DUPLICATE KEY UPDATE user_id = VALUES(user_id)"
     RawDB.fast_insert(connection, max_insert_size, rows, base_cmd, end_cmd)
   end
 
-  # returns an array of hashes given an array of groups
-  def self.as_array(groups)
+  # returns an array of hashes given an array of members
+  def self.as_array(members)
     result = []
-    groups.each do |group|
-      result << group.as_hash
+    members.each do |member|
+      result << member.as_hash
     end
     result
   end
 
   # returns a single member in hash form
   def as_hash
-    user = self.user
-    {
+    hash = {
       :id => self.id,
       :group_id => self.group_id,
-      :email_id => self.email_id,
-      :user => {
-          :id => user.id,
-          :username => user.username,
-          :email => [
-            {
-                :id => 0,
-                :email => user.email
-            }
-          ],
-          :first_name => user.first_name,
-          :last_name => user.last_name,
-          :automatic => user.automatic,
-      },
+      :user => Group.user_hash(self.user),
     }
+    hash
   end
 end

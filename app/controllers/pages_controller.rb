@@ -108,7 +108,7 @@ class PagesController < ApplicationController
 
     #status_msg << "ZZA Thread state: " +  ZZ::ZZA.sender.thread.status.to_s
 
-    z.track_event("health_check.ok", status_msg)
+    #z.track_event("health_check.ok", status_msg)
     ok_msg = "OK\n" + status_msg
 
     render :status => 200, :text => ok_msg

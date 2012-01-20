@@ -427,17 +427,17 @@ Server::Application.routes.draw do
 
 
     #users
-    get    '/users/:user_id/info' => 'users#zz_api_user_info',                  :as => :zz_api_user_info
+    get    '/users/:user_id/info'                      => 'users#zz_api_user_info',                  :as => :zz_api_user_info
 
     #groups
     post   '/groups/create'                            => 'groups#zz_api_create',                    :as => :zz_api_create_group
     delete '/groups/:group_id'                         => 'groups#zz_api_destroy',                   :as => :zz_api_destroy_group
     put    '/groups/:group_id'                         => 'groups#zz_api_update',                    :as => :zz_api_update_group
     get    '/groups/:group_id'                         => 'groups#zz_api_info',                      :as => :zz_api_info_group
-    put    '/groups/user/wrap'                         => 'groups#zz_api_wrap_user',                 :as => :zz_api_wrap_user_group
+    get    '/users/groups/all'                         => 'groups#zz_api_users_groups',              :as => :zz_api_users_groups
     get    '/groups/:group_id/members'                 => 'groups#zz_api_members',                   :as => :zz_api_members_group
-    put    '/groups/:group_id/update_members'          => 'groups#zz_api_update_members',            :as => :zz_api_update_members_group
-    put    '/groups/:group_id/remove_members'          => 'groups#zz_api_remove_members',            :as => :zz_api_remove_members_group
+    post   '/groups/:group_id/add_members'             => 'groups#zz_api_add_members',               :as => :zz_api_add_members_group
+    delete '/groups/:group_id/remove_members'          => 'groups#zz_api_remove_members',            :as => :zz_api_remove_members_group
 
 
     #identities

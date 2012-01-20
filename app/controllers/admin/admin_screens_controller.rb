@@ -132,7 +132,7 @@ private
       status_msg << "<p>App Servers: #{Server::Application.config.deploy_environment.all_app_servers}</p>"
       #status_msg << "ZZA Thread state: " +  ZZ::ZZA.sender.thread.status.to_s
 
-      z.track_event("health_check.ok", status_msg)
+      #z.track_event("health_check.ok", status_msg)
       ok_msg = '<p><b style="font-size: 120%; color: green;">OK</b>' + status_msg+ '</p>'
 
        return  ok_msg

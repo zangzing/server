@@ -15,14 +15,8 @@ class GroupsController < ApplicationController
   # }
   #
   #
-  # Returns the group info
+  # Returns the group info - see zz_api_info
   #
-  # {
-  #   :id => the group id
-  #   :user_id => the owning user
-  #   :name => the name
-  #   :wrapped_user_id => if non nil this is group wraps a user - in a UI only the user info should be shown
-  # }
   def zz_api_create
     return unless require_user
 
@@ -52,14 +46,8 @@ class GroupsController < ApplicationController
   # }
   #
   #
-  # Returns the group info
+  # Returns the group info - see zz_api_info
   #
-  # {
-  #   :id => the group id
-  #   :user_id => the owning user
-  #   :name => the name
-  #   :wrapped_user_id => if non nil this is group wraps a user - in a UI only the user info should be shown
-  # }
   def zz_api_update
     return unless require_user && require_owned_group
 
@@ -99,17 +87,27 @@ class GroupsController < ApplicationController
   #
   # /zz_api/groups/:group_id
   #
-  # Executed in the context of the current signed in user
+  # Executed in the context of the current signed in user.
   #
   # Input:
   #
-  # Returns the group info
+  # Returns the group info.  When the group is a wrapper around a single user
+  # the user field will be present.  From this you can extract the user
+  # related info.  For non wrapped groups the user field will be missing. You
+  # can get detailed info about the users by calling zz_api_members
   #
   # {
-  #   :id => the group id
-  #   :user_id => the owning user
-  #   :name => the name
-  #   :wrapped_user_id => if non nil this is group wraps a user - in a UI only the user info should be shown
+  #    :id => the group id
+  #    :user_id => the owning user
+  #    :name => the name of the group
+  #    :user => {
+  #        :id => users id,
+  #        :username => user name,
+  #        :profile_photo_url => the url to the profile photo,
+  #        :first_name => first_name,
+  #        :last_name => last_name,
+  #        :automatic => true if an automatic user (one that has not created an account)
+  #    },
   # }
   def zz_api_info
     return unless require_user && require_owned_group
@@ -119,71 +117,31 @@ class GroupsController < ApplicationController
     end
   end
 
-  # Gets or creates the user self group for the
-  # specified user
+  # Gets all groups for a given user.
   #
   # This is called as (GET):
   #
-  # /zz_api/groups/user/wrap
+  # /zz_api/users/groups/all
   #
   # Executed in the context of the current signed in user
   #
   # Input:
-  # {
-  #     :email => set if adding by email
-  #     :user_id => set if adding by user_id
-  # }
   #
+  # Returns an array of all the users groups.  See zz_api_info for details.
   #
-  # Returns the group info
-  #
-  # {
-  #   :id => the group id
-  #   :user_id => the owning user
-  #   :name => the name
-  #   :wrapped_user_id => if non nil this is group wraps a user - in a UI only the user info should be shown
-  #   :member_info {
-  #      :id => member id
-  #      :group_id => group we belong to,
-  #      :user => {
-  #          :id => users id,
-  #          :username => user name,
-  #          :email => [
-  #            {
-  #                :id => Id of this email for user,
-  #                :email => users email
-  #            }
-  #          ],
-  #          :first_name => first_name,
-  #          :last_name => last_name,
-  #          :automatic => true if an automatic user (one that has not created an account)
-  #      },
-  #      :email_id => the email id to show or nil,
-  #   }
-  # }
-  def zz_api_wrap_user
+  # [
+  #   hash of group - see zz_api_info
+  # ...
+  # ]
+  def zz_api_users_groups
     return unless require_user
+
     zz_api do
-      user = nil
-      user_id = params[:user_id]
-      email = params[:email]
-
-      # find the user
-      if user_id
-        user = User.find(user_id)
-      elsif email
-        email = Share.validate_email(email)
-        user = User.find_by_email(email)
-      end
-      raise ArgumentError.new("User not found by email or user_id") if user.nil?
-
-      # find or create the group and update email
-      group = Group.find_or_create_wrapped_user(current_user.id, user.id, email)
-      result = group.as_hash
-      result[:member_info] = group.group_members.first.as_hash
-      result
+      groups = Group.find_all_by_user_id(current_user.id)
+      Group.as_array(groups)
     end
   end
+
 
   # Get the current members of the group.
   #
@@ -199,20 +157,7 @@ class GroupsController < ApplicationController
   # [
   # {
   #  :group_id => group we belong to,
-  #  :user => {
-  #      :id => users id,
-  #      :username => user name,
-  #      :email => [
-  #        {
-  #            :id => Id of this email for user,
-  #            :email => users email
-  #        }
-  #      ],
-  #      :first_name => first_name,
-  #      :last_name => last_name,
-  #      :automatic => true if an automatic user (one that has not created an account)
-  #  },
-  #  :email_id => the email id to show or nil,
+  #  :user => see user info returned from zz_api_info
   # }
   # ...
   # ]
@@ -225,48 +170,43 @@ class GroupsController < ApplicationController
     end
   end
 
-  # fetch all the members in the group
-  def fetch_group_members(group)
-    members = group.group_members
-  end
-
-  # Add or update members in the group.
+  # Adds members in the group.  Will create automatic users
+  # for emails that do not map to a current user.
   #
   # This is called as (PUT):
   #
-  # /zz_api/groups/:group_id/update_members
+  # /zz_api/groups/:group_id/add_members
   #
   # Executed in the context of the current signed in user
   #
   # Input:
   # {
-  #   :users => [
-  #   {
-  #     :email => set if adding by email
-  #     :user_id => set if adding by user_id
-  #     :email_id => set if tied to specific email
-  #   }
-  #   ...
-  #   ]
+  #   :user_ids => [ array of user ids to add ],
+  #   :user_names => [ array of user names to add ],
+  #   :emails => [ array of emails to add ],
   # }
   #
   #
   # Returns:
   # fetches and returns all members as in members call
   #
-  def zz_api_update_members
+  def zz_api_add_members
     return unless require_user && require_owned_group
 
     zz_api do
       # build up list of each type and validate them
       group_id = @group.id
-      emails, user_ids = validate_members(params[:users])
-      user_ids += convert_to_users(emails)
+      user_ids = []
+      user_ids += validate_user_ids(params[:user_ids])
+      user_ids += validate_user_names(params[:user_names])
+      addresses = validate_emails(params[:emails])
+      user_ids += convert_to_users(addresses)
+
       # ok now the user_ids array contains all members in user_id form so do the
       # bulk update
       rows = []
-      user_ids.each do |member|
-        rows << [group_id, member[:user_id], member[:email_id]]
+      user_ids.each do |user_id|
+        rows << [group_id, user_id]
       end
       GroupMember.fast_update_members(rows)
 
@@ -275,7 +215,7 @@ class GroupsController < ApplicationController
     end
   end
 
-  # Add or update members in the group.
+  # Remove members from the group based on user_ids
   #
   # This is called as (PUT):
   #
@@ -285,11 +225,8 @@ class GroupsController < ApplicationController
   #
   # Input:
   # {
-  #   :users => [
-  #   {
-  #     :email => set if adding by email
-  #     :user_id => set if adding by user_id
-  #   }
+  #   :user_ids => [
+  #     user_id - the user id to delete
   #   ...
   #   ]
   # }
@@ -303,23 +240,20 @@ class GroupsController < ApplicationController
 
     zz_api do
       # build up a list of user_ids
-      user_ids = array_of_non_nil(members, :user_id)
-
-      # extracting user_ids from emails given
-      emails = array_of_non_nil(members, :email)
-      if emails.empty? == false
-        user_by_email = User.select("id").where(:email => emails)
-
-        # now combine into a single list of user ids
-        user_ids += user_by_email.map(&:id) if user_by_email
-      end
+      user_ids = params[:user_ids]
 
       # and delete them
-      @group.delete(user_ids)
+      GroupMember.where(:group_id => @group.id, :user_id => user_ids).delete_all
 
       # now fetch them all and return
       GroupMember.as_array(fetch_group_members(@group))
     end
+  end
+
+private
+  # fetch all the members in the group
+  def fetch_group_members(group)
+    members = group.group_members.includes(:user)
   end
 
   # returns an array of non nil values for the symbol specified
@@ -335,65 +269,77 @@ class GroupsController < ApplicationController
   # for each member in the array, try to find an existing email to user id mapping
   # for those not found, create new automatic users
   # converts the members in place
-  def convert_to_users(members)
+  def convert_to_users(addresses)
+    user_ids = []
+    return user_ids if addresses.empty?
+
     # first find the ones that map to a user
-    emails = array_of_non_nil(members, :email)
+    emails = addresses.map(&:address)
     found_users = User.select("id,email").where(:email => emails)
     # create a map from email to user_id
     email_to_user_id = {}
     found_users.each {|user| email_to_user_id[user.email] = user.id }
 
     # ok, now walk the members to find out which ones need new user created
-    emails.each do |member|
-      email = member[:email]
+    addresses.each do |address|
+      email = address.address
       user_id = email_to_user_id[email]
       if user_id
-        member[:user_id] = user_id
+        user_ids << user_id
       else
         # not found, so make an automatic user
-        user = User.create_automatic(email)
-        member[:user_id] = user.id
+        user = User.create_automatic(email, address.display_name)
+        user_ids << user.id
       end
     end
+    user_ids
   end
 
-  # takes an array of members in the input form from the add_members call and
-  # validates all items.  If any items do not validate we fail and raise an
-  # exception
+  # validates user ids
+  # takes an array of user ids, if any are invalid, returns an error
   #
-  # returns results set up by email referenced and user_id referenced
-  # all users_ids must exist or we fail.  Any emails that map to
-  # valid users will be converted to user_ids type add
-  #
-  # [emails, user_ids]
-  #
-  def validate_members(members)
+  def validate_user_ids(ids)
     user_ids = []
-    emails = []
-    members.each do |member|
-      email = member[:email]
-      if email
-        email = Share.validate_email(email)
-        member[:email] = email  # put back validated form
-        member[:user_id] = nil
-        emails << member
-      else
-        user_id = member[:user_id]
-        if user_id
-          user_ids << member  # will be checked in bulk
-        end
+    if ids && ids.length > 0
+      users = User.select("id").where(:id => ids)
+      found_ids = Set.new(users.map(&:id))
+      ids.each do |id|
+        raise ArgumentError.new("Invalid user_id specified: #{id}") unless found_ids.include?(id)
+      end
+      user_ids = ids
+    end
+    user_ids
+  end
+
+  # validates user names
+  # takes an array of user names, if any are invalid, returns an error
+  #
+  # returns array of user_ids
+  #
+  def validate_user_names(names)
+    user_ids = []
+    if names && names.length > 0
+      users = User.select("id, username").where(:username => names)
+      found_names = Set.new(users.map(&:username))
+      names.each do |name|
+        raise ArgumentError.new("Invalid username specified: #{name}") unless found_names.include?(name)
+      end
+      user_ids = users.map(&:id)
+    end
+    user_ids
+  end
+
+  # validates emails, just checks to see if they are in a valid email
+  # format and returns them as address records
+  #
+  def validate_emails(emails)
+    addresses = []
+    if emails && emails.length > 0
+      emails.each do |email|
+        addresses << Share.validate_email(email)
       end
     end
-    # now make sure all the ones using user_id exist
-    ids = array_of_non_nil(user_ids, :user_id)
-    raise ArgumentError.new("Duplicate user_ids were found") unless ids.length == ids.uniq.length
-    users = User.select("id").where(:id => ids)
-    found_ids = Set.new(users.map(&:id))
-    ids.each do |id|
-      raise ArgumentError.new("Invalid user_id specified: #{id}") unless found_ids.include?(id)
-    end
-    # TODO: make sure if they are setting the email_id pref that we match them all to the given user
-
-    [emails, user_ids]
+    addresses
   end
+
 end
