@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
+  <meta http-equiv="Content-Language" Content="en">
+  <meta charset="utf-8">
+  <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
+  <meta name="DC.title" content="ZangZing" />
+  <meta name="title" content="ZangZing" />
+  <meta name="description" content="Join ZangZing - a free photo sharing site for groups to share photos, simply, beautifully, publicly or privately and without any ads.">
+
+  <title>Join | Photo Sharing - ZangZing</title>
+  <link rel="canonical" href="<%= invitation_url %>" />
+
+
+  <%= include_javascripts :css %>
+  <%= include_stylesheets :common %>
+</head>
+
+<body class='invitation-page'>
+<div class='top-section'>
+  <div class='centered'>
+    <div class='logo'></div>
+    <div class='title'>Congratulations!</div>
+    <div class='sub-title'>You’ve been invited to join ZangZing.</div>
+    <div class='note'>Join and you and <%= @friends_name %> get 250MB of extra space on top of the 2GB you already get for free!!</div>
+
+
+    <form class="join-form" method="post" enctype="multipart/form-data" action="<%=create_user_url%>" >
+      <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
+      <ul>
+        <li>
+          <label for="user_name" style="opacity: 1; ">First &amp; Last Name</label>
+          <input type="text" name="user[name]" id="user_name" value="">
+        </li>
+        <li>
+          <label for="user_username">Username</label>
+          <input type="text" name="user[username]" id="user_username" value="">
+        </li>
+        <li>
+          <label for="user_email">Email address</label>
+          <input type="text" name="user[email]" id="user_email" value="">
+        </li>
+        <li>
+          <label for="user_password">Password</label>
+          <input type="password" name="user[password]" id="user_password" value="" maxlength="40">
+        </li>
+        <li>
+          <a class="submit-button newgreen-button"><span>Join for Free</span></a>
+        </li>
+      </ul>
+    </form>
+
+  </div>
+
+
+</div>
+
+<div class='bottom-section'>
+
+</div>
+
+<%= render :partial => 'layouts/zza'  %>
+<%= include_javascripts :jquery %>
+<%= include_javascripts :lib %>
+<%= include_javascripts :zz %>
+<%= include_javascripts :zz_oauthmanager %>
+
+<script>
+    $(document).ready(function(){
+
+        zz.local_storage.clear();
+
+        $('.invitation-page .join-form label').inFieldLabels();
+
+        zz.login.add_validation($('.invitation-page .join-form'));
+
+
+        $('.invitation-page .submit-button').click(function(){
+            $('.invitation-page .join-form').submit();
+        });
+
+
+        $('.invitation-page .join-form').bind('keypress', function(e){
+            if ( e.keyCode == 13 ) {
+                $(".invitation-page .join-form").submit();
+            }
+        });
+
+    });
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,126 @@
+.invitation-page {
+    /*background: url("/images/invitation-landing/bg.png") no-repeat scroll center top;*/
+}
+
+.invitation-page .top-section {
+    position: absolute;
+    height: 345px;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    /*background-color: #fff;*/
+
+}
+
+.invitation-page .top-section .centered {
+    width: 900px;
+    height: 345px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+.invitation-page .top-section .logo {
+    position: absolute;
+    top: 18px;
+    width: 180px;
+    height: 42px;
+    background: url("/images/invitation-landing/logo.png") no-repeat scroll left top;
+    left: 349px;
+
+}
+
+.invitation-page .top-section .title {
+    position: relative;
+    top: 111px;
+    font-size: 30px;
+    font-weight: bold;
+    width: 560px;
+}
+
+.invitation-page .top-section .sub-title {
+    position: relative;
+    top: 116px;
+    font-size: 30px;
+    font-weight: normal;
+    width: 560px;
+}
+
+.invitation-page .top-section .note {
+    position: relative;
+    top: 146px;
+    font-size: 19px;
+    font-weight: normal;
+    width: 560px;
+
+}
+
+.invitation-page .top-section .join-form {
+    position: absolute;
+    right: 56px;
+    top: 98px;
+}
+
+.invitation-page .top-section .join-form li {
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.invitation-page .top-section .join-form li label {
+    position: absolute;
+    top: 12px;
+    left: 11px;
+    color: #999;
+    font-size: 16px
+}
+
+.invitation-page .top-section .join-form li input {
+    width: 200px;
+    height: 25px;
+    padding: 6px 9px;
+    border: 1px solid #999;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    font-size: 16px
+
+}
+
+.invitation-page .top-section .join-form li input.error {
+    background-color: #fddbda;
+    border-color: #fd514f;
+}
+
+.invitation-page .join-form li label.error {
+    top: 2px;
+    bottom: 42px;
+    left: -134px;
+    width: 185px;
+    height: 22px;
+    margin: 0 0 0 -78px;
+    padding: 5px 10px;
+    color: white;
+    font-size: 14px;
+    font-weight: 200;
+    min-height: 15px;
+    opacity: 0.8;
+    border: 1px solid white;
+    background-color: black;
+    box-shadow: black 0px 0px 10px;
+    -webkit-box-shadow: black 0px 0px 10px;
+    -moz-box-shadow: black 0px 0px 10px;
+    border-image: initial;
+}
+
+.invitation-page .top-section .join-form .submit-button {
+    width: 100px;
+}
+
+.invitation-page .bottom-section {
+    position: absolute;
+    top: 345px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    /*background-color: #000;*/
+}

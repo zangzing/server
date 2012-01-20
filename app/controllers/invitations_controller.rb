@@ -1,5 +1,8 @@
 class InvitationsController < ApplicationController
 
+  ssl_required :show
+
+
   def send_reminder
     return unless require_user
     Invitation.send_reminder(params[:invitation_id])
@@ -55,7 +58,16 @@ class InvitationsController < ApplicationController
 
 
   def show
-    redirect_to join_url
+    return unless require_no_user
+
+
+    tracked_link = TrackedLink.find_by_tracking_token(current_tracking_token)
+    if tracked_link
+      @friends_name = tracked_link.user.name
+      render :layout => false
+    else
+      redirect_to join_url
+    end
   end
 
 end
