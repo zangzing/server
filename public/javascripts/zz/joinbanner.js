@@ -117,7 +117,7 @@ var zz = zz || {};
         });
         
         zz.buy.on_deactivate(function(){
-        	show_banner();
+        	check_show_banner();
         });
         
         zz.comments.on_open_comments(function(){
@@ -179,7 +179,7 @@ var zz = zz || {};
     }
     
     // Returns true/false for whether the large banner will fit current window width
-    function should_show_large_banner(){
+    function banner_fits(){
     	var banner_width =  866; // 846px + 20px;
     	var usable_width = $(window).width();
     	
@@ -192,18 +192,25 @@ var zz = zz || {};
     }
     
     function banner_refresh(){
-    	if(zz.buy.is_buy_mode_active()){
+    	if(zz.buy.is_buy_mode_active() || $('#checkout-banner .message').is(":visible") ){
     		hide_banner();
-    	} else if(should_show_large_banner()){ 
-    		show_banner();
     	} else {
-    		hide_banner();
+    		show_banner();
+    		if($("#right-drawer").is(":visible")){
+    			if(banner_fits()){
+    				$("#right-drawer").css("top","56px");
+    			} else {
+    				$("#right-drawer").css("top","148px");	
+    			}
+    			
+    		}
     	}
     }
     
     function hide_banner(){
     	$("#header-join-banner").addClass("none");
 		$(".join-banner-spacer").addClass("none");
+		$("#right-drawer").css("top","56px");
 		zz.joinbanner.is_banner_visible = false;
     }
     

@@ -93,6 +93,13 @@ zz.album = {};
         });
     };
     
+    zz.album.get_top_padding = function() {
+        if(zz.joinbanner.is_banner_visible){
+        	return 45 + zz.joinbanner.join_spacer_height;
+        }
+        return 45;
+    }
+
 
     /*           Private Stuff
      ***************************************************/
@@ -119,11 +126,6 @@ zz.album = {};
             var sort_bar = zz.album.sort_bar_template.clone();
             gridElement.append( sort_bar );
             zz.buttonset.disable('ZangZing is preparing '+photos.length+' photos. Sort will be enabled when the album is ready.');
-            
-            var top_padding = 45;
-            if(zz.joinbanner.is_banner_visible){
-            	top_padding += zz.joinbanner.join_spacer_height;
-            }
 
             var grid = gridElement.zz_photogrid( {
                 photos:       photos,
@@ -131,7 +133,7 @@ zz.album = {};
                 context:      buy_mode ? 'chooser-grid' : 'album-grid',
                 cellWidth:    230,
                 cellHeight:   230,
-                topPadding:   top_padding,
+                topPadding:   zz.album.get_top_padding(),
 
 
                 showButtonBar:            !buy_mode,
