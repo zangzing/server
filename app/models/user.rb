@@ -361,7 +361,7 @@ class User < ActiveRecord::Base
 
 
   def storage_used
-    sql = "select sum(photos.image_file_size) / 1024 / 1024 from ( " +
+    sql = "select sum(photos.image_file_size) from ( " +
               "select photos.* from photos, albums where photos.album_id = albums.id and albums.user_id = #{id} " +
               "union " +
               "select photos.* from photos where photos.user_id = #{id} " +
@@ -371,7 +371,7 @@ class User < ActiveRecord::Base
     if row[0].nil?
       return 0
     else
-      return row[0].to_int
+      return row[0].to_int / 1024 / 1024
     end
   end
 
