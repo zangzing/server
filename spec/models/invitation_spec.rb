@@ -24,6 +24,22 @@ describe Invitation do
 
       end
     end
+
+    it "it should not create duplicate invitaions if called multiple times from same user to same email address" do
+      resque_jobs(resque_filter) do
+
+        user = Factory.create(:user)
+        Invitation.send_invitation_to_email(user, 'test@test.zangzing.com')
+        Invitation.send_invitation_to_email(user, 'test@test.zangzing.com')
+
+        user.sent_invitations.length.should == 1
+
+        ActionMailer::Base.deliveries.length.should == 2
+
+      end
+    end
+
+
   end
 
   describe "#send_reminder" do
@@ -89,7 +105,7 @@ describe Invitation do
 
         to_user.received_invitations.first.status.should == Invitation::STATUS_COMPLETE
 
-        ActionMailer::Base.deliveries.length.should == 1
+        ActionMailer::Base.deliveries.length.should == 2 # invite success email and follow email
 
 
         User.find(from_user.id).bonus_storage.should == User::BONUS_STORAGE_MB_PER_INVITE

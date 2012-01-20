@@ -25,9 +25,17 @@ class Invitation < ActiveRecord::Base
     if User.find_by_email(to_address)
       raise InvitedUserAlreadyExists.new(to_address)
     else
-      invitation = create_invitation_for_email(from_user, to_address)
-      invitation_url = "#{get_invitation_url()}?ref=#{invitation.tracked_link.tracking_token}"
-      ZZ::Async::Email.enqueue(:invite_to_join, from_user.id, to_address, invitation_url)
+      invitation = from_user.sent_invitations.find_by_email(to_address)
+      if invitation
+        # if user has already sent invite to this email, then just
+        # send a reminder
+        send_reminder(invitation.id)
+      else
+        # otherwise, create and send new invitation
+        invitation = create_invitation_for_email(from_user, to_address)
+        invitation_url = "#{get_invitation_url()}?ref=#{invitation.tracked_link.tracking_token}"
+        ZZ::Async::Email.enqueue(:invite_to_join, from_user.id, to_address, invitation_url)
+      end
     end
   end
 
