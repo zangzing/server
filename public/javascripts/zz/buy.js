@@ -1283,7 +1283,7 @@ zz.buy = zz.buy || {};
                 render_select_product_screen();
                 break;
             case DRAWER_SCREENS.CONFIGURE_PRODUCT:
-                left = '-381px';
+                left = '-382px';
                 render_configure_product_screen();
                 break;
         }
@@ -1328,14 +1328,14 @@ zz.buy = zz.buy || {};
             $('#article').fadeOut('fast', function(){
 
                 $('#right-drawer').show().animate({right:0},500, function(){
-                    $('#article').css({right:381});
+                    $('#article').css({right:382});
                     $('#article').show();
                     callback();
                 });
             });
         }
         else{
-            $('#article').css({right:381});
+            $('#article').css({right:382});
             $('#article').show();
 
             $('#right-drawer').css({right:0}).show();
