@@ -264,6 +264,11 @@ zz.toolbars = {
     },
 
 
+    hide_bottom_toolbar: function(){
+        $('#footer').remove();
+        $('#article').css('bottom', '0px');
+    },
+
     _init_new_album: function() {
         $('#user-info').css('display', 'none');
 
