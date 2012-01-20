@@ -489,15 +489,11 @@
                         resizeTimer = null;
                     }
                     resizeTimer = setTimeout(function() {
-                    	
-                    	
                         self.width = parseInt(el.css('width'));
                         self.height = parseInt(el.css('height'));
                         self.offset = el.offset();
                         self._initPosForIndex();
-                        
-                    	self.padding_top = zz.album.get_top_padding();
-                        
+                    	self.padding_top = zz.album.get_top_padding();                        
                         self.resetLayout(0,0, true); //no duration, no easing, yes loadIfVisible
                     }, 100);
                 });
