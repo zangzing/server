@@ -126,6 +126,7 @@ class Invitation < ActiveRecord::Base
     # invalidate any other invitations for this email address
     Invitation.find(:all, :conditions=>{:email=>new_user.email, :status=>Invitation::STATUS_PENDING}).each do |invalid_invitation|
       invalid_invitation.status = Invitation::STATUS_COMPLETE_BY_OTHER
+      invalid_invitation.invited_user = new_user
       invalid_invitation.save
     end
 
