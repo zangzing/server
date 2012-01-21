@@ -12,7 +12,7 @@ class Group < ActiveRecord::Base
 
   # make the special wrapped group name
   def self.make_wrapped_name(wrapped_id)
-    name = "wrapped-#{wrapped_id}"
+    name = "user-#{wrapped_id}"
   end
 
   # create the group that wraps the specified user

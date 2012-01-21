@@ -25,7 +25,8 @@ describe "ZZ API Groups" do
       j[:name].should == group_name
       # get all groups by this user
       j = zz_api_get zz_api_users_groups_path, 200
-      j.length.should == 2    # group just created and wrapped group
+      j.length.should == 1    # group just created and wrapped group
+      j[0][:name].should == group_name
     end
 
     it "should get the wrapped user group" do

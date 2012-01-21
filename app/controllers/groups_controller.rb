@@ -137,7 +137,7 @@ class GroupsController < ApplicationController
     return unless require_user
 
     zz_api do
-      groups = Group.find_all_by_user_id(current_user.id)
+      groups = Group.where('user_id = ? AND wrapped_user_id IS NULL', current_user.id).all
       Group.as_array(groups)
     end
   end
