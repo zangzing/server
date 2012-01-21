@@ -66,7 +66,9 @@ class InvitationsController < ApplicationController
       @friends_name = tracked_link.user.name
       render :layout => false
     else
-      redirect_to join_url
+      @friends_name = 'your friend'
+      render :layout => false
+      #redirect_to join_url
     end
   end
 

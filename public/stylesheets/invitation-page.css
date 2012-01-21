@@ -122,5 +122,103 @@
     left: 0px;
     right: 0px;
     bottom: 0px;
-    background-color: #000;
+    background: #141414 url('/images/invitation-landing/feature_glow.jpg') no-repeat 50% 50%;
 }
+
+.invitation-page .slide-container{
+    width:906px;
+    height:400px;
+    position:relative;
+    top:30px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-x: scroll;
+    overflow-y: hidden;
+
+}
+
+.invitation-page .slide-container .slide-clip{
+    width:10000px;
+    height:360px;
+    text-align:left;
+}
+
+.invitation-page .slide-container .slide-clip .slide{
+    display:inline-block;
+    position:relative;
+    height: 360px;
+    width: 906px;
+    /*border: 1px solid red;*/
+    vertical-align: top;
+}
+
+.invitation-page .slide-container .slide-clip .slide .hero_content {
+    position: absolute;
+    right:0px;
+    top:0px;
+    width:350px;
+}
+
+.invitation-page .slide-container .slide-clip .slide .hero_content h1{
+    font-family: 'HelveticaNeue-Bold','HelveticaNeue',sans-serif;
+    font-size: 35px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 0 transparent, 1px 1px 3px rgba(0, 0, 0, 0.75);
+}
+
+.invitation-page .slide-container .slide-clip .slide .hero_content h1:first-of-type{
+    margin-top: 60px;
+}
+
+
+.invitation-page .slide-container .slide-clip .slide .hero_content h2{
+    font-family: 'HelveticaNeue',sans-serif;
+    font-size: 35px;
+    font-weight: normal;
+    color: #fff;
+    text-shadow: 0 0 0 transparent, 1px 1px 3px rgba(0, 0, 0, 0.75);
+}
+
+.invitation-page .slide-container .slide-clip .slide .hero_content h2:first-child{
+    margin-top: 58px;
+}
+
+
+.invitation-page .slide-container .slide-clip .slide .hero_content p{
+    font-family: HelveticaNeue-Light, HelveticaNeue, sans-serif;
+    font-size: 25px;
+    color: #fff;
+    margin-bottom: 29px;
+    margin-top: 10px;
+    line-height: 35px;
+    text-shadow: 0 0 0 transparent, 1px 1px 3px rgba(0, 0, 0, 0.75);
+}
+
+.invitation-page .slide-container .slide-clip .slide .hero_image {
+    position: absolute;
+    left:0px;
+    top:0px;
+}
+
+
+.invitation-page .slide-container .slide-clip .slide.photo_sharing_redesigned .hero_image {
+    top:0px;
+}
+
+.invitation-page .slide-container .slide-clip .slide.add_from_anywhere .hero_image {
+    top:43px;
+}
+
+.invitation-page .slide-container .slide-clip .slide.group_photo_sharing .hero_image {
+    top:0px;
+}
+
+.invitation-page .slide-container .slide-clip .slide.share_how_you_want .hero_image {
+    top:0px;
+}
+
+.invitation-page .slide-container .slide-clip .slide.simply_beautiful .hero_image {
+    top:0px;
+}
+
