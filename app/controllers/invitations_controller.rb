@@ -33,9 +33,12 @@ class InvitationsController < ApplicationController
 
     message = params[:message]
 
+    # sample...
+    # http://www.facebook.com/sharer/sharer.php?s=100&p%5Btitle%5D=Daddy+Design&p%5Bsummary%5D=Become+a+fan+of+Daddy+Design%21&p%5Burl%5D=http%3A%2F%2Fwww.facebook.com%2Fwordpressdesign&p%5Bimages%5D%5B0%5D=http%3A%2F%2Fwww.daddydesign.com%2FClientsTemp%2FTutorials%2Fcustom-iframe-share-button%2Fimages%2Fthumbnail.jpg&
 
+    title = 'Join ZangZing!'
     shareable_url = bitly_url(Invitation.get_invitation_link_for_facebook(current_user))
-    redirect_to "http://www.facebook.com/share.php?u=#{URI.escape shareable_url}&t=#{URI.escape message}"
+    redirect_to "http://www.facebook.com/sharer/sharer.php?s=100&p[url]=#{URI.escape shareable_url}&p[title]=#{title}&p[summary]=#{URI.escape message}"
   end
 
   def send_to_email
