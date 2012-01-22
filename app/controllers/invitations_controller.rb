@@ -39,7 +39,7 @@ class InvitationsController < ApplicationController
     title = 'Join ZangZing!'
     image = "http://#{request.host_with_port}/images/zz-logo.png"
     shareable_url = bitly_url(Invitation.get_invitation_link_for_facebook(current_user))
-    redirect_to "http://www.facebook.com/sharer/sharer.php?s=100&p[url]=#{URI.escape shareable_url}&p[title]=#{title}&p[summary]=#{URI.escape message}&p[images]=#{image}"
+    redirect_to "http://www.facebook.com/sharer/sharer.php?s=100&p[url]=#{URI.escape shareable_url}&p[title]=#{URI.escape title}&p[summary]=#{URI.escape message}&p[images]=#{URI.escape image}"
   end
 
   def send_to_email
