@@ -176,7 +176,7 @@ class User < ActiveRecord::Base
   end
 
   def self.create_automatic(email, name = '')
-    name = ( name == '' ? email.split('@')[0] : name )
+    name = ( name.blank? ? email.split('@')[0] : name )
     # create an automatic user with a random password
     user = User.new(  :automatic => true,
                          :email => email,
