@@ -123,6 +123,7 @@
     right: 0px;
     bottom: 0px;
     background-color: #141414;
+    background: #141414 url('/images/invitation-landing/feature_glow.jpg') no-repeat 50% top;
 }
 
 .invitation-page .next-prev-container{
@@ -131,7 +132,6 @@
     position:relative;
     margin-left: auto;
     margin-right: auto;
-    background: #141414 url('/images/invitation-landing/feature_glow.jpg') no-repeat 50% 50%;
 }
 
 .invitation-page .next-prev-container .next-button{

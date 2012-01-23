@@ -103,7 +103,6 @@ class User < ActiveRecord::Base
 
   BONUS_STORAGE_MB_PER_INVITE = 0.25 * 1024
   MAX_BONUS_MB = 8 * 1024
-  BASE_FREE_STORAGE = 2 * 1024
 
   Identity::UI_INFO.keys.each do |service_name|
     define_method("identity_for_#{service_name}") do
