@@ -68,29 +68,34 @@
                     return;
                 }
 
-                var plural = email_addresses.length==1 ? "" : "s";
 
-                var progress_dialog = zz.dialog.show_spinner_progress_dialog('Sending ' + email_addresses.length + ' invitation#{plural}...'.replace('#{plural}', plural));
+                var progress_dialog = zz.dialog.show_spinner_progress_dialog('Sending ' + email_addresses.length + ' invitation#{plural}...'.replace('#{plural}', email_addresses.length==1 ? "" : "s"));
 
                 zz.routes.invitations.send_by_email(email_addresses, function(json){
-                    if(email_addresses.length > json.already_joined.length){
-                        var message = 'Invitation#{plural} sent.'.replace('#{plural}', plural);
+                    // close the progress dialog
+                    progress_dialog.close();
+                    zz.contact_list.clear();
+
+
+                    //show the confimation dialog
+                    if(json.already_joined.length == 0){
+                        var message = 'Invitation#{plural} sent.'.replace('#{plural}', email_addresses.length==1 ? "" : "s");
+                        var finished_dialog = zz.dialog.show_spinner_progress_dialog(message);
+                        setTimeout(function(){
+                            finished_dialog.close();
+                       },2000);
                     }
                     else{
-                       var message = '';
+                        var sent_count = email_addresses.length - json.already_joined.length
+
+                        var message = '#{count} invitation#{plural} sent.'.replace('#{count}', sent_count).replace('#{plural}',  sent_count == 1 ? "" : "s");
+                        message += '\n';
+                        message += '\n';
+                        message += 'The following people are already ZangZing users: ' + json.already_joined.join(', ');
+                        alert(message);
+
                     }
-                    _.each(json.already_joined, function(email){
-                        message += "<br>" + email + " is already a ZangZing user."
-                    });
 
-                    var finished_dialog = zz.dialog.show_spinner_progress_dialog(message);
-                    progress_dialog.close();
-
-                    setTimeout(function(){
-                        finished_dialog.close();
-                        zz.contact_list.clear();
-
-                    },2000);
                 });
 
             });
