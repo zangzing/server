@@ -68,11 +68,12 @@
 </div>
 
 <div class='bottom-section'>
-
+  <div class="next-prev-container">
+    <div class="next-button"></div>
+    <div class="prev-button"></div>
     <div class="slide-container">
-
       <div class="slide-clip">
-        <div class="slide photo_sharing_redesigned"><!-- #1-->
+        <div class="slide photo_sharing_redesigned"><!-- #0-->
           <div class="hero_image">
             <img src="/images/invitation-landing/photo_sharing_redesigned.png" alt="Photo Sharing Redesigned" width="455px" height="362px">
           </div>
@@ -83,7 +84,7 @@
             <p class="last_point">It’s simple.</p>
           </div>
         </div>
-        <div class="slide add_from_anywhere" ><!-- #2-->
+        <div class="slide add_from_anywhere" ><!-- #1-->
           <div class="hero_image">
             <img src="/images/invitation-landing/add_from_anywhere.png" alt="Add Photos From Anywhere" width="430px" height="233px">
           </div>
@@ -92,7 +93,7 @@
             <p>Add from a Mac or PC, Facebook, Flickr, MobileMe, iPhoto, Email and more. Or even import all your photos.</p>
           </div>
         </div>
-        <div class="slide group_photo_sharing"><!-- #3-->
+        <div class="slide group_photo_sharing"><!-- #2-->
           <div class="hero_image">
             <img src="/images/invitation-landing/group_photo_sharing.png" alt="Group Photo Sharing" width="533px" height="353px">
           </div>
@@ -101,7 +102,7 @@
             <p>Every album is a group album. You decide who can add, view, and download photos.</p>
           </div>
         </div>
-        <div class="slide share_how_you_want" ><!-- #4-->
+        <div class="slide share_how_you_want" ><!-- #3-->
           <div class="hero_image">
             <img src="/images/invitation-landing/share_how_you_want.png" alt="Share Photos How You Want" width="552px" height="308px">
           </div>
@@ -110,7 +111,7 @@
             <p>Public or private album viewing. Share by Email, Facebook or Twitter. Send prints and more.</p>
           </div>
         </div>
-        <div class="slide simply_beautiful activeslide"><!-- #5-->
+        <div class="slide simply_beautiful activeslide"><!-- #4-->
           <div class="hero_image">
             <img src="/images/invitation-landing/simply_beautiful.png" alt="Photo Sharing Redesigned" width="503px" height="305px">
           </div>
@@ -120,12 +121,15 @@
           </div>
         </div>
       </div>
-
-
     </div>
-
-
-
+    <div class="slide-dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
 </div>
 
 <%= render :partial => 'layouts/zza'  %>
@@ -154,6 +158,86 @@
                 $(".invitation-page .join-form").submit();
             }
         });
+
+
+
+        // slideshow
+        var current_slide = 0;
+        var LAST_SIDE = 4;
+        var animating = false;
+
+        var goto_slide = function(slide_index){
+            if (animating){
+                return;
+            }
+
+            var left = slide_index * 906 * -1;
+            animating = true;
+            $('.invitation-page .slide-container .slide-clip').animate({left: left}, 500, 'easeOutCirc', function(){
+                animating = false;
+                current_slide = slide_index;
+                show_next_prev_buttons();
+                update_slide_dots();
+            });
+        };
+
+        var update_slide_dots = function(){
+            $('.invitation-page .bottom-section .slide-dots .dot').removeClass('selected');
+            $($('.invitation-page .bottom-section .slide-dots .dot').get(current_slide)).addClass('selected');
+        };
+
+        var show_next_prev_buttons = function(){
+
+            if(current_slide != LAST_SIDE){
+                $('.invitation-page .bottom-section .next-button').fadeIn('fast');
+            }
+            else{
+                $('.invitation-page .bottom-section .next-button').fadeOut('fast');
+            }
+
+            if(current_slide != 0) {
+                $('.invitation-page .bottom-section .prev-button').fadeIn('fast');
+            }
+            else{
+                $('.invitation-page .bottom-section .prev-button').fadeOut('fast');
+
+            }
+
+        };
+
+
+        $('.invitation-page .bottom-section').mouseenter(function(){
+            show_next_prev_buttons();
+        });
+
+        $('.invitation-page .bottom-section').mouseleave(function(){
+            $(this).find('.next-button').fadeOut('fast');
+            $(this).find('.prev-button').fadeOut('fast');
+        });
+
+
+        // wire up next/prev buttons
+        $('.invitation-page .bottom-section .next-button').click(function(){
+            goto_slide(current_slide + 1);
+        });
+
+        $('.invitation-page .bottom-section .prev-button').click(function(){
+            goto_slide(current_slide - 1);
+        });
+
+        // wire up dot controls
+        for(var i=0;i<=4;i++){
+            (function(slide){
+                $($('.invitation-page .bottom-section .slide-dots .dot').get(slide)).click(function(){
+                    goto_slide(slide);
+                });
+            })(i);
+        }
+
+
+
+        update_slide_dots();
+
 
     });
 

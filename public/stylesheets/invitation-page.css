@@ -122,8 +122,75 @@
     left: 0px;
     right: 0px;
     bottom: 0px;
+    background-color: #141414;
+}
+
+.invitation-page .next-prev-container{
+    width:1004px;
+    height:548px;
+    position:relative;
+    margin-left: auto;
+    margin-right: auto;
     background: #141414 url('/images/invitation-landing/feature_glow.jpg') no-repeat 50% 50%;
 }
+
+.invitation-page .next-prev-container .next-button{
+    position: absolute;
+    top: 200px;
+    right:0px;
+    color:#fff;
+    background: url('/images/invitation-landing/sprites.png') no-repeat -31px 0;
+    cursor: pointer;
+    width: 30px;
+    height: 71px;
+    display:none;
+}
+
+.invitation-page .next-prev-container .next-button:hover{
+    background: url('/images/invitation-landing/sprites.png') no-repeat -31px -71px;
+    display:block;
+
+}
+
+
+
+.invitation-page .next-prev-container .prev-button{
+    position: absolute;
+    top: 200px;
+    left:0px;
+    background: url('/images/invitation-landing/sprites.png') no-repeat 0 0;
+    cursor: pointer;
+    width: 30px;
+    height: 71px;
+    display:none;
+}
+
+.invitation-page .next-prev-container .prev-button:hover{
+    background: url('/images/invitation-landing/sprites.png') no-repeat 0 -71px;
+    display:block;
+}
+
+.invitation-page .next-prev-container .slide-dots{
+    position: absolute;
+    width: 124px;
+    height: 44px;
+    left: 491px;
+    top: 439px;
+}
+
+.invitation-page .next-prev-container .slide-dots .dot{
+    display:inline-block;
+    vertical-align: top;
+    background: url('/images/invitation-landing/sprites.png') no-repeat 0 -160px;
+    width: 22px;
+    height: 44px;
+    cursor: pointer;
+}
+
+.invitation-page .next-prev-container .slide-dots .dot.selected{
+    background: url('/images/invitation-landing/sprites.png') no-repeat 0 -194px;
+}
+
 
 .invitation-page .slide-container{
     width:906px;
@@ -132,15 +199,16 @@
     top:30px;
     margin-left: auto;
     margin-right: auto;
-    overflow-x: scroll;
-    overflow-y: hidden;
-
+    overflow: hidden;
 }
 
 .invitation-page .slide-container .slide-clip{
     width:10000px;
     height:360px;
     text-align:left;
+    position:absolute;
+    top:0px;
+    left:0px;
 }
 
 .invitation-page .slide-container .slide-clip .slide{
