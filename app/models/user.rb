@@ -367,8 +367,6 @@ class User < ActiveRecord::Base
 
 
   def storage_used
-    @storage_used = 10 * 1024
-
     if @storage_used.nil?
 
       sql = "select sum(photos.image_file_size) from ( " +
