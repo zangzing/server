@@ -88,14 +88,14 @@
       <div class="description">
 
         <%
-           storage_used_gb = @user.storage_used / 1024.00  # expensive call, so cache
-           total_storage_gb = @user.total_storage / 1024.00
+           storage_used_gb = @user.storage_used / 1024.00
+           total_storage_gb = @user.account_plan.total_storage / 1024.00
            percent_used = (100 * storage_used_gb / total_storage_gb).to_i
 
         %>
 
-        <div class='bold-text'>ZangZing10</div>
-        <p>Premium account billing starts June 30. <a href="">Learn more</a> or <a href="<%=invite_friends_url%>">invite friends</a> and you both get free space.</p>
+        <p><span class='bold-text'><%= @user.account_plan.name %></span> &mdash; <%= @user.account_plan.description %></p>
+        <p>Premium account billing starts June 30, 2012. <a href="">Learn more</a> or <a href="<%=invite_friends_url%>">invite friends</a> and you both get free space.</p>
 
         <div class='indented content'>
           <div class='storage-meter'>

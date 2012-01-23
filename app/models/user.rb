@@ -351,7 +351,14 @@ class User < ActiveRecord::Base
   
 
 
+  def account_plan
+    if @account_plan.nil?
+      @account_plan = AccountPlan.new(storage_used, usable_bonus_storage)
+    end
 
+    return @account_plan
+
+  end
 
 
 
@@ -361,25 +368,31 @@ class User < ActiveRecord::Base
 
 
   def storage_used
-    sql = "select sum(photos.image_file_size) from ( " +
-              "select photos.* from photos, albums where photos.album_id = albums.id and albums.user_id = #{id} " +
-              "union " +
-              "select photos.* from photos where photos.user_id = #{id} " +
-           ") as photos"
+    @storage_used = 10 * 1024
 
-    row = User.connection.execute(sql).first
-    if row[0].nil?
-      return 0
-    else
-      used = row[0].to_int / 1024 / 1024
-      return (used * 1.1).to_int # add 10% to account for derived images
+    if @storage_used.nil?
+
+      sql = "select sum(photos.image_file_size) from ( " +
+                "select photos.* from photos, albums where photos.album_id = albums.id and albums.user_id = #{id} " +
+                "union " +
+                "select photos.* from photos where photos.user_id = #{id} " +
+             ") as photos"
+
+      row = User.connection.execute(sql).first
+
+      if row[0].nil?
+        @storage_used = 0
+      else
+        used = row[0].to_int / 1024 / 1024
+        @storage_used = (used * 1.1).to_int # add 10% to account for derived images
+      end
+
     end
+
+    return @storage_used
   end
 
 
-  def total_storage
-    BASE_FREE_STORAGE + usable_bonus_storage
-  end
 
 
 
