@@ -53,7 +53,7 @@ class InvitationsController < ApplicationController
       if User.find_by_email(email)
         already_joined_emails << email
       else
-        Invitation.send_invitation_to_email(current_user, email)
+        Invitation.create_and_send_invitation(current_user, email)
       end
     end
 

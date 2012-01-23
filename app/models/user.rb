@@ -371,7 +371,8 @@ class User < ActiveRecord::Base
     if row[0].nil?
       return 0
     else
-      return row[0].to_int / 1024 / 1024
+      used = row[0].to_int / 1024 / 1024
+      return (used * 1.1).to_int # add 10% to account for derived images
     end
   end
 
