@@ -21,19 +21,22 @@ class Invitation < ActiveRecord::Base
   STATUS_PENDING = 'pending'
 
   def self.create_and_send_invitation(from_user, to_address)
-    if User.find_by_email(to_address)
+
+    user = User.find_by_email(to_address)
+
+    if user && !user.automatic?
       raise InvitedUserAlreadyExists.new(to_address)
+    end
+
+    invitation = from_user.sent_invitations.find_by_email(to_address)
+    if invitation
+      # if user has already sent invite to this email, then just
+      # send a reminder
+      send_invitation_to_email(invitation)
     else
-      invitation = from_user.sent_invitations.find_by_email(to_address)
-      if invitation
-        # if user has already sent invite to this email, then just
-        # send a reminder
-        send_invitation_to_email(invitation)
-      else
-        # otherwise, create and send new invitation
-        invitation = create_invitation_for_email(from_user, to_address)
-        send_invitation_to_email(invitation)
-      end
+      # otherwise, create and send new invitation
+      invitation = create_invitation_for_email(from_user, to_address)
+      send_invitation_to_email(invitation)
     end
   end
 
