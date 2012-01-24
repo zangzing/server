@@ -12,6 +12,21 @@ describe Invitation do
   end
 
   describe "#send_invitation_to_email" do
+    it "should allow sending invitation to 'automatic' users" do
+      resque_jobs(resque_filter) do
+
+        user = Factory.create(:user)
+        automatic_user = Factory.create(:user, :email=>"test@test.zangzing.com", :automatic=>true)
+
+        Invitation.create_and_send_invitation(user, automatic_user.email)
+
+        user.sent_invitations.length.should == 1
+
+        ActionMailer::Base.deliveries.length.should == 1
+
+      end
+    end
+
     it "should send email and create PENDING invitation" do
       resque_jobs(resque_filter) do
 
