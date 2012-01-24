@@ -112,6 +112,16 @@ class Invitation < ActiveRecord::Base
         invitation.user = tracked_link.user
       else
         invitation = Invitation.find_by_tracked_link_id(tracked_link.id)
+
+        # if invitation is already complete, this means
+        # that more than one person is using the same invitation
+        # email (which is fine), so just create a new invitation
+        # like we do for facebook and twitter
+        if invitation.status != Invitation::STATUS_PENDING
+          invitation = Invitation.new
+          invitation.tracked_link = tracked_link
+          invitation.user = tracked_link.user
+        end
       end
     else
 

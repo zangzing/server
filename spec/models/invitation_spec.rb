@@ -130,6 +130,24 @@ describe Invitation do
        end
     end
 
+    it "more than one user should be ablet to join using the same invitation email" do
+      from_user = Factory.create(:user)
+
+      email_invitation = Invitation.create_invitation_for_email(from_user, 'test@test.zangzing.com')
+      tracking_token = email_invitation.tracked_link.tracking_token
+
+      new_user_1 = Factory.create(:user, :email => 'test@test.zangzing.com')
+      new_user_2 = Factory.create(:user, :email => 'test2@test.zangzing.com')
+
+      Invitation.process_invitations_for_new_user(new_user_1, tracking_token)
+      Invitation.process_invitations_for_new_user(new_user_2, tracking_token)
+
+      from_user.sent_invitations.length.should == 2
+
+
+
+    end
+
     it "when no tracking token, it should find last invitation by email and invalidate the rest" do
       to_email = 'test@test.zangzing.com'
       Invitation.create_invitation_for_email(Factory.create(:user), to_email)
