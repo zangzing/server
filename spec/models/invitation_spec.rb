@@ -16,7 +16,7 @@ describe Invitation do
       resque_jobs(resque_filter) do
 
         user = Factory.create(:user)
-        Invitation.send_invitation_to_email(user, 'test@test.zangzing.com')
+        Invitation.create_and_send_invitation(user, 'test@test.zangzing.com')
 
         user.sent_invitations.length.should == 1
 
@@ -29,8 +29,8 @@ describe Invitation do
       resque_jobs(resque_filter) do
 
         user = Factory.create(:user)
-        Invitation.send_invitation_to_email(user, 'test@test.zangzing.com')
-        Invitation.send_invitation_to_email(user, 'test@test.zangzing.com')
+        Invitation.create_and_send_invitation(user, 'test@test.zangzing.com')
+        Invitation.create_and_send_invitation(user, 'test@test.zangzing.com')
 
         user.sent_invitations.length.should == 1
 

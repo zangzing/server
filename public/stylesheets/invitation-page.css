@@ -1,5 +1,11 @@
 .invitation-page {
-    /*background: url("/images/invitation-landing/bg.png") no-repeat scroll center top;*/
+    background-color: #141414;
+    overflow-y: auto;
+    position:absolute;
+    top:0px;
+    bottom:0px;
+    left:0px;
+    right:0px;
 }
 
 .invitation-page .top-section {
@@ -121,7 +127,7 @@
     top: 345px;
     left: 0px;
     right: 0px;
-    bottom: 0px;
+    height: 500px;
     background-color: #141414;
     background: #141414 url('/images/invitation-landing/feature_glow.jpg') no-repeat 50% top;
 }

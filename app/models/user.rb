@@ -369,11 +369,20 @@ class User < ActiveRecord::Base
   def storage_used
     if @storage_used.nil?
 
-      sql = "select sum(photos.image_file_size) from ( " +
-                "select photos.* from photos, albums where photos.album_id = albums.id and albums.user_id = #{id} " +
-                "union " +
-                "select photos.* from photos where photos.user_id = #{id} " +
-             ") as photos"
+      # slow, easy to read sql
+      #
+      # sql = "select sum(photos.image_file_size) from ( " +
+      #          "select photos.* from photos, albums where photos.album_id = albums.id and albums.user_id = #{id} " +
+      #          "union " +
+      #          "select photos.* from photos where photos.user_id = #{id} " +
+      #       ") as photos"
+
+
+      # fast, hard to read equivalent
+      #
+      sql = "select COALESCE(my_photos_size,0) + COALESCE(other_photos_size,0) as total_size from " +
+            "(select sum(image_file_size) as my_photos_size from photos where user_id = #{id}) as p1, " +
+            "(select sum(photos.image_file_size) as other_photos_size from photos, albums where photos.album_id = albums.id AND albums.user_id = #{id} AND photos.user_id <> #{id}) as p2"
 
       row = User.connection.execute(sql).first
 

@@ -100,7 +100,7 @@
         <div class='indented content'>
           <div class='storage-meter'>
             <div class='used' style='width:<%= percent_used <= 100 ? percent_used: 100 %>%'></div>
-            <div class='label'><%= percent_used %>% of space used - <%= number_with_precision(storage_used_gb, :precision => 2, :strip_insignificant_zeros => true) %> GB of <%= number_with_precision(total_storage_gb, :precision=> 2, :strip_insignificant_zeros => true)%> GB</div>
+            <div class='label'><%= percent_used %>% of space used - <%= number_with_precision(storage_used_gb, :precision => 3, :strip_insignificant_zeros => true) %> GB of <%= number_with_precision(total_storage_gb, :precision=> 2, :strip_insignificant_zeros => true)%> GB</div>
           </div>
         </div>
       </div>
