@@ -1,0 +1,127 @@
+<div class="invite-friends-header">
+    <div class="title">Invite Your Friends to ZangZing</div>
+    <div class="description">
+      For each friend that joins, you and your friend<br>
+      will each get 250MB of free space, up to 8GB
+    </div>
+</div>
+
+<div class="invite-friends">
+  <div class="invite-by-email">
+    <div class="header">
+      <div class="title">Invite by Email</div>
+      <div class="import"><span>Import from </span>
+        <a data-service="google" class="gray-square-button contacts-btn"><span><div class="off"></div>Google</span></a>
+        <a data-service="local" class="gray-square-button contacts-btn"><span><div class="off"></div>Local</span></a>
+        <a data-service="yahoo" class="gray-square-button contacts-btn"><span><div class="off"></div>Yahoo</span></a>
+        <a data-service="mslive" class="gray-square-button contacts-btn"><span><div class="off"></div>Hotmail</span></a>
+      </div>
+    </div>
+    <div class="to"><input class="contact-list"></div>
+
+    <div class="submit-button"></div>
+  </div>
+
+  <div class="invite-by-social">
+    <div class="title">Invite on Facebook or Twitter</div>
+    <textarea class="message">I am using @ZangZing to to share my photos. Join for free and we both get 250MB of extra space!</textarea>
+    <div class="facebook-button"></div>
+    <div class="twitter-button"></div>
+  </div>
+
+
+  <div class="invite-by-copy-paste">
+    <div class="title">Share a link</div>
+    <input type=text class="link" value="<%= @invite_url_for_copy_paste %>"/>
+  </div>
+</div>
+
+<% content_for :page_javascript do %>
+
+    <script>
+        $(document).ready(function() {
+            //header
+            $('#header .back-button').click(function(){
+                window.history.back();
+            });
+
+
+            //hide bottom toolbar
+            zz.toolbars.hide_bottom_toolbar();
+
+
+
+            // invite by email section
+            zz.contact_list.create(zz.session.current_user_id, $('.invite-by-email .contact-list'), $('.invite-by-email .contacts-btn'));
+
+            $('.invite-by-email .submit-button').click(function(){
+
+                var email_addresses = zz.contact_list.get_email_addresses();
+
+                if(email_addresses.length==0){
+                    alert("Please enter one or more email addresses.");
+                    return;
+                }
+
+                if (zz.contact_list.has_errors()) {
+                    alert('Please correct the highlighted addresses.');
+                    return;
+                }
+
+
+                var progress_dialog = zz.dialog.show_spinner_progress_dialog('Sending ' + email_addresses.length + ' invitation#{plural}...'.replace('#{plural}', email_addresses.length==1 ? "" : "s"));
+
+                zz.routes.invitations.send_by_email(email_addresses, function(json){
+                    // close the progress dialog
+                    progress_dialog.close();
+                    zz.contact_list.clear();
+
+
+                    //show the confimation dialog
+                    if(json.already_joined.length == 0){
+                        var message = 'Invitation#{plural} sent.'.replace('#{plural}', email_addresses.length==1 ? "" : "s");
+                        var finished_dialog = zz.dialog.show_spinner_progress_dialog(message);
+                        setTimeout(function(){
+                            finished_dialog.close();
+                       },2000);
+                    }
+                    else{
+                        var sent_count = email_addresses.length - json.already_joined.length
+
+                        var message = '#{count} invitation#{plural} sent.'.replace('#{count}', sent_count).replace('#{plural}',  sent_count == 1 ? "" : "s");
+                        message += '\n';
+                        message += '\n';
+                        message += 'The following people are already ZangZing users: ' + json.already_joined.join(', ');
+                        alert(message);
+
+                    }
+
+                });
+
+            });
+
+            // invite by socual
+            var get_message = function(){
+                return $('.invite-by-social .message').val();
+            };
+
+            var open_share_window = function(url){
+                window.open(url, 'send-invitation', 'status=0,toolbar=0,width=900,height=700');
+            };
+
+            $('.invite-by-social .facebook-button').click(function(){
+                var url = zz.routes.invitations.get_send_to_facebook_url(get_message());
+                open_share_window(url);
+            });
+
+            $('.invite-by-social .twitter-button').click(function(){
+                var url = zz.routes.invitations.get_send_to_twitter_url(get_message());
+                open_share_window(url);
+            });
+
+
+        });
+    </script>
+
+<% end %>
+
