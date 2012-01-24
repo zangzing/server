@@ -21,8 +21,15 @@ class ProfileAlbum < Album
     ( cover ?  cover.id : nil )
   end
 
-  def profile_photo_url
-    ( cover ? cover.thumb_url : ProfileAlbum.default_profile_small_url)
+  def profile_photo_url(default_on_nil = true)
+    url = nil
+    if cover
+      url = cover.thumb_url
+    else
+      # no cover see if want default or nil
+      url = ProfileAlbum.default_profile_small_url if default_on_nil
+    end
+    url
   end
 
   def self.default_profile_small_url

@@ -46,19 +46,8 @@ class Group < ActiveRecord::Base
         :wrapped_user_id => self.wrapped_user_id,
     }
     # if a wrapped user, add in user related info
-    hash[:user] = Group.user_hash(user) if self.wrapped_user_id
+    hash[:user] = user.basic_user_info_hash if self.wrapped_user_id
     hash
   end
 
-  # user hash with just group related fields
-  def self.user_hash(user)
-    {
-      :id => user.id,
-      :username => user.username,
-      :profile_photo_url => user.profile_photo_url,
-      :first_name => user.first_name,
-      :last_name => user.last_name,
-      :automatic => user.automatic,
-    }
-  end
 end

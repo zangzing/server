@@ -282,7 +282,7 @@ class ApplicationController < ActionController::Base
   # block must not use return at the top level since
   # return in a block exits out to our caller without
   # coming back to us first
-  def zz_api_core(skip_render, block)
+  def zz_api_core(filter, skip_render, block)
     return unless require_zz_api # anything using these api wrappers enforces require_zz_api
     begin
       result = block.call
@@ -293,20 +293,23 @@ class ApplicationController < ActionController::Base
           render :json => JSON.fast_generate(result)
         end
       end
-    rescue ZZAPIError => ex
-      # a custom error which can have a string, hash, or array
-      render_json_error(ex, ex.result, ex.code)
     rescue Exception => ex
-      render_json_error(ex)
+      ex = filter.custom_error(ex) if filter
+      if ex.is_a?(ZZAPIError)
+        # a custom error which can have a string, hash, or array
+        render_json_error(ex, ex.result, ex.code)
+      else
+        render_json_error(ex)
+      end
     end
   end
 
-  def zz_api_self_render(&block)
-    zz_api_core(true, block)
+  def zz_api_self_render(filter = nil, &block)
+    zz_api_core(filter, true, block)
   end
 
-  def zz_api(&block)
-    zz_api_core(false, block)
+  def zz_api(filter = nil, &block)
+    zz_api_core(filter, false, block)
   end
 
 end

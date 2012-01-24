@@ -21,13 +21,23 @@ class GroupsController < ApplicationController
     return unless require_user
 
     zz_api do
-      fields = filter_params(params, [:name])
-      fields[:user_id] = current_user.id
-      group = Group.new(fields)
-      unless group.save
-        raise ZZAPIError.new(group.errors)
+      begin
+        fields = filter_params(params, [:name])
+        fields[:user_id] = current_user.id
+        group = Group.new(fields)
+        unless group.save
+          raise ZZAPIError.new(group.errors)
+        end
+        group.as_hash
+      rescue ActiveRecord::RecordNotUnique => ex
+        msg = "The group #{fields[:name]} already exists"
+        logger.error("#{msg} due to #{ex.message}")
+        raise ZZAPIError.new(msg)
+      rescue Exception => ex
+        msg = "Unable to create the group #{fields[:name]}"
+        logger.error("#{msg} due to #{ex.message}")
+        raise ZZAPIError.new(msg)
       end
-      group.as_hash
     end
   end
 
@@ -103,10 +113,12 @@ class GroupsController < ApplicationController
   #    :user => {
   #        :id => users id,
   #        :username => user name,
-  #        :profile_photo_url => the url to the profile photo,
+  #        :profile_photo_url => the url to the profile photo, nil if none,
   #        :first_name => first_name,
   #        :last_name => last_name,
   #        :automatic => true if an automatic user (one that has not created an account)
+  #        :auto_by_contact => true if automatic user and was created simply by referencing (i.e. we added automatic as result of group or permission operation)
+  #                            if automatic is set and this is false it means we have a user that has actually sent a photo in on that address
   #    },
   # }
   def zz_api_info
@@ -288,7 +300,7 @@ private
         user_ids << user_id
       else
         # not found, so make an automatic user
-        user = User.create_automatic(email, address.display_name)
+        user = User.create_automatic(email, address.display_name, true)
         user_ids << user.id
       end
     end

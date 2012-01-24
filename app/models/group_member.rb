@@ -32,7 +32,7 @@ class GroupMember < ActiveRecord::Base
     hash = {
       :id => self.id,
       :group_id => self.group_id,
-      :user => Group.user_hash(self.user),
+      :user => user.basic_user_info_hash,
     }
     hash
   end

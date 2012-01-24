@@ -175,24 +175,43 @@ class User < ActiveRecord::Base
     MailingList.subscribe_new_user id
   end
 
-  def self.create_automatic(email, name = '')
+  def self.create_automatic(email, name = '', auto_by_contact = false)
     name = ( name.blank? ? email.split('@')[0] : name )
     # create an automatic user with a random password
     user = User.new(  :automatic => true,
                          :email => email,
                          :name => name,
+#                         :auto_by_contact => auto_by_contact,
                          :username => UUIDTools::UUID.random_create.to_s.gsub('-','').to_s,
-                         :password => UUIDTools::UUID.random_create.to_s);
+                         :password => UUIDTools::UUID.random_create.to_s)
     user.reset_perishable_token
     user.save_without_session_maintenance
+    if user.id.nil?
+      # unable to create
+      joined_msg = user.errors.full_messages.join(", ")
+      msg = "Unable to create automatic user for name: #{name}, email: #{email} due to #{joined_msg}"
+      logger.error(msg)
+      raise ActiveRecord::RecordInvalid.new(user)
+    end
     user
   end
 
-  def self.find_by_email_or_create_automatic( email, name='' )
+  def self.find_by_email_or_create_automatic( email, name='', auto_by_contact = false)
     user = User.find_by_email( email )
-    if user.nil?
-      #user not found, create an automatic user with a random password
-      user = create_automatic(email, name)
+    if user
+      #if user.automatic? && user.auto_by_contact && auto_by_contact = false
+      #  # no longer an auto by contact user
+      #  user.auto_by_contact = false
+      #  user.cohort = User.cohort_current # we now have a cohort
+      #  user.save # not crucial if this fails so ignore any error
+      #end
+    else
+      begin
+        #user not found, create an automatic user with a random password
+        user = create_automatic(email, name, auto_by_contact)
+      rescue ActiveRecord::RecordInvalid => ex
+        user = nil
+      end
     end
     return user
   end
@@ -323,15 +342,27 @@ class User < ActiveRecord::Base
       @profile_photo_id ||= profile_album.profile_photo_id
   end
 
-  def profile_photo_url
+  def profile_photo_url(default_on_nil = true)
       create_profile_album if profile_album.nil?
-      @profile_photo_url ||= profile_album.profile_photo_url
+      @profile_photo_url ||= profile_album.profile_photo_url(default_on_nil)
   end
 
   def formatted_email
       "#{self.name} <#{self.email}>"
   end
 
+  # return a has of basic user info used by the api
+  def basic_user_info_hash
+    {
+      :id => id,
+      :username => username,
+      :profile_photo_url => profile_photo_url(false),   # do not want default url if nil, want nil in that case
+      :first_name => first_name,
+      :last_name => last_name,
+      :automatic => automatic,
+      :auto_by_contact => false #todo change to auto_by_contact,
+    }
+  end
 
   # Generate a friendly string randomically to be used as token.
   def self.friendly_token

@@ -458,10 +458,10 @@ class Album < ActiveRecord::Base
 
     if self.everyone_can_contribute?
       # this is open album, so go ahead and create anonymouse user if necessary
-      user = User.find_by_email_or_create_automatic( email, "Anonymous" )
+      user = User.find_by_email_or_create_automatic( email, "Anonymous", false )
     elsif contributor?( email )
       # was in the ACL via email address so turn into real user, no need to test again as we already passed
-      user = User.find_by_email_or_create_automatic( email, "Anonymous" )
+      user = User.find_by_email_or_create_automatic( email, "Anonymous", false )
     else
       # not a contributor by email account, could still be one via user id
       user = User.find_by_email( email )

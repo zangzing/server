@@ -52,7 +52,7 @@ describe "ZZ API Groups" do
       j = zz_api_put zz_api_update_group_path(j[:id]), {:name => new_group_name}, 200
       j[:name].should == new_group_name
       # should fail to create a duplicate group
-      j = zz_api_post zz_api_create_group_path, {:name => new_group_name}, 509
+      j = zz_api_post zz_api_create_group_path, {:name => new_group_name}, 409
     end
 
     it "should create a group and add username members" do

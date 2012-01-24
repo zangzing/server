@@ -60,7 +60,12 @@ class Share < ActiveRecord::Base
 
   # validate a single email
   def self.validate_email(email)
-    e = Mail::Address.new( email.to_slug.to_ascii.to_s  )
+    begin
+      e = Mail::Address.new( email.to_slug.to_ascii.to_s  )
+    rescue Mail::Field::ParseError => ex
+      # simplify the error message
+      raise Mail::Field::ParseError.new("Invalid email format")
+    end
     # An address like 'foobar' is a valid local address with no domain so avoid it
     raise Mail::Field::ParseError.new("Invalid email format") if e.domain.nil?
     e
@@ -85,8 +90,8 @@ class Share < ActiveRecord::Base
       begin
         #TODO: Email validator in share.rb does not handle formatted_emails just the address
         emails << validate_email(t).address.to_s
-      rescue Mail::Field::ParseError
-        errors << { :index => token_index, :token => t, :error => "Invalid Email Address" }
+      rescue Mail::Field::ParseError => ex
+        errors << { :index => token_index, :token => t, :error => ex.message }
       end
       token_index+= 1
     end
