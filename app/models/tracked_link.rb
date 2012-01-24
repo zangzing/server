@@ -49,7 +49,7 @@ class TrackedLink < ActiveRecord::Base
     if @@test_token
       return @@test_token
     else
-      return ActiveSupport::SecureRandom.base64(8).gsub("/","_").gsub("+","_").gsub("=","_")
+      return ActiveSupport::SecureRandom.base64(8).gsub("/","").gsub("+","").gsub("=","")
     end
   end
 
