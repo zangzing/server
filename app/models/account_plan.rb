@@ -10,10 +10,10 @@ class AccountPlan
       @plan_storage = 2 * 1024
       @description = '2 GB, plus up to 8 GB bonus through invitations. FREE!'
 
-    elsif plan_storage_used <= 25 *1024
+    elsif plan_storage_used <= 25 * 1024
       @name = 'ZangZing 25'
       @plan_storage = 25 * 1024
-      @description = '25 GB, plus up to 8 GB bonus through invitations. $5/mo or $40/year.'
+      @description = '25 GB, plus up to 8 GB bonus through invitations. $5/mo or $50/year.'
 
     elsif plan_storage_used <= 50 * 1024
       @name = 'ZangZing 50'
