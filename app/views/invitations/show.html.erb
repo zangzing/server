@@ -167,6 +167,11 @@
         var animating = false;
 
         var goto_slide = function(slide_index){
+            if (slide_index < 0 || slide_index > LAST_SIDE){
+                return;
+            }
+
+
             if (animating){
                 return;
             }
