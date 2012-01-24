@@ -390,7 +390,7 @@ class User < ActiveRecord::Base
         @storage_used = 0
       else
         used = row[0].to_int / 1024 / 1024
-        @storage_used = (used * 1.1).to_int # add 10% to account for derived images
+        @storage_used = (used * 1.15).to_int # add 10% to account for derived images
       end
 
     end
