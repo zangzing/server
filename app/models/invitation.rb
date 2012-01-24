@@ -32,7 +32,14 @@ class Invitation < ActiveRecord::Base
     if invitation
       # if user has already sent invite to this email, then just
       # send a reminder
-      send_invitation_to_email(invitation)
+
+
+      # need to check status of invitation in case user already accepted this invitation, but used
+      # different email address to join
+      if invitation.status == Invitation::STATUS_PENDING
+        send_invitation_to_email(invitation)
+      end
+
     else
       # otherwise, create and send new invitation
       invitation = create_invitation_for_email(from_user, to_address)
@@ -42,22 +49,22 @@ class Invitation < ActiveRecord::Base
 
   def self.send_reminder(invitation_id)
     invitation = Invitation.find(invitation_id)
-    send_invitation_to_email(invitation)
-  end
 
-  def self.send_invitation_to_email(invitation)
     if invitation.status != Invitation::STATUS_PENDING
       raise "Sorry, you can't send a reminder for a completed invitation."
     end
 
-    invitation_url = "#{get_invitation_url()}?ref=#{invitation.tracked_link.tracking_token}"
+    send_invitation_to_email(invitation)
+  end
+
+  def self.send_invitation_to_email(invitation)
+     invitation_url = "#{get_invitation_url()}?ref=#{invitation.tracked_link.tracking_token}"
 
     from_user = invitation.user
     to_address = invitation.tracked_link.shared_to_address
 
     ZZ::Async::Email.enqueue(:invite_to_join, from_user.id, to_address, invitation_url)
-
-  end
+   end
 
   def self.create_invitation_for_email(from_user, to_address)
     tracked_link = TrackedLink.create_tracked_link(from_user, get_invitation_url, TrackedLink::TYPE_INVITATION, TrackedLink::SHARED_TO_EMAIL, shared_to_address=to_address)
