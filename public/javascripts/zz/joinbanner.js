@@ -202,7 +202,7 @@ var zz = zz || {};
     			if(banner_fits()){
     				$("#right-drawer").css("top","56px");
     			} else {
-    				$("#right-drawer").css("top","148px");	
+    				$("#right-drawer").css("top","154px");	
     			}
     			
     		}
