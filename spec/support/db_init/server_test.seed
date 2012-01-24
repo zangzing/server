@@ -36,7 +36,7 @@ CREATE TABLE `activities` (
   KEY `index_activities_on_user_id` (`user_id`),
   KEY `index_activities_on_subject_id_and_subject_type` (`subject_id`,`subject_type`),
   KEY `index_activities_on_user_id_and_subject_id_and_subject_type` (`user_id`,`subject_id`,`subject_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=4690 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5007 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,7 +76,7 @@ CREATE TABLE `addresses` (
   KEY `index_addresses_on_firstname` (`firstname`),
   KEY `index_addresses_on_lastname` (`lastname`),
   KEY `index_addresses_on_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,7 +111,7 @@ CREATE TABLE `adjustments` (
   `originator_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_adjustments_on_order_id` (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -171,7 +171,7 @@ CREATE TABLE `albums` (
   KEY `index_albums_on_user_id` (`user_id`),
   KEY `index_albums_on_deleted_at` (`deleted_at`),
   KEY `index_albums_on_created_at` (`created_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=29900081238 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29900081806 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -446,7 +446,7 @@ CREATE TABLE `commentables` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `subjectid_subjecttype_index` (`subject_id`,`subject_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=269900074221 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=269900074283 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -476,7 +476,7 @@ CREATE TABLE `comments` (
   PRIMARY KEY (`id`),
   KEY `index_comments_on_commentable_id` (`commentable_id`),
   KEY `index_comments_on_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=279900074237 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=279900074301 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -758,7 +758,7 @@ CREATE TABLE `emails` (
   `kind` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'transactional',
   PRIMARY KEY (`id`),
   KEY `index_emails_on_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -767,7 +767,7 @@ CREATE TABLE `emails` (
 
 LOCK TABLES `emails` WRITE;
 /*!40000 ALTER TABLE `emails` DISABLE KEYS */;
-INSERT INTO `emails` VALUES (1,'photos_ready',1,NULL,NULL,'status'),(2,'password_reset',2,NULL,NULL,'transactional'),(3,'album_shared',3,NULL,NULL,'invites'),(4,'album_liked',4,NULL,NULL,'social'),(5,'photo_liked',5,NULL,NULL,'social'),(6,'user_liked',6,NULL,NULL,'social'),(7,'contribution_error',7,NULL,NULL,'transactional'),(8,'album_updated',8,NULL,NULL,'social'),(9,'contributor_added',9,NULL,NULL,'invites'),(10,'welcome',10,NULL,NULL,'transactional'),(11,'beta_invite',11,NULL,NULL,'transactional'),(12,'photo_shared',12,NULL,NULL,'invites'),(13,'photo_comment',13,NULL,NULL,'transactional'),(14,'order_confirmed',14,NULL,NULL,'transactional'),(15,'order_cancelled',16,NULL,NULL,'transactional'),(16,'order_shipped',15,NULL,NULL,'transactional'),(17,'request_access',17,NULL,NULL,'transactional'),(18,'request_contributor',18,NULL,NULL,'transactional');
+INSERT INTO `emails` VALUES (1,'photos_ready',1,NULL,NULL,'status'),(2,'password_reset',2,NULL,NULL,'transactional'),(3,'album_shared',3,NULL,NULL,'invites'),(4,'album_liked',4,NULL,NULL,'social'),(5,'photo_liked',5,NULL,NULL,'social'),(6,'user_liked',6,NULL,NULL,'social'),(7,'contribution_error',7,NULL,NULL,'transactional'),(8,'album_updated',8,NULL,NULL,'social'),(9,'contributor_added',9,NULL,NULL,'invites'),(10,'welcome',10,NULL,NULL,'transactional'),(11,'beta_invite',11,NULL,NULL,'transactional'),(12,'photo_shared',12,NULL,NULL,'invites'),(13,'photo_comment',13,NULL,NULL,'transactional'),(14,'order_confirmed',14,NULL,NULL,'transactional'),(15,'order_cancelled',16,NULL,NULL,'transactional'),(16,'order_shipped',15,NULL,NULL,'transactional'),(17,'request_access',17,NULL,NULL,'transactional'),(18,'request_contributor',18,NULL,NULL,'transactional'),(19,'invite_to_join',NULL,NULL,NULL,'transactional'),(20,'joined_from_invite',NULL,NULL,NULL,'transactional');
 /*!40000 ALTER TABLE `emails` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -845,7 +845,7 @@ CREATE TABLE `group_members` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_group_members_on_group_id_and_user_id` (`group_id`,`user_id`),
   KEY `index_group_members_on_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1004 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1447 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -875,7 +875,7 @@ CREATE TABLE `groups` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_groups_on_user_id_and_name` (`user_id`,`name`),
   UNIQUE KEY `index_groups_on_wrapped_user_id` (`wrapped_user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=921 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1349 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -884,7 +884,7 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO `groups` VALUES (1,249900073723,'wrapped-249900073723',249900073723,'2012-01-19 03:00:15','2012-01-19 03:00:15'),(2,249900073724,'wrapped-249900073724',249900073724,'2012-01-19 03:00:15','2012-01-19 03:00:15'),(3,249900073725,'wrapped-249900073725',249900073725,'2012-01-19 03:00:15','2012-01-19 03:00:15'),(4,249900073726,'wrapped-249900073726',249900073726,'2012-01-19 03:00:15','2012-01-19 03:00:15'),(5,249900073727,'wrapped-249900073727',249900073727,'2012-01-19 03:00:15','2012-01-19 03:00:15'),(6,249900073728,'wrapped-249900073728',249900073728,'2012-01-19 03:00:15','2012-01-19 03:00:15'),(7,249900073729,'wrapped-249900073729',249900073729,'2012-01-19 03:00:15','2012-01-19 03:00:15'),(8,249900076056,'wrapped-249900076056',249900076056,'2012-01-19 03:00:15','2012-01-19 03:00:15');
+INSERT INTO `groups` VALUES (1,249900073723,'user-249900073723',249900073723,'2012-01-19 03:00:15','2012-01-19 03:00:15'),(2,249900073724,'user-249900073724',249900073724,'2012-01-19 03:00:15','2012-01-19 03:00:15'),(3,249900073725,'user-249900073725',249900073725,'2012-01-19 03:00:15','2012-01-19 03:00:15'),(4,249900073726,'user-249900073726',249900073726,'2012-01-19 03:00:15','2012-01-19 03:00:15'),(5,249900073727,'user-249900073727',249900073727,'2012-01-19 03:00:15','2012-01-19 03:00:15'),(6,249900073728,'user-249900073728',249900073728,'2012-01-19 03:00:15','2012-01-19 03:00:15'),(7,249900073729,'user-249900073729',249900073729,'2012-01-19 03:00:15','2012-01-19 03:00:15'),(8,249900076056,'user-249900076056',249900076056,'2012-01-19 03:00:15','2012-01-19 03:00:15');
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -938,7 +938,7 @@ CREATE TABLE `identities` (
   `last_import_all` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_identities_on_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=109900074033 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=109900074049 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -986,6 +986,39 @@ INSERT INTO `inventory_units` VALUES (1,249339650,5,'sold',0,'2011-09-02 21:02:3
 UNLOCK TABLES;
 
 --
+-- Table structure for table `invitations`
+--
+
+DROP TABLE IF EXISTS `invitations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `invitations` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) NOT NULL,
+  `invited_user_id` bigint(20) DEFAULT NULL,
+  `tracked_link_id` bigint(20) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_invitations_on_user_id` (`user_id`),
+  KEY `index_invitations_on_invited_user_id` (`invited_user_id`),
+  KEY `index_invitations_on_tracked_link_id` (`tracked_link_id`),
+  KEY `index_invitations_on_email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `invitations`
+--
+
+LOCK TABLES `invitations` WRITE;
+/*!40000 ALTER TABLE `invitations` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invitations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `like_counters`
 --
 
@@ -999,7 +1032,7 @@ CREATE TABLE `like_counters` (
   `subject_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_like_counters_on_subject_id_and_subject_type` (`subject_id`,`subject_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=261 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=294 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1028,7 +1061,7 @@ CREATE TABLE `likes` (
   UNIQUE KEY `index_likes_on_user_id_and_subject_id_and_subject_type` (`user_id`,`subject_id`,`subject_type`),
   KEY `index_likes_on_subject_id` (`subject_id`),
   KEY `index_likes_on_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=591 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=624 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1065,7 +1098,7 @@ CREATE TABLE `line_items` (
   PRIMARY KEY (`id`),
   KEY `index_line_items_on_order_id` (`order_id`),
   KEY `index_line_items_on_variant_id` (`variant_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=788 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=885 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1093,7 +1126,7 @@ CREATE TABLE `log_entries` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1364,7 +1397,7 @@ CREATE TABLE `orders` (
   PRIMARY KEY (`id`),
   KEY `index_orders_on_number` (`number`),
   KEY `index_orders_on_ezp_reference_id` (`ezp_reference_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=187 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=209 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1455,7 +1488,7 @@ CREATE TABLE `photo_infos` (
   `metadata` blob,
   PRIMARY KEY (`id`),
   KEY `index_photo_infos_on_photo_id` (`photo_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=159900073971 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=159900073985 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1566,7 +1599,7 @@ CREATE TABLE `preferences` (
 
 LOCK TABLES `preferences` WRITE;
 /*!40000 ALTER TABLE `preferences` DISABLE KEYS */;
-INSERT INTO `preferences` VALUES (59769363,'amount',491052212,'Calculator',NULL,NULL,'5','2011-09-02 18:09:27','2011-09-02 18:09:27'),(87531454,'amount',192811543,'Calculator',NULL,NULL,'10','2011-09-02 18:09:27','2011-09-02 18:09:27'),(174063089,'amount',574015644,'Calculator',NULL,NULL,'5.50','2011-09-02 18:09:27','2011-09-02 18:42:05'),(243735672,'amount',13537749,'Calculator',NULL,NULL,'15.0','2011-09-02 18:09:27','2011-09-02 18:40:59'),(613325334,'logo',1,'Configuration',NULL,NULL,'/images/zz-logo.png','2011-08-26 22:42:36','2011-09-02 18:09:27'),(613325335,'public_key',1034433118,'PaymentMethod',NULL,NULL,'4942qbzqb4zkgjgj','2011-09-02 18:17:48','2011-09-02 18:17:48'),(613325336,'private_key',1034433118,'PaymentMethod',NULL,NULL,'4t2vrzf7g53bzb8d','2011-09-02 18:17:48','2011-09-02 18:17:48'),(613325337,'server',1034433118,'PaymentMethod',NULL,NULL,'test','2011-09-02 18:17:48','2011-09-02 18:17:48'),(613325338,'test_mode',1034433118,'PaymentMethod',NULL,NULL,'1','2011-09-02 18:17:48','2011-09-02 18:17:48'),(613325339,'merchant_id',1034433118,'PaymentMethod',NULL,NULL,'ppg8rg9ymsbzffzs','2011-09-02 18:17:48','2011-09-02 18:17:48'),(613325340,'flat_percent',759407714,'Calculator',NULL,NULL,'0.10','2011-09-02 18:41:27','2011-09-02 18:41:27'),(613325341,'amount',309742077,'Calculator',NULL,NULL,'3.00','2011-09-02 18:41:49','2011-09-02 18:41:49'),(613325342,'ezp_shipping_type',759407715,'Calculator',NULL,NULL,'ON','2011-09-23 22:25:11','2011-09-23 22:25:11'),(613325343,'markup_amount',759407715,'Calculator',NULL,NULL,'2.00','2011-09-23 22:25:11','2011-09-23 22:25:11'),(613325344,'ezp_shipping_type',759407716,'Calculator',NULL,NULL,'SD','2011-09-23 22:27:15','2011-09-23 22:27:15'),(613325345,'markup_amount',759407716,'Calculator',NULL,NULL,'2.00','2011-09-23 22:27:15','2011-09-23 22:27:15'),(613325346,'ezp_shipping_type',759407717,'Calculator',NULL,NULL,'PM','2011-09-23 22:27:36','2011-09-23 22:28:33'),(613325347,'markup_amount',759407717,'Calculator',NULL,NULL,'2.0','2011-09-23 22:27:36','2011-09-23 22:27:58'),(613325348,'ezp_shipping_type',759407718,'Calculator',NULL,NULL,'FC','2011-09-23 22:29:10','2011-09-23 22:29:10'),(613325349,'markup_amount',759407718,'Calculator',NULL,NULL,'0.0','2011-09-23 22:29:10','2011-09-23 22:29:10'),(613325350,'amount',759407719,'Calculator',NULL,NULL,'0.0','2011-09-29 06:08:11','2011-09-29 06:08:11'),(613325351,'site_name',1,'Configuration',NULL,NULL,'ZangZing Prints','2011-09-29 06:10:52','2011-09-29 06:10:52'),(613325352,'default_seo_title',1,'Configuration',NULL,NULL,'ZangZing Group Photo Sharing Prints','2011-09-29 06:10:52','2011-09-29 06:10:52'),(613325353,'allow_backorder_shipping',1,'Configuration',NULL,NULL,'1','2011-09-29 06:10:52','2012-01-20 19:45:13'),(613325354,'checkout_zone',1,'Configuration',NULL,NULL,'North America','2011-09-29 06:10:53','2011-09-29 06:10:53'),(613325355,'zz_environments',1,'Configuration',NULL,NULL,'development,photos_staging,photos_production','2011-09-29 06:10:53','2011-09-29 06:10:53'),(613325356,'create_inventory_units',1,'Configuration',NULL,NULL,'0','2011-09-29 07:45:11','2012-01-20 19:45:13'),(613325357,'track_inventory_levels',1,'Configuration',NULL,NULL,'0','2011-09-29 07:48:12','2012-01-20 19:45:13'),(613325358,'public_key',1034433119,'PaymentMethod',NULL,NULL,'zvkmgsh344j35xcy','2011-10-17 18:54:11','2011-10-17 18:54:11'),(613325359,'private_key',1034433119,'PaymentMethod',NULL,NULL,'qhfrww8q5chp7mb7','2011-10-17 18:54:11','2011-10-17 18:54:11'),(613325360,'server',1034433119,'PaymentMethod',NULL,NULL,'live','2011-10-17 18:54:11','2011-10-17 18:54:11'),(613325361,'test_mode',1034433119,'PaymentMethod',NULL,NULL,'0','2011-10-17 18:54:11','2011-10-17 18:54:11'),(613325362,'merchant_id',1034433119,'PaymentMethod',NULL,NULL,'m4s8yqq2x6j3qcwv','2011-10-17 18:54:11','2011-10-17 18:54:11');
+INSERT INTO `preferences` VALUES (59769363,'amount',491052212,'Calculator',NULL,NULL,'5','2011-09-02 18:09:27','2011-09-02 18:09:27'),(87531454,'amount',192811543,'Calculator',NULL,NULL,'10','2011-09-02 18:09:27','2011-09-02 18:09:27'),(174063089,'amount',574015644,'Calculator',NULL,NULL,'5.50','2011-09-02 18:09:27','2011-09-02 18:42:05'),(243735672,'amount',13537749,'Calculator',NULL,NULL,'15.0','2011-09-02 18:09:27','2011-09-02 18:40:59'),(613325334,'logo',1,'Configuration',NULL,NULL,'/images/zz-logo.png','2011-08-26 22:42:36','2011-09-02 18:09:27'),(613325335,'public_key',1034433118,'PaymentMethod',NULL,NULL,'4942qbzqb4zkgjgj','2011-09-02 18:17:48','2011-09-02 18:17:48'),(613325336,'private_key',1034433118,'PaymentMethod',NULL,NULL,'4t2vrzf7g53bzb8d','2011-09-02 18:17:48','2011-09-02 18:17:48'),(613325337,'server',1034433118,'PaymentMethod',NULL,NULL,'test','2011-09-02 18:17:48','2011-09-02 18:17:48'),(613325338,'test_mode',1034433118,'PaymentMethod',NULL,NULL,'1','2011-09-02 18:17:48','2011-09-02 18:17:48'),(613325339,'merchant_id',1034433118,'PaymentMethod',NULL,NULL,'ppg8rg9ymsbzffzs','2011-09-02 18:17:48','2011-09-02 18:17:48'),(613325340,'flat_percent',759407714,'Calculator',NULL,NULL,'0.10','2011-09-02 18:41:27','2011-09-02 18:41:27'),(613325341,'amount',309742077,'Calculator',NULL,NULL,'3.00','2011-09-02 18:41:49','2011-09-02 18:41:49'),(613325342,'ezp_shipping_type',759407715,'Calculator',NULL,NULL,'ON','2011-09-23 22:25:11','2011-09-23 22:25:11'),(613325343,'markup_amount',759407715,'Calculator',NULL,NULL,'2.00','2011-09-23 22:25:11','2011-09-23 22:25:11'),(613325344,'ezp_shipping_type',759407716,'Calculator',NULL,NULL,'SD','2011-09-23 22:27:15','2011-09-23 22:27:15'),(613325345,'markup_amount',759407716,'Calculator',NULL,NULL,'2.00','2011-09-23 22:27:15','2011-09-23 22:27:15'),(613325346,'ezp_shipping_type',759407717,'Calculator',NULL,NULL,'PM','2011-09-23 22:27:36','2011-09-23 22:28:33'),(613325347,'markup_amount',759407717,'Calculator',NULL,NULL,'2.0','2011-09-23 22:27:36','2011-09-23 22:27:58'),(613325348,'ezp_shipping_type',759407718,'Calculator',NULL,NULL,'FC','2011-09-23 22:29:10','2011-09-23 22:29:10'),(613325349,'markup_amount',759407718,'Calculator',NULL,NULL,'0.0','2011-09-23 22:29:10','2011-09-23 22:29:10'),(613325350,'amount',759407719,'Calculator',NULL,NULL,'0.0','2011-09-29 06:08:11','2011-09-29 06:08:11'),(613325351,'site_name',1,'Configuration',NULL,NULL,'ZangZing Prints','2011-09-29 06:10:52','2011-09-29 06:10:52'),(613325352,'default_seo_title',1,'Configuration',NULL,NULL,'ZangZing Group Photo Sharing Prints','2011-09-29 06:10:52','2011-09-29 06:10:52'),(613325353,'allow_backorder_shipping',1,'Configuration',NULL,NULL,'1','2011-09-29 06:10:52','2012-01-24 02:43:42'),(613325354,'checkout_zone',1,'Configuration',NULL,NULL,'North America','2011-09-29 06:10:53','2011-09-29 06:10:53'),(613325355,'zz_environments',1,'Configuration',NULL,NULL,'development,photos_staging,photos_production','2011-09-29 06:10:53','2011-09-29 06:10:53'),(613325356,'create_inventory_units',1,'Configuration',NULL,NULL,'0','2011-09-29 07:45:11','2012-01-24 02:43:42'),(613325357,'track_inventory_levels',1,'Configuration',NULL,NULL,'0','2011-09-29 07:48:12','2012-01-24 02:43:42'),(613325358,'public_key',1034433119,'PaymentMethod',NULL,NULL,'zvkmgsh344j35xcy','2011-10-17 18:54:11','2011-10-17 18:54:11'),(613325359,'private_key',1034433119,'PaymentMethod',NULL,NULL,'qhfrww8q5chp7mb7','2011-10-17 18:54:11','2011-10-17 18:54:11'),(613325360,'server',1034433119,'PaymentMethod',NULL,NULL,'live','2011-10-17 18:54:11','2011-10-17 18:54:11'),(613325361,'test_mode',1034433119,'PaymentMethod',NULL,NULL,'0','2011-10-17 18:54:11','2011-10-17 18:54:11'),(613325362,'merchant_id',1034433119,'PaymentMethod',NULL,NULL,'m4s8yqq2x6j3qcwv','2011-10-17 18:54:11','2011-10-17 18:54:11');
 /*!40000 ALTER TABLE `preferences` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2050,7 +2083,7 @@ CREATE TABLE `s3_pending_delete_photos` (
   KEY `index_s3_pending_delete_photos_on_user_id` (`user_id`),
   KEY `index_s3_pending_delete_photos_on_album_id` (`album_id`),
   KEY `index_s3_pending_delete_photos_on_deleted_at` (`deleted_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2081,7 +2114,7 @@ CREATE TABLE `schema_migrations` (
 
 LOCK TABLES `schema_migrations` WRITE;
 /*!40000 ALTER TABLE `schema_migrations` DISABLE KEYS */;
-INSERT INTO `schema_migrations` VALUES ('20110228010001'),('20110228195321'),('20110302043648'),('20110302202711'),('20110305055050'),('20110307165112'),('20110310034208'),('20110313035847'),('20110316235837'),('20110319043609'),('20110319232010'),('20110320220345'),('20110322033910'),('20110324200054'),('20110325205404'),('20110328203609'),('20110329021755'),('20110401013929'),('20110403231317'),('20110406201910'),('20110406225933'),('20110407004119'),('20110407040519'),('20110408204436'),('20110410213740'),('20110413205907'),('20110426230341'),('20110428155234'),('20110429165651'),('20110502044321'),('20110502161700'),('20110504004102'),('20110504141325'),('20110510175628'),('20110512165632'),('20110512181517'),('20110517174539'),('20110523203348'),('20110525000813'),('20110601172216'),('20110601195642'),('20110609214433'),('20110701145318'),('20110706015610'),('20110718210439'),('20110719031957'),('20110725180030'),('20110725181819'),('20110729182150'),('20110824000157'),('20110825000252'),('20110825000253'),('20110825000254'),('20110825000255'),('20110825000256'),('20110825152645'),('20110830194455'),('20110906210200'),('20110912123705'),('20110912202350'),('20110914233445'),('20110916173101'),('20110920201830'),('20110920210244'),('20110926184748'),('20110926212805'),('20110927190011'),('20110928161130'),('20111017183805'),('20111027190758'),('20111031160917'),('20111111225723'),('20111115005532'),('20111208032446'),('20111212193450'),('20111219233752'),('20111221215247'),('20120105220834'),('20120110224305');
+INSERT INTO `schema_migrations` VALUES ('20110228010001'),('20110228195321'),('20110302043648'),('20110302202711'),('20110305055050'),('20110307165112'),('20110310034208'),('20110313035847'),('20110316235837'),('20110319043609'),('20110319232010'),('20110320220345'),('20110322033910'),('20110324200054'),('20110325205404'),('20110328203609'),('20110329021755'),('20110401013929'),('20110403231317'),('20110406201910'),('20110406225933'),('20110407004119'),('20110407040519'),('20110408204436'),('20110410213740'),('20110413205907'),('20110426230341'),('20110428155234'),('20110429165651'),('20110502044321'),('20110502161700'),('20110504004102'),('20110504141325'),('20110510175628'),('20110512165632'),('20110512181517'),('20110517174539'),('20110523203348'),('20110525000813'),('20110601172216'),('20110601195642'),('20110609214433'),('20110701145318'),('20110706015610'),('20110718210439'),('20110719031957'),('20110725180030'),('20110725181819'),('20110729182150'),('20110824000157'),('20110825000252'),('20110825000253'),('20110825000254'),('20110825000255'),('20110825000256'),('20110825152645'),('20110830194455'),('20110906210200'),('20110912123705'),('20110912202350'),('20110914233445'),('20110916173101'),('20110920201830'),('20110920210244'),('20110926184748'),('20110926212805'),('20110927190011'),('20110928161130'),('20111017183805'),('20111027190758'),('20111031160917'),('20111111225723'),('20111115005532'),('20111208032446'),('20111212193450'),('20111219233752'),('20111221215247'),('20120105220834'),('20120107001413'),('20120110192930'),('20120110224305'),('20120112231819'),('20120119012935');
 /*!40000 ALTER TABLE `schema_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2101,7 +2134,7 @@ CREATE TABLE `sessions` (
   PRIMARY KEY (`id`),
   KEY `index_sessions_on_session_id` (`session_id`),
   KEY `index_sessions_on_updated_at` (`updated_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=229900074525 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=229900074572 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2173,7 +2206,7 @@ CREATE TABLE `shipments` (
   `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_shipments_on_number` (`number`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2257,7 +2290,7 @@ CREATE TABLE `slugs` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_slugs_on_n_s_s_and_s` (`name`,`sluggable_type`,`sequence`,`scope`),
   KEY `index_slugs_on_sluggable_id` (`sluggable_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=199900081278 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=199900081851 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2288,7 +2321,7 @@ CREATE TABLE `state_events` (
   `stateful_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `next_state` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=276 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=307 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2353,7 +2386,7 @@ CREATE TABLE `subscriptions` (
   KEY `index_subscriptions_on_email` (`email`),
   KEY `index_subscriptions_on_unsubscribe_token` (`unsubscribe_token`),
   KEY `index_subscriptions_on_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5521 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5941 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2393,7 +2426,7 @@ CREATE TABLE `system_settings` (
 
 LOCK TABLES `system_settings` WRITE;
 /*!40000 ALTER TABLE `system_settings` DISABLE KEYS */;
-INSERT INTO `system_settings` VALUES (2,'new_users_allowed','Allow this many new users (when signup control is on)','integer','0','2011-08-07 17:04:02','2011-08-07 17:04:02',NULL),(3,'always_allow_beta_listers','Always allow beta-listers to sign up (even if the allowed number of users is 0)','boolean','0','2011-08-07 17:04:02','2011-08-07 17:04:02',NULL),(4,'allow_sharers','Allow \"shared\" users to sign up. (Only allow potd-beta and admin added users)','boolean','0','2011-08-07 17:04:02','2011-08-07 17:04:02',NULL),(5,'signup_control','Turn ON Signup Control (when off anyone can signup)','boolean','0','2011-08-07 17:04:02','2011-08-07 17:04:02',NULL),(6,'facebook_post_caption','Caption','string','www.zangzing.com','2011-08-07 17:04:02','2011-08-07 17:04:02','Text displayed under the asset name by user line (Not Clickable)'),(7,'facebook_post_description','Description','string','ZangZing is a new group photo sharing service. Click Join ZangZing to get on the early access list.  It’s free.','2011-08-07 17:04:02','2011-08-07 17:04:02','Boilerplate text displayed in gray next to photo under caption'),(8,'facebook_post_actions','Actions','string','{\"name\":\"Join ZangZing\",\"link\":\"http://www.zangzing.com/join\"}','2011-08-07 17:04:02','2011-08-07 17:04:02','A JSON hash of name:link pairs for actions displayed at the bottom next to like and comment'),(9,'system_message_text','Message','string','ZangZing will have a brief interruption of service for maintenance at 5:00AM PST Tomorrow','2011-08-07 17:04:04','2011-08-07 17:04:04','A Systemt Wide Message to be displayed to all active users at the top of the ZangZing app'),(10,'system_message_enabled','Enabled','boolean','0','2011-08-07 17:04:04','2011-08-07 17:04:04','The system message will only be displayed if its enabled'),(11,'system_message_style','Style','string','Maintenance','2011-08-07 17:04:04','2011-08-07 17:04:04','The decoration style to be used when displaying the message'),(12,'homepage_deploy_tag','Deploy Tag for V3 Homepage','string','origin/master','2011-08-07 17:04:04','2011-08-07 17:04:04','Current deploy tag for v3homepage repository'),(13,'test_data_ver','Test Data Set Version','string','GWS-2012-01-20-01','2011-08-24 17:23:16','2012-01-20 19:45:16','Test Data Set Version');
+INSERT INTO `system_settings` VALUES (2,'new_users_allowed','Allow this many new users (when signup control is on)','integer','0','2011-08-07 17:04:02','2011-08-07 17:04:02',NULL),(3,'always_allow_beta_listers','Always allow beta-listers to sign up (even if the allowed number of users is 0)','boolean','0','2011-08-07 17:04:02','2011-08-07 17:04:02',NULL),(4,'allow_sharers','Allow \"shared\" users to sign up. (Only allow potd-beta and admin added users)','boolean','0','2011-08-07 17:04:02','2011-08-07 17:04:02',NULL),(5,'signup_control','Turn ON Signup Control (when off anyone can signup)','boolean','0','2011-08-07 17:04:02','2011-08-07 17:04:02',NULL),(6,'facebook_post_caption','Caption','string','www.zangzing.com','2011-08-07 17:04:02','2011-08-07 17:04:02','Text displayed under the asset name by user line (Not Clickable)'),(7,'facebook_post_description','Description','string','ZangZing is a new group photo sharing service. Click Join ZangZing to get on the early access list.  It’s free.','2011-08-07 17:04:02','2011-08-07 17:04:02','Boilerplate text displayed in gray next to photo under caption'),(8,'facebook_post_actions','Actions','string','{\"name\":\"Join ZangZing\",\"link\":\"http://www.zangzing.com/join\"}','2011-08-07 17:04:02','2011-08-07 17:04:02','A JSON hash of name:link pairs for actions displayed at the bottom next to like and comment'),(9,'system_message_text','Message','string','ZangZing will have a brief interruption of service for maintenance at 5:00AM PST Tomorrow','2011-08-07 17:04:04','2011-08-07 17:04:04','A Systemt Wide Message to be displayed to all active users at the top of the ZangZing app'),(10,'system_message_enabled','Enabled','boolean','0','2011-08-07 17:04:04','2011-08-07 17:04:04','The system message will only be displayed if its enabled'),(11,'system_message_style','Style','string','Maintenance','2011-08-07 17:04:04','2011-08-07 17:04:04','The decoration style to be used when displaying the message'),(12,'homepage_deploy_tag','Deploy Tag for V3 Homepage','string','origin/master','2011-08-07 17:04:04','2011-08-07 17:04:04','Current deploy tag for v3homepage repository'),(13,'test_data_ver','Test Data Set Version','string','GWS-2012-01-23-02','2011-08-24 17:23:16','2012-01-24 02:43:45','Test Data Set Version');
 /*!40000 ALTER TABLE `system_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2520,6 +2553,40 @@ INSERT INTO `taxons` VALUES (1,180529684,NULL,0,'Photo Products','2011-09-02 18:
 UNLOCK TABLES;
 
 --
+-- Table structure for table `tracked_links`
+--
+
+DROP TABLE IF EXISTS `tracked_links`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tracked_links` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `tracking_token` varchar(255) NOT NULL DEFAULT '0',
+  `link_type` varchar(255) DEFAULT '0',
+  `url` varchar(255) DEFAULT '0',
+  `shared_to` varchar(255) DEFAULT '0',
+  `shared_to_address` varchar(255) DEFAULT '0',
+  `user_id` bigint(20) DEFAULT NULL,
+  `visit_count` int(11) DEFAULT '0',
+  `join_count` int(11) DEFAULT '0',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `index_tracked_links_on_tracking_token` (`tracking_token`),
+  KEY `index_tracked_links_on_user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tracked_links`
+--
+
+LOCK TABLES `tracked_links` WRITE;
+/*!40000 ALTER TABLE `tracked_links` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tracked_links` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `trackers`
 --
 
@@ -2598,7 +2665,7 @@ CREATE TABLE `upload_batches` (
   KEY `index_upload_batches_on_updated_at_and_state` (`updated_at`,`state`),
   KEY `index_upload_batches_on_state` (`state`),
   KEY `index_upload_batches_on_open_activity_at_and_state` (`open_activity_at`,`state`)
-) ENGINE=InnoDB AUTO_INCREMENT=209900075496 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=209900075619 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2626,7 +2693,7 @@ CREATE TABLE `user_preferences` (
   `asktopost_likes` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `index_user_preferences_on_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5512 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5931 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2674,6 +2741,7 @@ CREATE TABLE `users` (
   `ship_address_id` int(11) DEFAULT NULL,
   `bill_address_id` int(11) DEFAULT NULL,
   `creditcard_id` int(11) DEFAULT NULL,
+  `bonus_storage` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_users_on_email` (`email`),
   UNIQUE KEY `index_users_on_username` (`username`),
@@ -2681,7 +2749,7 @@ CREATE TABLE `users` (
   KEY `index_users_on_persistence_token` (`persistence_token`),
   KEY `index_users_on_cohort` (`cohort`),
   KEY `index_users_on_created_at` (`created_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=249900079234 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=249900079653 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2690,7 +2758,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (249900073723,'marketing@zangzing.com','zangzing','','ZangZing','white','4fc708e9f7c2fd820670f93ad338a289202ab6a91fe71af4229028f3f6cb63737f0e83b43ebdb3d5ed9e302bc25a312c195f4baa41a31d5df422eef11c803a86','KJqKq0hX0M7XIpuyX2','f35fce364214e8e0414edd447997fd6501a39b778d4e5b29f8c9dbe93453ac379aa2912c2e165606a01b20cafdb77dc8dfe4ff7a1b28acda815cf279ad181966','srjZJkiIoKxDv1bdlW','vSrmsisLAGFeBaoh0RSw',0,NULL,NULL,NULL,NULL,'2011-08-07 17:04:16','2011-08-07 17:04:16',1,1,0,0,NULL,5,NULL,NULL,NULL),(249900073724,'admin@zangzing.com','zzadmin','ZangZing','Admin','white','18d50d1b8520e295a510d9e9e2ce0d5220c257ff5b2f5616a05e86364f95b4599cfde446ea700c01e8914ba20c112c51548015690165ad60b07cf61c2f319b20','gfT0D0S88sP6oNhXFpD','fb0165df0c4a62c4027257a87a14f78e323a97ca94259857c518d72f951c6402a6df59115b59fab9728b486a93603d8509afd552f50d73c455fdf2d373520ac6','bbysjKSVgSawvN7wbY5','HwBypK56bOtaQdUPWtfq',0,NULL,NULL,NULL,NULL,'2011-08-07 17:04:16','2011-08-07 17:04:16',1,1,0,0,NULL,5,NULL,NULL,NULL),(249900073725,'gseitz@gmail.com','gseitz','Greg','Seitz','white','02570e760e867647bd502e26b55cc14cc575c15d1af0669aa133837830ecdd58aada21b63362669fb168f1d2001b648b2b0323e1c6c2c354fa8211a9e686d020','wxIescemKIYuo1fk01O','3a2834025f2139ebb4652262a4914101a82cdc50479d3ad1f5c9947625a817e157c29807a149f29a004e85348e37fe8d718c42807082261531674c42f748d78e','3aqDrfbcEaErCu71XP4','8gtmjxncdsKuFdqSrZ44',0,'2011-09-10 17:53:23','2011-08-30 20:19:57','127.0.0.1','127.0.0.1','2011-08-07 17:06:25','2011-10-08 00:13:54',1,1,0,5,'2011-10-08 00:13:39',5,1,10,2),(249900073726,'frumpfred@gmail.com','frumpfred','Fred','Frump','white','53e820a53a5c737da05712fb154e781349c642b7c26ad53a3e267d8d6d506f2f1c426d915672d26dc0e32f2f10c9fb84c1b9a5dba5e4dc2360c4eedeb7b45d2a','ExFEtAgCvd5u0sPlhGME','a8b3908f194e6483edcbcc4415bc3571eee7a08bc1f3c28358a11fa63469bf99f14c2296404d34534d53c7186e0acb919110df01a9b315d4bc7db532c887879e','euNfJBj1NuxX9FkD1DW','AhAvclrjfeFOAIVb9G',0,'2011-08-22 21:49:03',NULL,'127.0.0.1',NULL,'2011-08-22 21:49:03','2011-08-23 21:10:23',1,1,0,1,'2011-08-23 21:10:23',5,NULL,NULL,NULL),(249900073727,'test1@zznowhere.com','test1','Test1','User1','white','6b0b6e5133f6f4ec31a2abc11c024b6eb1c7fa192c05afaad8b0d79da6d009c4ff1fe1ef6417b9d388c80616bd296dbe1a3d88142204266b5f749413f80db890','ESf83OyO2JU68nCrQ9l','23782acef6965109ffe90b7c9cea63655e1aeb7068ad56256e6fc2b8fc92397441ab8f97cbaf0108eb1f2f27333ffee753f91b54cfd88de18e4dd4ade5fc18c7','pmlQz4oWlKlCjwukMI','MYuasnTPuqM1jG3vdMXY',0,'2011-09-12 19:58:52','2011-09-12 18:35:02','127.0.0.1','127.0.0.1','2011-08-23 21:11:37','2011-09-12 19:58:52',1,1,0,8,'2011-09-12 19:58:16',5,NULL,NULL,NULL),(249900073728,'test2@zznowhere.com','test2','Test2','User','white','44aa2c47c04cffb5e17e5855f850178b5f9576b2f69d1b94e3aae521c600c79de00f556b1b0d81139c687db04404644d42ee603dbb0caaabdc63db3c5b486d1a','a6YBNkM4haQL0KP49m6d','ce31a8f2a53bcf3ae6f20aedab240393e5af71ab6f8ff83050d23705a98a6c47d385b4217d8ebaa6cdd22e8d8ac3733690bde8d47a72360b5f2c452c490d3e68','rKAYWMVcZ2kMKp5tdis','XzND8liGuCsYBPs5reY',0,'2011-09-12 19:58:25','2011-08-29 22:11:11','127.0.0.1','127.0.0.1','2011-08-23 21:12:39','2011-09-12 19:58:25',1,1,0,3,'2011-09-12 19:58:25',5,NULL,NULL,NULL),(249900073729,'ezprintsuser@zangzing.com','ezprintsuser','EZPrints','EZPrints','white','d9df2748cb1f1dae43a9332b6a13caa95f28cf209d39bc48701866bd75f4c3c9239d72de3e84ba18f2ba32d31ad7500d147f342b7813f6534486e54ab03ba972','z0KdKbm2izQrVBszXzJd','75f800bb7ea4e38bdf70acbb757f5f028405bd8458be3c637c2d421c046ddbc3199aba7390bfc88d7fb8e6930faf559f5605b0dfd56e7c0df5f6386a786e8f31','UHmycAAb8mNdza1WAAeV','FrdxKulL22iIDOOZC',0,NULL,NULL,NULL,NULL,'2011-09-23 19:58:56','2011-09-23 19:58:56',1,1,0,0,NULL,6,NULL,NULL,NULL),(249900076056,'marketinguser@zangzing.com','zzmarketing','ZangZing','Marketing','white','77e5070900fde1656caf0630a1b94c670f5d2990a263e467d6431d0a81a7403a61f9a5bb029944feb1d29564fe0a1edc11c13d98d58093691c9f422d398dd6b5','GM1VDBzHdKn8dm2vXTp','85e06b9b9309ebb45291b47de95fe9e93fa2b029c94061397a40b3d7abe20ed1077a3195b341a66a2b175ada05e9babb893618e2c0ad1a4935c24907f622a3c5','868yyhJWBZ6yUZZgOjCv','sqYrsaMCWsLD7rDsChzF',0,'2011-10-27 19:32:37',NULL,'127.0.0.1',NULL,'2011-10-27 19:26:40','2011-10-27 19:32:37',1,1,0,1,'2011-10-27 19:32:37',7,NULL,NULL,NULL);
+INSERT INTO `users` VALUES (249900073723,'marketing@zangzing.com','zangzing','','ZangZing','white','4fc708e9f7c2fd820670f93ad338a289202ab6a91fe71af4229028f3f6cb63737f0e83b43ebdb3d5ed9e302bc25a312c195f4baa41a31d5df422eef11c803a86','KJqKq0hX0M7XIpuyX2','f35fce364214e8e0414edd447997fd6501a39b778d4e5b29f8c9dbe93453ac379aa2912c2e165606a01b20cafdb77dc8dfe4ff7a1b28acda815cf279ad181966','srjZJkiIoKxDv1bdlW','vSrmsisLAGFeBaoh0RSw',0,NULL,NULL,NULL,NULL,'2011-08-07 17:04:16','2011-08-07 17:04:16',1,1,0,0,NULL,5,NULL,NULL,NULL,0),(249900073724,'admin@zangzing.com','zzadmin','ZangZing','Admin','white','18d50d1b8520e295a510d9e9e2ce0d5220c257ff5b2f5616a05e86364f95b4599cfde446ea700c01e8914ba20c112c51548015690165ad60b07cf61c2f319b20','gfT0D0S88sP6oNhXFpD','fb0165df0c4a62c4027257a87a14f78e323a97ca94259857c518d72f951c6402a6df59115b59fab9728b486a93603d8509afd552f50d73c455fdf2d373520ac6','bbysjKSVgSawvN7wbY5','HwBypK56bOtaQdUPWtfq',0,NULL,NULL,NULL,NULL,'2011-08-07 17:04:16','2011-08-07 17:04:16',1,1,0,0,NULL,5,NULL,NULL,NULL,0),(249900073725,'gseitz@gmail.com','gseitz','Greg','Seitz','white','02570e760e867647bd502e26b55cc14cc575c15d1af0669aa133837830ecdd58aada21b63362669fb168f1d2001b648b2b0323e1c6c2c354fa8211a9e686d020','wxIescemKIYuo1fk01O','3a2834025f2139ebb4652262a4914101a82cdc50479d3ad1f5c9947625a817e157c29807a149f29a004e85348e37fe8d718c42807082261531674c42f748d78e','3aqDrfbcEaErCu71XP4','8gtmjxncdsKuFdqSrZ44',0,'2011-09-10 17:53:23','2011-08-30 20:19:57','127.0.0.1','127.0.0.1','2011-08-07 17:06:25','2011-10-08 00:13:54',1,1,0,5,'2011-10-08 00:13:39',5,1,10,2,0),(249900073726,'frumpfred@gmail.com','frumpfred','Fred','Frump','white','53e820a53a5c737da05712fb154e781349c642b7c26ad53a3e267d8d6d506f2f1c426d915672d26dc0e32f2f10c9fb84c1b9a5dba5e4dc2360c4eedeb7b45d2a','ExFEtAgCvd5u0sPlhGME','a8b3908f194e6483edcbcc4415bc3571eee7a08bc1f3c28358a11fa63469bf99f14c2296404d34534d53c7186e0acb919110df01a9b315d4bc7db532c887879e','euNfJBj1NuxX9FkD1DW','AhAvclrjfeFOAIVb9G',0,'2011-08-22 21:49:03',NULL,'127.0.0.1',NULL,'2011-08-22 21:49:03','2011-08-23 21:10:23',1,1,0,1,'2011-08-23 21:10:23',5,NULL,NULL,NULL,0),(249900073727,'test1@zznowhere.com','test1','Test1','User1','white','6b0b6e5133f6f4ec31a2abc11c024b6eb1c7fa192c05afaad8b0d79da6d009c4ff1fe1ef6417b9d388c80616bd296dbe1a3d88142204266b5f749413f80db890','ESf83OyO2JU68nCrQ9l','23782acef6965109ffe90b7c9cea63655e1aeb7068ad56256e6fc2b8fc92397441ab8f97cbaf0108eb1f2f27333ffee753f91b54cfd88de18e4dd4ade5fc18c7','pmlQz4oWlKlCjwukMI','MYuasnTPuqM1jG3vdMXY',0,'2011-09-12 19:58:52','2011-09-12 18:35:02','127.0.0.1','127.0.0.1','2011-08-23 21:11:37','2011-09-12 19:58:52',1,1,0,8,'2011-09-12 19:58:16',5,NULL,NULL,NULL,0),(249900073728,'test2@zznowhere.com','test2','Test2','User','white','44aa2c47c04cffb5e17e5855f850178b5f9576b2f69d1b94e3aae521c600c79de00f556b1b0d81139c687db04404644d42ee603dbb0caaabdc63db3c5b486d1a','a6YBNkM4haQL0KP49m6d','ce31a8f2a53bcf3ae6f20aedab240393e5af71ab6f8ff83050d23705a98a6c47d385b4217d8ebaa6cdd22e8d8ac3733690bde8d47a72360b5f2c452c490d3e68','rKAYWMVcZ2kMKp5tdis','XzND8liGuCsYBPs5reY',0,'2011-09-12 19:58:25','2011-08-29 22:11:11','127.0.0.1','127.0.0.1','2011-08-23 21:12:39','2011-09-12 19:58:25',1,1,0,3,'2011-09-12 19:58:25',5,NULL,NULL,NULL,0),(249900073729,'ezprintsuser@zangzing.com','ezprintsuser','EZPrints','EZPrints','white','d9df2748cb1f1dae43a9332b6a13caa95f28cf209d39bc48701866bd75f4c3c9239d72de3e84ba18f2ba32d31ad7500d147f342b7813f6534486e54ab03ba972','z0KdKbm2izQrVBszXzJd','75f800bb7ea4e38bdf70acbb757f5f028405bd8458be3c637c2d421c046ddbc3199aba7390bfc88d7fb8e6930faf559f5605b0dfd56e7c0df5f6386a786e8f31','UHmycAAb8mNdza1WAAeV','FrdxKulL22iIDOOZC',0,NULL,NULL,NULL,NULL,'2011-09-23 19:58:56','2011-09-23 19:58:56',1,1,0,0,NULL,6,NULL,NULL,NULL,0),(249900076056,'marketinguser@zangzing.com','zzmarketing','ZangZing','Marketing','white','77e5070900fde1656caf0630a1b94c670f5d2990a263e467d6431d0a81a7403a61f9a5bb029944feb1d29564fe0a1edc11c13d98d58093691c9f422d398dd6b5','GM1VDBzHdKn8dm2vXTp','85e06b9b9309ebb45291b47de95fe9e93fa2b029c94061397a40b3d7abe20ed1077a3195b341a66a2b175ada05e9babb893618e2c0ad1a4935c24907f622a3c5','868yyhJWBZ6yUZZgOjCv','sqYrsaMCWsLD7rDsChzF',0,'2011-10-27 19:32:37',NULL,'127.0.0.1',NULL,'2011-10-27 19:26:40','2011-10-27 19:32:37',1,1,0,1,'2011-10-27 19:32:37',7,NULL,NULL,NULL,0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2794,4 +2862,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-01-20 11:45:17
+-- Dump completed on 2012-01-23 18:43:45

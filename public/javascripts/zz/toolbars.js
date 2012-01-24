@@ -28,7 +28,6 @@ zz.toolbars = {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
-            ZZAt.track('button.gridview.click');
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #grid-view-button').addClass('selected');
             $('#article').fadeOut(200);
@@ -37,6 +36,7 @@ zz.toolbars = {
             } else {
                 document.location.href = zz.page.displayed_user_base_url;
             }
+            ZZAt.track('button.gridview.click');
 
         });
 
@@ -49,11 +49,11 @@ zz.toolbars = {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
-            ZZAt.track('button.pictureview.click');
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #picture-view-button').addClass('selected');
             $('#article').fadeOut(200);
             document.location.href = zz.page.album_base_url + '/photos/#!';
+            ZZAt.track('button.pictureview.click');
         });
 
         $('#header #view-buttons #people-view-button').click(function() {
@@ -76,7 +76,6 @@ zz.toolbars = {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
-            ZZAt.track('button.activitiesview.click');
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #activities-view-button').addClass('selected');
             $('#article').fadeOut(200);
@@ -85,6 +84,7 @@ zz.toolbars = {
             } else {
                 document.location.href = zz.page.displayed_user_base_url + '/activities';
             }
+            ZZAt.track('button.activitiesview.click');
         });
 
         $('#header #help-button').click(function(event) {
@@ -114,8 +114,8 @@ zz.toolbars = {
         });
 
         $('#header #sign-in-button').click(function() {
-            ZZAt.track('button.signin.click');
             document.location.href = '/signin?return_to=' + encodeURIComponent(document.location.href);
+            ZZAt.track('button.signin.click');
         });
 
         $('#footer #play-button').click(function() {
@@ -264,6 +264,11 @@ zz.toolbars = {
     },
 
 
+    hide_bottom_toolbar: function(){
+        $('#footer').remove();
+        $('#article').css('bottom', '0px');
+    },
+
     _init_new_album: function() {
         $('#user-info').css('display', 'none');
 
@@ -310,23 +315,30 @@ zz.toolbars = {
 
         //Bind Each Menu Item
         $('#acct-get-started-btn').click(function() {
-            ZZAt.track('acctmenu.getstarted.click');
             window.open('/about/getting-started','GettingStarted','width=1000,height=1000,scrollbars=1');
+            ZZAt.track('acctmenu.getstarted.click');
         });
+
+        $('#acct-invite-friends-btn').click(function() {
+            zz.routes.users.goto_invite_friends_screen();
+            ZZAt.track('acctmenu.invite-friends.click');
+        });
+
+
         $('#acct-settings-btn').click(function() {
             zz.toolbars._disable_buttons();
-            ZZAt.track('acctmenu.settings.click');
             $('#header #account-badge').removeClass('disabled').addClass('selected');
             document.location.href = zz.routes.edit_user_path(zz.session.current_user_name);
+            ZZAt.track('acctmenu.settings.click');
         });
         $('#acct-blog-btn').click(function() {
-            ZZAt.track('acctmenu.blog.click');
             window.open('/blog','ZangZing','width=1100,height=1000,scrollbars=1');
+            ZZAt.track('acctmenu.blog.click');
         });
         $('#acct-signout-btn').click(function() {
             zz.local_storage.clear();
-            ZZAt.track('acctmenu.signout.click');
             window.location = zz.routes.path_prefix + '/signout';
+            ZZAt.track('acctmenu.signout.click');
         });
 
         $('#account-badge').click(function() {

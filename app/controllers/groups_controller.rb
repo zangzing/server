@@ -348,7 +348,7 @@ private
     addresses = []
     if emails && emails.length > 0
       emails.each do |email|
-        addresses << Share.validate_email(email)
+        addresses << ZZ::EmailValidator.validate_email(email)
       end
     end
     addresses

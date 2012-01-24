@@ -21,13 +21,15 @@ class ApplicationController < ActionController::Base
   include ResponseActionsHelper
   include BuyHelper
   include Spree::CurrentOrder
+  include TrackedLinkHelper
 
   helper :all # include all helpers, all the time
 
   helper_method :user_pretty_url, :album_pretty_url, :photo_pretty_url,
-                :back_to_home_page_url, :back_to_home_page_caption, :current_order
+                :back_to_home_page_url, :back_to_home_page_caption, :current_order,
+                :check_link_tracking_token
 
-  before_filter :check_referrer_and_reset_last_home_page
+  before_filter :check_referrer_and_reset_last_home_page, :check_link_tracking_token
 
   after_filter :flash_to_headers
 
@@ -56,6 +58,9 @@ class ApplicationController < ActionController::Base
     add_javascript_action('send_zza_event_from_client', {:event => event})
   end
 
+
+
+
   #
   #  these helpers and filters are used to manage the 'all albums' back button
   def store_last_home_page(user_id)
@@ -65,6 +70,7 @@ class ApplicationController < ActionController::Base
   def last_home_page
     session[:last_home_page]
   end
+
 
   def check_referrer_and_reset_last_home_page
     unless request.referer.include? "http://#{request.host_with_port}"

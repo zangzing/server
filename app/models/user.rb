@@ -58,6 +58,13 @@ class User < ActiveRecord::Base
   has_many :client_applications, :dependent => :destroy 
   has_many :tokens, :class_name=>"OauthToken",:order=>"authorized_at desc",:include=>[:client_application]
 
+  #invitations
+  has_many :sent_invitations, :class_name => "Invitation", :foreign_key => "user_id"
+  has_many :received_invitations, :class_name => "Invitation", :foreign_key => "invited_user_id"
+
+
+
+
   #SPREE
   has_many   :addresses
   has_many   :creditcards
@@ -96,6 +103,9 @@ class User < ActiveRecord::Base
 
 
   has_friendly_id :username
+
+  BONUS_STORAGE_MB_PER_INVITE = 0.25 * 1024
+  MAX_BONUS_MB = 8 * 1024
 
   Identity::UI_INFO.keys.each do |service_name|
     define_method("identity_for_#{service_name}") do
@@ -378,6 +388,59 @@ class User < ActiveRecord::Base
   end
   
 
+
+  def account_plan
+    if @account_plan.nil?
+      @account_plan = AccountPlan.new(storage_used, usable_bonus_storage)
+    end
+
+    return @account_plan
+
+  end
+
+
+
+  def usable_bonus_storage
+    [MAX_BONUS_MB, bonus_storage].min
+  end
+
+
+  def storage_used
+    if @storage_used.nil?
+
+      # slow, easy to read sql
+      #
+      # sql = "select sum(photos.image_file_size) from ( " +
+      #          "select photos.* from photos, albums where photos.album_id = albums.id and albums.user_id = #{id} " +
+      #          "union " +
+      #          "select photos.* from photos where photos.user_id = #{id} " +
+      #       ") as photos"
+
+
+      # fast, hard to read equivalent
+      #
+      sql = "select COALESCE(my_photos_size,0) + COALESCE(other_photos_size,0) as total_size from " +
+            "(select sum(image_file_size) as my_photos_size from photos where user_id = #{id}) as p1, " +
+            "(select sum(photos.image_file_size) as other_photos_size from photos, albums where photos.album_id = albums.id AND albums.user_id = #{id} AND photos.user_id <> #{id}) as p2"
+
+      row = User.connection.execute(sql).first
+
+      if row[0].nil?
+        @storage_used = 0
+      else
+        used = row[0].to_int / 1024 / 1024
+        @storage_used = (used * 1.1).to_int # add 10% to account for derived images
+      end
+
+    end
+
+    return @storage_used
+  end
+
+
+
+
+
   private
   def old_password_valid?
     if (require_password? || (old_password && old_password.length > 0) ) && !new_record? && !valid_password?(old_password)
@@ -456,6 +519,8 @@ class User < ActiveRecord::Base
         Cache::Album::Manager.shared.user_albums_acl_modified(id)
      end
   end
+
+
 
   # returns an array of auto like ids
   # this method is only called by auto_like_ids
