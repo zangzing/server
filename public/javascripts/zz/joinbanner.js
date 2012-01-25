@@ -81,7 +81,7 @@ var zz = zz || {};
 		                '<li><label for="user_username">Username</label><input type="text" name="user[username]" id="user_username" value="" /></li>' +
 		                '<li><label for="user_email">Email address</label><input type="text" name="user[email]" id="user_email" value="" /></li>' +
 		                '<li><label for="user_password">Password</label><input type="password" name="user[password]" id="user_password" value="" maxlength="40" /></li>' +
-		                '<li><a class="submit-button newgreen-button"><span>Join for Free</span></a></li>' +
+		                '<li><a class="submit-button newgreen-button" rel="nofollow"><span>Join for Free</span></a></li>' +
 		                '</ul>' +
 		                '</form>' +
 		            '</div>'
@@ -170,14 +170,14 @@ var zz = zz || {};
 		var bit_notation = 0;
 
 		bit_notation = 
-			Math.pow(2,0) * $('#header-join-banner #user_name').valid() +
-			Math.pow(2,1) * ($('#header-join-banner #user_name').val().length != 0) + 
-			Math.pow(2,2) * $('#header-join-banner #user_username').valid() +
-			Math.pow(2,3) * ($('#header-join-banner #user_username').val().length != 0) + 		
-			Math.pow(2,4) * $('#header-join-banner #user_email').valid() +
-			Math.pow(2,5) * ($('#header-join-banner #user_email').val().length != 0) + 		
-			Math.pow(2,6) * $('#header-join-banner #user_password').valid() +
-			Math.pow(2,7) * ($('#header-join-banner #user_password').val().length != 0);			
+			1 * $('#header-join-banner #user_name').valid() +
+			2 * ($('#header-join-banner #user_name').val().length != 0) + 
+			4 * $('#header-join-banner #user_username').valid() +
+			8 * ($('#header-join-banner #user_username').val().length != 0) + 		
+			16 * $('#header-join-banner #user_email').valid() +
+			32 * ($('#header-join-banner #user_email').val().length != 0) + 		
+			64 * $('#header-join-banner #user_password').valid() +
+			128 * ($('#header-join-banner #user_password').val().length != 0);			
 			
 		num_fields_nonempty =
 			($('#header-join-banner #user_name').val().length != 0) +

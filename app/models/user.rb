@@ -424,11 +424,16 @@ class User < ActiveRecord::Base
 
 
   def split_name
-      unless name.nil?
-        names = name.split
+    unless name.nil?
+      names = name.split
+      if names.length > 1
         self.last_name = names.pop
         self.first_name = names.join(' ')
+      else
+        self.first_name = names.pop
+        self.last_name = ""
       end
+    end
   end
 
 
