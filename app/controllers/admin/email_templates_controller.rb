@@ -12,7 +12,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
   end
 
   def create
-    @email_template=  EmailTemplate.new( params[:email_template ])
+    @email_template= EmailTemplate.new(params[:email_template])
     if @email_template.save
       flash[:notice]="Template #{@email_template.name} has been created"
       redirect_to email_templates_path()
@@ -67,9 +67,9 @@ class Admin::EmailTemplatesController < Admin::AdminController
   def test
     if params[:id] && params[:id]=='all'
       i = 0
-      EmailTemplate.all.each do | et |
+      EmailTemplate.all.each do |et|
         begin
-          @message = send( 'test_'+et.email.name, et.id )
+          @message = send('test_'+et.email.name, et.id)
           @message[:to]=params[:target_address] unless params[:target_address].blank?
           @message.deliver
           i += 1
@@ -77,7 +77,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
           flash[:error]= "#{i} messages sent but there was an error on #{et.name} "+e.message
           redirect_to :back and return
         rescue Exception => e
-          flash[:error]="#{i} messages sent but unable to test template #{et.name} because: #{(e.message && e.message.length >0 ? e.message : e )}."
+          flash[:error]="#{i} messages sent but unable to test template #{et.name} because: #{(e.message && e.message.length >0 ? e.message : e)}."
           redirect_to :back and return
         end
       end
@@ -85,8 +85,8 @@ class Admin::EmailTemplatesController < Admin::AdminController
       redirect_to :back and return
     else
       begin
-        @template = EmailTemplate.find( params[:id] )
-        @message = send( 'test_'+@template.email.name, @template.id )
+        @template = EmailTemplate.find(params[:id])
+        @message = send('test_'+@template.email.name, @template.id)
         if params[:onscreen]
           render :layout => false
         else
@@ -99,7 +99,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
         flash[:error]= e.message
         redirect_to :back
       rescue Exception => e
-        flash[:error]="Unable to test template because: #{(e.message && e.message.length >0 ? e.message : e )}."
+        flash[:error]="Unable to test template because: #{(e.message && e.message.length >0 ? e.message : e)}."
         redirect_to :back
       end
     end
@@ -112,90 +112,101 @@ class Admin::EmailTemplatesController < Admin::AdminController
   def load_info
     gb = Gibbon::API.new(MAILCHIMP_API_KEYS[:api_key])
 
-    @campaigns = gb.campaigns({'filters' => {'folder_id' => "21177"}, 'limit' => 100 })['data']
+    @campaigns = gb.campaigns({'filters' => {'folder_id' => "21177"}, 'limit' => 100})['data']
     @campaign_options = []
-    @campaigns.each { |c|   @campaign_options << [ c['title'], "#{c['id']}"] }
+    @campaigns.each { |c| @campaign_options << [c['title'], "#{c['id']}"] }
 
     @emails = Email.find(:all)
     @email_options = []
-    @emails.each { |e|   @email_options << [ e.name, "#{e.id}"] }
+    @emails.each { |e| @email_options << [e.name, "#{e.id}"] }
   end
 
   def fetch_email_template
-    @email_template = EmailTemplate.find( params[:id])
+    @email_template = EmailTemplate.find(params[:id])
   end
 
 
-  def test_photos_ready( template_id )
-    Notifier.photos_ready( upload_batch.id, template_id )
+  def test_photos_ready(template_id)
+    Notifier.photos_ready(upload_batch.id, template_id)
   end
 
-  def test_password_reset( template_id )
-    Notifier.password_reset( recipient.id, template_id )
+  def test_password_reset(template_id)
+    Notifier.password_reset(recipient.id, template_id)
   end
 
-  def test_album_liked(  template_id )
-    Notifier.album_liked( sender.id, album.id, template_id)
+  def test_album_liked(template_id)
+    Notifier.album_liked(sender.id, album.id, template_id)
   end
 
-  def test_photo_liked(  template_id )
-    Notifier.photo_liked( sender.id, photo.id, recipient.id, template_id)
+  def test_photo_liked(template_id)
+    Notifier.photo_liked(sender.id, photo.id, recipient.id, template_id)
   end
 
-  def test_user_liked(  template_id )
-    Notifier.user_liked( sender.id, recipient.id, template_id)
+  def test_user_liked(template_id)
+    Notifier.user_liked(sender.id, recipient.id, template_id)
   end
 
-  def test_contribution_error(  template_id )
-    Notifier.contribution_error( recipient.email, template_id)
+  def test_contribution_error(template_id)
+    Notifier.contribution_error(recipient.email, template_id)
   end
 
-  def test_album_shared( template_id )
-    Notifier.album_shared( sender.id, user_or_not_user_email_address, album.id, message, template_id)
+  def test_album_shared(template_id)
+    Notifier.album_shared(sender.id, user_or_not_user_email_address, album.id, message, template_id)
   end
 
-  def test_album_updated( template_id )
-    Notifier.album_updated( sender.id,  recipient.id, album.id, upload_batch.id, template_id)
+  def test_album_updated(template_id)
+    Notifier.album_updated(sender.id, recipient.id, album.id, upload_batch.id, template_id)
   end
 
-  def test_contributor_added( template_id )
-    Notifier.contributor_added( album.id, user_or_not_user_email_address, message, template_id)
+  def test_contributor_added(template_id)
+    Notifier.contributor_added(album.id, user_or_not_user_email_address, message, template_id)
   end
 
-  def test_welcome( template_id )
-    Notifier.welcome( recipient.id, template_id)
+  def test_welcome(template_id)
+    Notifier.welcome(recipient.id, template_id)
   end
 
-  def test_photo_shared( template_id )
-    Notifier.photo_shared( sender.id, user_or_not_user_email_address, photo.id, message, template_id)
+  def test_photo_shared(template_id)
+    Notifier.photo_shared(sender.id, user_or_not_user_email_address, photo.id, message, template_id)
   end
 
-  def test_beta_invite( template_id )
-    Notifier.beta_invite( recipient.email, template_id)
+  def test_beta_invite(template_id)
+    Notifier.beta_invite(recipient.email, template_id)
   end
 
-  def test_photo_comment( template_id )
-    Notifier.photo_comment( sender.id, recipient.id, comment.id, template_id)
+  def test_photo_comment(template_id)
+    Notifier.photo_comment(sender.id, recipient.id, comment.id, template_id)
   end
 
-  def test_order_confirmed( template_id )
-      Notifier.order_confirmed( order.id, template_id)
+  def test_order_confirmed(template_id)
+    Notifier.order_confirmed(order.id, template_id)
   end
 
-  def test_order_cancelled( template_id )
-      Notifier.order_cancelled( order.id, template_id)
+  def test_order_cancelled(template_id)
+    Notifier.order_cancelled(order.id, template_id)
   end
 
-  def test_order_shipped( template_id )
-      Notifier.order_shipped( order.shipment.id, template_id)
+  def test_order_shipped(template_id)
+    Notifier.order_shipped(order.shipment.id, template_id)
   end
 
-  def test_request_access( template_id )
-        Notifier.request_access( sender.id, album.id, message, template_id)
+  def test_request_access(template_id)
+    Notifier.request_access(sender.id, album.id, message, template_id)
   end
 
-  def test_request_contributor( template_id )
-          Notifier.request_contributor( sender.id, album.id, message, template_id)
+  def test_request_contributor(template_id)
+    Notifier.request_contributor(sender.id, album.id, message, template_id)
+  end
+
+  def test_invite_to_join(template_id)
+    invitation = Invitation.create_invitation_for_email(sender, 'test@test.zangzing.com')
+    Notifier.invite_to_join(sender.id, user_or_not_user_email_address, invitation.tracked_link.url, template_id)
+  end
+
+  def test_joined_from_invite(template_id)
+    invitation = Invitation.create_invitation_for_email(sender, 'test@test.zangzing.com')
+    invitation = Invitation.process_invitations_for_new_user(current_user, invitation.tracked_link.tracking_token)
+    Notifier.joined_from_invite(invitation.id, true, template_id)
   end
 
   def user_or_not_user_email_address
@@ -232,7 +243,7 @@ class Admin::EmailTemplatesController < Admin::AdminController
   def album
     album = nil
     while album.nil? || album.cover.nil?
-      album = current_user.albums[ rand( current_user.albums.count) ]
+      album = current_user.albums[rand(current_user.albums.count)]
     end
     album
   end
@@ -240,14 +251,14 @@ class Admin::EmailTemplatesController < Admin::AdminController
   def photo
     photo = nil
     while photo.nil?
-      photo = album.photos[ rand( album.photos.count )]
+      photo = album.photos[rand(album.photos.count)]
     end
     photo
   end
 
   def upload_batch
     begin
-      @ub = album.upload_batches[ rand( album.upload_batches.count) ]
+      @ub = album.upload_batches[rand(album.upload_batches.count)]
     end while @ub.nil? || @ub.photos.count <=0
     @ub
   end
@@ -265,9 +276,9 @@ class Admin::EmailTemplatesController < Admin::AdminController
   end
 
   def order
-    orders = Order.by_state( 'shipped' )
+    orders = Order.by_state('shipped')
     order_count = orders.count
-    orders[ rand( order_count )]
+    orders[rand(order_count)]
   end
 
 end

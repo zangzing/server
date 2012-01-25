@@ -53,6 +53,10 @@
     <a id="back-button" class="back-button"><span>Back</span></a>
     <a id="top-add-photos-button" class="green-add-button"><span>Add Photos</span></a>
   </div>
+<% elsif @show_back_button %>
+  <div id="top-breadcrumb">
+    <a id="back-button" class="back-button"><span>Back</span></a>
+  </div>
 <% end %>
 
 <% if @is_homepage_view && current_user == @user %>
@@ -106,6 +110,7 @@
       <div class="header-button-label">Account</div>
       <ul class="context_menu dropdown" id="acct-dropdown">
         <li id="acct-get-started-btn" >Getting Started</li>
+        <li id="acct-invite-friends-btn" >Invite Friends</li>
         <li id="acct-settings-btn">Settings</li>
         <li id="acct-blog-btn">Blog</li>
         <li id="acct-signout-btn">Signout</li>
