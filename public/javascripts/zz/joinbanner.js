@@ -35,25 +35,20 @@ var zz = zz || {};
     	
     	$('.join-form li label').inFieldLabels();
     	
+    	$('#header-join-banner form input').focus(function (object) { $(object.target).css("border", "1px solid orange"); });
+    	$('#header-join-banner form input').focusout(function (object) { $(object.target).css("border", "1px solid #666"); });
+    	
     	$('#header-join-banner .join-form').first().attr("action", 'https://'+document.domain+zz.routes.users.create_user_url());
 	
     	zz.joinform.add_validation( $('#header-join-banner .join-form') );
     	
     	$('#header-join-banner .join-form .submit-button').click(function(){
-    		$('#header-join-banner .join-form').submit();
-    		ZZAt.track("join.toolbarbanner.click");
-    		if(!$('#header-join-banner .join-form').valid()){
-    			ZZAt.track("join.toolbarbanner.invalid");
-    		}
+    		submit_form();
         });
 
         $('#header-join-banner .join-form').bind('keypress', function(e){
             if ( e.keyCode == 13 ) {
-            	$("#header-join-banner .join-form").submit();
-            	ZZAt.track("join.toolbarbanner.click");
-            	if(!$('#header-join-banner .join-form').valid()){
-        			ZZAt.track("join.toolbarbanner.invalid");
-        		}
+            	submit_form();
             }
         });
         
@@ -145,7 +140,7 @@ var zz = zz || {};
     			if(banner_fits()){
     				$("#right-drawer").css("top","56px");
     			} else {
-    				$("#right-drawer").css("top","148px");	
+    				$("#right-drawer").css("top","154px");	
     			}
     			
     		}
@@ -164,6 +159,47 @@ var zz = zz || {};
 		$(".join-banner-spacer").removeClass("none");
 		zz.joinbanner.is_banner_visible = true;
 		ZZAt.track("join.toolbarbanner.show");
+    }
+    
+    function submit_form(){
+    	$('#header-join-banner .join-form').submit();
+		ZZAt.track("join.toolbarbanner.click");
+		
+		var num_fields_nonempty = 0;
+		var num_fields_valid = 0;
+		var bit_notation = 0;
+
+		bit_notation = 
+			Math.pow(2,0) * $('#header-join-banner #user_name').valid() +
+			Math.pow(2,1) * ($('#header-join-banner #user_name').val().length != 0) + 
+			Math.pow(2,2) * $('#header-join-banner #user_username').valid() +
+			Math.pow(2,3) * ($('#header-join-banner #user_username').val().length != 0) + 		
+			Math.pow(2,4) * $('#header-join-banner #user_email').valid() +
+			Math.pow(2,5) * ($('#header-join-banner #user_email').val().length != 0) + 		
+			Math.pow(2,6) * $('#header-join-banner #user_password').valid() +
+			Math.pow(2,7) * ($('#header-join-banner #user_password').val().length != 0);			
+			
+		num_fields_nonempty =
+			($('#header-join-banner #user_name').val().length != 0) +
+			($('#header-join-banner #user_username').val().length != 0) +
+			($('#header-join-banner #user_email').val().length != 0) +
+			($('#header-join-banner #user_password').val().length != 0);
+		
+		num_fields_valid = 
+			$('#header-join-banner #user_name').valid() + 
+			$('#header-join-banner #user_username').valid() + 
+			$('#header-join-banner #user_email').valid() + 
+			$('#header-join-banner #user_password').valid();
+		
+		if(!$('#header-join-banner .join-form').valid()){
+			ZZAt.track("join.toolbarbanner.invalid", {
+				Zjoin_num_fields_nonempty: num_fields_nonempty,
+				Zjoin_num_fields_valid: num_fields_valid,
+				Zjoin_bit_fields: bit_notation
+			});
+		}
+		
+		
     }
     
 }());
