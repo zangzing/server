@@ -75,6 +75,10 @@
                 var progress_dialog = zz.dialog.show_spinner_progress_dialog('Sending ' + email_addresses.length + ' invitation#{plural}...'.replace('#{plural}', email_addresses.length==1 ? "" : "s"));
 
                 zz.routes.invitations.send_by_email(email_addresses, function(json){
+                    ZZAt.track('invitation.send');
+                    ZZAt.track('invitation.email.send');
+
+
                     // close the progress dialog
                     progress_dialog.close();
                     zz.contact_list.clear();
@@ -115,11 +119,16 @@
             $('.invite-by-social .facebook-button').click(function(){
                 var url = zz.routes.invitations.get_send_to_facebook_url(get_message());
                 open_share_window(url);
+                ZZAt.track('invitation.send');
+                ZZAt.track('invitation.facebook.send');
+
             });
 
             $('.invite-by-social .twitter-button').click(function(){
                 var url = zz.routes.invitations.get_send_to_twitter_url(get_message());
                 open_share_window(url);
+                ZZAt.track('invitation.send');
+                ZZAt.track('invitation.twitter.send');
             });
 
 

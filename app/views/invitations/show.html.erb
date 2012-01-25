@@ -140,6 +140,9 @@
 
 <script>
     $(document).ready(function(){
+        ZZAt.track('invitation.page.visit');
+
+        <%= perform_javascript_actions %>
 
         zz.local_storage.clear();
 
@@ -150,12 +153,15 @@
 
         $('.invitation-page .submit-button').click(function(){
             $('.invitation-page .join-form').submit();
+            ZZAt.track('invitation.page.join-button.click');
+
         });
 
 
         $('.invitation-page .join-form').bind('keypress', function(e){
             if ( e.keyCode == 13 ) {
                 $(".invitation-page .join-form").submit();
+                ZZAt.track('invitation.page.join-button.click');
             }
         });
 

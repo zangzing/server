@@ -67,6 +67,11 @@ class InvitationsController < ApplicationController
 
     tracked_link = TrackedLink.find_by_tracking_token(current_tracking_token)
     if tracked_link
+      send_zza_event_from_client("invitation.click")
+      send_zza_event_from_client("invitation.#{tracked_link.shared_to}.click")
+
+
+
       @friends_name = tracked_link.user.name
       render :layout => false
     else
