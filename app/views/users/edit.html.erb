@@ -95,12 +95,12 @@
         %>
 
         <p><span class='bold-text'><%= @user.account_plan.name %></span> &mdash; <%= @user.account_plan.description %></p>
-        <p>Premium account billing starts June 30, 2012. <a href="/pricing" target="_blank">Learn more</a> or <a href="<%=invite_friends_url%>">invite friends</a> and you both get free space.</p>
+        <p>Premium account billing starts July 2012. <a href="/pricing" target="_blank">Learn more</a> or <a href="<%=invite_friends_url%>">invite friends</a> and we'll give you both 250MB of free space.</p>
 
         <div class='indented content'>
           <div class='storage-meter'>
             <div class='used' style='width:<%= percent_used <= 100 ? percent_used: 100 %>%'></div>
-            <div class='label'><%= percent_used %>% of space used - <%= number_with_precision(storage_used_gb, :precision => 3, :strip_insignificant_zeros => true) %> GB of <%= number_with_precision(total_storage_gb, :precision=> 2, :strip_insignificant_zeros => true)%> GB</div>
+            <div class='label'><%= percent_used %>% of space used - <%= number_with_precision(storage_used_gb, :precision => 3, :strip_insignificant_zeros => true) %>GB of <%= number_with_precision(total_storage_gb, :precision=> 2, :strip_insignificant_zeros => true)%>GB</div>
           </div>
         </div>
       </div>
@@ -121,7 +121,7 @@
                usable_bonus_storage_mb = number_with_precision((@user.usable_bonus_storage * 1000 / 1024), :precision => 2, :strip_insignificant_zeros => true)
 
         %>
-            <div class='bold-text'>Congrats! You’ve earned <%= usable_bonus_storage_mb %> MB of free space.</div>
+            <div class='bold-text'>Congrats! You’ve earned <%= usable_bonus_storage_mb %>MB of free space.</div>
         <%
            end
         %>
