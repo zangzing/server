@@ -29,21 +29,21 @@ class Invitation < ActiveRecord::Base
     end
 
     invitation = from_user.sent_invitations.find_by_email(to_address)
-    if invitation
-      # if user has already sent invite to this email, then just
-      # send a reminder
 
 
-      # need to check status of invitation in case user already accepted this invitation, but used
-      # different email address to join
-      if invitation.status == Invitation::STATUS_PENDING
-        send_invitation_to_email(invitation)
-      end
+    if invitation && invitation.status == Invitation::STATUS_PENDING
+
+      # if we already have a pending invite to this user then just send reminder
+      send_invitation_to_email(invitation)
 
     else
-      # otherwise, create and send new invitation
+
+      # if there is no invitation to this email address, or the invitation
+      # is complete (meaning user signed up under different email address) then go ahead
+      # and create new invitation to track...
       invitation = create_invitation_for_email(from_user, to_address)
       send_invitation_to_email(invitation)
+
     end
   end
 
