@@ -53,20 +53,20 @@ var zz = zz || {};
 			},
 			messages : {
 				'user[name]' : {
-					required : 'please enter your name',
-					minlength : 'please enter your name'
+					required : 'Please enter your name.',
+					minlength : 'Please enter your name.'
 				},
 				'user[username]' : {
-					required : 'please enter a username',
-					regex : 'only lower case letters and numbers',
-					remote : 'username already taken'
+					required : 'Please enter a username.',
+					regex : 'Only lowercase letters and numbers.',
+					remote : 'This username is already taken.'
 				},
 				'user[email]' : {
-					required : 'promise we won&rsquo;t spam you',
-					email : 'valid email, please',
-					remote : 'email already taken'
+					required : 'Please enter your email.',
+					email : 'Please type a valid email.',
+					remote : 'This email already has an account.'
 				},
-				'user[password]' : '6 characters or more, please'
+				'user[password]' : 'Password must be at least 6 characters.'
 			}
 		});
 	}
@@ -92,25 +92,20 @@ var zz = zz || {};
     	
     	$('.join-form li label').inFieldLabels();
     	
+    	$('#header-join-banner form input').focus(function (object) { $(object.target).css("border", "1px solid orange"); });
+    	$('#header-join-banner form input').focusout(function (object) { $(object.target).css("border", "1px solid #666"); });
+    	
     	$('#header-join-banner .join-form').first().attr("action", 'https://'+document.domain+zz.routes.users.create_user_url());
 	
     	add_validation( $('#header-join-banner .join-form') );
     	
     	$('#header-join-banner .join-form .submit-button').click(function(){
-    		$('#header-join-banner .join-form').submit();
-    		ZZAt.track("join.toolbarbanner.click");
-    		if(!$('#header-join-banner .join-form').valid()){
-    			ZZAt.track("join.toolbarbanner.invalid");
-    		}
+    		submit_form();
         });
 
         $('#header-join-banner .join-form').bind('keypress', function(e){
             if ( e.keyCode == 13 ) {
-            	$("#header-join-banner .join-form").submit();
-            	ZZAt.track("join.toolbarbanner.click");
-            	if(!$('#header-join-banner .join-form').valid()){
-        			ZZAt.track("join.toolbarbanner.invalid");
-        		}
+            	submit_form();
             }
         });
         
@@ -221,6 +216,47 @@ var zz = zz || {};
 		$(".join-banner-spacer").removeClass("none");
 		zz.joinbanner.is_banner_visible = true;
 		ZZAt.track("join.toolbarbanner.show");
+    }
+    
+    function submit_form(){
+    	$('#header-join-banner .join-form').submit();
+		ZZAt.track("join.toolbarbanner.click");
+		
+		var num_fields_nonempty = 0;
+		var num_fields_valid = 0;
+		var bit_notation = 0;
+
+		bit_notation = 
+			Math.pow(2,0) * $('#header-join-banner #user_name').valid() +
+			Math.pow(2,1) * ($('#header-join-banner #user_name').val().length != 0) + 
+			Math.pow(2,2) * $('#header-join-banner #user_username').valid() +
+			Math.pow(2,3) * ($('#header-join-banner #user_username').val().length != 0) + 		
+			Math.pow(2,4) * $('#header-join-banner #user_email').valid() +
+			Math.pow(2,5) * ($('#header-join-banner #user_email').val().length != 0) + 		
+			Math.pow(2,6) * $('#header-join-banner #user_password').valid() +
+			Math.pow(2,7) * ($('#header-join-banner #user_password').val().length != 0);			
+			
+		num_fields_nonempty =
+			($('#header-join-banner #user_name').val().length != 0) +
+			($('#header-join-banner #user_username').val().length != 0) +
+			($('#header-join-banner #user_email').val().length != 0) +
+			($('#header-join-banner #user_password').val().length != 0);
+		
+		num_fields_valid = 
+			$('#header-join-banner #user_name').valid() + 
+			$('#header-join-banner #user_username').valid() + 
+			$('#header-join-banner #user_email').valid() + 
+			$('#header-join-banner #user_password').valid();
+		
+		if(!$('#header-join-banner .join-form').valid()){
+			ZZAt.track("join.toolbarbanner.invalid", {
+				Zjoin_num_fields_nonempty: num_fields_nonempty,
+				Zjoin_num_fields_valid: num_fields_valid,
+				Zjoin_bit_fields: bit_notation
+			});
+		}
+		
+		
     }
     
 }());
