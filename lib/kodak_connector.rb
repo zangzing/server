@@ -7,6 +7,7 @@ class KodakError < StandardError
   end
 end
 
+
 class KodakConnector
   require 'open-uri'
 
