@@ -380,9 +380,13 @@ class User < ActiveRecord::Base
 
       # fast, hard to read equivalent
       #
-      sql = "select COALESCE(my_photos_size,0) + COALESCE(other_photos_size,0) as total_size from " +
-            "(select sum(image_file_size) as my_photos_size from photos where user_id = #{id}) as p1, " +
-            "(select sum(photos.image_file_size) as other_photos_size from photos, albums where photos.album_id = albums.id AND albums.user_id = #{id} AND photos.user_id <> #{id}) as p2"
+      # sql = "select COALESCE(my_photos_size,0) + COALESCE(other_photos_size,0) as total_size from " +
+      #       "(select sum(image_file_size) as my_photos_size from photos where user_id = #{id}) as p1, " +
+      #       "(select sum(photos.image_file_size) as other_photos_size from photos, albums where photos.album_id = albums.id AND albums.user_id = #{id} AND photos.user_id <> #{id}) as p2"
+
+      # ok, now change to just charge album owner for storage
+      #
+      sql = "select sum(photos.image_file_size) from photos, albums where photos.album_id = albums.id and albums.user_id = #{id}"
 
       row = User.connection.execute(sql).first
 
@@ -390,7 +394,7 @@ class User < ActiveRecord::Base
         @storage_used = 0
       else
         used = row[0].to_int / 1024 / 1024
-        @storage_used = (used * 1.15).to_int # add 10% to account for derived images
+        @storage_used = (used * 1.2).to_int # add 10% to account for derived images
       end
 
     end
