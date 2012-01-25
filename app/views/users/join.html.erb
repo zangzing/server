@@ -120,17 +120,16 @@
 
         zz.local_storage.clear();
 
-
         $('#submit-button').click(function(){
-            ZZAt.track('button.join.click');
             $('form').submit();
+            ZZAt.track('button.join.click');
         });
 
 
         $('form').bind('keypress', function(e){
             if ( e.keyCode == 13 ) {
-                ZZAt.track('button.join.click');
                 $("form").submit();
+                ZZAt.track('button.join.click');
             }
         });
 
@@ -141,49 +140,9 @@
             //set the value in the homepage url
             $('#username').text(username);
         });
+        
+        zz.joinform.add_validation( $('#join-form') );
 
-
-        $('#join-form').validate({
-            rules: {
-                'user[name]': {
-                    required: true,
-                    minlength: 1
-                },
-                'user[username]': {
-                    required: true,
-                    minlength: 1,
-                    maxlength:25,
-                    regex: "(^[a-z0-9]+$|^[a-z0-9]+:.{8}$)",
-                    remote: zz.routes.path_prefix + '/users/validate_username'
-                },
-                'user[email]': {
-                    required: true,
-                    email: true,
-                    remote: zz.routes.path_prefix + '/users/validate_email'
-                },
-                'user[password]': {
-                    required: true,
-                    minlength: 6
-                }
-            },
-            messages: {
-                'user[name]': {
-                    required: 'please enter your name',
-                    minlength: 'please enter your name'
-                },
-                'user[username]':{
-                    required: 'please enter a username',
-                    regex: 'only lower case letters and numbers',
-                    remote: 'username already taken'
-                },
-                'user[email]': {
-                    required: 'promise we won&rsquo;t spam you',
-                    email: 'valid email, please',
-                    remote: 'email already taken'
-                },
-                'user[password]': '6 characters or more, please'
-            }
-        });
         $('#user_name').focus();
 
         ZZAt.track('page.join.visit');

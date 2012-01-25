@@ -162,44 +162,48 @@ var zz = zz || {};
     }
     
     function submit_form(){
-    	$('#header-join-banner .join-form').submit();
-		ZZAt.track("join.toolbarbanner.click");
-		
-		var num_fields_nonempty = 0;
-		var num_fields_valid = 0;
-		var bit_notation = 0;
-
-		bit_notation = 
-			1 * $('#header-join-banner #user_name').valid() +
-			2 * ($('#header-join-banner #user_name').val().length != 0) + 
-			4 * $('#header-join-banner #user_username').valid() +
-			8 * ($('#header-join-banner #user_username').val().length != 0) + 		
-			16 * $('#header-join-banner #user_email').valid() +
-			32 * ($('#header-join-banner #user_email').val().length != 0) + 		
-			64 * $('#header-join-banner #user_password').valid() +
-			128 * ($('#header-join-banner #user_password').val().length != 0);			
-			
+    	var num_fields_nonempty = 0;
 		num_fields_nonempty =
 			($('#header-join-banner #user_name').val().length != 0) +
 			($('#header-join-banner #user_username').val().length != 0) +
 			($('#header-join-banner #user_email').val().length != 0) +
 			($('#header-join-banner #user_password').val().length != 0);
 		
-		num_fields_valid = 
-			$('#header-join-banner #user_name').valid() + 
-			$('#header-join-banner #user_username').valid() + 
-			$('#header-join-banner #user_email').valid() + 
-			$('#header-join-banner #user_password').valid();
-		
-		if(!$('#header-join-banner .join-form').valid()){
-			ZZAt.track("join.toolbarbanner.invalid", {
-				Zjoin_num_fields_nonempty: num_fields_nonempty,
-				Zjoin_num_fields_valid: num_fields_valid,
-				Zjoin_bit_fields: bit_notation
-			});
-		}
-		
-		
+    	if(num_fields_nonempty == 0){
+    		zz.routes.users.goto_join_screen();
+    		ZZAt.track("join.toolbarbanner.click");
+    		ZZAt.track("join.toolbarbanner.click.empty");
+    	} else if($('#header-join-banner .join-form').valid()){
+        	$('#header-join-banner .join-form').submit();
+    		ZZAt.track("join.toolbarbanner.click");
+    		ZZAt.track("join.toolbarbanner.click.valid");
+    	} else {
+    		var num_fields_valid = 0;
+    		var bit_notation = 0;
+
+    		bit_notation = 
+    			1 * $('#header-join-banner #user_name').valid() +
+    			2 * ($('#header-join-banner #user_name').val().length != 0) + 
+    			4 * $('#header-join-banner #user_username').valid() +
+    			8 * ($('#header-join-banner #user_username').val().length != 0) + 		
+    			16 * $('#header-join-banner #user_email').valid() +
+    			32 * ($('#header-join-banner #user_email').val().length != 0) + 		
+    			64 * $('#header-join-banner #user_password').valid() +
+    			128 * ($('#header-join-banner #user_password').val().length != 0);			
+
+    		num_fields_valid = 
+    			$('#header-join-banner #user_name').valid() + 
+    			$('#header-join-banner #user_username').valid() + 
+    			$('#header-join-banner #user_email').valid() + 
+    			$('#header-join-banner #user_password').valid();
+    		
+    			ZZAt.track("join.toolbarbanner.click");
+    			ZZAt.track("join.toolbarbanner.invalid", {
+    				Zjoin_num_fields_nonempty: num_fields_nonempty,
+    				Zjoin_num_fields_valid: num_fields_valid,
+    				Zjoin_bit_fields: bit_notation
+    			});
+    	}
     }
     
 }());

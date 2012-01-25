@@ -90,6 +90,7 @@ class User < ActiveRecord::Base
   before_save    :queue_update_acls_with_id, :if => :email_changed?
   after_commit   :update_acls_with_id, :if => '@update_acls_with_id_queued'
 
+  before_validation :username_to_downcase
   validates_presence_of   :name,      :unless => :automatic?
   validates_presence_of   :username,  :unless => :automatic?
   validates_format_of     :username,  :with => /^[a-z0-9]+$/, :message => 'should contain only lowercase alphanumeric characters', :unless => :automatic?
@@ -304,6 +305,7 @@ class User < ActiveRecord::Base
   end
 
   def self.find_by_email_or_username(login)
+    # both are case insensitive
     find_by_email(login) || find_by_username(login)
   end
 
@@ -435,8 +437,11 @@ class User < ActiveRecord::Base
       end
     end
   end
-
-
+  
+  def username_to_downcase
+    self.username.downcase!
+  end
+ 
   # if we trigger the update within a transaction, it will be rolled back so
   # we set a variable and then we do the update after commit
   def queue_update_acls_with_id

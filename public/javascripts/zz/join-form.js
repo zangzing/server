@@ -19,7 +19,7 @@ var zz = zz || {};
                     required : true,
                     minlength : 1,
                     maxlength : 25,
-                    regex : "(^[a-z0-9]+$|^[a-z0-9]+:.{8}$)",
+                    regex : "(^[a-zA-Z0-9]+$|^[a-zA-Z0-9]+:.{8}$)",
                     remote : zz.routes.path_prefix + '/users/validate_username'
                 },
                 'user[email]' : {
@@ -39,7 +39,7 @@ var zz = zz || {};
                 },
                 'user[username]' : {
                     required : 'Please enter a username.',
-                    regex : 'Only lowercase letters and numbers.',
+                    regex : 'Only letters and numbers.',
                     remote : 'This username is already taken.'
                 },
                 'user[email]' : {
