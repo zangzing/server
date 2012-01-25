@@ -45,6 +45,8 @@ class Invitation < ActiveRecord::Base
       send_invitation_to_email(invitation)
 
     end
+
+    return invitation
   end
 
   def self.send_reminder(invitation_id)

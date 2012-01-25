@@ -12,6 +12,31 @@ describe Invitation do
   end
 
   describe "#send_invitation_to_email" do
+
+    it "should allow second invitation to same email address if first invitation joins under different address" do
+      resque_jobs(resque_filter) do
+
+        user = Factory.create(:user)
+        address = 'test@zangzing.com'
+
+        invitation = Invitation.create_and_send_invitation(user, address)
+        user.sent_invitations.length.should == 1
+
+        # accept invitation under differnt email address
+        new_user_1 = Factory.create(:user, :email=> "test2@test.zangzing.com")
+        Invitation.process_invitations_for_new_user(new_user_1, invitation.tracked_link.tracking_token)
+
+
+        # send another invitation to same email address
+        Invitation.create_and_send_invitation(user, address)
+
+
+        # make sure we go back to db to get invitations...
+        User.find(user.id).sent_invitations.length.should == 2
+
+      end
+    end
+
     it "should allow 2 users to send invitation to same email" do
       resque_jobs(resque_filter) do
         user_1 = Factory.create(:user)
