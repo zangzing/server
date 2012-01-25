@@ -12,6 +12,24 @@ describe Invitation do
   end
 
   describe "#send_invitation_to_email" do
+    it "should allow 2 users to send invitation to same email" do
+      resque_jobs(resque_filter) do
+        user_1 = Factory.create(:user)
+        user_2 = Factory.create(:user)
+
+        address = 'test@zangzing.com'
+
+        Invitation.create_and_send_invitation(user_1, address)
+        Invitation.create_and_send_invitation(user_2, address)
+
+        user_1.sent_invitations.length.should == 1
+        user_2.sent_invitations.length.should == 1
+
+        ActionMailer::Base.deliveries.length.should == 2
+
+      end
+    end
+
     it "should allow sending invitation to 'automatic' users" do
       resque_jobs(resque_filter) do
 
