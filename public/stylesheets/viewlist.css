@@ -4,12 +4,16 @@
 
 /* ---------- fonts --------------*/
 .viewlist{
-  color: #666666;
+  color: #333;
 }
 .viewlist .header{
   font-size: 20px;
   font-weight: 300;
+
 }
+
+
+
 
 .viewlist .bartabheader{
   font-size: 20px;
@@ -106,16 +110,16 @@
 }
 
 .viewlist .item .description{
-    font-size: 12px;
-    color: #CCC;
+    font-size: 14px;
+    color: #333;
     margin: 10px 2px;
-    width: 400px;
+    width: 700px;
 }
 
 
 
 .viewlist .tab-centered{
-    margin:13px 0;
+    margin:16px 0;
 }
 
 /*add this to any item and it will get a bottom bar */

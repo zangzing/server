@@ -123,6 +123,25 @@ class UsersController < ApplicationController
         add_javascript_action('show_welcome_dialog') unless( session[:return_to] )
         send_zza_event_from_client('user.join')
         redirect_back_or_default user_pretty_url( @new_user )
+
+        # process tracking token if there was one
+        if current_tracking_token
+          TrackedLink.handle_join(@new_user, current_tracking_token)
+        end
+
+        # process any invitations tied to this email address or tracking token
+        invitation = Invitation.process_invitations_for_new_user(@new_user, current_tracking_token)
+
+        # send zza events
+        if invitation
+          send_zza_event_from_client('invitation.join')
+
+          if invitation.tracked_link # there should always be one, but just in case of bug
+            send_zza_event_from_client("invitation.#{invitation.tracked_link.shared_to}.join")
+          end
+
+        end
+
         return
       end
     else

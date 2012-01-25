@@ -2,91 +2,213 @@
 
 
 <div class="viewlist" id="account-settings">
-  <ul>
-    <li class="item">
-      <div class="header bar">
-        Settings
-        <a class="green-button done-button"><span>Done</span></a>
-      </div>
-    </li>
-  </ul>
- <%= form_for @user, :url => update_user_path(@user), :html => { :method => :put} do |user_form| %>
-  <ul>
+<ul>
+  <li class="item">
+    <div class="header bar">
+      Settings
+      <a class="green-button done-button"><span>Done</span></a>
+    </div>
+  </li>
+</ul>
+<%= form_for @user, :url => update_user_path(@user), :html => { :method => :put} do |user_form| %>
+    <ul>
     <li class="item tab add">
       <div class="header tab-centered">
         Profile
       </div>
       <div class="indented content">
 
-            <input type="hidden" id="profile-photo-id" name="user[profile_photo_id]" value="<%= @user.profile_photo_id %>">
-            <table>
-              <tr>
-                <td> <%= user_form.label :first_name %> </td>
-                <td>
-                  <%= user_form.text_field :first_name %>
-                  <span class="field-error-message"><%= @user.errors.on(:first_name) unless @user.errors.on(:first_name).nil? %></span>
-                </td>
-              </tr>
-              <tr>
-                <td> <%= user_form.label :last_name %> </td>
-                <td>
-                  <%= user_form.text_field :last_name %>
-                  <span class="field-error-message"><%= @user.errors.on(:last_name) unless @user.errors.on(:last_name).nil? %></span>
-                </td>
-              </tr>
+        <input type="hidden" id="profile-photo-id" name="user[profile_photo_id]" value="<%= @user.profile_photo_id %>">
+        <table>
+          <tr>
+            <td> <%= user_form.label :first_name %> </td>
+            <td>
+              <%= user_form.text_field :first_name %>
+              <span class="field-error-message"><%= @user.errors.on(:first_name) unless @user.errors.on(:first_name).nil? %></span>
+            </td>
+          </tr>
+          <tr>
+            <td> <%= user_form.label :last_name %> </td>
+            <td>
+              <%= user_form.text_field :last_name %>
+              <span class="field-error-message"><%= @user.errors.on(:last_name) unless @user.errors.on(:last_name).nil? %></span>
+            </td>
+          </tr>
 
-              <tr>
-                <td> <%= user_form.label :email %> </td>
-                <td>
-                  <%= user_form.text_field :email %>
-                  <span class="field-error-message"><%= @user.errors.on(:email) unless @user.errors.on(:email).nil? %></span>
-                </td>
-              </tr>
+          <tr>
+            <td> <%= user_form.label :email %> </td>
+            <td>
+              <%= user_form.text_field :email %>
+              <span class="field-error-message"><%= @user.errors.on(:email) unless @user.errors.on(:email).nil? %></span>
+            </td>
+          </tr>
 
-              <tr>
-                <td> <%= user_form.label :user_name %> </td>
-                <td>
-                  <span id="user_username" class="no-edit-field"> <span class="blue"><%= @user.username %></span> </span>
-                </td>
-              </tr>
+          <tr>
+          <tr>
+            <td> <%= user_form.label :user_name %> </td>
+            <td>
+              <span id="user_username" class="no-edit-field"> <span class="blue"><%= @user.username %></span> </span>
+            </td>
+          </tr>
 
-              <tr>
-                <td> <%= user_form.label :home_page %> </td>
-                <td>
-                  <span id="home_page" class="no-edit-field"> http://www.zangzing.com/<span class="blue"><%= @user.username %></span></span>
-                </td>
-              </tr>
+          <tr>
+            <td> <%= user_form.label :home_page %> </td>
+            <td>
+              <span id="home_page" class="no-edit-field"> http://www.zangzing.com/<span class="blue"><%= @user.username %></span></span>
+            </td>
+          </tr>
 
-              <tr>
-                <td> <%= user_form.label :password %> </td>
-                <td>
+          <tr>
+            <td> <%= user_form.label :password %> </td>
+            <td>
                     <span id="user_password" class="no-edit-field">
                         <a id="change-password-button" href="<%= edit_user_password_url @user%>">Click here to change password</a>
                     </span>
-                </td>
-              </tr>
-              <tr>
-                <td> <%= user_form.label :profile_picture %> </td>
-                <td>
+            </td>
+          </tr>
+          <tr>
+            <td> <%= user_form.label :profile_picture %> </td>
+            <td>
                     <span id="user_profile_picture" class="no-edit-field">
                         <%= render :partial => 'users/profile_photo', :locals => { :user => @user }    %>
                     </span>
-                  <span id="profile-photo-picker"></span>
-                  <a class="black-button" id="upload-button"><span>Upload</span></a>
-                </td>
-              </tr>
-            </table>
+              <span id="profile-photo-picker"></span>
+              <a class="black-button" id="upload-button"><span>Upload</span></a>
+            </td>
+          </tr>
+        </table>
       </div>
     </li>
+
+    <li class="item tab add">
+      <div class="header tab-centered">
+        Account Plan
+      </div>
+
+      <div class="description">
+
+        <%
+           storage_used_gb = @user.storage_used / 1024.00
+           total_storage_gb = @user.account_plan.total_storage / 1024.00
+           percent_used = (100 * storage_used_gb / total_storage_gb).to_i
+
+        %>
+
+        <p><span class='bold-text'><%= @user.account_plan.name %></span> &mdash; <%= @user.account_plan.description %></p>
+        <p>Premium account billing starts July 2012. <a href="/pricing" target="_blank">Learn more</a> or <a href="<%=invite_friends_url%>">invite friends</a> and we'll give you both 250MB of free space.</p>
+
+        <div class='indented content'>
+          <div class='storage-meter'>
+            <div class='used' style='width:<%= percent_used <= 100 ? percent_used: 100 %>%'></div>
+            <div class='label'><%= percent_used %>% of space used - <%= number_with_precision(storage_used_gb, :precision => 3, :strip_insignificant_zeros => true) %>GB of <%= number_with_precision(total_storage_gb, :precision=> 2, :strip_insignificant_zeros => true)%>GB</div>
+          </div>
+        </div>
+      </div>
+
+    </li>
+
+
+
+    <li class="item tab add">
+      <div class="header tab-centered">
+        Invite Status
+      </div>
+
+      <div class="description">
+        <%
+           if @user.bonus_storage > 0
+               # do a little math to make 0.25GB show as 250MB rather than 256MB
+               usable_bonus_storage_mb = number_with_precision((@user.usable_bonus_storage * 1000 / 1024), :precision => 2, :strip_insignificant_zeros => true)
+
+        %>
+            <div class='bold-text'>Congrats! You’ve earned <%= usable_bonus_storage_mb %>MB of free space.</div>
+        <%
+           end
+        %>
+
+        <p>For every friend who joins ZangZing, you and your friend each get 250MB of free space up to 8GB.</p>
+        <br>
+        <a href="<%=invite_friends_url%>">Invite friends to ZangZing</a>
+
+      </div>
+      <div class="indented content">
+        <%
+           running_bonus_total = 0
+
+           @user.sent_invitations.each do |invitation|
+        %>
+
+            <% if invitation.status == Invitation::STATUS_PENDING %>
+                <div class="invitation">
+                  <div class="profile-picture">
+                    <div class="mask">
+                      <img data-src="/images/profile-default-55.png" src="/images/profile-default-55.png">
+                    </div>
+                  </div>
+                  <div class="details">
+                    <div class="email-address"><%= "#{invitation.tracked_link.shared_to_address}" %> was invited on <%= invitation.created_at.strftime("%B %d, %Y")%></div>
+                    <div><a href="#" class='send-reminder' data-invitation-id="<%=invitation.id%>">Send reminder invitation</a></div>
+                  </div>
+                </div>
+
+            <%
+               elsif invitation.status == Invitation::STATUS_COMPLETE
+
+                   running_bonus_total += User::BONUS_STORAGE_MB_PER_INVITE
+
+            %>
+
+                <div class="invitation">
+                  <div class="profile-picture">
+                    <div class="mask">
+                      <img data-src="<%= invitation.invited_user.profile_photo_url %>" src="/images/profile-default-55.png">
+                    </div>
+                  </div>
+                  <div class="details">
+                    <div class="email-address"><a href="<%=user_pretty_url(invitation.invited_user)%>"><%= "#{invitation.invited_user.name}" %></a> joined on <%= invitation.invited_user.created_at.strftime("%B %d, %Y")%></div>
+                    <%
+                       if running_bonus_total <= User::MAX_BONUS_MB
+                    %>
+                        <div><span class='bold-text'>Hooray!</span> You both received 250MB of free space.</div>
+                    <%
+                       end
+                    %>
+
+                  </div>
+                </div>
+
+            <%
+               elsif invitation.status == Invitation::STATUS_COMPLETE_BY_OTHER
+            %>
+
+                <div class="invitation">
+                  <div class="profile-picture">
+                    <div class="mask">
+                      <img data-src="<%= invitation.invited_user.profile_photo_url %>" src="/images/profile-default-55.png">
+                    </div>
+                  </div>
+                  <div class="details">
+                    <div class="email-address"><%= "#{invitation.tracked_link.shared_to_address}" %> accepted an invitation from another user.</div>
+                  </div>
+                </div>
+
+        <%
+               end
+           end
+        %>
+      </div>
+    </li>
+
+
 
     <li class="item tab add">
       <div class="header tab-centered">
         Linked Accounts
       </div>
       <div class="description">
-        Linking ZangZing to third party accounts enables you to upload photos from other websites
-        and import contacts. By linking to Twitter or Facebook, you can choose to post albums,
-        photos, or comments to these websites.
+        Linking ZangZing to third party accounts enables you to upload photos from other websites and import contacts.
+        By linking to Twitter or Facebook, you can choose to post albums, photos, or comments to these websites.
+        We promise to never post or send messages unless you have requested it.
       </div>
       <div class="indented content">
         <table id="linked-accounts-table">
@@ -123,10 +245,10 @@
       </div>
       <div class="indented content">
         <%=user_form.fields_for :subscriptions do |subscriptions_form| %>
-        <table>
-            <%=render :partial=> 'subscriptions/subscriptions_fields', :locals=> { :f => subscriptions_form, :subs => @user.subscriptions } %>
-       </table>
-       <%end%>
+            <table>
+              <%=render :partial=> 'subscriptions/subscriptions_fields', :locals=> { :f => subscriptions_form, :subs => @user.subscriptions } %>
+            </table>
+        <%end%>
       </div>
     </li>
     <% if order_count = @user.orders.complete.count > 0 %>
@@ -152,24 +274,24 @@
                     <td><%= t(order.state, :scope => :customer_order_state ).titleize%></td>
                   </tr>
                   <%
-                    #if i >= 9
-                    #<tr><td></td><td></td><td></td><td><%= link_to "More", orders_url </td></tr>
-                    #break
-                    #end
+                     #if i >= 9
+                     #<tr><td></td><td></td><td></td><td><%= link_to "More", orders_url </td></tr>
+                     #break
+                     #end
                   %>
               <%end%>
             </table>
           </div>
         </li>
     <%end%>
-  </ul>
+    </ul>
 <% end #user form%>
 <ul>
-    <li class="item">
-      <div class="header bar"></div>
-    </li>
-    <a class="green-button done-button"><span>Done</span></a>
-  </ul>
+  <li class="item">
+    <div class="header bar"></div>
+  </li>
+  <a class="green-button done-button"><span>Done</span></a>
+</ul>
 </div>
 
 <% content_for :page_javascript do %>
@@ -181,10 +303,8 @@
         $(document).ready(function(){
 
 
-            //hide buttons on bottom toolbar
-            $('#footer #new-album-button').hide();
-            $('#footer #like-button').hide();
-            $('#footer #buy-button').hide();
+            //hide bottom toolbar
+            zz.toolbars.hide_bottom_toolbar();
 
             //done button
             $('.done-button').click(function(){
@@ -257,6 +377,19 @@
             });
 
 
+
+            // invitations
+            $('a.send-reminder').click(function(){
+                var element = $(this);
+                var invitation_id = element.attr('data-invitation-id');
+                var dialog = zz.dialog.show_progress_dialog("Sending reminder...");
+                zz.routes.invitations.send_reminder(invitation_id, function(){
+                    dialog.close();
+                    element.fadeOut('fast');
+                });
+            });
+
+            zz.profile_pictures.init_profile_pictures($('.invitation .profile-picture'));
 
 
 
