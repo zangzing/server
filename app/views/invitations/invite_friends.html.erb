@@ -131,6 +131,13 @@
             });
 
 
+            var on_copy = function(){
+                ZZAt.track('invitation.copy_paste.send');
+            };
+
+            $('.invite-by-copy-paste input.link').bind('copy', on_copy);
+            $('.invite-by-copy-paste input.link').bind('cut', on_copy);
+
         });
     </script>
 
