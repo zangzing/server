@@ -12,6 +12,49 @@ describe Invitation do
   end
 
   describe "#send_invitation_to_email" do
+
+    it "should allow second invitation to same email address if first invitation joins under different address" do
+      resque_jobs(resque_filter) do
+
+        user = Factory.create(:user)
+        address = 'test@zangzing.com'
+
+        invitation = Invitation.create_and_send_invitation(user, address)
+        user.sent_invitations.length.should == 1
+
+        # accept invitation under differnt email address
+        new_user_1 = Factory.create(:user, :email=> "test2@test.zangzing.com")
+        Invitation.process_invitations_for_new_user(new_user_1, invitation.tracked_link.tracking_token)
+
+
+        # send another invitation to same email address
+        Invitation.create_and_send_invitation(user, address)
+
+
+        # make sure we go back to db to get invitations...
+        User.find(user.id).sent_invitations.length.should == 2
+
+      end
+    end
+
+    it "should allow 2 users to send invitation to same email" do
+      resque_jobs(resque_filter) do
+        user_1 = Factory.create(:user)
+        user_2 = Factory.create(:user)
+
+        address = 'test@zangzing.com'
+
+        Invitation.create_and_send_invitation(user_1, address)
+        Invitation.create_and_send_invitation(user_2, address)
+
+        user_1.sent_invitations.length.should == 1
+        user_2.sent_invitations.length.should == 1
+
+        ActionMailer::Base.deliveries.length.should == 2
+
+      end
+    end
+
     it "should allow sending invitation to 'automatic' users" do
       resque_jobs(resque_filter) do
 
@@ -128,6 +171,24 @@ describe Invitation do
 
 
        end
+    end
+
+    it "more than one user should be ablet to join using the same invitation email" do
+      from_user = Factory.create(:user)
+
+      email_invitation = Invitation.create_invitation_for_email(from_user, 'test@test.zangzing.com')
+      tracking_token = email_invitation.tracked_link.tracking_token
+
+      new_user_1 = Factory.create(:user, :email => 'test@test.zangzing.com')
+      new_user_2 = Factory.create(:user, :email => 'test2@test.zangzing.com')
+
+      Invitation.process_invitations_for_new_user(new_user_1, tracking_token)
+      Invitation.process_invitations_for_new_user(new_user_2, tracking_token)
+
+      from_user.sent_invitations.length.should == 2
+
+
+
     end
 
     it "when no tracking token, it should find last invitation by email and invalidate the rest" do
