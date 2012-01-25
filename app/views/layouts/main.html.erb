@@ -42,16 +42,6 @@
   </head>
 
   <%
-      # setup join banner
-
-      show_join_banner_class = 'show-join-banner'
-      if (current_user || cookies['hide_join_banner'])
-        show_join_banner_class = ''
-      end
-  %>
-
-
-  <%
       # setup system message banner
 
       show_system_message_class = ''
@@ -76,14 +66,7 @@
 
 
 
-  <body id="<%= controller.controller_name + '-' + controller.action_name %>" class="<%= controller.controller_name %> <%= show_join_banner_class %> <%= show_system_message_class %> <%= impersonation_body_class %> ">
-
-    <div id='join-banner'>
-        <span id="banner-text">ZangZing is a new group photo sharing service. Join today. It's free!</span>
-        <a  class="green-button" id="join-button"><span>Join</span></a>
-        <a  class="gray-button" id="signin-button"><span>Sign In</span></a>
-        <div id="close-button"></div>
-    </div>
+  <body id="<%= controller.controller_name + '-' + controller.action_name %>" class="<%= controller.controller_name %> <%= show_system_message_class %> <%= impersonation_body_class %> ">
 
     <div id='system-message-banner'>
         <span id="banner-text"><%=system_message%></span>

@@ -4,6 +4,8 @@
 /* reset */
 html{}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var,optgroup{font-style:inherit;font-weight:inherit;}del,ins{text-decoration:none;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:baseline;}sub{vertical-align:baseline;}legend{color:#000;}input,button,textarea,select,optgroup,option{font-family:inherit;font-size:inherit;font-style:inherit;font-weight:inherit;}input,button,textarea,select{*font-size:100%;}
 
+.none { display:none; }
+
 html {
     overflow: hidden;
     height:100%;
@@ -104,61 +106,152 @@ div#container {
 }
 
 
-/* join banner
+/* join banner off header
  -----------------------------------------------------------------------------*/
-.show-join-banner #join-banner{
+#header-join-banner {
+  	position: absolute;
+  	z-index: 200;
+  	top: 56px; /* 60px header - 2px header top - 1px header shadow -1px self-border*/
+    left: 50%;
+    width: 846px;
+    height:75px;
+    margin-left: -423px;
+    text-align:left;
+    
+    background-color: #fff8de;
+    border: 1px solid #e2d6b5;
+    
+    border-radius: 0 0 5px 5px;
+	-moz-border-radius-bottomleft:5px;
+	-moz-border-radius-bottomright:5px;
+	-webkit-border-bottom-left-radius: 5px;
+	-webkit-border-bottom-right-radius: 5px;
+	
+	box-shadow: 0px 0px 5px #CCC;
+    -webkit-box-shadow: 0px 0px 5px #CCC;
+    -moz-box-shadow: 0px 0px 5px #CCC;
+}
+
+#header-join-banner .picture {
+	float:left;
+	height: 62px;
+	width: 62px;
+	padding: 6px 10px;
+}
+
+#header-join-banner .picture .container {
+	box-shadow: 0px 0px 3px #aaa;
+    -webkit-box-shadow: 0px 0px 3px #aaa;
+    -moz-box-shadow: 0px 0px 3px #aaa;
+    height: 48px;
+    width: 48px;
+    margin: 7px;
     position: relative;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    height: 38px;
-    background-color: #333;
-    display:block;
 }
 
-#join-banner{
-    display:none;
+#header-join-banner .picture .container .mask {
+	overflow:hidden;
+	height: 48px;
+	width: 48px;
+	border: 2px solid white;	
 }
 
-
-#join-banner #banner-text{
-    position:relative;
-    top:10px;
-    font-size:14px;
-    color:#fff;
-/*font-weight:500;*/
+#header-join-banner .picture div img.profile-photo {
+	position:relative;
 }
 
-
-#join-banner #close-button{
-    position:absolute;
-    right:10px;
-    top:7px;
-    height:21px;
-    width:21px;
-    background: url("/images/btn-close-join-banner.png") no-repeat scroll top right;
-    cursor:pointer;
+#header-join-banner .picture div img.bottom-shadow{
+    height:5px;
+    width: 52px;
+	position:absolute;
+	bottom: -9px;
+	left:0px;
 }
 
-#join-banner #close-button:hover{
-    background: url("/images/btn-close-join-banner.png") no-repeat scroll right -21px;
+#header-join-banner .header {
+	height: 16px;
+	margin-left: 74px;
+	padding: 10px;
+	
+	font-size: 16px;
+	font-weight: 200;
+	color: #0A0A0A; 
 }
 
-#join-banner #join-button{
-    position:absolute;
-    top:4px;
-    right:45px;
-    width:75px;
+#header-join-banner .header strong {
+	font-weight: 600; /* Need to use at least 600 for Windows folks */
 }
 
 
-#join-banner #signin-button{
-    position:absolute;
-    top:4px;
-    right:40px;
-    width:60px;
-    display:none;
+#header-join-banner .feature {
+	margin-left: 74px;
 }
+
+#header-join-banner li {
+	position: relative;
+	display: inline-block;
+	margin: 0 10px 0 0;
+	vertical-align:middle;
+}
+
+
+#header-join-banner li:last-child {
+	margin: 0;
+}
+
+#header-join-banner .ie7 li {
+	display:inline;
+}
+
+#header-join-banner form li label {
+	position: absolute;
+	top: 9px;
+	left: 11px;
+	color: #666;
+
+}
+
+#header-join-banner form input {
+	width: 130px;
+	padding: 6px 9px;
+	border: 1px solid #666;
+	border-radius:5px;
+	-moz-border-radius:5px;
+	-webkit-border-radius: 5px;
+}
+
+#header-join-banner form input.error {
+	background-color:#fddbda;
+	border-color:#fd514f;
+}
+
+
+#header-join-banner a.submit-button span {	
+	width: 100px;
+	
+}
+	
+#header-join-banner form li label.error {
+	top:41px;
+	bottom:42px;
+	left:50%;
+	width: 136px;
+	height: 34px;
+	margin:0 0 0 -78px;
+	padding:8px 10px;
+	color: white;
+	font-size:14px;
+	font-weight: 200;
+	min-height: 15px;
+	opacity: 0.8;
+	border: 1px solid white;
+	background-color: black;
+	box-shadow: black 0px 0px 10px;
+	-webkit-box-shadow: black 0px 0px 10px;
+	-moz-box-shadow: black 0px 0px 10px;
+}
+
+
 
 /* system message banner
  -----------------------------------------------------------------------------*/
@@ -332,3 +425,10 @@ div#headline {
     right:0px;
 }
 
+#article .join-banner-spacer {
+	height: 75px;
+}
+
+.photogrid .join-banner-spacer {
+	height: 75px;
+}

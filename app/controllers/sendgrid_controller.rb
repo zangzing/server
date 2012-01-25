@@ -209,6 +209,10 @@ class SendgridController < ApplicationController
                 link_name = "signin_url"
               elsif route[:controller]=="albums" && route[:action]=="add_photos"
                 link_name = 'album_grid_url_show_add_photos_dialog'
+              elsif route[:controller]=="invitations" && route[:action]=="show"
+                link_name = 'join_from_invite_url'
+              elsif route[:controller]=="invitations" && route[:action]=="invite_friends"
+                link_name = 'invite_frields_url'
               end
 
             rescue ActionController::RoutingError => e
