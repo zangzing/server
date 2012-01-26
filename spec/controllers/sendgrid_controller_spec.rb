@@ -9,6 +9,35 @@ describe SendgridController do
       ZZ::ZZA.stub!(:new).and_return(@mock_zza)
     end
 
+    it "should send <category>.click and <category>.invite_frields_url.click zza events for links to invite friends" do
+      params = {
+          :category => "foo",
+          :event => "click",
+          :email => "jeremyhermann@gmail.com",
+          :url => "http://www.zangzing.com/invite_friends"
+      }
+
+      @mock_zza.should_receive(:track_event).with("foo.click", anything(), anything(), anything(), anything(), anything())
+      @mock_zza.should_receive(:track_event).with("foo.invite_frields_url.click", anything(), anything(), anything(), anything(), anything())
+
+      post :events, params
+
+    end
+
+    it "should send <category>.click and <category>.join_from_invite_url.click zza events for links to invite friends" do
+      params = {
+          :category => "foo",
+          :event => "click",
+          :email => "jeremyhermann@gmail.com",
+          :url => "http://www.zangzing.com/invitation?ref=1234sdf"
+      }
+
+      @mock_zza.should_receive(:track_event).with("foo.click", anything(), anything(), anything(), anything(), anything())
+      @mock_zza.should_receive(:track_event).with("foo.join_from_invite_url.click", anything(), anything(), anything(), anything(), anything())
+
+      post :events, params
+
+    end
 
 
 

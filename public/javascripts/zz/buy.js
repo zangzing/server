@@ -535,6 +535,8 @@ zz.buy = zz.buy || {};
                 $('#checkout-banner').animate({top:-20}, 200);
 
                 ZZAt.track('buy.checkout-banner.close.click');
+                
+                zz.joinbanner.banner_refresh();
 
             });
 
@@ -570,6 +572,7 @@ zz.buy = zz.buy || {};
         }
         else{
             $('#checkout-banner').hide();
+            zz.joinbanner.banner_refresh();
         }
 
     }
@@ -1280,7 +1283,7 @@ zz.buy = zz.buy || {};
                 render_select_product_screen();
                 break;
             case DRAWER_SCREENS.CONFIGURE_PRODUCT:
-                left = '-381px';
+                left = '-382px';
                 render_configure_product_screen();
                 break;
         }
@@ -1325,14 +1328,14 @@ zz.buy = zz.buy || {};
             $('#article').fadeOut('fast', function(){
 
                 $('#right-drawer').show().animate({right:0},500, function(){
-                    $('#article').css({right:381});
+                    $('#article').css({right:382});
                     $('#article').show();
                     callback();
                 });
             });
         }
         else{
-            $('#article').css({right:381});
+            $('#article').css({right:382});
             $('#article').show();
 
             $('#right-drawer').css({right:0}).show();
