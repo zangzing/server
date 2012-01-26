@@ -96,7 +96,7 @@ var zz = zz || {};
     }
     
     function empty_message_html(){
-    	return '<label for="user_name" generated="true" class="error">Please enter all your information and then click the join button.</label>';
+    	return '<label for="user_name" generated="true" class="error">Please enter your info and click join.</label>';
     }
 
 	function join_message(){
