@@ -119,7 +119,7 @@ describe "ZZ API Albums" do
             :stream_to_facebook => false,
         }
         j = zz_api_post zz_api_create_album_path, params, 200, false
-        j = zz_api_delete zz_api_destroy_album_path(j[:id]), nil, 200
+        j = zz_api_post zz_api_destroy_album_path(j[:id]), nil, 200
         db_check = Album.find_by_id(j[:id])
         db_check.should == nil
       end
@@ -127,7 +127,7 @@ describe "ZZ API Albums" do
 
     describe "batch" do
       it "should get an error closing a batch with a bad album" do
-        j = zz_api_put zz_api_close_batch_path(-99), nil, 404
+        j = zz_api_post zz_api_close_batch_path(-99), nil, 404
       end
 
       it "should close an open batch" do
@@ -160,7 +160,7 @@ describe "ZZ API Albums" do
         batch = UploadBatch.get_current_and_touch(@user_id, album.id, false)
 
         # now close it
-        j = zz_api_put zz_api_close_batch_path(album.id), nil, 200
+        j = zz_api_post zz_api_close_batch_path(album.id), nil, 200
 
         batch.reload
         # now verify that it moved to finished
@@ -176,7 +176,7 @@ describe "ZZ API Albums" do
 
       it "should update album name with new name" do
         @album.name.should == "Some Test Name"
-        j = zz_api_put zz_api_update_album_path(@album),  { :name => "New Name" }, 200, false
+        j = zz_api_post zz_api_update_album_path(@album),  { :name => "New Name" }, 200, false
         j[:name].should == "New Name"
         @albumcheck = Album.find( @album.id )
         @albumcheck.name.should == "New Name"
@@ -184,14 +184,14 @@ describe "ZZ API Albums" do
 
       it "should NOT update album name with blank name" do
         @album.name.should == "Some Test Name"
-        j = zz_api_put zz_api_update_album_path(@album),  {  :name => "" }, 409, false
+        j = zz_api_post zz_api_update_album_path(@album),  {  :name => "" }, 409, false
         j[:message].should include "cannot be blank"
         @album.name.should == "Some Test Name"
       end
 
       it "should NOT update album name with symbols only (FriendlyId:BlankError) name" do
         @album.name.should == "Some Test Name"
-        j = zz_api_put zz_api_update_album_path(@album),  {  :name => "--//--//@@" }, 409, false
+        j = zz_api_post zz_api_update_album_path(@album),  {  :name => "--//--//@@" }, 409, false
         j[:message].should include "at least 1 letter or number"
         @album.name.should == "Some Test Name"
       end
@@ -200,7 +200,7 @@ describe "ZZ API Albums" do
         @album.name.should == "Some Test Name"
         @album2 = Factory.create(:album, :user => @user, :name => "Second Album")
         @album2.name.should == "Second Album"
-        j = zz_api_put zz_api_update_album_path(@album),  {  :name => "Second Album" }, 409, false
+        j = zz_api_post zz_api_update_album_path(@album),  {  :name => "Second Album" }, 409, false
         j[:message].should include "already have"
         @album.name.should == "Some Test Name"
       end

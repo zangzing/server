@@ -40,7 +40,7 @@ describe "ZZ API Groups" do
       group_name = "mytestgroup"
       j = zz_api_post zz_api_create_group_path, {:name => group_name}, 200
       j[:name].should == group_name
-      zz_api_delete zz_api_destroy_group_path(j[:id]), nil, 200
+      zz_api_post zz_api_destroy_group_path(j[:id]), nil, 200
       j = zz_api_get zz_api_info_group_path(j[:id]), 404
     end
 
@@ -49,7 +49,7 @@ describe "ZZ API Groups" do
       new_group_name = "renamed group"
       j = zz_api_post zz_api_create_group_path, {:name => group_name}, 200
       j[:name].should == group_name
-      j = zz_api_put zz_api_update_group_path(j[:id]), {:name => new_group_name}, 200
+      j = zz_api_post zz_api_update_group_path(j[:id]), {:name => new_group_name}, 200
       j[:name].should == new_group_name
       # should fail to create a duplicate group
       j = zz_api_post zz_api_create_group_path, {:name => new_group_name}, 409
@@ -142,7 +142,7 @@ describe "ZZ API Groups" do
       members = j
 
       # now delete the group
-      zz_api_delete zz_api_destroy_group_path(group_id), nil, 200
+      zz_api_post zz_api_destroy_group_path(group_id), nil, 200
       j = zz_api_get zz_api_info_group_path(group_id), 404
 
       # verify that items have been removed from the database
@@ -180,7 +180,7 @@ describe "ZZ API Groups" do
 
       # now delete them
       delete_ids = members.map {|member| member[:user][:id]}
-      zz_api_delete zz_api_remove_members_group_path(group_id), {:user_ids => delete_ids}, 200
+      zz_api_post zz_api_remove_members_group_path(group_id), {:user_ids => delete_ids}, 200
 
       # verify nothing left
       j = zz_api_get zz_api_members_group_path(group_id), 200

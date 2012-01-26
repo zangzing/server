@@ -1,30 +1,29 @@
-require "acl_base"
+require "old_acl_base"
 
-class SystemRightsACLTuple < ACLTupleBase
+class OldSystemRightsACLTuple < OldBaseACLTuple
 end
 
 # implements the ACL control for SystemRights
-class SystemRightsACL < ACLBase
-  ADMIN_ROLE = ACLRole.new('Admin', 100)
-  SUPPORT_HERO_ROLE = ACLRole.new('Hero', 200)
-  MODERATOR_ROLE = ACLRole.new('Moderator', 300)
-  USER_ROLE = ACLRole.new('User', 400)
+class OldSystemRightsACL < OldBaseACL
+  ADMIN_ROLE = ACLRole.new('Admin', 10)
+  SUPPORT_HERO_ROLE = ACLRole.new('Hero', 20)
+  MODERATOR_ROLE = ACLRole.new('Moderator', 30)
+  USER_ROLE = ACLRole.new('User', 40)
 
   GLOBAL_ID = 1
 
   def self.initialize
-    if SystemRightsACL.initialized.nil?
-      SystemRightsACL.base_init 'System', make_roles
+    if OldSystemRightsACL.initialized.nil?
+      OldSystemRightsACL.base_init 'SystemRights', make_roles
     end
   end
 
   # the instance initialization - overrides the default
   # because there is only one of these so use a constant
-  def initialize
-    super(GLOBAL_ID)
+  def initialize(redis_override = nil)
+    super(GLOBAL_ID, redis_override)
   end
 
-  # order these with most privs first, least last
   def self.make_roles
     roles = [
         ADMIN_ROLE,
@@ -36,14 +35,35 @@ class SystemRightsACL < ACLBase
 
   # get the global instance
   def self.singleton
-    @@global_instance ||= SystemRightsACL.new
+    @@global_instance ||= OldSystemRightsACL.new
   end
 
 
   # make a tuple of our specific type
   # that holds the acl_id and role
   def self.new_tuple
-    SystemRightsACLTuple.new
+    OldSystemRightsACLTuple.new
+  end
+
+  # convert existing users from the database to ACLs
+  def self.convert_db_users
+    acl = singleton
+    users = User.select("id, username, role").all
+    users.each do |user|
+      user_id = user.id
+      user_role = user.role
+
+      # first check to see if the users already has an ACL
+      # if so, leave it alone
+      if acl.get_user_role(user_id).nil?
+        if user_role == "admin"
+          role = OldSystemRightsACL::ADMIN_ROLE
+        else
+          role = OldSystemRightsACL::USER_ROLE
+        end
+        acl.add_user(user_id, role)
+      end
+    end
   end
 
 
@@ -93,4 +113,4 @@ class SystemRightsACL < ACLBase
 end
 
 # let the class initialize and register
-SystemRightsACL.initialize
+OldSystemRightsACL.initialize

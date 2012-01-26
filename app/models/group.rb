@@ -6,10 +6,6 @@ class Group < ActiveRecord::Base
 
   validates_presence_of   :name
 
-  def self.max_insert_size
-    @@safe_max_size ||= RawDB.safe_max_size(connection)
-  end
-
   # make the special wrapped group name
   def self.make_wrapped_name(wrapped_id)
     name = "user-#{wrapped_id}"
@@ -25,7 +21,17 @@ class Group < ActiveRecord::Base
 
     # update or create the group member
     GroupMember.fast_update_members([[group.id, wrapped_id]])
+
     group
+  end
+
+  # given an array of group_ids, return all the
+  # users_ids, low level call for speed
+  def self.users_in_groups(group_ids)
+    return [] if group_ids.empty?
+    in_clause = RawDB.build_in_clause(connection, group_ids)
+    sql = "SELECT DISTINCT gm.user_id FROM group_members gm, groups g WHERE gm.group_id = g.id AND g.id IN #{in_clause}"
+    RawDB.single_values(connection.execute(sql))
   end
 
   # return an array of groups

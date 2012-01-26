@@ -98,13 +98,13 @@ private
             status_msg << "Full check"
             # a more thorough check than just ping
             # make a dummy Album and add a user to check redis for ACL
-            a = AlbumACL.new("health_check_album")
-            a.add_user "health_check_user", AlbumACL::ADMIN_ROLE
+            a = OldAlbumACL.new("health_check_album")
+            a.add_user "health_check_user", OldAlbumACL::ADMIN_ROLE
             a.remove_acl
           else
             # just your basic ping check
             status_msg << "Ping check"
-            redis = ACLManager.get_global_redis
+            redis = OldACLManager.get_global_redis
             redis.ping
           end
         end

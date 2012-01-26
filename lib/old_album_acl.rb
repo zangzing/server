@@ -1,21 +1,20 @@
-require "acl_base"
+require "old_acl_base"
 
-class AlbumACLTuple < ACLTupleBase
+class OldAlbumACLTuple < OldBaseACLTuple
 end
 
 # implements the ACL control for Albums
-class AlbumACL < ACLBase
-  ADMIN_ROLE = ACLRole.new('Admin', 100)
-  CONTRIBUTOR_ROLE = ACLRole.new('Contrib', 200)
-  VIEWER_ROLE = ACLRole.new('Viewer', 300)
+class OldAlbumACL < OldBaseACL
+  ADMIN_ROLE = ACLRole.new('Admin', 10)
+  CONTRIBUTOR_ROLE = ACLRole.new('Contrib', 20)
+  VIEWER_ROLE = ACLRole.new('Viewer', 30)
 
   def self.initialize
-    if AlbumACL.initialized.nil?
-      AlbumACL.base_init 'Album', make_roles
+    if OldAlbumACL.initialized.nil?
+      OldAlbumACL.base_init 'Album', make_roles
     end
   end
 
-  # order these with most privs first, least last
   def self.make_roles
     roles = [
         ADMIN_ROLE,
@@ -27,7 +26,7 @@ class AlbumACL < ACLBase
   # make a tuple of our specific type
   # that holds the acl_id and role
   def self.new_tuple
-    AlbumACLTuple.new
+    OldAlbumACLTuple.new
   end
 
   # called by base class to inform us that the user acl has
@@ -36,11 +35,13 @@ class AlbumACL < ACLBase
   # we don't need the specifics
   def notify_user_acl_modified(user_ids)
     user_ids.each do |user_id|
-      #todo Change the cache manager call to accept the list of user ids
-      # all at once
-      if user_id != 0
+      #todo call album cache manager here to let it know
+      # it should invalidate the trackers for this user on
+      # contributor albums
+      num_user_id = user_id.to_i
+      if num_user_id != 0
         # only notify if it is a valid numeric user id
-        Cache::Album::Manager.shared.user_albums_acl_modified(user_id)
+        Cache::Album::Manager.shared.user_albums_acl_modified(num_user_id)
       end
     end
   end
@@ -48,4 +49,4 @@ class AlbumACL < ACLBase
 end
 
 # let the class initialize and register
-AlbumACL.initialize
+OldAlbumACL.initialize

@@ -343,15 +343,15 @@ class Album < ActiveRecord::Base
   end
 
   def acl
-    @acl ||= AlbumACL.new( self.id )
+    @acl ||= OldAlbumACL.new( self.id )
   end
 
   def add_contributor( email)
      user = User.find_by_email( email )
      if user
           #if user does not have contributor role, add it
-          unless acl.has_permission?( user.id, AlbumACL::CONTRIBUTOR_ROLE)
-            acl.add_user user.id, AlbumACL::CONTRIBUTOR_ROLE
+          unless acl.has_permission?( user.id, OldAlbumACL::CONTRIBUTOR_ROLE)
+            acl.add_user user.id, OldAlbumACL::CONTRIBUTOR_ROLE
             InviteActivity.create( :user => self.user,
                                    :subject => self,
                                    :invite_kind => InviteActivity::CONTRIBUTE,
@@ -366,8 +366,8 @@ class Album < ActiveRecord::Base
           end
      else 
           # if the email does not have contributor role add it.
-          unless acl.has_permission?( email, AlbumACL::CONTRIBUTOR_ROLE)
-              acl.add_user email, AlbumACL::CONTRIBUTOR_ROLE
+          unless acl.has_permission?( email, OldAlbumACL::CONTRIBUTOR_ROLE)
+              acl.add_user email, OldAlbumACL::CONTRIBUTOR_ROLE
               InviteActivity.create!( :user => self.user,
                                      :subject => self,
                                      :invite_kind => InviteActivity::CONTRIBUTE,
@@ -386,8 +386,8 @@ class Album < ActiveRecord::Base
      user = User.find_by_email( email )
      if user
           #is user does not have vie permissions, add them
-          unless acl.has_permission?( user.id, AlbumACL::VIEWER_ROLE)
-            acl.add_user user.id, AlbumACL::VIEWER_ROLE
+          unless acl.has_permission?( user.id, OldAlbumACL::VIEWER_ROLE)
+            acl.add_user user.id, OldAlbumACL::VIEWER_ROLE
             InviteActivity.create( :user => self.user,
                                    :subject => self,
                                    :invite_kind => InviteActivity::VIEW,
@@ -402,8 +402,8 @@ class Album < ActiveRecord::Base
           end
      else
           # if the email does not have view permissions add  them
-          unless acl.has_permission?( email, AlbumACL::VIEWER_ROLE)
-              acl.add_user email, AlbumACL::VIEWER_ROLE
+          unless acl.has_permission?( email, OldAlbumACL::VIEWER_ROLE)
+              acl.add_user email, OldAlbumACL::VIEWER_ROLE
               InviteActivity.create!( :user => self.user,
                                      :subject => self,
                                      :invite_kind => InviteActivity::VIEW,
@@ -425,7 +425,7 @@ class Album < ActiveRecord::Base
 
   def viewer?( id )
       if private?
-        acl.has_permission?( id, AlbumACL::VIEWER_ROLE)
+        acl.has_permission?( id, OldAlbumACL::VIEWER_ROLE)
       else
         true
       end
@@ -433,18 +433,18 @@ class Album < ActiveRecord::Base
 
   #true if the id has viewer role or higher 
   def viewer_in_group?( id )
-     acl.has_permission?( id, AlbumACL::VIEWER_ROLE)
+     acl.has_permission?( id, OldAlbumACL::VIEWER_ROLE)
   end
 
 
   # Returns true if id has contributor role or equivalent
   def contributor?( id )
-    acl.has_permission?( id, AlbumACL::CONTRIBUTOR_ROLE)
+    acl.has_permission?( id, OldAlbumACL::CONTRIBUTOR_ROLE)
   end
 
   # Returns true if id has admin role or equivalent
   def admin?( id )
-    acl.has_permission?( id, AlbumACL::ADMIN_ROLE)
+    acl.has_permission?( id, OldAlbumACL::ADMIN_ROLE)
   end
 
   # Checks of email is that of a contributor and returns user
@@ -476,12 +476,12 @@ class Album < ActiveRecord::Base
 
   #Returns album contributors if exact = true, only the ones with CONTRIBUTOR_ROLE not equivalent ROLES are returned
   def contributors( exact = false)
-    acl.get_users_with_role( AlbumACL::CONTRIBUTOR_ROLE, exact )
+    acl.get_users_with_role( OldAlbumACL::CONTRIBUTOR_ROLE, exact )
   end
 
   #Returns album contributors if exact = true, only the ones with CONTRIBUTOR_ROLE not equivalent ROLES are returned
   def viewers( exact = false)
-    acl.get_users_with_role( AlbumACL::VIEWER_ROLE, exact )
+    acl.get_users_with_role( OldAlbumACL::VIEWER_ROLE, exact )
   end
 
 
@@ -748,7 +748,7 @@ private
   end
 
   def add_creator_as_admin
-    acl.add_user( user.id, AlbumACL::ADMIN_ROLE )
+    acl.add_user( user.id, OldAlbumACL::ADMIN_ROLE )
   end
 
   # this pulls the cover from the db

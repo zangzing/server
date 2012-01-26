@@ -56,7 +56,7 @@
             var is_current_users_homepage = <%= current_user == @user ? 'true' : 'false' %>;
             var current_user_membership = {
                 <% if current_user %>
-                    <%=j AlbumACL.get_acls_for_user( current_user.id, AlbumACL::VIEWER_ROLE ).map{ |acl| "#{acl.acl_id}:'#{acl.role.name}'"}.join(',') %>
+                    <%=j OldAlbumACL.get_acls_for_user( current_user.id, OldAlbumACL::VIEWER_ROLE ).map{ |acl| "#{acl.acl_id}:'#{acl.role.name}'"}.join(',') %>
                 <%end%>
             };
 

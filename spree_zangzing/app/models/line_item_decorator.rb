@@ -44,11 +44,6 @@ LineItem.class_eval do
 
   scope :visible_by_variant, lambda { |variant| where('line_items.variant_id = ? AND line_items.hidden = 0', variant.id).order('id DESC') }
 
-  # used to determine max safe statement size for
-  # a bulk insert on this connection
-  def self.max_insert_size
-    @@safe_max_size ||= RawDB.safe_max_size(LineItem.connection)
-  end
 
   # fast low level database operations
 
@@ -61,7 +56,7 @@ LineItem.class_eval do
     db = LineItem.connection
     base_cmd = "INSERT INTO #{LineItem.quoted_table_name}(id, shipment_id) VALUES "
     end_cmd = " ON DUPLICATE KEY UPDATE shipment_id = VALUES(shipment_id)"
-    RawDB.fast_insert(db, LineItem.max_insert_size, rows, base_cmd, end_cmd)
+    RawDB.fast_insert(db, rows, base_cmd, end_cmd)
   end
 
   # perform a bulk insert of shipment ids
@@ -73,7 +68,7 @@ LineItem.class_eval do
     db = LineItem.connection
     base_cmd = "INSERT INTO #{LineItem.quoted_table_name}(id, print_photo_id) VALUES "
     end_cmd = " ON DUPLICATE KEY UPDATE print_photo_id = VALUES(print_photo_id)"
-    RawDB.fast_insert(db, LineItem.max_insert_size, rows, base_cmd, end_cmd)
+    RawDB.fast_insert(db, rows, base_cmd, end_cmd)
   end
 
   # perform a bulk insert of items and bumps the quantity by the quantity specified
@@ -86,7 +81,7 @@ LineItem.class_eval do
     base_cmd = "INSERT INTO #{LineItem.quoted_table_name}(id, order_id, variant_id, quantity, price, created_at, updated_at, photo_id) VALUES "
     end_cmd = "ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity),
               updated_at = VALUES(updated_at)"
-    RawDB.fast_insert(db, LineItem.max_insert_size, rows, base_cmd, end_cmd)
+    RawDB.fast_insert(db, rows, base_cmd, end_cmd)
   end
 
   # return nil if nil or empty, otherwise

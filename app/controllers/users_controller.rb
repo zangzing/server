@@ -63,10 +63,10 @@ class UsersController < ApplicationController
     if @new_user && @new_user.automatic?
       # The user is an automatic user because she had contributed photos after being invited by email
       # she has now decided to join, remove automatic flag and reset password.
-      #if @new_user.auto_by_contact
-      #  @new_user.cohort = User.cohort_current # if they are auto due to simply being created because someone referenced that email address then the real cohort is now
-      #  @new_user.auto_by_contact = false       # a full user now
-      #end
+      if @new_user.auto_by_contact
+        @new_user.cohort = User.cohort_current # if they are auto due to simply being created because someone referenced that email address then the real cohort is now
+        @new_user.auto_by_contact = false       # a full user now
+      end
       @new_user.automatic = false
       @new_user.name      = params[:user][:name]
       @new_user.username  = params[:user][:username]

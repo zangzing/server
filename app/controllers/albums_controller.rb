@@ -353,9 +353,9 @@ class AlbumsController < ApplicationController
       user_id = params[:member][:id]
 
       if params[:member][:permission] == 'contributor'
-        role = AlbumACL::CONTRIBUTOR_ROLE
+        role = OldAlbumACL::CONTRIBUTOR_ROLE
       else
-        role = AlbumACL::VIEWER_ROLE
+        role = OldAlbumACL::VIEWER_ROLE
       end
 
       @album.acl.add_user(user_id, role)

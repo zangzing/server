@@ -401,12 +401,12 @@ zz.pages.group_tab = {
 
                 element.find('select.permission').val(person['permission']);
                 element.find('select.permission').change(function() {
-                    $.post('/zz_api/albums/' + zz.page.album_id + '/update_sharing_member', {_method: 'put', 'member[id]': person.id, 'member[permission]': $(this).val()});
+                    $.post('/zz_api/albums/' + zz.page.album_id + '/update_sharing_member', {_method: 'post', 'member[id]': person.id, 'member[permission]': $(this).val()});
                 });
 
                 element.find('.delete-button').click(function() {
                     if (confirm('Are you sure you want to remove ' + person.name + '?')) {
-                        $.post('/zz_api/albums/' + zz.page.album_id + '/delete_sharing_member', {_method: 'delete', 'member[id]': person.id});
+                        $.post('/zz_api/albums/' + zz.page.album_id + '/delete_sharing_member', {_method: 'post', 'member[id]': person.id});
                         element.remove();
                         check_empty_list();
                     }

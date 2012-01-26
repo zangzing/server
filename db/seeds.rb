@@ -34,7 +34,7 @@ user.automatic = false
 user.reset_perishable_token
 user.reset_single_access_token
 user.save!
-SystemRightsACL.singleton.add_user(user.id, SystemRightsACL::ADMIN_ROLE)
+OldSystemRightsACL.singleton.add_user(user.id, OldSystemRightsACL::ADMIN_ROLE)
 print user.name + " User Created!\n"
 
 # ZANGZING  AGENT CLIENT APPLICATION TOKEN

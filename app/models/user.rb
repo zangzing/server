@@ -191,7 +191,7 @@ class User < ActiveRecord::Base
     user = User.new(  :automatic => true,
                          :email => email,
                          :name => name,
-#                         :auto_by_contact => auto_by_contact,
+                         :auto_by_contact => auto_by_contact,
                          :username => UUIDTools::UUID.random_create.to_s.gsub('-','').to_s,
                          :password => UUIDTools::UUID.random_create.to_s)
     user.reset_perishable_token
@@ -209,12 +209,12 @@ class User < ActiveRecord::Base
   def self.find_by_email_or_create_automatic( email, name='', auto_by_contact = false)
     user = User.find_by_email( email )
     if user
-      #if user.automatic? && user.auto_by_contact && auto_by_contact = false
-      #  # no longer an auto by contact user
-      #  user.auto_by_contact = false
-      #  user.cohort = User.cohort_current # we now have a cohort
-      #  user.save # not crucial if this fails so ignore any error
-      #end
+      if user.automatic? && user.auto_by_contact && !auto_by_contact
+        # no longer an auto by contact user
+        user.auto_by_contact = false
+        user.cohort = User.cohort_current # we now have a cohort
+        user.save # not crucial if this fails so ignore any error
+      end
     else
       begin
         #user not found, create an automatic user with a random password
@@ -264,22 +264,22 @@ class User < ActiveRecord::Base
 
   def admin?
     @is_admin ||= lambda {
-      acl = SystemRightsACL.singleton
-      acl.has_permission?(self.id, SystemRightsACL::ADMIN_ROLE)
+      acl = OldSystemRightsACL.singleton
+      acl.has_permission?(self.id, OldSystemRightsACL::ADMIN_ROLE)
     }.call
   end
 
   def support_hero?
-      @is_admin ||= lambda {
-        acl = SystemRightsACL.singleton
-        acl.has_permission?(self.id, SystemRightsACL::SUPPORT_HERO_ROLE)
+      @is_support_hero ||= lambda {
+        acl = OldSystemRightsACL.singleton
+        acl.has_permission?(self.id, OldSystemRightsACL::SUPPORT_HERO_ROLE)
       }.call
   end
 
   def moderator?
-       @is_admin ||= lambda {
-         acl = SystemRightsACL.singleton
-         acl.has_permission?(self.id, SystemRightsACL::MODERATOR_ROLE)
+       @is_moderator ||= lambda {
+         acl = OldSystemRightsACL.singleton
+         acl.has_permission?(self.id, OldSystemRightsACL::MODERATOR_ROLE)
        }.call
   end
 
@@ -370,7 +370,7 @@ class User < ActiveRecord::Base
       :first_name => first_name,
       :last_name => last_name,
       :automatic => automatic,
-      :auto_by_contact => false #todo change to auto_by_contact,
+      :auto_by_contact => auto_by_contact,
     }
   end
 
@@ -473,22 +473,33 @@ class User < ActiveRecord::Base
     @update_acls_with_id_queued = true
   end
 
+  # does a direct update of my_group_id
+  def self.direct_update_my_group_id(user_id, group_id)
+    base_cmd = "INSERT INTO #{quoted_table_name}(id, my_group_id) VALUES "
+    end_cmd = "ON DUPLICATE KEY UPDATE my_group_id = VALUES(my_group_id)"
+    rows = [[user_id, group_id]]
+    RawDB.fast_insert(connection, rows, base_cmd, end_cmd)
+  end
+
   # after creating, make the wrapped group for this user
+  # also updates the my_group_id field of this user directly
   def make_wrapped_group
-    Group.create_wrapped_user(self.id)
+    group = Group.create_wrapped_user(self.id)
+    # direct write the my_group_id
+    User.direct_update_my_group_id(self.id, group.id)
   end
 
   # Replaces any occurrences of the new user's email
   # in acl keys with the users new id
   # (runs as an after_create callback)
   def update_acls_with_id
-    ACLManager.global_replace_user_key( self.email, self.id )
+    OldACLManager.global_replace_user_key( self.email, self.id )
     # set proper acl rights - new users default to regular user rights
-    SystemRightsACL.singleton.add_user(self.id, SystemRightsACL::USER_ROLE) unless self.moderator?
+    OldSystemRightsACL.singleton.add_user(self.id, OldSystemRightsACL::USER_ROLE) unless self.moderator?
 
     # Look for invitation activities that may need to be created and updated
     #now that we have a user for an email
-    user_album_acls =  AlbumACL.get_all_acls_for_user( self.id )
+    user_album_acls =  OldAlbumACL.get_all_acls_for_user( self.id )
     user_album_acls.each do | acl |
       album = Album.find_by_id( acl.acl_id )
       if album

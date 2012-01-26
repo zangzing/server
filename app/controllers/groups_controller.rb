@@ -217,6 +217,7 @@ class GroupsController < ApplicationController
       # ok now the user_ids array contains all members in user_id form so do the
       # bulk update
       rows = []
+      user_ids.uniq!
       user_ids.each do |user_id|
         rows << [group_id, user_id]
       end

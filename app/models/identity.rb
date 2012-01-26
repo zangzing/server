@@ -19,6 +19,7 @@
 #
 
 class Identity < ActiveRecord::Base
+  extend ZZActiveRecordUtils
 
   belongs_to :user
   has_many :contacts, :dependent => :destroy
@@ -68,11 +69,6 @@ class Identity < ActiveRecord::Base
   def destroy_contacts
     Contact.connection.execute "DELETE FROM #{Contact.quoted_table_name} WHERE `identity_id` = #{self.id}"
   end
-  
-  # determine the max insert size to build
-  def max_insert_size
-    @@safe_max_size ||= RawDB.safe_max_size(Contact.connection)
-  end
 
   def import_contacts(contacts_array)
     db = Contact.connection
@@ -88,7 +84,7 @@ class Identity < ActiveRecord::Base
       rows << row
     end
 
-    RawDB.fast_insert(db, max_insert_size, rows, cmd)
+    RawDB.fast_insert(db, rows, cmd)
 
     return contacts_array.count
   end
