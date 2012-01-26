@@ -26,6 +26,8 @@ var zz = zz || {};
     
 
     function setup_banner(){
+    	var validator;
+    	
         $("#header-join-banner").html(banner_html());
     	
     	zz.image_utils.pre_load_image(join_picture(), function(image) {
@@ -40,15 +42,15 @@ var zz = zz || {};
     	
     	$('#header-join-banner .join-form').first().attr("action", 'https://'+document.domain+zz.routes.users.create_user_url());
 	
-    	zz.joinform.add_validation( $('#header-join-banner .join-form') );
+    	validator = zz.joinform.add_validation( $('#header-join-banner .join-form') );
     	
     	$('#header-join-banner .join-form .submit-button').click(function(){
-    		submit_form();
+    		submit_form(validator);
         });
 
         $('#header-join-banner .join-form').bind('keypress', function(e){
             if ( e.keyCode == 13 ) {
-            	submit_form();
+            	submit_form(validator);
             }
         });
         
@@ -81,17 +83,20 @@ var zz = zz || {};
 		                '<li><label for="user_username">Username</label><input type="text" name="user[username]" id="user_username" value="" /></li>' +
 		                '<li><label for="user_email">Email address</label><input type="text" name="user[email]" id="user_email" value="" /></li>' +
 		                '<li><label for="user_password">Password</label><input type="password" name="user[password]" id="user_password" value="" maxlength="40" /></li>' +
-		                '<li><a class="submit-button newgreen-button"><span>Join for Free</span></a></li>' +
+		                '<li><a class="submit-button newgreen-button" rel="nofollow"><span>Join for Free</span></a></li>' +
 		                '</ul>' +
 		                '</form>' +
-		            '</div>'
-		     ;
+		            '</div>';
     	return html;
     	
     }
     
     function spacer_html(){
     	return '<div class="join-banner-spacer"></div>';
+    }
+    
+    function empty_message_html(){
+    	return '<label for="user_name" generated="true" class="error">Please enter all your information and then click the join button.</label>';
     }
 
 	function join_message(){
@@ -161,45 +166,56 @@ var zz = zz || {};
 		ZZAt.track("join.toolbarbanner.show");
     }
     
-    function submit_form(){
-    	$('#header-join-banner .join-form').submit();
-		ZZAt.track("join.toolbarbanner.click");
-		
-		var num_fields_nonempty = 0;
-		var num_fields_valid = 0;
-		var bit_notation = 0;
-
-		bit_notation = 
-			Math.pow(2,0) * $('#header-join-banner #user_name').valid() +
-			Math.pow(2,1) * ($('#header-join-banner #user_name').val().length != 0) + 
-			Math.pow(2,2) * $('#header-join-banner #user_username').valid() +
-			Math.pow(2,3) * ($('#header-join-banner #user_username').val().length != 0) + 		
-			Math.pow(2,4) * $('#header-join-banner #user_email').valid() +
-			Math.pow(2,5) * ($('#header-join-banner #user_email').val().length != 0) + 		
-			Math.pow(2,6) * $('#header-join-banner #user_password').valid() +
-			Math.pow(2,7) * ($('#header-join-banner #user_password').val().length != 0);			
-			
+    function submit_form(validator){
+    	var num_fields_nonempty = 0;
 		num_fields_nonempty =
 			($('#header-join-banner #user_name').val().length != 0) +
 			($('#header-join-banner #user_username').val().length != 0) +
 			($('#header-join-banner #user_email').val().length != 0) +
 			($('#header-join-banner #user_password').val().length != 0);
 		
-		num_fields_valid = 
-			$('#header-join-banner #user_name').valid() + 
-			$('#header-join-banner #user_username').valid() + 
-			$('#header-join-banner #user_email').valid() + 
-			$('#header-join-banner #user_password').valid();
-		
-		if(!$('#header-join-banner .join-form').valid()){
-			ZZAt.track("join.toolbarbanner.invalid", {
-				Zjoin_num_fields_nonempty: num_fields_nonempty,
-				Zjoin_num_fields_valid: num_fields_valid,
-				Zjoin_bit_fields: bit_notation
+    	if(num_fields_nonempty == 0){
+    		validator.resetForm();
+    		$(".join-form ul li").first().append(empty_message_html());
+    		$('#header-join-banner #user_name').addClass("error");
+    		
+    		ZZAt.track("join.toolbarbanner.click");
+    		ZZAt.track("join.toolbarbanner.invalid", {
+				Zjoin_num_fields_nonempty: 0,
+				Zjoin_num_fields_valid: 0,
+				Zjoin_bit_fields: 0
 			});
-		}
-		
-		
+    	} else if($('#header-join-banner .join-form').valid()){
+        	$('#header-join-banner .join-form').submit();
+    		ZZAt.track("join.toolbarbanner.click");
+    		ZZAt.track("join.toolbarbanner.click.valid");
+    	} else {
+    		var num_fields_valid = 0;
+    		var bit_notation = 0;
+
+    		bit_notation = 
+    			1 * $('#header-join-banner #user_name').valid() +
+    			2 * ($('#header-join-banner #user_name').val().length != 0) + 
+    			4 * $('#header-join-banner #user_username').valid() +
+    			8 * ($('#header-join-banner #user_username').val().length != 0) + 		
+    			16 * $('#header-join-banner #user_email').valid() +
+    			32 * ($('#header-join-banner #user_email').val().length != 0) + 		
+    			64 * $('#header-join-banner #user_password').valid() +
+    			128 * ($('#header-join-banner #user_password').val().length != 0);			
+
+    		num_fields_valid = 
+    			$('#header-join-banner #user_name').valid() + 
+    			$('#header-join-banner #user_username').valid() + 
+    			$('#header-join-banner #user_email').valid() + 
+    			$('#header-join-banner #user_password').valid();
+    		
+    			ZZAt.track("join.toolbarbanner.click");
+    			ZZAt.track("join.toolbarbanner.invalid", {
+    				Zjoin_num_fields_nonempty: num_fields_nonempty,
+    				Zjoin_num_fields_valid: num_fields_valid,
+    				Zjoin_bit_fields: bit_notation
+    			});
+    	}
     }
     
 }());
