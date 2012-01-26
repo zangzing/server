@@ -172,7 +172,11 @@ var zz = zz || {};
     	if(num_fields_nonempty == 0){
     		zz.routes.users.goto_join_screen();
     		ZZAt.track("join.toolbarbanner.click");
-    		ZZAt.track("join.toolbarbanner.click.empty");
+    		ZZAt.track("join.toolbarbanner.invalid", {
+				Zjoin_num_fields_nonempty: 0,
+				Zjoin_num_fields_valid: 0,
+				Zjoin_bit_fields: 0
+			});
     	} else if($('#header-join-banner .join-form').valid()){
         	$('#header-join-banner .join-form').submit();
     		ZZAt.track("join.toolbarbanner.click");

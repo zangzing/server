@@ -119,17 +119,16 @@
     $(document).ready(function(){
 
         zz.local_storage.clear();
+		
+        zz.joinform.add_validation( $('#join-form') );
 
         $('#submit-button').click(function(){
-            $('form').submit();
-            ZZAt.track('button.join.click');
+            submit_form();
         });
-
 
         $('form').bind('keypress', function(e){
             if ( e.keyCode == 13 ) {
-                $("form").submit();
-                ZZAt.track('button.join.click');
+                submit_form();
             }
         });
 
@@ -140,13 +139,53 @@
             //set the value in the homepage url
             $('#username').text(username);
         });
-        
-        zz.joinform.add_validation( $('#join-form') );
 
         $('#user_name').focus();
 
         ZZAt.track('page.join.visit');
     });
+    
+    function submit_form(){
+    	if($('#join-form').valid()){
+        	$("#join-form").submit();
+            //ZZAt.track('button.join.click');
+    		ZZAt.track("join.joinpage.click");
+    		ZZAt.track("join.joinpage.click.valid");
+    	} else {
+            var num_fields_nonempty = 0;
+            var num_fields_valid = 0;
+            var bit_notation = 0;
+            
+            num_fields_nonempty =
+                ($('#user_name').val().length != 0) +
+                ($('#user_username').val().length != 0) +
+                ($('#user_email').val().length != 0) +
+                ($('#user_password').val().length != 0);
+                
+            bit_notation = 
+                1 * $('#user_name').valid() +
+                2 * ($('#user_name').val().length != 0) + 
+                4 * $('#user_username').valid() +
+                8 * ($('#user_username').val().length != 0) + 		
+                16 * $('#user_email').valid() +
+                32 * ($('#user_email').val().length != 0) + 		
+                64 * $('#user_password').valid() +
+                128 * ($('#user_password').val().length != 0);			
+
+            num_fields_valid = 
+                $('#user_name').valid() + 
+                $('#user_username').valid() + 
+                $('#user_email').valid() + 
+                $('#user_password').valid();
+                
+            ZZAt.track("join.joinpage.click");
+            ZZAt.track("join.joinpage.invalid", {
+                Zjoin_num_fields_nonempty: num_fields_nonempty,
+                Zjoin_num_fields_valid: num_fields_valid,
+                Zjoin_bit_fields: bit_notation
+    			});
+    	}
+    }
 
 </script>
 
