@@ -289,7 +289,7 @@ module ZZ
       # ( Album not private )
       def require_album_viewer_role
         if @album.private?
-          msg = "You have asked to see a Invite Only album. Please login so we know who you are."
+          msg = "You have asked to see an Invite Only album. Please login so we know who you are."
           unless current_user
             if zz_api_call?
               render_json_error(nil, msg, 401)
