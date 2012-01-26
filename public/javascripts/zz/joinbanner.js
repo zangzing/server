@@ -26,6 +26,8 @@ var zz = zz || {};
     
 
     function setup_banner(){
+    	var validator;
+    	
         $("#header-join-banner").html(banner_html());
     	
     	zz.image_utils.pre_load_image(join_picture(), function(image) {
@@ -40,15 +42,15 @@ var zz = zz || {};
     	
     	$('#header-join-banner .join-form').first().attr("action", 'https://'+document.domain+zz.routes.users.create_user_url());
 	
-    	zz.joinform.add_validation( $('#header-join-banner .join-form') );
+    	validator = zz.joinform.add_validation( $('#header-join-banner .join-form') );
     	
     	$('#header-join-banner .join-form .submit-button').click(function(){
-    		submit_form();
+    		submit_form(validator);
         });
 
         $('#header-join-banner .join-form').bind('keypress', function(e){
             if ( e.keyCode == 13 ) {
-            	submit_form();
+            	submit_form(validator);
             }
         });
         
@@ -84,14 +86,17 @@ var zz = zz || {};
 		                '<li><a class="submit-button newgreen-button" rel="nofollow"><span>Join for Free</span></a></li>' +
 		                '</ul>' +
 		                '</form>' +
-		            '</div>'
-		     ;
+		            '</div>';
     	return html;
     	
     }
     
     function spacer_html(){
     	return '<div class="join-banner-spacer"></div>';
+    }
+    
+    function empty_message_html(){
+    	return '<label for="user_name" generated="true" class="error">Please enter all your information and then click the join button.</label>';
     }
 
 	function join_message(){
@@ -161,7 +166,7 @@ var zz = zz || {};
 		ZZAt.track("join.toolbarbanner.show");
     }
     
-    function submit_form(){
+    function submit_form(validator){
     	var num_fields_nonempty = 0;
 		num_fields_nonempty =
 			($('#header-join-banner #user_name').val().length != 0) +
@@ -170,7 +175,10 @@ var zz = zz || {};
 			($('#header-join-banner #user_password').val().length != 0);
 		
     	if(num_fields_nonempty == 0){
-    		zz.routes.users.goto_join_screen();
+    		validator.resetForm();
+    		$(".join-form ul li").first().append(empty_message_html());
+    		$('#header-join-banner #user_name').addClass("error");
+    		
     		ZZAt.track("join.toolbarbanner.click");
     		ZZAt.track("join.toolbarbanner.invalid", {
 				Zjoin_num_fields_nonempty: 0,

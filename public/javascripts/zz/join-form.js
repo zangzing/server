@@ -9,7 +9,7 @@ var zz = zz || {};
     function add_validation(element) {
         add_regex_validator();
 
-        element.validate( {
+        return element.validate( {
             rules : {
                 'user[name]' : {
                     required : true,
