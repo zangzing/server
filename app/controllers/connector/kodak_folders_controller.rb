@@ -86,12 +86,23 @@ class Connector::KodakFoldersController < Connector::KodakController
       api.send_request('/albumList')
     end
     if album_list && album_list['Album']
-      kodak_albums = [album_list['Album']].flatten.select { |a| a['type']=='0' } #Looks like real albums have type attribute = 0, but who knows...
+      regular_albums = [album_list['Album']].flatten.select { |a| a['type']=='0' } #Looks like real albums have type attribute = 0, but who knows...
 
-      kodak_albums.each do |k_album|
+      regular_albums.each do |k_album|
         zz_album = create_album(identity, k_album['name'], params[:privacy])
         zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
         fire_async('import_album', params.merge(:album_id => zz_album.id, :kodak_album_id => k_album['id']))
+      end
+    end
+    album_list = call_with_error_adapter do
+      api.send_request("/user/#{api.user_ssid}/eventAlbumList")
+    end
+    if album_list && album_list['EventAlbum']
+      group_albums = [album_list['EventAlbum']].flatten
+      group_albums.each do |k_album|
+        zz_album = create_album(identity, k_album['Album']['name'], params[:privacy])
+        zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
+        fire_async('import_album', params.merge(:album_id => zz_album.id, :kodak_album_id => k_album['Album']['id'], :group_id => k_album['Group']['id']))
       end
     end
 
