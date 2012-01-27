@@ -366,13 +366,9 @@ class AlbumsController < ApplicationController
 
 
   def import_all
-    session[:show_import_all_dialog] = true
-
-    if !current_user
-      redirect_to join_url
-    else
-      redirect_to user_pretty_url(current_user)
-    end
+    return unless require_user
+    add_javascript_action( 'show_import_all_dialog' )
+    redirect_to user_pretty_url(current_user)
   end
 
 
@@ -399,11 +395,7 @@ class AlbumsController < ApplicationController
     @session_user_invited_albums_path = @session_loader.nil? ? nil : invited_albums_path(@session_loader)
     @is_homepage_view = true
 
-    # open the import all dialog
-    if session[:show_import_all_dialog]
-      session[:show_import_all_dialog] = nil
-      add_javascript_action('show_import_all_dialog')
-    end
+
 
   end
 
