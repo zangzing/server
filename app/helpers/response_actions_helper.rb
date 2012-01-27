@@ -90,6 +90,10 @@ module ResponseActionsHelper
     %{ zz.dialog.show_request_contributor_dialog('#{escape_javascript action[:album_id].to_s}'); }
   end
 
+  def js_show_import_all_dialog(action)
+     "zz.import_albums.show_import_dialog();"
+  end
+
   #def render_show_request_access_dialog( action )
   #  raise Exception.new('raction request_access_dialog  contains no album_id') unless action[:album_id]
   #  render :partial => 'albums/pwd_dialog',:locals => {:album_id => action[:album_id]}
