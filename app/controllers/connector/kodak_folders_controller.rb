@@ -1,14 +1,15 @@
 class Connector::KodakFoldersController < Connector::KodakController
 
   def self.list_albums(api, params)
+    folders = []
+    #Regular albums
     album_list = call_with_error_adapter do
       api.send_request('/albumList')
     end
     if album_list && album_list['Album']
-
       albums = [album_list['Album']].flatten.select { |a| a['type']=='0' } #Looks like real albums have type attribute = 0, but who knows...
-      folders = albums.map { |f|
-        {
+      albums.each { |f|
+        folders << {
           :name => f['name'],
           :type => "folder",
           :id  =>  f['id'],
@@ -16,8 +17,22 @@ class Connector::KodakFoldersController < Connector::KodakController
           :add_url => kodak_folder_action_path(:kodak_album_id => f['id'], :action => 'import', :format => 'json')
         }
       }
-    else
-      folders = []
+    end
+    #Group albums
+    album_list = call_with_error_adapter do
+      api.send_request("/user/#{api.user_ssid}/eventAlbumList")
+    end
+    if album_list && album_list['EventAlbum']
+      albums = [album_list['EventAlbum']].flatten
+      albums.each do |ga|
+        folders << {
+          :name => ga['Album']['name'],
+          :type => "folder",
+          :id  =>  ga['Album']['id'],
+          :open_url => kodak_photos_path(:kodak_album_id => ga['Album']['id'], :group_id => ga['Group']['id'], :format => 'json'),
+          :add_url => kodak_folder_action_path(:kodak_album_id => ga['Album']['id'], :group_id => ga['Group']['id'], :action => 'import', :format => 'json')
+        }
+      end
     end
 
     JSON.fast_generate(folders)
@@ -26,9 +41,15 @@ class Connector::KodakFoldersController < Connector::KodakController
   def self.import_album(api, params)
     identity = params[:identity]
     photos_list = call_with_error_adapter do
-      api.send_request("/album/#{params[:kodak_album_id]}")
+      if params[:group_id]
+        api.send_request("/group/#{params[:group_id]}/album/#{params[:kodak_album_id]}")
+      else
+        api.send_request("/album/#{params[:kodak_album_id]}")
+      end
     end
     photos_data = photos_list['pictures'] || []
+    photos_data = [photos_data] if photos_data.is_a?(Hash)
+
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photos_data.each do |p|
@@ -65,12 +86,23 @@ class Connector::KodakFoldersController < Connector::KodakController
       api.send_request('/albumList')
     end
     if album_list && album_list['Album']
-      kodak_albums = [album_list['Album']].flatten.select { |a| a['type']=='0' } #Looks like real albums have type attribute = 0, but who knows...
+      regular_albums = [album_list['Album']].flatten.select { |a| a['type']=='0' } #Looks like real albums have type attribute = 0, but who knows...
 
-      kodak_albums.each do |k_album|
+      regular_albums.each do |k_album|
         zz_album = create_album(identity, k_album['name'], params[:privacy])
         zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
         fire_async('import_album', params.merge(:album_id => zz_album.id, :kodak_album_id => k_album['id']))
+      end
+    end
+    album_list = call_with_error_adapter do
+      api.send_request("/user/#{api.user_ssid}/eventAlbumList")
+    end
+    if album_list && album_list['EventAlbum']
+      group_albums = [album_list['EventAlbum']].flatten
+      group_albums.each do |k_album|
+        zz_album = create_album(identity, k_album['Album']['name'], params[:privacy])
+        zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
+        fire_async('import_album', params.merge(:album_id => zz_album.id, :kodak_album_id => k_album['Album']['id'], :group_id => k_album['Group']['id']))
       end
     end
 

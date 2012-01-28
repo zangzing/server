@@ -29,35 +29,44 @@ class Invitation < ActiveRecord::Base
     end
 
     invitation = from_user.sent_invitations.find_by_email(to_address)
-    if invitation
-      # if user has already sent invite to this email, then just
-      # send a reminder
+
+
+    if invitation && invitation.status == Invitation::STATUS_PENDING
+
+      # if we already have a pending invite to this user then just send reminder
       send_invitation_to_email(invitation)
+
     else
-      # otherwise, create and send new invitation
+
+      # if there is no invitation to this email address, or the invitation
+      # is complete (meaning user signed up under different email address) then go ahead
+      # and create new invitation to track...
       invitation = create_invitation_for_email(from_user, to_address)
       send_invitation_to_email(invitation)
+
     end
+
+    return invitation
   end
 
   def self.send_reminder(invitation_id)
     invitation = Invitation.find(invitation_id)
-    send_invitation_to_email(invitation)
-  end
 
-  def self.send_invitation_to_email(invitation)
     if invitation.status != Invitation::STATUS_PENDING
       raise "Sorry, you can't send a reminder for a completed invitation."
     end
 
-    invitation_url = "#{get_invitation_url()}?ref=#{invitation.tracked_link.tracking_token}"
+    send_invitation_to_email(invitation)
+  end
+
+  def self.send_invitation_to_email(invitation)
+     invitation_url = "#{get_invitation_url()}?ref=#{invitation.tracked_link.tracking_token}"
 
     from_user = invitation.user
     to_address = invitation.tracked_link.shared_to_address
 
     ZZ::Async::Email.enqueue(:invite_to_join, from_user.id, to_address, invitation_url)
-
-  end
+   end
 
   def self.create_invitation_for_email(from_user, to_address)
     tracked_link = TrackedLink.create_tracked_link(from_user, get_invitation_url, TrackedLink::TYPE_INVITATION, TrackedLink::SHARED_TO_EMAIL, shared_to_address=to_address)
@@ -105,6 +114,16 @@ class Invitation < ActiveRecord::Base
         invitation.user = tracked_link.user
       else
         invitation = Invitation.find_by_tracked_link_id(tracked_link.id)
+
+        # if invitation is already complete, this means
+        # that more than one person is using the same invitation
+        # email (which is fine), so just create a new invitation
+        # like we do for facebook and twitter
+        if invitation.status != Invitation::STATUS_PENDING
+          invitation = Invitation.new
+          invitation.tracked_link = tracked_link
+          invitation.user = tracked_link.user
+        end
       end
     else
 

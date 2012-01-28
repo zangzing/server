@@ -150,12 +150,11 @@
 .user-session-dialog label.error{
     position: absolute;
     background-color: #000;
-    opacity: .5;
+    opacity: .7;
     filter: alpha(opacity = 60);
     text-shadow: none;
     color: white;
     width: 230px;
-    height: 19px;
     border: 1px solid white;
     text-align: left;
     padding: 4px 4px 4px 10px;

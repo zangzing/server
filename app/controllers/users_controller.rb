@@ -130,7 +130,17 @@ class UsersController < ApplicationController
         end
 
         # process any invitations tied to this email address or tracking token
-        Invitation.process_invitations_for_new_user(@new_user, current_tracking_token)
+        invitation = Invitation.process_invitations_for_new_user(@new_user, current_tracking_token)
+
+        # send zza events
+        if invitation
+          send_zza_event_from_client('invitation.join')
+
+          if invitation.tracked_link # there should always be one, but just in case of bug
+            send_zza_event_from_client("invitation.#{invitation.tracked_link.shared_to}.join")
+          end
+
+        end
 
         return
       end

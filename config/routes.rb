@@ -44,6 +44,8 @@ Server::Application.routes.draw do
     delete '/users/:id'                 => 'users#destroy',           :as => :delete_user
     match  '/users/:id/update_password' => 'users#update_password',   :as => :update_user_password, :requirements => {:protocol => 'https'}
 
+
+
     #email_subscirptions
     match '/subscriptions/mcsync'      => 'subscriptions#mcsync'
     get   '/subscriptions/:id'         => 'subscriptions#unsubscribe'   #see unsubscribe above
@@ -65,6 +67,7 @@ Server::Application.routes.draw do
     get    '/users/:user_id/liked_albums_public_json'       => 'albums#liked_albums_public_json',       :as => :liked_albums_public_json
     get    '/users/:user_id/liked_users_public_albums_json' => 'albums#liked_users_public_albums_json', :as => :liked_users_public_albums_json
     get    '/users/:user_id/invited_albums_json'            => 'albums#invited_albums_json',            :as => :invited_albums_json
+    get    '/import_all'                                    => 'albums#import_all',        :as => :import_all
 
 
     get    '/users/:user_id/albums'                => 'albums#index'             #, :as => :user_albums  user albums defined below

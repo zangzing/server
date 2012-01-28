@@ -416,6 +416,13 @@ class AlbumsController < ApplicationController
   end
 
 
+  def import_all
+    return unless require_user
+    add_javascript_action( 'show_import_all_dialog' )
+    redirect_to user_pretty_url(current_user)
+  end
+
+
   # This is effectively the users homepage
   def index
     return unless require_nothing

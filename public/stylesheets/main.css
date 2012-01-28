@@ -121,6 +121,7 @@ div#container {
     background-color: #fff8de;
     border: 1px solid #e2d6b5;
     
+    border-radius: 0 0 5px 5px;
 	-moz-border-radius-bottomleft:5px;
 	-moz-border-radius-bottomright:5px;
 	-webkit-border-bottom-left-radius: 5px;
@@ -206,20 +207,19 @@ div#container {
 	position: absolute;
 	top: 9px;
 	left: 11px;
-	color: #999;
+	color: #666;
 
 }
 
 #header-join-banner form input {
 	width: 130px;
-	
 	padding: 6px 9px;
-	border: 1px solid #999;
+	border: 1px solid #666;
 	border-radius:5px;
 	-moz-border-radius:5px;
 	-webkit-border-radius: 5px;
 }
-	
+
 #header-join-banner form input.error {
 	background-color:#fddbda;
 	border-color:#fd514f;
@@ -233,22 +233,19 @@ div#container {
 	
 #header-join-banner form li label.error {
 	top:41px;
-	bottom:42px;
 	left:50%;
 	width: 136px;
-	height: 34px;
 	margin:0 0 0 -78px;
 	padding:8px 10px;
-	color: white;
+	color: #333;
 	font-size:14px;
 	font-weight: 200;
 	min-height: 15px;
-	opacity: 0.8;
-	border: 1px solid white;
-	background-color: black;
-	box-shadow: black 0px 0px 10px;
-	-webkit-box-shadow: black 0px 0px 10px;
-	-moz-box-shadow: black 0px 0px 10px;
+	border: 1px solid #FD514F;
+	background-color: #FFF8DE;
+	box-shadow: #666 0px 1px 1px;
+	-webkit-box-shadow: #666 0px 1px 1px;
+	-moz-box-shadow: #666 0px 1px 1px;
 }
 
 

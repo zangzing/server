@@ -93,6 +93,7 @@ class User < ActiveRecord::Base
   before_save    :queue_update_acls_with_id, :if => :email_changed?
   after_commit   :update_acls_with_id, :if => '@update_acls_with_id_queued'
 
+  before_validation :username_to_downcase
   validates_presence_of   :name,      :unless => :automatic?
   validates_presence_of   :username,  :unless => :automatic?
   validates_format_of     :username,  :with => /^[a-z0-9]+$/, :message => 'should contain only lowercase alphanumeric characters', :unless => :automatic?
@@ -331,6 +332,7 @@ class User < ActiveRecord::Base
   end
 
   def self.find_by_email_or_username(login)
+    # both are case insensitive
     find_by_email(login) || find_by_username(login)
   end
 
@@ -525,9 +527,13 @@ class User < ActiveRecord::Base
 
       # fast, hard to read equivalent
       #
-      sql = "select COALESCE(my_photos_size,0) + COALESCE(other_photos_size,0) as total_size from " +
-            "(select sum(image_file_size) as my_photos_size from photos where user_id = #{id}) as p1, " +
-            "(select sum(photos.image_file_size) as other_photos_size from photos, albums where photos.album_id = albums.id AND albums.user_id = #{id} AND photos.user_id <> #{id}) as p2"
+      # sql = "select COALESCE(my_photos_size,0) + COALESCE(other_photos_size,0) as total_size from " +
+      #       "(select sum(image_file_size) as my_photos_size from photos where user_id = #{id}) as p1, " +
+      #       "(select sum(photos.image_file_size) as other_photos_size from photos, albums where photos.album_id = albums.id AND albums.user_id = #{id} AND photos.user_id <> #{id}) as p2"
+
+      # ok, now change to just charge album owner for storage
+      #
+      sql = "select sum(photos.image_file_size) from photos, albums where photos.album_id = albums.id and albums.user_id = #{id}"
 
       row = User.connection.execute(sql).first
 
@@ -535,7 +541,7 @@ class User < ActiveRecord::Base
         @storage_used = 0
       else
         used = row[0].to_int / 1024 / 1024
-        @storage_used = (used * 1.1).to_int # add 10% to account for derived images
+        @storage_used = (used * 1.2).to_int # add 20% to account for derived images
       end
 
     end
@@ -565,14 +571,22 @@ class User < ActiveRecord::Base
 
 
   def split_name
-      unless name.nil?
-        names = name.split
+    unless name.nil?
+      names = name.split
+      if names.length > 1
         self.last_name = names.pop
         self.first_name = names.join(' ')
+      else
+        self.first_name = names.pop
+        self.last_name = ""
       end
+    end
   end
-
-
+  
+  def username_to_downcase
+    self.username.downcase!
+  end
+ 
   # if we trigger the update within a transaction, it will be rolled back so
   # we set a variable and then we do the update after commit
   def queue_update_acls_with_id
