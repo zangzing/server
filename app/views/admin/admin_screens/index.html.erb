@@ -17,48 +17,48 @@
       <div class="content">
         <table  width="500px" >
           <tr>
-            <td><%=User.count() %> Users</td>
-            <td><%=@today_usercount%> Today</td>
-            <td><%=@this_week_usercount%> This Week</td>
-            <td><%=@this_month_usercount%> This Month</td>
+            <td><%=number_with_delimiter(User.count()) %> Users</td>
+            <td><%=number_with_delimiter(@today_usercount)%> Today</td>
+            <td><%=number_with_delimiter(@this_week_usercount)%> This Week</td>
+            <td><%=number_with_delimiter(@this_month_usercount)%> This Month</td>
           </tr>
           <tr>
             <td></td>
-            <td><%=@yesterday_usercount%> Yesterday</td>
-            <td><%=@last_week_usercount%> Last Week</td>
-            <td><%=@last_month_usercount%> Last Month</td>
+            <td><%=number_with_delimiter(@yesterday_usercount)%> Yesterday</td>
+            <td><%=number_with_delimiter(@last_week_usercount)%> Last Week</td>
+            <td><%=number_with_delimiter(@last_month_usercount)%> Last Month</td>
           </tr>
           <tr><td><br></td></tr>
           <tr>
-            <td><%=Invitation.count(:conditions => ["status <> 'pending'"]) %> By Invite</td>
-            <td><%=@today_invited_usercount%> Today</td>
-            <td><%=@this_week_invited_usercount%> This Week</td>
-            <td><%=@this_month_invited_usercount%> This Month</td>
+            <td><%=number_with_delimiter(Invitation.count(:conditions => ["status <> 'pending'"])) %> By Invite</td>
+            <td><%=number_with_delimiter(@today_invited_usercount)%> Today</td>
+            <td><%=number_with_delimiter(@this_week_invited_usercount)%> This Week</td>
+            <td><%=number_with_delimiter(@this_month_invited_usercount)%> This Month</td>
           </tr>
           <tr>
             <td></td>
-            <td><%=@yesterday_invited_usercount%> Yesterday</td>
-            <td><%=@last_week_invited_usercount%> Last Week</td>
-            <td><%=@last_month_invited_usercount%> Last Month</td>
+            <td><%=number_with_delimiter(@yesterday_invited_usercount)%> Yesterday</td>
+            <td><%=number_with_delimiter(@last_week_invited_usercount)%> Last Week</td>
+            <td><%=number_with_delimiter(@last_month_invited_usercount)%> Last Month</td>
           </tr>
           <tr><td><br></td></tr>
 
           <tr>
-            <td><%= Album.count()%> Albums</td>
-            <td><%=@today_albumcount%> Today</td>
+            <td><%=number_with_delimiter(Album.count())%> Albums</td>
+            <td><%=number_with_delimiter(@today_albumcount)%> Today</td>
           </tr>
           <tr>
             <td></td>
-            <td><%=@this_week_albumcount%> This Week</td>
+            <td><%=number_with_delimiter(@this_week_albumcount)%> This Week</td>
           </tr>
           <tr><td><br></td></tr>
           <tr>
-            <td><%= Photo.count()%> Photos</td>
-            <td><%=@today_photocount%> Today</td>
+            <td><%=number_with_delimiter(Photo.count())%> Photos</td>
+            <td><%=number_with_delimiter(@today_photocount)%> Today</td>
           </tr>
           <tr>
             <td></td>
-            <td><%=@this_week_photocount%> This Week</td>
+            <td><%=number_with_delimiter(@this_week_photocount)%> This Week</td>
           </tr>
         </table>
       </div>
