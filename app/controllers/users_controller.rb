@@ -304,8 +304,8 @@ class UsersController < ApplicationController
     return unless require_nothing
     zz_api do
       user_ids = []
-      user_ids += User.validate_user_ids(params[:user_ids])
-      user_ids += User.validate_user_names(params[:user_names])
+      user_ids += User.validate_user_ids(params[:user_ids], false)
+      user_ids += User.validate_user_names(params[:user_names], false)
       addresses = User.validate_emails(params[:emails])
       converted_ids, user_id_to_email = User.convert_to_users(addresses)
       user_ids += converted_ids

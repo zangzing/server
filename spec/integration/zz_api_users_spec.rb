@@ -45,9 +45,9 @@ describe "ZZ API Users" do
 
     it "should find and create users" do
       user1 = Factory.create(:user)
-      names = [user1.username]
+      names = [user1.username, 'neverfindthisuser']
       user2 = Factory.create(:user)
-      ids = [user2.id]
+      ids = [user2.id, 99999999999999]  # the bogus id should not cause failure
       last_name = "SomeUser_#{rand(99999)}"
       email_only = "joe_some_user99@usertest.com"
       emails = ["Joe #{last_name} <#{email_only}>"]

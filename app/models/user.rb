@@ -411,15 +411,18 @@ class User < ActiveRecord::Base
   # validates user ids
   # takes an array of user ids, if any are invalid, returns an error
   #
-  def self.validate_user_ids(ids)
+  def self.validate_user_ids(ids, error_not_found = true)
     user_ids = []
     if ids && ids.length > 0
       users = User.select("id").where(:id => ids)
       found_ids = Set.new(users.map(&:id))
       ids.each do |id|
-        raise ArgumentError.new("Invalid user_id specified: #{id}") unless found_ids.include?(id)
+        if found_ids.include?(id)
+          user_ids << id  # try to preserve the order
+        elsif error_not_found
+          raise ArgumentError.new("Invalid user_id specified: #{id}")
+        end
       end
-      user_ids = ids
     end
     user_ids
   end
@@ -429,15 +432,22 @@ class User < ActiveRecord::Base
   #
   # returns array of user_ids
   #
-  def self.validate_user_names(names)
+  def self.validate_user_names(names, error_not_found = true)
     user_ids = []
     if names && names.length > 0
       users = User.select("id, username").where(:username => names)
-      found_names = Set.new(users.map(&:username))
-      names.each do |name|
-        raise ArgumentError.new("Invalid username specified: #{name}") unless found_names.include?(name)
+      found_names = {}
+      users.each do |user|
+        found_names[user.username] = user.id
       end
-      user_ids = users.map(&:id)
+      names.each do |name|
+        found_id = found_names[name]
+        if found_id
+          user_ids << found_id  # try to preserve the order
+        elsif error_not_found
+          raise ArgumentError.new("Invalid username specified: #{name}")
+        end
+      end
     end
     user_ids
   end
