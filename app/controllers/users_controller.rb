@@ -2,10 +2,6 @@ class UsersController < ApplicationController
   ssl_required :join, :create, :edit_password, :update_password
   ssl_allowed :validate_email, :validate_username
 
-  before_filter :require_user,    :only => [ :activate,:edit, :update]
-  before_filter :require_admin,   :only => [ :activate]
-  before_filter :correct_user,    :only => [:edit, :update]
-
   skip_before_filter :verify_authenticity_token, :only=>[:create]
 
   def join
@@ -165,6 +161,7 @@ class UsersController < ApplicationController
   end
 
   def edit
+    return unless require_same_user
     @user = current_user
   end
 
@@ -183,6 +180,7 @@ class UsersController < ApplicationController
   end
 
   def update
+    return unless require_same_user
     @user = current_user
     if @user.update_attributes(params[:user])
       flash[:notice] = "Your Profile Has Been Updated."
@@ -226,8 +224,32 @@ class UsersController < ApplicationController
     render :json => true #Invalid call return not valid
   end
 
-  # zz api
+  # Gets info about a single user.
+  #
+  # This is called as (GET):
+  #
+  # /zz_api/users/:user_id/info
+  #
+  # Does not require a current logged in user, used to request info about any user.
+  #
+  # Input:
+  #
+  # Returns the user info.
+  #
+  # {
+  #        :id => users id,
+  #        :my_group_id => the group that wraps just this user,
+  #        :username => user name,
+  #        :profile_photo_url => the url to the profile photo, nil if none,
+  #        :first_name => first_name,
+  #        :last_name => last_name,
+  #        :email => email for this user (this will only be present for automatic users and in cases where you looked up the user via email)
+  #        :automatic => true if an automatic user (one that has not created an account)
+  #        :auto_by_contact => true if automatic user and was created simply by referencing (i.e. we added automatic as result of group or permission operation)
+  #                            if automatic is set and this is false it means we have a user that has actually sent a photo in on that address
+  # }
   def zz_api_user_info
+    return unless require_nothing
     zz_api do
       user_id = params[:user_id]
       user = User.find(user_id)
@@ -235,21 +257,72 @@ class UsersController < ApplicationController
     end
   end
 
+  # Finds or creates users.
+  #
+  # This will find existing users and in the email case create automatic users
+  # for emails that do not map to a current user. Finding by user_ids and user_names
+  # do not auto create users, only via email.  For emails, if the user is found
+  # we return it with the additional email context added to that user object.  If the
+  # email user is not found we create a new automatic users.  You can specify the
+  # First, Last name to user by specifying the fully qualified email such as:
+  # Joe Smith <joe_smith@somewhere.com>.  This will result in a user with the first name
+  # set to Joe, and last name set to Smith, email set to joe_smith@somewhere.com
+  #
+  # This is called as (POST):
+  #
+  # /zz_api/users/find_or_create
+  #
+  # This call does not require you to be logged in.
+  #
+  # Input:
+  # {
+  #   :user_ids => [ array of user ids to find ],
+  #   :user_names => [ array of user names to find ],
+  #   :emails => [ array of emails to find or create ],
+  # }
+  #
+  #
+  # Returns:
+  # fetches and returns all users found or created in the form
+  #
+  # [
+  #   user_info_hash - the hash containing the user info as returned in the user info call
+  #   ...
+  # ]
+  #
+  def zz_api_find_or_create
+    return unless require_nothing
+    zz_api do
+      user_ids = []
+      user_ids += User.validate_user_ids(params[:user_ids])
+      user_ids += User.validate_user_names(params[:user_names])
+      addresses = User.validate_emails(params[:emails])
+      converted_ids, user_id_to_email = User.convert_to_users(addresses)
+      user_ids += converted_ids
+
+      members = preload_users(user_ids)
+      User.as_array(members, user_id_to_email)
+    end
+  end
 
   private
+
+  # efficient fetch of users prepped to be loaded
+  def preload_users(user_ids)
+    members = User.where(:id => user_ids).includes(:profile_album).all
+    albums = []
+    members.each do |member|
+      albums << member.profile_album
+    end
+    Album.fetch_bulk_covers(albums)
+    # ok, we are pre-flighted with everything we need loaded now
+    members
+  end
+
   def admin_user
     redirect_to( root_path ) unless current_user.admin?
   end
 
-  def correct_user
-    if params[:id]
-      @user = User.find(params[:id])
-    elsif params[:username]
-      @user = User.find_by_username(params[:username])
-    end
-
-    redirect_to( root_path ) unless current_user?(@user)
-  end
 
   # see if this is a reserved username and if proper key has been passed
   # updates the user_info with the outcome, nil for bad, updated name otherwise

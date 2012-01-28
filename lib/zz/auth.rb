@@ -128,6 +128,23 @@ module ZZ
       # for act_as_authenticated compatibility with oauth plugin
       alias_method :login_required, :require_user
 
+      # require the user passed to be the logged in user
+      def require_same_user
+        return false unless require_user
+        if params[:id]
+          @user = User.find(params[:id])
+        elsif params[:username]
+          @user = User.find_by_username(params[:username])
+        end
+
+        if current_user?(@user)
+          return true
+        else
+          redirect_to( root_path )
+          return false
+        end
+      end
+
       # This is the json version of require user. Saves the request referer instead of the
       # resquest fullpath so that the user returns to the page from where the xhr call originated
       # instead of then json-location. Instead of redirecting, it just returns 401 with an informative

@@ -66,6 +66,7 @@ class ACLBase
 
   # the instance initialization
   def initialize(acl_id)
+    raise ArgumentError.new("acl_id must be an Integer") unless acl_id.is_a?(Integer)
     self.acl_id = acl_id
   end
 
@@ -115,22 +116,36 @@ class ACLBase
   # in its members.
   #
   def add_group(group_id, role)
+    raise ArgumentError.new("group_id must be an Integer") unless group_id.is_a?(Integer)
     priority = role.priority
     rows = [[acl_id, type, group_id, priority]]
     affected_user_ids = ACL.update_groups(rows)
     notify_user_acl_modified(affected_user_ids)
   end
 
+  # helper that adds a user by fetching it's wrapped group
+  def add_user(user, role)
+    raise ArgumentError.new("user must be a User") unless user.is_a?(User)
+    add_group(user.my_group_id, role)
+  end
+
   # Remove the group from the acl
   #
   def remove_group(group_id)
+    raise ArgumentError.new("group_id must be an Integer") unless group_id.is_a?(Integer)
     rows = [[acl_id, type, group_id]]
     affected_user_ids = ACL.remove_groups(rows)
     notify_user_acl_modified(affected_user_ids)
   end
 
+  # helper that removes a user by fetching it's wrapped group
+  def remove_user(user)
+    raise ArgumentError.new("user must be a User") unless user.is_a?(User)
+    remove_group(user.my_group_id)
+  end
+
   # Remove an acl - removes all users from the
-  # set and then removes from all users
+  # acl (an acl with no members has no database entry)
   #
   def remove_acl
     rows = [[acl_id, type]]
@@ -146,6 +161,7 @@ class ACLBase
   # return the user role if we have one for the
   # given user_id.  If no role we return nil
   def get_user_role(user_id)
+    raise ArgumentError.new("user_id must be an Integer") unless user_id.is_a?(Integer)
     priority = ACL.role_for_user(user_id, acl_id, type)
     priority.nil? ? nil : self.class.get_role(priority)
   end
@@ -153,6 +169,7 @@ class ACLBase
   # return the user role if we have one for the
   # given user_id.  If no role we return nil
   def get_group_role(group_id)
+    raise ArgumentError.new("group_id must be an Integer") unless group_id.is_a?(Integer)
     priority = ACL.role_for_group(group_id, acl_id, type)
     priority.nil? ? nil : self.class.get_role(priority)
   end
@@ -164,6 +181,7 @@ class ACLBase
   # role will be a match
   #
   def has_permission?(user_id, role, exact = false)
+    raise ArgumentError.new("user_id must be an Integer") unless user_id.is_a?(Integer)
     priority = ACL.role_for_user(user_id, acl_id, type)
     priority.nil? ? false : exact ? priority == role.priority : priority <= role.priority
   end
@@ -175,6 +193,7 @@ class ACLBase
   # role will be a match
   #
   def group_has_permission?(group_id, role, exact = false)
+    raise ArgumentError.new("group_id must be an Integer") unless group_id.is_a?(Integer)
     priority = ACL.role_for_group(group_id, acl_id, type)
     priority.nil? ? false : exact ? priority == role.priority : priority <= role.priority
   end
@@ -225,6 +244,7 @@ class ACLBase
   # If none we return and empty array
   #
   def self.get_acls_for_user(user_id, role, exact = false)
+    raise ArgumentError.new("user_id must be an Integer") unless user_id.is_a?(Integer)
     # get the priority range
     last = role.priority
     first = exact ? last : self.role_value_first
@@ -248,11 +268,12 @@ class ACLBase
   # If none we return and empty array
   #
   def self.get_acls_for_group(group_id, role, exact = false)
+    raise ArgumentError.new("group_id must be an Integer") unless group_id.is_a?(Integer)
     # get the priority range
     last = role.priority
     first = exact ? last : self.role_value_first
 
-    rows = ACL.acls_for_group(user_id, type, first, last)
+    rows = ACL.acls_for_group(group_id, type, first, last)
 
     tuples = []
     rows.each do |row|

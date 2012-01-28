@@ -38,19 +38,20 @@ class ACL < ActiveRecord::Base
   end
 
   # return the role for a user in a given acl
-  # returns max role for all groups user belongs to
+  # returns min role for all groups user belongs to
+  # the lower the role number the higher the privs
   # or nil if no role
   def self.role_for_user(user_id, resource_id, type)
-    sql = "SELECT MAX(a.role) FROM acls a, group_members gm WHERE gm.group_id = a.group_id AND
+    sql = "SELECT MIN(a.role) FROM acls a, group_members gm WHERE gm.group_id = a.group_id AND
                 a.resource_id = #{q(resource_id)} AND a.type = #{q(type)} AND gm.user_id = #{q(user_id)}"
     RawDB.single_value(RawDB.execute(connection, sql))
   end
 
   # return the role for a group in a given acl
-  # returns max role for all groups user belongs to
+  # returns min role for all groups user belongs to
   # or nil if no role
   def self.role_for_group(group_id, resource_id, type)
-    sql = "SELECT MAX(a.role) FROM acls a, group_members gm WHERE gm.group_id = a.group_id AND
+    sql = "SELECT MIN(a.role) FROM acls a, group_members gm WHERE gm.group_id = a.group_id AND
                 a.resource_id = #{q(resource_id)} AND a.type = #{q(type)} AND gm.group_id = #{q(group_id)}"
     RawDB.single_value(RawDB.execute(connection, sql))
   end
@@ -77,7 +78,7 @@ class ACL < ActiveRecord::Base
   # returned as
   # [[resource_id, role]...]
   def self.acls_for_user(user_id, type, first = 0, last = 10000)
-    sql = "SELECT a.resource_id, MAX(a.role) FROM acls a, group_members gm WHERE gm.group_id = a.group_id AND
+    sql = "SELECT a.resource_id, MIN(a.role) FROM acls a, group_members gm WHERE gm.group_id = a.group_id AND
                 (a.role >= #{q(first)} AND a.role <= #{q(last)}) AND a.type = #{q(type)} AND gm.user_id = #{q(user_id)} group by a.resource_id"
     RawDB.as_rows(RawDB.execute(connection, sql))
   end
@@ -88,7 +89,7 @@ class ACL < ActiveRecord::Base
   # returned as
   # [[resource_id, role]...]
   def self.acls_for_group(group_id, type, first = 0, last = 10000)
-    sql = "SELECT a.resource_id, MAX(a.role) FROM acls a, group_members gm WHERE gm.group_id = a.group_id AND
+    sql = "SELECT a.resource_id, MIN(a.role) FROM acls a, group_members gm WHERE gm.group_id = a.group_id AND
                 (a.role >= #{q(first)} AND a.role <= #{q(last)}) AND a.type = #{q(type)} AND gm.group_id = #{q(group_id)} group by a.resource_id"
     RawDB.as_rows(RawDB.execute(connection, sql))
   end

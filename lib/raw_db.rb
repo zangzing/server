@@ -19,7 +19,7 @@ class RawDB
 
   # wrap the db execute method
   def self.execute(db, cmd)
-puts cmd
+#    puts cmd
     db.execute(cmd)
   end
 

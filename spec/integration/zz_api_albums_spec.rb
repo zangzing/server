@@ -63,18 +63,6 @@ describe "ZZ API Albums" do
       j[:logged_in_user_id].should == nil
     end
 
-    it "should fail to get user info" do
-      j = zz_api_get zz_api_user_info_path(99999999), 509
-      #puts JSON.pretty_generate(j)
-      j[:message].should == "Couldn't find User with ID=99999999"
-    end
-
-    it "should get user info" do
-      j = zz_api_get zz_api_user_info_path(@user_id), 200
-      #puts JSON.pretty_generate(j)
-      j[:username].should == 'test1'
-    end
-
     describe "create" do
       it "should create a new album" do
         params = {

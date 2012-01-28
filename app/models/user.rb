@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   attr_accessor    :old_password, :reset_password
   attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :password_confirmation,
                    :old_password, :automatic, :profile_photo_id, :subscriptions_attributes,
-                   :ship_address_id, :bill_address_id, :creditcard_id
+                   :ship_address_id, :bill_address_id, :creditcard_id, :auto_by_contact
 
   has_many :albums      # we have a manual dependency to delete albums on destroy since nested rails callbacks don't seem to be triggered
 
@@ -361,10 +361,23 @@ class User < ActiveRecord::Base
       "#{self.name} <#{self.email}>"
   end
 
+  # return the list of users as an array
+  def self.as_array(members, user_id_to_email)
+    result = []
+    members.each do |member|
+      result << member.basic_user_info_hash(user_id_to_email)
+    end
+    result
+  end
+
   # return a has of basic user info used by the api
-  def basic_user_info_hash
-    {
+  # user_id_to_email is has of user_id => email that
+  # if present will be used to supplement the email
+  # address which is normally not returned
+  def basic_user_info_hash(user_id_to_email = nil)
+    user_info = {
       :id => id,
+      :my_group_id => my_group_id,
       :username => username,
       :profile_photo_url => profile_photo_url(false),   # do not want default url if nil, want nil in that case
       :first_name => first_name,
@@ -372,6 +385,12 @@ class User < ActiveRecord::Base
       :automatic => automatic,
       :auto_by_contact => auto_by_contact,
     }
+    # see if email should be included in returned data
+    add_email = automatic? ? email : nil
+    # see if our id is included, if so add/override email to give user matching context
+    add_email = user_id_to_email[id] if user_id_to_email
+    user_info[:email] = add_email if add_email
+    user_info
   end
 
   # Generate a friendly string randomically to be used as token.
@@ -387,6 +406,93 @@ class User < ActiveRecord::Base
     end
   end
   
+  # validates user ids
+  # takes an array of user ids, if any are invalid, returns an error
+  #
+  def self.validate_user_ids(ids)
+    user_ids = []
+    if ids && ids.length > 0
+      users = User.select("id").where(:id => ids)
+      found_ids = Set.new(users.map(&:id))
+      ids.each do |id|
+        raise ArgumentError.new("Invalid user_id specified: #{id}") unless found_ids.include?(id)
+      end
+      user_ids = ids
+    end
+    user_ids
+  end
+
+  # validates user names
+  # takes an array of user names, if any are invalid, returns an error
+  #
+  # returns array of user_ids
+  #
+  def self.validate_user_names(names)
+    user_ids = []
+    if names && names.length > 0
+      users = User.select("id, username").where(:username => names)
+      found_names = Set.new(users.map(&:username))
+      names.each do |name|
+        raise ArgumentError.new("Invalid username specified: #{name}") unless found_names.include?(name)
+      end
+      user_ids = users.map(&:id)
+    end
+    user_ids
+  end
+
+  # validates emails, just checks to see if they are in a valid email
+  # format and returns them as address records
+  #
+  def self.validate_emails(emails)
+    addresses = []
+    if emails && emails.length > 0
+      emails.each do |email|
+        addresses << ZZ::EmailValidator.validate_email(email)
+      end
+    end
+    addresses
+  end
+
+  # for each member in the array, try to find an existing email to user id mapping
+  # for those not found, create new automatic users
+  #
+  # returns array of user_ids, and a hash of user_id => email, the mapping to email
+  # is used when we return the info about a user to the caller because if they pass
+  # in the email we want to give it back to them so they can associate the returned
+  # user with the email they passed
+  #
+  # user_ids, user_id_to_email
+  def self.convert_to_users(addresses)
+    user_ids = []
+    user_id_to_email = nil
+
+    if addresses.empty? == false
+      user_id_to_email = {}
+      # first find the ones that map to a user
+      emails = addresses.map(&:address)
+      found_users = User.select("id,email").where(:email => emails)
+      # create a map from email to user_id
+      email_to_user_id = {}
+      found_users.each {|user| email_to_user_id[user.email] = user.id }
+
+      # ok, now walk the members to find out which ones need a new user created
+      addresses.each do |address|
+        email = address.address
+        user_id = email_to_user_id[email]
+        if user_id
+          user_ids << user_id
+        else
+          # not found, so make an automatic user
+          user = User.create_automatic(email, address.display_name, true)
+          user_id = user.id
+          user_ids << user_id
+        end
+        user_id_to_email[user_id] = email
+      end
+    end
+
+    return user_ids, user_id_to_email
+  end
 
 
   def account_plan
@@ -474,11 +580,12 @@ class User < ActiveRecord::Base
   end
 
   # does a direct update of my_group_id
-  def self.direct_update_my_group_id(user_id, group_id)
-    base_cmd = "INSERT INTO #{quoted_table_name}(id, my_group_id) VALUES "
+  def direct_update_my_group_id(group_id)
+    base_cmd = "INSERT INTO #{User.quoted_table_name}(id, my_group_id) VALUES "
     end_cmd = "ON DUPLICATE KEY UPDATE my_group_id = VALUES(my_group_id)"
-    rows = [[user_id, group_id]]
-    RawDB.fast_insert(connection, rows, base_cmd, end_cmd)
+    rows = [[self.id, group_id]]
+    RawDB.fast_insert(User.connection, rows, base_cmd, end_cmd)
+    self.my_group_id = group_id
   end
 
   # after creating, make the wrapped group for this user
@@ -486,7 +593,7 @@ class User < ActiveRecord::Base
   def make_wrapped_group
     group = Group.create_wrapped_user(self.id)
     # direct write the my_group_id
-    User.direct_update_my_group_id(self.id, group.id)
+    direct_update_my_group_id(group.id)
   end
 
   # Replaces any occurrences of the new user's email

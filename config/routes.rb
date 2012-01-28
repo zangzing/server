@@ -437,6 +437,7 @@ Server::Application.routes.draw do
 
     #users
     get    '/users/:user_id/info'                      => 'users#zz_api_user_info',                  :as => :zz_api_user_info
+    post   '/users/find_or_create'                     => 'users#zz_api_find_or_create',             :as => :zz_api_find_or_create_user
 
     #groups
     post   '/groups/create'                            => 'groups#zz_api_create',                    :as => :zz_api_create_group

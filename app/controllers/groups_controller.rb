@@ -112,10 +112,12 @@ class GroupsController < ApplicationController
   #    :name => the name of the group
   #    :user => {
   #        :id => users id,
+  #        :my_group_id => the group that wraps just this user,
   #        :username => user name,
   #        :profile_photo_url => the url to the profile photo, nil if none,
   #        :first_name => first_name,
   #        :last_name => last_name,
+  #        :email => email for this user (this will only be present for automatic users and in cases where you looked up the user via email)
   #        :automatic => true if an automatic user (one that has not created an account)
   #        :auto_by_contact => true if automatic user and was created simply by referencing (i.e. we added automatic as result of group or permission operation)
   #                            if automatic is set and this is false it means we have a user that has actually sent a photo in on that address
@@ -178,7 +180,7 @@ class GroupsController < ApplicationController
     return unless require_user && require_owned_group
 
     zz_api do
-      GroupMember.as_array(fetch_group_members(@group))
+      GroupMember.as_array(fetch_group_members(@group), nil)
     end
   end
 
@@ -209,10 +211,11 @@ class GroupsController < ApplicationController
       # build up list of each type and validate them
       group_id = @group.id
       user_ids = []
-      user_ids += validate_user_ids(params[:user_ids])
-      user_ids += validate_user_names(params[:user_names])
-      addresses = validate_emails(params[:emails])
-      user_ids += convert_to_users(addresses)
+      user_ids += User.validate_user_ids(params[:user_ids])
+      user_ids += User.validate_user_names(params[:user_names])
+      addresses = User.validate_emails(params[:emails])
+      converted_ids, user_id_to_email = User.convert_to_users(addresses)
+      user_ids += converted_ids
 
       # ok now the user_ids array contains all members in user_id form so do the
       # bulk update
@@ -224,7 +227,7 @@ class GroupsController < ApplicationController
       GroupMember.fast_update_members(rows)
 
       # now fetch them all and return
-      GroupMember.as_array(fetch_group_members(@group))
+      GroupMember.as_array(fetch_group_members(@group), user_id_to_email)
     end
   end
 
@@ -259,14 +262,23 @@ class GroupsController < ApplicationController
       GroupMember.where(:group_id => @group.id, :user_id => user_ids).delete_all
 
       # now fetch them all and return
-      GroupMember.as_array(fetch_group_members(@group))
+      GroupMember.as_array(fetch_group_members(@group), nil)
     end
   end
 
 private
-  # fetch all the members in the group
+  # fetch all the members in the group, do a deep set
+  # of sql queries all the way down to the cover photos
+  # to minimize the db calls needed
   def fetch_group_members(group)
-    members = group.group_members.includes(:user)
+    members = group.group_members.includes(:user => :profile_album).all
+    albums = []
+    members.each do |member|
+      albums << member.user.profile_album
+    end
+    Album.fetch_bulk_covers(albums)
+    # ok, we are pre-flighted with everything we need loaded now
+    members
   end
 
   # returns an array of non nil values for the symbol specified
@@ -277,82 +289,6 @@ private
       a << v if v
     end
     a
-  end
-
-  # for each member in the array, try to find an existing email to user id mapping
-  # for those not found, create new automatic users
-  # converts the members in place
-  def convert_to_users(addresses)
-    user_ids = []
-    return user_ids if addresses.empty?
-
-    # first find the ones that map to a user
-    emails = addresses.map(&:address)
-    found_users = User.select("id,email").where(:email => emails)
-    # create a map from email to user_id
-    email_to_user_id = {}
-    found_users.each {|user| email_to_user_id[user.email] = user.id }
-
-    # ok, now walk the members to find out which ones need new user created
-    addresses.each do |address|
-      email = address.address
-      user_id = email_to_user_id[email]
-      if user_id
-        user_ids << user_id
-      else
-        # not found, so make an automatic user
-        user = User.create_automatic(email, address.display_name, true)
-        user_ids << user.id
-      end
-    end
-    user_ids
-  end
-
-  # validates user ids
-  # takes an array of user ids, if any are invalid, returns an error
-  #
-  def validate_user_ids(ids)
-    user_ids = []
-    if ids && ids.length > 0
-      users = User.select("id").where(:id => ids)
-      found_ids = Set.new(users.map(&:id))
-      ids.each do |id|
-        raise ArgumentError.new("Invalid user_id specified: #{id}") unless found_ids.include?(id)
-      end
-      user_ids = ids
-    end
-    user_ids
-  end
-
-  # validates user names
-  # takes an array of user names, if any are invalid, returns an error
-  #
-  # returns array of user_ids
-  #
-  def validate_user_names(names)
-    user_ids = []
-    if names && names.length > 0
-      users = User.select("id, username").where(:username => names)
-      found_names = Set.new(users.map(&:username))
-      names.each do |name|
-        raise ArgumentError.new("Invalid username specified: #{name}") unless found_names.include?(name)
-      end
-      user_ids = users.map(&:id)
-    end
-    user_ids
-  end
-
-  # validates emails, just checks to see if they are in a valid email
-  # format and returns them as address records
-  #
-  def validate_emails(emails)
-    addresses = []
-    if emails && emails.length > 0
-      emails.each do |email|
-        addresses << ZZ::EmailValidator.validate_email(email)
-      end
-    end
-    addresses
   end
 
 end

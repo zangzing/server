@@ -17,20 +17,19 @@ class GroupMember < ActiveRecord::Base
   end
 
   # returns an array of hashes given an array of members
-  def self.as_array(members)
+  def self.as_array(members, user_id_to_email)
     result = []
     members.each do |member|
-      result << member.as_hash
+      result << member.as_hash(user_id_to_email)
     end
     result
   end
 
   # returns a single member in hash form
-  def as_hash
+  def as_hash(user_id_to_email)
     hash = {
-      :id => self.id,
       :group_id => self.group_id,
-      :user => user.basic_user_info_hash,
+      :user => user.basic_user_info_hash(user_id_to_email),
     }
     hash
   end

@@ -130,7 +130,7 @@ var zz = zz || {};
                 do_post('/service/albums/' +album_id+'/request_access', {message: message, access_type: 'contributor'}, success, error);
             },
             update: function( album_id, data_hash, success,error){
-                do_put('/zz_api/albums/'+album_id, data_hash, success, error );
+                do_post('/zz_api/albums/'+album_id + '/update', data_hash, success, error );
             },
             add_photos: function( album_id ){
                 window.location = '/service/albums/' +album_id+'/add_photos';
