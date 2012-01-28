@@ -29,6 +29,19 @@
             <td><%=@last_month_usercount%> Last Month</td>
           </tr>
           <tr><td><br></td></tr>
+          <tr>
+            <td><%=Invitation.count(:conditions => ["status <> 'pending'"]) %> By Invite</td>
+            <td><%=@today_invited_usercount%> Today</td>
+            <td><%=@this_week_invited_usercount%> This Week</td>
+            <td><%=@this_month_invited_usercount%> This Month</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td><%=@yesterday_invited_usercount%> Yesterday</td>
+            <td><%=@last_week_invited_usercount%> Last Week</td>
+            <td><%=@last_month_invited_usercount%> Last Month</td>
+          </tr>
+          <tr><td><br></td></tr>
 
           <tr>
             <td><%= Album.count()%> Albums</td>
