@@ -390,7 +390,9 @@ class User < ActiveRecord::Base
     # see if email should be included in returned data
     add_email = automatic? ? email : nil
     # see if our id is included, if so add/override email to give user matching context
-    add_email = user_id_to_email[id] if user_id_to_email
+    if user_id_to_email
+      add_email = user_id_to_email[id] || add_email
+    end
     user_info[:email] = add_email if add_email
     user_info
   end
