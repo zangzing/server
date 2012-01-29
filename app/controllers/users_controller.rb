@@ -260,6 +260,7 @@ class UsersController < ApplicationController
   # }
   def zz_api_user_info
     return unless require_nothing
+
     zz_api do
       user_id = params[:user_id]
       user = User.find(user_id)
@@ -282,7 +283,7 @@ class UsersController < ApplicationController
   #
   # /zz_api/users/find_or_create
   #
-  # This call does not require you to be logged in.
+  # This call requires the caller to be logged in.
   #
   # Input:
   # {
@@ -301,7 +302,8 @@ class UsersController < ApplicationController
   # ]
   #
   def zz_api_find_or_create
-    return unless require_nothing
+    return unless require_user
+
     zz_api do
       user_ids = []
       user_ids += User.validate_user_ids(params[:user_ids], false)
@@ -317,16 +319,16 @@ class UsersController < ApplicationController
 
   private
 
-  # efficient fetch of users prepped to be loaded
+  # efficient fetch of users and dependent data that will be loaded
   def preload_users(user_ids)
-    members = User.where(:id => user_ids).includes(:profile_album).all
+    users = User.where(:id => user_ids).includes(:profile_album).all
     albums = []
-    members.each do |member|
-      albums << member.profile_album
+    users.each do |user|
+      albums << user.profile_album
     end
     Album.fetch_bulk_covers(albums)
     # ok, we are pre-flighted with everything we need loaded now
-    members
+    users
   end
 
   def admin_user
