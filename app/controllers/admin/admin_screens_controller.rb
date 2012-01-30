@@ -25,6 +25,13 @@ class Admin::AdminScreensController < Admin::AdminController
     @this_month_usercount  = User.count(:conditions => ["created_at >= ?", Time.now.at_beginning_of_month])
     @last_month_usercount  = User.count(:conditions => ["created_at >= ? AND created_at < ?", Time.now.at_beginning_of_month - 1.month, Time.now.at_beginning_of_month])
 
+    @today_invited_usercount       = Invitation.count(:conditions => ["updated_at >= ? AND status <> 'pending'", Time.now.at_beginning_of_day])
+    @yesterday_invited_usercount   = Invitation.count(:conditions => ["updated_at >= ? AND updated_at < ? AND status <> 'pending'", Time.now.at_beginning_of_day - 1.day, Time.now.at_beginning_of_day])
+    @this_week_invited_usercount   = Invitation.count(:conditions => ["updated_at >= ? AND status <> 'pending'", Time.now.at_beginning_of_week])
+    @last_week_invited_usercount   = Invitation.count(:conditions => ["updated_at >= ? AND updated_at < ? AND status <> 'pending'", Time.now.at_beginning_of_week - 1.week, Time.now.at_beginning_of_week])
+    @this_month_invited_usercount  = Invitation.count(:conditions => ["updated_at >= ? AND status <> 'pending'", Time.now.at_beginning_of_month])
+    @last_month_invited_usercount  = Invitation.count(:conditions => ["updated_at >= ? AND updated_at < ? AND status <> 'pending'", Time.now.at_beginning_of_month - 1.month, Time.now.at_beginning_of_month])
+
     @health_check = health_check
   end
 
