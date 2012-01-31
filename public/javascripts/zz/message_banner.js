@@ -19,7 +19,10 @@ var zz = zz || {};
         zz.invitation_banner
     ];
 
+
+
     function init(){
+
 
         zz.buy.on_before_activate(function(){
         	hide_banner();

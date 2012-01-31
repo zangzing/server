@@ -31,23 +31,21 @@ var zz = zz || {};
     function on_show_banner(){
     	var validator;
     	
-        $("#header-join-banner").html(banner_html());
-    	
     	zz.image_utils.pre_load_image(join_picture(), function(image) {
     		var css = zz.image_utils.scale_center_and_crop(image, {width: 48, height: 48});
-    		$("#header-join-banner .picture div img.profile-photo").css(css);
+    		element.find('.picture div img.profile-photo').css(css);
     	});
     	
-    	$('.join-form li label').inFieldLabels();
+    	element.find('.join-form li label').inFieldLabels();
     	
-    	$('#header-join-banner form input').focus(function (object) { $(object.target).css("border", "1px solid orange"); });
-    	$('#header-join-banner form input').focusout(function (object) { $(object.target).css("border", "1px solid #666"); });
+    	element.find('form input').focus(function (object) { $(object.target).css("border", "1px solid orange"); });
+    	element.find('form input').focusout(function (object) { $(object.target).css("border", "1px solid #666"); });
     	
-    	$('#header-join-banner .join-form').first().attr("action", 'https://'+document.domain+zz.routes.users.create_user_url());
+    	element.find('.join-form').first().attr("action", 'https://'+document.domain+zz.routes.users.create_user_url());
 	
-    	validator = zz.joinform.add_validation( $('#header-join-banner .join-form') );
+    	validator = zz.joinform.add_validation( element.find('.join-form') );
     	
-    	$('#header-join-banner .join-form .submit-button').click(function(){
+    	element.find('.join-form .submit-button').click(function(){
     		submit_form(validator);
         });
 
@@ -113,7 +111,10 @@ var zz = zz || {};
     
 
     function submit_form(validator){
-    	var num_fields_nonempty = 0;
+    	// todo: should use 'element' variable rather than global selectors here...
+
+
+        var num_fields_nonempty = 0;
 		num_fields_nonempty =
 			($('#header-join-banner #user_name').val().length != 0) +
 			($('#header-join-banner #user_username').val().length != 0) +
