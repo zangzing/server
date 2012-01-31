@@ -33,8 +33,9 @@ var zz = zz || {};
     	
     	zz.image_utils.pre_load_image(join_picture(), function(image) {
     		var css = zz.image_utils.scale_center_and_crop(image, {width: 48, height: 48});
-    		element.find('.picture div img.profile-photo').css(css);
+            element.find("img.profile-photo").css(css);
     	});
+
     	
     	element.find('.join-form li label').inFieldLabels();
     	
