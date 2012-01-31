@@ -27,7 +27,7 @@ var zz = zz || {};
     function setup_banner(){
         var html = '<div class="invitation-banner">' +
                     '<div class="message ">' +
-                        '<span class="bold">Want extra free space?</span><br>Invite friends and you each get 250MB of extra space free.' +
+                        '<span class="bold">Want extra free space?</span> Invite friends and you each get 250MB of extra space free.' +
                     '</div>' +
                     '<a class="gray-button no-thanks-button"><span>No Thanks</span></a>' +
                     '<a class="green-button invite-button"><span>Invite Friends</span></a>' +
@@ -47,8 +47,7 @@ var zz = zz || {};
             element.find('.no-thanks-button').fadeOut('fast');
             element.find('.invite-button').fadeOut('fast');
             element.find('.message').fadeOut('fast', function(){
-                element.find('.message').html("No problem.<br>You can always Invite Friends later from the Account Menu.");
-                element.find('.message').addClass('no-thanks');
+                element.find('.message').html('<span class="bold">No problem.</span><br>You can always Invite Friends later from the Account Menu.');
                 element.find('.message').fadeIn('fast');
 
                 setTimeout(function(){
