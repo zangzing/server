@@ -2,11 +2,16 @@ class Connector::KodakPhotosController < Connector::KodakController
   
   def self.list_photos(api, params)
     photos_list = call_with_error_adapter do
-      api.send_request("/album/#{params[:kodak_album_id]}")
+      if params[:group_id]
+        api.send_request("/group/#{params[:group_id]}/album/#{params[:kodak_album_id]}")
+      else
+        api.send_request("/album/#{params[:kodak_album_id]}")
+      end
     end
     photos_data = photos_list.nil? ? [] : (photos_list['pictures'] || [])
+    photos_data = [photos_data] if photos_data.is_a?(Hash)
 
-    photos = photos_data.map { |p|
+    photos = photos_data.map do |p|
       {
         :name => p['caption'],
         :id   => p['id'],
@@ -16,7 +21,7 @@ class Connector::KodakPhotosController < Connector::KodakController
         :add_url => kodak_photo_action_path(:kodak_album_id => params[:kodak_album_id], :photo_id => p['id'], :action => 'import'),
         :source_guid => make_source_guid(p)
       }
-    }
+    end
 
     JSON.fast_generate(photos)
   end
@@ -25,10 +30,16 @@ class Connector::KodakPhotosController < Connector::KodakController
     identity = params[:identity]
 
     photos_list = call_with_error_adapter do
-      api.send_request("/album/#{params[:kodak_album_id]}")
+      if params[:group_id]
+        api.send_request("/group/#{params[:group_id]}/album/#{params[:kodak_album_id]}")
+      else
+        api.send_request("/album/#{params[:kodak_album_id]}")
+      end
     end
 
     photos_data = photos_list['pictures']
+    photos_data = [photos_data] if photos_data.is_a?(Hash)
+
     p = photos_data.select { |p| p['id']==params[:photo_id] }.first
     photo_url = p[PHOTO_SIZES[:full]]
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )

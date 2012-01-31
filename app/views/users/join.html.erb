@@ -97,7 +97,7 @@
 
         </table>
       </form>
-      <a id="submit-button" class="newgreen-button"><span>Join</span></a>
+      <a id="submit-button" class="newgreen-button" rel="nofollow"><span>Join</span></a>
 
 
 
@@ -119,18 +119,16 @@
     $(document).ready(function(){
 
         zz.local_storage.clear();
-
+		
+        zz.joinform.add_validation( $('#join-form') );
 
         $('#submit-button').click(function(){
-            ZZAt.track('button.join.click');
-            $('form').submit();
+            submit_form();
         });
-
 
         $('form').bind('keypress', function(e){
             if ( e.keyCode == 13 ) {
-                ZZAt.track('button.join.click');
-                $("form").submit();
+                submit_form();
             }
         });
 
@@ -142,52 +140,52 @@
             $('#username').text(username);
         });
 
-
-        $('#join-form').validate({
-            rules: {
-                'user[name]': {
-                    required: true,
-                    minlength: 1
-                },
-                'user[username]': {
-                    required: true,
-                    minlength: 1,
-                    maxlength:25,
-                    regex: "(^[a-z0-9]+$|^[a-z0-9]+:.{8}$)",
-                    remote: zz.routes.path_prefix + '/users/validate_username'
-                },
-                'user[email]': {
-                    required: true,
-                    email: true,
-                    remote: zz.routes.path_prefix + '/users/validate_email'
-                },
-                'user[password]': {
-                    required: true,
-                    minlength: 6
-                }
-            },
-            messages: {
-                'user[name]': {
-                    required: 'please enter your name',
-                    minlength: 'please enter your name'
-                },
-                'user[username]':{
-                    required: 'please enter a username',
-                    regex: 'only lower case letters and numbers',
-                    remote: 'username already taken'
-                },
-                'user[email]': {
-                    required: 'promise we won&rsquo;t spam you',
-                    email: 'valid email, please',
-                    remote: 'email already taken'
-                },
-                'user[password]': '6 characters or more, please'
-            }
-        });
         $('#user_name').focus();
 
         ZZAt.track('page.join.visit');
     });
+    
+    function submit_form(){
+    	if($('#join-form').valid()){
+        	$("#join-form").submit();
+            //ZZAt.track('button.join.click');
+    		ZZAt.track("join.joinpage.click");
+    		ZZAt.track("join.joinpage.click.valid");
+    	} else {
+            var num_fields_nonempty = 0;
+            var num_fields_valid = 0;
+            var bit_notation = 0;
+            
+            num_fields_nonempty =
+                ($('#user_name').val().length != 0) +
+                ($('#user_username').val().length != 0) +
+                ($('#user_email').val().length != 0) +
+                ($('#user_password').val().length != 0);
+                
+            bit_notation = 
+                1 * $('#user_name').valid() +
+                2 * ($('#user_name').val().length != 0) + 
+                4 * $('#user_username').valid() +
+                8 * ($('#user_username').val().length != 0) + 		
+                16 * $('#user_email').valid() +
+                32 * ($('#user_email').val().length != 0) + 		
+                64 * $('#user_password').valid() +
+                128 * ($('#user_password').val().length != 0);			
+
+            num_fields_valid = 
+                $('#user_name').valid() + 
+                $('#user_username').valid() + 
+                $('#user_email').valid() + 
+                $('#user_password').valid();
+                
+            ZZAt.track("join.joinpage.click");
+            ZZAt.track("join.joinpage.invalid", {
+                Zjoin_num_fields_nonempty: num_fields_nonempty,
+                Zjoin_num_fields_valid: num_fields_valid,
+                Zjoin_bit_fields: bit_notation
+    			});
+    	}
+    }
 
 </script>
 

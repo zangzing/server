@@ -233,22 +233,19 @@ div#container {
 	
 #header-join-banner form li label.error {
 	top:41px;
-	bottom:42px;
 	left:50%;
 	width: 136px;
-	height: 34px;
 	margin:0 0 0 -78px;
 	padding:8px 10px;
-	color: white;
+	color: #333;
 	font-size:14px;
 	font-weight: 200;
 	min-height: 15px;
-	opacity: 0.8;
-	border: 1px solid white;
-	background-color: black;
-	box-shadow: black 0px 0px 10px;
-	-webkit-box-shadow: black 0px 0px 10px;
-	-moz-box-shadow: black 0px 0px 10px;
+	border: 1px solid #FD514F;
+	background-color: #FFF8DE;
+	box-shadow: #666 0px 1px 1px;
+	-webkit-box-shadow: #666 0px 1px 1px;
+	-moz-box-shadow: #666 0px 1px 1px;
 }
 
 
