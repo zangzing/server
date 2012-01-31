@@ -119,8 +119,11 @@ zz.album = {};
             
             // Add join banner spacer now to set up html
             // Call show to determine whether or not to actually show the banner
-            gridElement.append( zz.message_banner.join_spacer );
-            zz.message_banner.banner_refresh();
+            // todo: any way to encapsulate this in the zz.message_banner module?
+            if(zz.message_banner.is_banner_visible){
+                gridElement.append( zz.message_banner.join_spacer );
+                zz.message_banner.banner_refresh();
+            }
 
             // Add sort buttons
             var sort_bar = zz.album.sort_bar_template.clone();

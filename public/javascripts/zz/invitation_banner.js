@@ -26,7 +26,7 @@ var zz = zz || {};
 
     function setup_banner(){
         var html = '<div class="invitation-banner">' +
-                    '<div class="message">' +
+                    '<div class="message ">' +
                         '<span class="bold">Want extra free space?</span><br>Invite friends and you each get 250MB of extra space free.' +
                     '</div>' +
                     '<a class="gray-button no-thanks-button"><span>No Thanks</span></a>' +

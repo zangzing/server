@@ -19,11 +19,14 @@
     top: 14px;
     left: 27px;
     right:0px;
-    font-size: 18px;
+    font-size: 16px;
+    font-weight: 200;
+    line-height: 23px;
+    color: #0A0A0A;
 }
 
 .invitation-banner .message .bold{
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .invitation-banner .message.no-thanks {
@@ -34,14 +37,14 @@
 .invitation-banner .invite-button{
     position: absolute;
     width: 100px;
-    right: 26px;
-    top: 23px;
+    right: 14px;
+    bottom: 9px;
 }
 
 .invitation-banner .no-thanks-button{
     position: absolute;
     width: 100px;
-    right: 145px;
-    top: 23px;
+    right: 133px;
+    bottom: 9px;
 }
 

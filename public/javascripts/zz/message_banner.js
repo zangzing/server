@@ -20,6 +20,8 @@ var zz = zz || {};
     ];
 
 
+    var current_banner_delegate = null;
+
 
     function init(){
 
@@ -42,12 +44,12 @@ var zz = zz || {};
 
 
 
-        var banner_delegate = _.find(banner_delegates, function(delegate){
+        current_banner_delegate = _.find(banner_delegates, function(delegate){
             return delegate.should_show_banner();
         });
 
 
-        if(banner_delegate){
+        if(current_banner_delegate){
             var is_photos_page = (zz.page.album_id != null) && (zz.page.rails_controller_name == 'photos'); // Use this as a hack to determine whether there will be .photogrid
 
             $('#header').after('<div id="header-join-banner"></div>');
@@ -61,15 +63,17 @@ var zz = zz || {};
                 banner_refresh();
             });
 
-            $("#header-join-banner").html(banner_delegate.setup_banner());
-            banner_delegate.on_show_banner();
+            $("#header-join-banner").html(current_banner_delegate.setup_banner());
+            current_banner_delegate.on_show_banner();
 
             banner_refresh();
         }
+
+
     }
 
     function banner_refresh(){
-    	if(zz.buy.is_buy_mode_active() || $('#checkout-banner .message').is(":visible") ){
+    	if( !current_banner_delegate || zz.buy.is_buy_mode_active() || $('#checkout-banner .message').is(":visible") ){
     		hide_banner();
     	} else {
     		show_banner();
@@ -89,8 +93,10 @@ var zz = zz || {};
             $("#header-join-banner").addClass("none");
             $(".join-banner-spacer").addClass("none");
             $("#right-drawer").css("top","56px");
-            zz.message_banner.is_banner_visible = false;
         };
+
+
+        zz.message_banner.is_banner_visible = false;
 
     	if (animate){
             $("#header-join-banner").animate({top:-100}, 500, function(){
