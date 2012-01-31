@@ -48,6 +48,7 @@ var zz = zz || {};
             element.find('.invite-button').fadeOut('fast');
             element.find('.message').fadeOut('fast', function(){
                 element.find('.message').html("No problem.<br>You can always Invite Friends later from the Account Menu.");
+                element.find('.message').addClass('no-thanks');
                 element.find('.message').fadeIn('fast');
 
                 setTimeout(function(){

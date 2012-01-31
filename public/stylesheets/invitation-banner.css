@@ -18,12 +18,18 @@
     position: absolute;
     top: 14px;
     left: 27px;
+    right:0px;
     font-size: 18px;
 }
 
 .invitation-banner .message .bold{
     font-weight: bold;
 }
+
+.invitation-banner .message.no-thanks {
+    text-align: center;
+}
+
 
 .invitation-banner .invite-button{
     position: absolute;
@@ -38,3 +44,4 @@
     right: 145px;
     top: 23px;
 }
+
