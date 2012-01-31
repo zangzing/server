@@ -56,6 +56,8 @@ var zz = zz || {};
             }
         });
 
+        ZZAt.track("join.toolbarbanner.show");
+
     }
 
 

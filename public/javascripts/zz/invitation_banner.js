@@ -64,7 +64,7 @@ var zz = zz || {};
     }
 
     function on_show_banner(){
-
+        ZZAt.track("invitation-banner.show");
     }
 
 

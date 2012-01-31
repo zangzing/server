@@ -112,7 +112,6 @@ var zz = zz || {};
 		$("#header-join-banner").removeClass("none");
 		$(".join-banner-spacer").removeClass("none");
 		zz.message_banner.is_banner_visible = true;
-		ZZAt.track("join.toolbarbanner.show");
     }
 
 
