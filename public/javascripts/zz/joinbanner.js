@@ -15,60 +15,47 @@ var zz = zz || {};
 	// Public functions
 	zz.joinbanner.should_show_banner = should_show_banner;
 	zz.joinbanner.setup_banner = setup_banner;
-	zz.joinbanner.banner_refresh = banner_refresh;
-    zz.joinbanner.hide_join_banner = hide_banner;
-    zz.joinbanner.join_spacer = spacer_html;
-    
-    // Variables
-    zz.joinbanner.is_banner_visible = false;
-    zz.joinbanner.join_spacer_height = 75;
-	
-    
+    zz.joinbanner.on_show_banner = on_show_banner;
+
+
+
+    var element = null;
+
+
 
     function setup_banner(){
-        $("#header-join-banner").html(banner_html());
-    	
-    	zz.image_utils.pre_load_image(join_picture(), function(image) {
-    		var css = zz.image_utils.scale_center_and_crop(image, {width: 48, height: 48});
-    		$("#header-join-banner .picture div img.profile-photo").css(css);
-    	});
-    	
-    	$('.join-form li label').inFieldLabels();
-    	
-    	$('#header-join-banner form input').focus(function (object) { $(object.target).css("border", "1px solid orange"); });
-    	$('#header-join-banner form input').focusout(function (object) { $(object.target).css("border", "1px solid #666"); });
-    	
-    	$('#header-join-banner .join-form').first().attr("action", 'https://'+document.domain+zz.routes.users.create_user_url());
-	
-    	zz.joinform.add_validation( $('#header-join-banner .join-form') );
-    	
-    	$('#header-join-banner .join-form .submit-button').click(function(){
-    		submit_form();
+        element = $(banner_html());
+        return element;
+    }
+
+    function on_show_banner(){
+        zz.image_utils.pre_load_image(join_picture(), function(image) {
+            var css = zz.image_utils.scale_center_and_crop(image, {width: 48, height: 48});
+            element.find(".picture div img.profile-photo").css(css);
         });
 
-        $('#header-join-banner .join-form').bind('keypress', function(e){
+        element.find('.join-form li label').inFieldLabels();
+
+        element.find('form input').focus(function (object) { $(object.target).css("border", "1px solid orange"); });
+        element.find('form input').focusout(function (object) { $(object.target).css("border", "1px solid #666"); });
+
+        element.find('.join-form').first().attr("action", 'https://'+document.domain+zz.routes.users.create_user_url());
+
+        zz.joinform.add_validation( element.find('.join-form') );
+
+        element.find('.join-form .submit-button').click(function(){
+            submit_form();
+        });
+
+        element.find('.join-form').bind('keypress', function(e){
             if ( e.keyCode == 13 ) {
-            	submit_form();
+                submit_form();
             }
         });
-        
-        zz.buy.on_before_activate(function(){
-        	hide_banner();
-        });
-        
-        zz.buy.on_deactivate(function(){
-        	banner_refresh();
-        });
-        
-        zz.comments.on_open_comments(function(){
-        	banner_refresh();
-        });
-        
-        zz.comments.on_close_comments(function(){
-        	banner_refresh();
-        });
+
     }
-    
+
+
     // This goes inside of #header-join-banner
     function banner_html(){
 		    html = '<div class="picture"><div class="container"><div class="mask"><img src="'+ join_picture() +'" class="profile-photo"/></div><img class="bottom-shadow" src="/images/photo/bottom-full.png"/></div></div>' +
@@ -90,9 +77,6 @@ var zz = zz || {};
     	
     }
     
-    function spacer_html(){
-    	return '<div class="join-banner-spacer"></div>';
-    }
 
 	function join_message(){
 		var message;
@@ -118,49 +102,9 @@ var zz = zz || {};
     	return zz.session.current_user_id == null;
     }
     
-    // Returns true/false for whether the large banner will fit current window width
-    function banner_fits(){
-    	var banner_width =  866; // 846px + 20px;
-    	var usable_width = $(window).width();
-    	
-    	// comments drawer
-    	if($("#right-drawer").is(":visible")) {
-    		usable_width -= $("#right-drawer").width() * 2; // double this because banner is centered
-    	}
-    	
-    	return usable_width > banner_width;
-    }
+
     
-    function banner_refresh(){
-    	if(!should_show_banner() || zz.buy.is_buy_mode_active() || $('#checkout-banner .message').is(":visible") ){
-    		hide_banner();
-    	} else {
-    		show_banner();
-    		if($("#right-drawer").is(":visible")){
-    			if(banner_fits()){
-    				$("#right-drawer").css("top","56px");
-    			} else {
-    				$("#right-drawer").css("top","154px");	
-    			}
-    			
-    		}
-    	}
-    }
-    
-    function hide_banner(){
-    	$("#header-join-banner").addClass("none");
-		$(".join-banner-spacer").addClass("none");
-		$("#right-drawer").css("top","56px");
-		zz.joinbanner.is_banner_visible = false;
-    }
-    
-    function show_banner(){
-		$("#header-join-banner").removeClass("none");
-		$(".join-banner-spacer").removeClass("none");
-		zz.joinbanner.is_banner_visible = true;
-		ZZAt.track("join.toolbarbanner.show");
-    }
-    
+
     function submit_form(){
     	$('#header-join-banner .join-form').submit();
 		ZZAt.track("join.toolbarbanner.click");

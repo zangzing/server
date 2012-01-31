@@ -1,0 +1,40 @@
+.invitation-banner{
+    position:absolute;
+    left:0px;
+    top:0px;
+    right:0px;
+    bottom:0px;
+}
+
+.invitation-banner .invite-button{
+    position: absolute;
+    width:100px;
+    right:10px;
+}
+
+
+
+.invitation-banner .message {
+    position: absolute;
+    top: 14px;
+    left: 27px;
+    font-size: 18px;
+}
+
+.invitation-banner .message .bold{
+    font-weight: bold;
+}
+
+.invitation-banner .invite-button{
+    position: absolute;
+    width: 100px;
+    right: 26px;
+    top: 23px;
+}
+
+.invitation-banner .no-thanks-button{
+    position: absolute;
+    width: 100px;
+    right: 145px;
+    top: 23px;
+}

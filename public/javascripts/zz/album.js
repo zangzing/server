@@ -94,8 +94,8 @@ zz.album = {};
     };
     
     zz.album.get_top_padding = function() {
-        if(zz.joinbanner.is_banner_visible){
-        	return 45 + zz.joinbanner.join_spacer_height;
+        if(zz.message_banner.is_banner_visible){
+        	return 45 + zz.message_banner.join_spacer_height;
         }
         return 45;
     }
@@ -119,8 +119,8 @@ zz.album = {};
             
             // Add join banner spacer now to set up html
             // Call show to determine whether or not to actually show the banner
-            gridElement.append( zz.joinbanner.join_spacer );
-            zz.joinbanner.banner_refresh();
+            gridElement.append( zz.message_banner.join_spacer );
+            zz.message_banner.banner_refresh();
 
             // Add sort buttons
             var sort_bar = zz.album.sort_bar_template.clone();
@@ -240,10 +240,10 @@ zz.album = {};
                 $('#article .photogrid').remove();
                 $('#article').append(gridElement);
 
-                // render is called on resize so don't need to call zz.joinbanner.banner_refresh()
+                // render is called on resize so don't need to call zz.message_banner.banner_refresh()
                 var top_padding = 0;
-                if(zz.joinbanner.is_banner_visible){
-                	top_padding += zz.joinbanner.join_spacer_height;
+                if(zz.message_banner.is_banner_visible){
+                	top_padding += zz.message_banner.join_spacer_height;
                 }
 
                  var grid;
