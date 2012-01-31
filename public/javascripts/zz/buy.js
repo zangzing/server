@@ -516,6 +516,7 @@ zz.buy = zz.buy || {};
         if(!zz.buy.is_buy_mode_active() && zz.session.cart_item_count > 0 && jQuery.cookie('hide_checkout_banner') != 'true'){
 
             $('#checkout-banner').show();
+            zz.message_banner.banner_refresh();
 
             if(zz.session.cart_item_count == 1){
                 $('#checkout-banner .message').text('You have ' + zz.session.cart_item_count + ' item in your cart.');
