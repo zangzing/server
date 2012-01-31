@@ -2,190 +2,298 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-  <meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE8 mode -->
-  <meta http-equiv="Content-Language" Content="en">
-  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=100" /> <!-- IE8 mode -->
+  <meta http-equiv="Content-Language" content="en" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="copyright" content="Copyright 2011, ZangZing, LLC. All Rights Reserved." />
   <meta name="DC.title" content="ZangZing" />
   <meta name="title" content="ZangZing" />
-  <meta name="description" content="Join ZangZing - a free photo sharing site for groups to share photos, simply, beautifully, publicly or privately and without any ads.">
+  <meta name="description" content="Join ZangZing - a free photo sharing site for groups to share photos, simply, beautifully, publicly or privately and without any ads." />
+
+  <meta property="og:title" content="Join ZangZing!"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:image" content="<%= image_path('zz-logo-facebook.png') %>"/>
+  <meta property="og:site_name" content="<%=FACEBOOK_API_KEYS[:og_site_name]%>"/>
+  <meta property="fb:app_id" content="<%=FACEBOOK_API_KEYS[:app_id]%>" />
+  <meta property="og:description" content="Join ZangZing - a free photo sharing site for groups to share photos, simply, beautifully, publicly or privately and without any ads."/>
 
   <title>Join | Photo Sharing - ZangZing</title>
-  <link rel="canonical" href="<%= join_url %>" />
-
+  <link rel="canonical" href="<%= invitation_url %>" />
 
   <%= include_javascripts :css %>
   <%= include_stylesheets :common %>
-
-
-
-
 </head>
-<body class="signin">
-<img src="/images/background_signin.jpg" class="bg" />
 
+<body class="joinpage">
 
-<div id="join-dialog" class="new-dialog user-session-dialog">
-  <div class="background"></div>
-  <div class="frame"></div>
-  <div class="body">
-
-    <a class="logo" href="/"><img src="/error/img/logo.png" alt="logo" /></a>
-
+<div class="header">
     <div class="content">
-      <h1>Join</h1>
-      <a id= "back-to-signin-button" href="/signin" class="gray-button"><span>Sign In</span></a>
-      <div id="header-hairline"></div>
+    <a class='logo' href="http://www.zangzing.com">ZangZing</a>
+    <ul>
+        <li><a href="/signin">Sign In</a></li>
+        </ul>
+    </div>
+</div>
 
-      <form id="join-form" method="post" enctype="multipart/form-data" action=<%=create_user_url%>>
-        <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
-        <% if flash[:error] %>
-        <div id="flash-error">
+
+
+
+<div class='top-section'>
+  <div class='content'>
+
+    <div class="notes">        
+    <% if flash[:error] %>
+        <div class="flash-error">
             <%= flash[:error] %>
         </div>
-        <% end %>
-        <table>
-          <tr>
-            <td class="label">First and Last Name</td>
-            <td class="field">
-              <div class="field-wrapper">
-                <input type="text" value="<%=(@new_user ? @new_user.name : '')%>" size="30" name="user[name]" id="user_name">
-              </div>
-            </td>
-          </tr>
+    <% end %>
 
-          <tr>
-            <td class="label">User Name</td>
-            <td class="field">
-              <div class="field-wrapper">
-                <input type="text" value="<%=(@new_user ? @new_user.username: '')%>" size="30" maxlength="25" name="user[username]" id="user_username">
-              </div>
-            </td>
-          </tr>
-
-          <tr>
-            <td  colspan="2" class="field" style="text-align:right; width: 200px;">
-              zangzing.com/<span class="blue" id="username">your_user_name</span>
-            </td>
-          </tr>
-
-          <tr>
-            <td class="label">Email</td>
-            <td class="field">
-              <div class="field-wrapper">
-                <input type="text" value="<%=(@new_user ? @new_user.email: '')%>" size="30" name="user[email]" id="user_email">
-              </div>
-            </td>
-          </tr>
-
-          <tr>
-            <td class="label">Password</td>
-            <td class="field">
-              <div class="field-wrapper">
-                <input type="password" size="30" maxlength="40" name="user[password]" id="user_password">
-              </div>
-            </td>
-          </tr>
-
-          <tr>
-            <td colspan="2" class="label">
-              <div id="tos">By joining you accept and agree to <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/terms">the terms of service</a>.</div>
-            </td>
-
-          </tr>
-
-
-        </table>
-      </form>
-      <a id="submit-button" class="newgreen-button" rel="nofollow"><span>Join</span></a>
-
-
-
-
+    <h1><%= @message_title %></h1>
+    <div class='note'><%= @message %></div>    
     </div>
+
+    
+    <div class="join-container">
+        <form class="join-form" method="post" enctype="multipart/form-data" action="<%=create_user_url%>" >
+            <h2>Create a free ZangZing account:</h2>
+            <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
+            <ul>
+                <li>
+                  <label for="user_name">First &amp; Last Name:</label>
+                  <input type="text" name="user[name]" id="user_name" value="<%=(@new_user ? @new_user.name : '')%>" />
+                </li>
+                <li>
+                  <label for="user_username">Username:</label>
+                  <input type="text" name="user[username]" id="user_username" value="<%=(@new_user ? @new_user.username: '')%>" />
+                </li>
+                <!--<li>
+                    <span>zangzing.com/<span id="username">your_user_name</span></span>
+                </li>-->        
+                <li>
+                  <label for="user_email">Email:</label>
+                  <input type="text" name="user[email]" id="user_email" value="<%=(@new_user ? @new_user.email: '')%>" />
+                </li>
+                <li>
+                  <label for="user_password">Password:</label>
+                  <input type="password" name="user[password]" id="user_password" value="" maxlength="40" />
+                </li>
+                <li>
+                    <span>By joining you accept and agree to <a class="hyperlink-button" target="_blank" href="http://www.zangzing.com/terms">the terms of service</a>.</span>
+                </li>
+                <li>
+                  <a class="submit-button newgreen-button" rel="nofollow"><span>Join for Free</span></a>
+                </li>
+            </ul>
+    </form>        
+    </div>
+
   </div>
 </div>
 
+<div class='bottom-section'>
+    <div class="content">
+  <div class="next-prev-container">
+    <div class="next-button"></div>
+    <div class="prev-button"></div>
+    <div class="slide-container">
+      <div class="slide-clip">
+        <div class="slide photo_sharing_redesigned"><!-- #0-->
+          <div class="hero_image">
+            <img src="/images/invitation-landing/photo_sharing_redesigned.png" alt="Photo Sharing Redesigned" width="455px" height="362px" />
+          </div>
+          <div class="hero_content">
+            <h1>Photo Sharing</h1>
+            <h1>Redesigned</h1>
+            <p>Add photos from anywhere. Group photo sharing.<br/>Share how you want.</p>
+            <p class="last_point">It’s simple.</p>
+          </div>
+        </div>
+        <div class="slide add_from_anywhere" ><!-- #1-->
+          <div class="hero_image">
+            <img src="/images/invitation-landing/add_from_anywhere.png" alt="Add Photos From Anywhere" width="430px" height="233px" />
+          </div>
+          <div class="hero_content">
+            <h2>Add From Anywhere</h2>
+            <p>Add from a Mac or PC, Facebook, Flickr, MobileMe, iPhoto, Email and more. Or even import all your photos.</p>
+          </div>
+        </div>
+        <div class="slide group_photo_sharing"><!-- #2-->
+          <div class="hero_image">
+            <img src="/images/invitation-landing/group_photo_sharing.png" alt="Group Photo Sharing" width="533px" height="353px" />
+          </div>
+          <div class="hero_content">
+            <h2>Group Photo Sharing</h2>
+            <p>Every album is a group album. You decide who can add, view, and download photos.</p>
+          </div>
+        </div>
+        <div class="slide share_how_you_want" ><!-- #3-->
+          <div class="hero_image">
+            <img src="/images/invitation-landing/share_how_you_want.png" alt="Share Photos How You Want" width="552px" height="308px" />
+          </div>
+          <div class="hero_content">
+            <h2>Share How You Want</h2>
+            <p>Public or private album viewing. Share by Email, Facebook or Twitter. Send prints and more.</p>
+          </div>
+        </div>
+        <div class="slide simply_beautiful activeslide"><!-- #4-->
+          <div class="hero_image">
+            <img src="/images/invitation-landing/simply_beautiful.png" alt="Photo Sharing Redesigned" width="503px" height="305px" />
+          </div>
+          <div class="hero_content">
+            <h2>Simply Beautiful</h2>
+            <p>You’ve never shared photos quite like this before. Full resolution. Full screen slideshow. No ads.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+
+<div class="footer">
+ <div class="content">
+ <div class="copy">&copy;<%= Time.now.year %> ZangZing, LLC<br />
+     <a id="terms_link" href="/terms/">Terms</a>&nbsp;&nbsp;&nbsp;<a id="privacy_link" href="/privacy/">Privacy</a>&nbsp;&nbsp;Smile!
+ </div>
+</div>                
+</div>
+    
+
 <%= render :partial => 'layouts/zza'  %>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<%= include_javascripts :jquery %>
 <%= include_javascripts :lib %>
 <%= include_javascripts :zz %>
+<%= include_javascripts :zz_oauthmanager %>
 
-<% if Rails.env.development? && browser.ie? %>
-    <script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script>
-<% end %>
-
-<script>
+<script type="text/javascript">
     $(document).ready(function(){
+        // TODO: change this
+        ZZAt.track('invitation.page.visit');
+
+        <%= perform_javascript_actions %>
 
         zz.local_storage.clear();
-		
-        zz.joinform.add_validation( $('#join-form') );
 
-        $('#submit-button').click(function(){
-            submit_form();
-        });
+        //$('.joinpage .join-form label').inFieldLabels();
 
-        $('form').bind('keypress', function(e){
-            if ( e.keyCode == 13 ) {
-                submit_form();
-            }
-        });
-
-        $('.logo').center_y();
-
+        zz.joinform.add_validation($('.joinpage .join-form'));
+        
         $('#user_username').keyup(function(event){
             var username = $('#user_username').val();
             //set the value in the homepage url
             $('#username').text(username);
         });
 
-        $('#user_name').focus();
 
-        ZZAt.track('page.join.visit');
+        $('.joinpage .submit-button').click(function(){
+            $('.joinpage .join-form').submit();
+            ZZAt.track('invitation.page.join-button.click');
+
+        });
+
+
+        $('.joinpage .join-form').bind('keypress', function(e){
+            if ( e.keyCode == 13 ) {
+                $(".joinpage .join-form").submit();
+                ZZAt.track('invitation.page.join-button.click');
+            }
+        });
+
+
+
+        // slideshow
+        var current_slide = 0;
+        var LAST_SIDE = 4;
+        var animating = false;
+
+        var goto_slide = function(slide_index){
+            if (slide_index < 0 || slide_index > LAST_SIDE){
+                return;
+            }
+
+
+            if (animating){
+                return;
+            }
+
+            var left = slide_index * 906 * -1;
+            animating = true;
+            $('.joinpage .slide-container .slide-clip').animate({left: left}, 500, 'easeOutCirc', function(){
+                animating = false;
+                current_slide = slide_index;
+                show_next_prev_buttons();
+                update_slide_dots();
+            });
+        };
+
+        var update_slide_dots = function(){
+            $('.joinpage .bottom-section .slide-dots .dot').removeClass('selected');
+            $($('.joinpage .bottom-section .slide-dots .dot').get(current_slide)).addClass('selected');
+        };
+
+        var show_next_prev_buttons = function(){
+
+            if(current_slide != LAST_SIDE){
+                $('.joinpage .bottom-section .next-button').fadeIn('fast');
+            }
+            else{
+                $('.joinpage .bottom-section .next-button').fadeOut('fast');
+            }
+
+            if(current_slide != 0) {
+                $('.joinpage .bottom-section .prev-button').fadeIn('fast');
+            }
+            else{
+                $('.joinpage .bottom-section .prev-button').fadeOut('fast');
+
+            }
+
+        };
+
+
+        $('.joinpage .bottom-section').mouseenter(function(){
+            show_next_prev_buttons();
+        });
+
+        $('.joinpage .bottom-section').mouseleave(function(){
+            $(this).find('.next-button').fadeOut('fast');
+            $(this).find('.prev-button').fadeOut('fast');
+        });
+
+
+        // wire up next/prev buttons
+        $('.joinpage .bottom-section .next-button').click(function(){
+            goto_slide(current_slide + 1);
+        });
+
+        $('.joinpage .bottom-section .prev-button').click(function(){
+            goto_slide(current_slide - 1);
+        });
+
+        // wire up dot controls
+        for(var i=0;i<=4;i++){
+            (function(slide){
+                $($('.joinpage .bottom-section .slide-dots .dot').get(slide)).click(function(){
+                    goto_slide(slide);
+                });
+            })(i);
+        }
+
+
+
+        update_slide_dots();
+
+
     });
-    
-    function submit_form(){
-    	if($('#join-form').valid()){
-        	$("#join-form").submit();
-            //ZZAt.track('button.join.click');
-    		ZZAt.track("join.joinpage.click");
-    		ZZAt.track("join.joinpage.click.valid");
-    	} else {
-            var num_fields_nonempty = 0;
-            var num_fields_valid = 0;
-            var bit_notation = 0;
-            
-            num_fields_nonempty =
-                ($('#user_name').val().length != 0) +
-                ($('#user_username').val().length != 0) +
-                ($('#user_email').val().length != 0) +
-                ($('#user_password').val().length != 0);
-                
-            bit_notation = 
-                1 * $('#user_name').valid() +
-                2 * ($('#user_name').val().length != 0) + 
-                4 * $('#user_username').valid() +
-                8 * ($('#user_username').val().length != 0) + 		
-                16 * $('#user_email').valid() +
-                32 * ($('#user_email').val().length != 0) + 		
-                64 * $('#user_password').valid() +
-                128 * ($('#user_password').val().length != 0);			
-
-            num_fields_valid = 
-                $('#user_name').valid() + 
-                $('#user_username').valid() + 
-                $('#user_email').valid() + 
-                $('#user_password').valid();
-                
-            ZZAt.track("join.joinpage.click");
-            ZZAt.track("join.joinpage.invalid", {
-                Zjoin_num_fields_nonempty: num_fields_nonempty,
-                Zjoin_num_fields_valid: num_fields_valid,
-                Zjoin_bit_fields: bit_notation
-    			});
-    	}
-    }
 
 </script>
 

@@ -64,21 +64,19 @@ class InvitationsController < ApplicationController
   def show
     return unless require_no_user
 
-
     tracked_link = TrackedLink.find_by_tracking_token(current_tracking_token)
     if tracked_link
       send_zza_event_from_client("invitation.click")
       send_zza_event_from_client("invitation.#{tracked_link.shared_to}.click")
-
-
-
       @friends_name = tracked_link.user.name
-      render :layout => false
     else
       @friends_name = 'your friend'
-      render :layout => false
-      #redirect_to join_url
     end
+    
+    @message_title = "You’ve been invited to join ZangZing!"
+    @message = "Join and you and #{@friends_name} get 250MB of extra space on top of the 2GB you already get for free!!"
+    
+    render "/users/join", :layout => false
   end
 
 end

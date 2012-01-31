@@ -31,7 +31,11 @@ class UsersController < ApplicationController
     else
       @new_user = User.new
     end
-    render :layout => false
+    
+    @message_title = "Join ZangZing for Free"
+    @message = "Welcome to ZangZing. Insert message here. Welcome to ZangZing. message here. Welcome to ZangZing. Insert message here."
+    
+    render :layout => false    
   end
 
   def create
