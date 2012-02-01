@@ -1,5 +1,35 @@
 <% content_for :page_title, "Upload Batches for #{params[:date]}" %>
 
+<% content_for :page_stylesheet do %>
+
+    <style>
+
+      .photo-from-batch{
+          /*float: left;*/
+          /*width: 200px;*/
+          /*height: 200px;*/
+          vertical-align: middle;
+          text-align: center;
+          margin-left: 10px;
+          margin-top: 10px;
+          display:inline-block;
+      }
+
+      .photo-from-batch img{
+          height: 120px;
+      }
+
+
+      .upload-batch-photos{
+          margin-bottom: 150px;
+      }
+
+
+    </style>
+
+<% end %>
+
+
 <div class="viewlist">
 
 
