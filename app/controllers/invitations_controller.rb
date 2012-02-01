@@ -18,7 +18,6 @@ class InvitationsController < ApplicationController
 
   def send_to_twitter
     return unless require_user
-    zza.track_event('invitation.share.twitter')
 
     message = params[:message]
 
@@ -29,7 +28,6 @@ class InvitationsController < ApplicationController
 
   def send_to_facebook
     return unless require_user
-    zza.track_event('invitation.share.facebook')
 
 
     # sample...
