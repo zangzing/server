@@ -9,10 +9,10 @@ class UsersController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only=>[:create]
 
   def join
-
     # URL Cleaning cycle
-    if params[:return_to] || params[:email]
+    if params[:return_to] || params[:email] || params[:message]
       session[:return_to] = params[:return_to] if params[:return_to]
+      session[:message] = params[:message] if params[:message]
       flash.keep
       unless current_user
         session[:email] = params[:email] if params[:email]
@@ -24,6 +24,11 @@ class UsersController < ApplicationController
       redirect_back_or_default user_pretty_url(current_user)
       return
     end
+    
+    if session[:message]
+      @message = session[:message]  
+      session.delete(:message)
+    end
 
     if session[:email]
       @new_user = User.new(:email => session[:email] )
@@ -34,7 +39,6 @@ class UsersController < ApplicationController
   end
 
   def create
-
     if current_user
         flash[:notice] = "You are currently logged in as #{current_user.username}. Please log out before creating a new account."
          add_javascript_action( 'show_message_dialog',  {:message => flash[:notice]})

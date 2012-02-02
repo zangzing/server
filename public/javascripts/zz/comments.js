@@ -425,7 +425,7 @@ zz.comments = {};
                     // guest tried to create coment
                     // comment params are stored in session -- just need to login/join
                     // and then redirect to finish creting comment
-                    zz.routes.users.goto_join_screen(zz.routes.comments.finish_create_photo_comment_path(photo_id));
+                    zz.routes.users.goto_join_screen(zz.routes.comments.finish_create_photo_comment_path(photo_id), "Join for free or sign in to add your Comment.");
                 }
             };
 

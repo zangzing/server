@@ -1,16 +1,13 @@
 <% content_for :page_title do %>Signup<% end %>
 
 <div class="joinpage">
-
-	
-<% if flash[:error] %>
-	<div id="flash-error">
-	<%= flash[:error] %>
+	<div class="title">Welcome to ZangZing!</div>
+	<div class="message"><%= @message ? @message : "Join for free and share your photos." %></div>
+	<% if flash[:error] %>
+	<div class="flash-error">
+		<%= flash[:error] %>
 	</div>
-<% end %>
-	
-	<div class="title">Welcome!</div>
-	<div class="message">Join for free and share your photos.</div>
+	<% end %>
 	<div class="formcontainer">
     <form class="join-form" method="post" enctype="multipart/form-data" action="<%=create_user_url%>" >
       <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>

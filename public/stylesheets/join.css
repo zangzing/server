@@ -20,6 +20,11 @@
 	margin: 1.6em auto;
 }
 
+.joinpage .flash-error {
+	margin: 2em auto;
+	font-size: 16px;
+}
+
 .joinpage .join-form li {
     position: relative;
     margin: 0 auto 10px;
@@ -33,6 +38,20 @@
     color: #999;
     font-size: 16px
 }
+
+
+/* Undo styling from main.css */
+.joinpage input[type=text], 
+.joinpage input[type=password], 
+.joinpage textarea{
+    text-align: left;
+    font-size: 14px;
+    background-color: #fff;
+    border: 0;
+    padding: 0;
+}
+
+
 
 .joinpage .join-form li input {
     padding: 6px 9px;

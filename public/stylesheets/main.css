@@ -348,14 +348,13 @@ body.impersonation.show-system-message-banner #system-message-banner #banner-tex
     vertical-align: middle;
 }
 
+/* TODO: de-globalize this */ 
 input[type=text], input[type=password],  textarea{
     text-align: left;
     font-size: 14px;
     background-color: #fff;
     border: solid 1px #afafaf;
     padding: 5px;
-  /*font-family: "Lucida Grande", "Lucida Sans Unicode", "Trebuchet MS", Tahoma, Helvetica, Arial, sans-serif;*/
-  /*font-family:Arial;*/
 }
 
 
