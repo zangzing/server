@@ -31,7 +31,6 @@ class UsersController < ApplicationController
     else
       @new_user = User.new
     end
-    render :layout => false
   end
 
   def create

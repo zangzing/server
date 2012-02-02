@@ -12,7 +12,11 @@ zz.toolbars = {
     init: function() {
         //top bar
         $('#header #home-button').click(function() {
-            document.location.href = zz.routes.path_prefix + '/';
+        	if(zz.session.current_user_id){
+        		document.location.href = zz.routes.path_prefix + '/';
+        	} else {
+        		document.location.href = '/';
+        	}
             ZZAt.track('button.home.click');
         });
         if (zz.page.rails_controller_name == 'photos' || zz.page.rails_controller_name == 'albums') {
