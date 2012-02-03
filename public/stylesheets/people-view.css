@@ -1,0 +1,7 @@
+.people .invite-friends-button{
+    width: 100px;
+    display: inline-block;
+    position: absolute;
+    top: -2px;
+    right: 0px;
+}

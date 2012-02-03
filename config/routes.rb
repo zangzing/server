@@ -28,7 +28,12 @@ Server::Application.routes.draw do
     end
 
     get    '/health_check'            => 'pages#health_check',      :as => :health_check
-    
+
+
+    #tracked links
+    get    '/tracked_links/:tracking_token' => 'tracked_links#show'  , :as=>:tracked_link
+
+
     #invitations
     get    '/invitations/send_to_facebook' => 'invitations#send_to_facebook'  , :as=>'send_invitations_to_facebook'
     get    '/invitations/send_to_twitter' => 'invitations#send_to_twitter'   , :as=>'send_invitations_to_twitter'

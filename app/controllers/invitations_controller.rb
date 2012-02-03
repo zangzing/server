@@ -13,7 +13,7 @@ class InvitationsController < ApplicationController
     return unless require_user
 
     @show_back_button = true
-    @invite_url_for_copy_paste = Invitation.get_invitation_link_for_copy_paste(current_user)
+    @invite_url_for_copy_paste = bitly_url(Invitation.get_invitation_link_for_copy_paste(current_user))
   end
 
   def send_to_twitter
@@ -51,7 +51,7 @@ class InvitationsController < ApplicationController
       if User.find_by_email(email)
         already_joined_emails << email
       else
-        Invitation.create_and_send_invitation(current_user, email)
+        Invitation.send_invitation(current_user, email)
       end
     end
 

@@ -79,6 +79,7 @@ class Share < ActiveRecord::Base
           Guest.register( recipient, 'share' ) #add recipient to guest list for beta period
 
 
+
           if album? && viewer_invite?
             ZZ::Async::Email.enqueue( :album_shared, self.user_id, recipient, self.subject_id, self.message )
           end

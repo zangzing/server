@@ -2,8 +2,10 @@ class TrackedLink < ActiveRecord::Base
 
   belongs_to :user
 
-
   TYPE_INVITATION = 'invitation'
+  TYPE_PHOTO_SHARE = 'photo-share'
+  TYPE_ALBUM_SHARE = 'album-share'
+
 
   SHARED_TO_EMAIL = 'email'
   SHARED_TO_FACEBOOK = 'facebook'
@@ -34,8 +36,11 @@ class TrackedLink < ActiveRecord::Base
     raise last_exception
   end
 
-  def self.handle_visit(tracking_token)
+  def self.handle_visit(tracking_token, last_referrer)
     tracked_link = TrackedLink.find_by_tracking_token(tracking_token)
+    tracked_link.last_referrer = last_referrer
+    tracked_link.save
+
     TrackedLink.increment_counter(:visit_count, tracked_link.id)
   end
 

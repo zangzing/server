@@ -92,6 +92,15 @@ class Notifier < ActionMailer::Base
     @recipient = ( rcp_user ? rcp_user : to_address )
     @destination_link = destination_link( @recipient, photo_pretty_url( @photo ) )
 
+    # all albums shared to non-users should
+    # be treated as invitation
+    if !rcp_user || rcp_user.automatic?
+      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, @destination_link, TrackedLink::TYPE_PHOTO_SHARE)
+      @destination_link = tracked_link_url(invitation.tracked_link.tracking_token)
+      @is_invitation = true
+    end
+
+
     create_message(  __method__, template_id, @recipient, { :to => to_address })
   end
 
@@ -107,12 +116,19 @@ class Notifier < ActionMailer::Base
 
   def album_shared(from_user_id,to_address,album_id, message, template_id = nil)
     @user = User.find(from_user_id)
+    rcp_user = User.find_by_email( to_address )
     @album = Album.find(album_id)
     @message = message
-    rcp_user = User.find_by_email( to_address )
     @recipient = ( rcp_user ? rcp_user : to_address )
     @destination_link = destination_link(  @recipient, album_pretty_url( @album ) )
 
+    # all albums shared to non-users should
+    # be treated as invitation
+    if !rcp_user || rcp_user.automatic?
+      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, @destination_link, TrackedLink::TYPE_ALBUM_SHARE)
+      @destination_link = tracked_link_url(invitation.tracked_link.tracking_token)
+      @is_invitation = true
+    end
 
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
@@ -151,6 +167,14 @@ class Notifier < ActionMailer::Base
     end
     attachments["#{@album.name}.vcf"] = vcard.to_s
     @destination_link = destination_link( @recipient, album_pretty_url( @album ) )
+
+    # all albums shared to non-users should
+    # be treated as invitation
+    if !rcp_user || rcp_user.automatic?
+      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, @destination_link, TrackedLink::TYPE_ALBUM_SHARE)
+      @destination_link = tracked_link_url(invitation.tracked_link.tracking_token)
+      @is_invitation = true
+    end
 
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id })
   end
@@ -231,6 +255,8 @@ class Notifier < ActionMailer::Base
     @received_bonus = received_bonus
     create_message( __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
+
+
 
 end
 

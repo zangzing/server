@@ -27,6 +27,11 @@
         <li class="item">
           <div class="header bar">
             Following <%=pluralize @user.liked_users.count, 'Person'%>
+
+<% if @user == current_user %>
+            <a class="green-button invite-friends-button"><span>Invite Friends</span></a>
+<% end %>
+
           </div>
         </li>
         <%@user.liked_users.each do | user | %>
@@ -62,4 +67,11 @@
 
     <%= render :partial => "albums/homepage_view_javascript" %>
 
+<% end %>
+
+<% content_for :zz_js_document_ready do %>
+    $('.people .invite-friends-button').click(function(){
+        zz.routes.users.goto_invite_friends_screen();
+        ZZAt.track('people-view.invite-friends-button.click');
+    });
 <% end %>
