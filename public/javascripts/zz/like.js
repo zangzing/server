@@ -83,8 +83,13 @@ zz.like = {
             },
             error: function(xhr) {
                 if (xhr.status == 401) {
+                	var msg = "Join for free or sign in to Like.";
+                	if(subject_type == 'user'){
+                		msg = "Join for free or sign in to Follow someone.";
+                	}
                     var returnUrl = 'https://' + document.location.hostname + zz.routes.path_prefix + '/' + subject_type + 's/' + subject_id + '/like';
-                    zz.routes.users.goto_join_screen(returnUrl, "Join for free or sign in to Follow or Like.");
+                    zz.routes.users.goto_join_screen(returnUrl, msg);
+                    
                 } else {
                     // toggle in server failed, return hash and screen to previous state
                     zz.like.toggle_in_hash(subject_id);
