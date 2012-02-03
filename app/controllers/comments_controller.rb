@@ -71,7 +71,6 @@ class CommentsController < ApplicationController
 
     else
       session[:comment] = params[:comment]
-      flash[:error] = 'You must join or sign in to post comments'
       head :status => 401 # javascript looks for this status code and does a redirect in javascript
     end  
 
