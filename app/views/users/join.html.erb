@@ -1,4 +1,4 @@
-<% content_for :page_title do %>Signup<% end %>
+<% content_for :page_title do %>Join<% end %>
 
 <div class="joinpage">
 	<div class="title">Welcome to ZangZing!</div>
@@ -45,9 +45,7 @@
 	
 </div>
 
-<% content_for :page_javascript do %>
-<script type="text/javascript">
-$(document).ready(function(){
+<% content_for :zz_js_document_ready do %>
 	zz.toolbars.hide_bottom_toolbar();
 
     zz.local_storage.clear();
@@ -69,8 +67,10 @@ $(document).ready(function(){
     $('#user_name').focus();
 
     ZZAt.track('page.join.visit');
-});
+<%end%>
 
+<% content_for :page_javascript do %>
+<script type="text/javascript">
 function submit_form(){
 	if($('.join-form').valid()){
     	$(".join-form").submit();
