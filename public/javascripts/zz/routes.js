@@ -101,10 +101,10 @@ var zz = zz || {};
             },
 
             goto_signin_screen: function(return_to){
-            	var url = '/signin?';
+            	var url = '/signin';
             	
                 if (return_to) {
-                	url += '&return_to=' + encodeURIComponent(return_to);
+                	url += '?return_to=' + encodeURIComponent(return_to);
                 }
                 
                 window.location = url;
