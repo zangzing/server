@@ -222,7 +222,8 @@ class Photo < ActiveRecord::Base
   def init_for_create
     set_guid_for_path
     set_default_position
-    if self.capture_date.nil?
+    self.capture_date = (Time.at(max_safe_epoch_time(Integer(capture_date))) rescue nil) unless capture_date.nil?
+    if capture_date.nil?
       # always make sure we have a capture date but if we had to set it, use the suspended flag to mark that it was originally null
       self.capture_date = Time.now
       self.suspended = 1
@@ -317,6 +318,7 @@ class Photo < ActiveRecord::Base
       parsed_date = DateTime.parse(val) rescue nil
       if parsed_date
         # a valid date so update and indicate set via exif
+        parsed_date = (Time.at(max_safe_epoch_time(Integer(capture_date))) rescue nil) unless capture_date.nil?
         self.capture_date = parsed_date
         self.suspended = 0
       end
