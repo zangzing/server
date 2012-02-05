@@ -318,7 +318,7 @@ class Photo < ActiveRecord::Base
       parsed_date = DateTime.parse(val) rescue nil
       if parsed_date
         # a valid date so update and indicate set via exif
-        parsed_date = (Time.at(max_safe_epoch_time(Integer(capture_date))) rescue nil) unless capture_date.nil?
+        parsed_date = (Time.at(max_safe_epoch_time(Integer(parsed_date))) rescue nil)
         self.capture_date = parsed_date
         self.suspended = 0
       end
