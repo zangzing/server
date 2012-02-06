@@ -90,14 +90,24 @@ class Notifier < ActionMailer::Base
     @message = message
     rcp_user = User.find_by_email( to_address )
     @recipient = ( rcp_user ? rcp_user : to_address )
-    @destination_link = destination_link( @recipient, photo_pretty_url( @photo ) )
 
-    # all albums shared to non-users should
+    @recipient_is_user = true
+
+    @join_now_url = nil
+    @photo_pretty_url = photo_pretty_url(@photo)
+    @photo_url_with_comments = photo_url_with_comments(@photo)
+    @invite_friends_url = invite_friends_url
+
+    # all shares to non-users should
     # be treated as invitation
     if !rcp_user || rcp_user.automatic?
-      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, @destination_link, TrackedLink::TYPE_PHOTO_SHARE)
-      @destination_link = tracked_link_url(invitation.tracked_link.tracking_token)
-      @is_invitation = true
+      @recipient_is_user = false
+
+      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_PHOTO_SHARE)
+      @join_now_url = invitation.tracked_link.long_tracked_url
+      @photo_pretty_url = TrackedLink.create_tracked_link(@user, @photo_pretty_url, TrackedLink::TYPE_PHOTO_SHARE, TrackedLink::SHARED_TO_EMAIL).long_tracked_url
+      @photo_url_with_comments = TrackedLink.create_tracked_link(@user, @photo_url_with_comments, TrackedLink::TYPE_PHOTO_SHARE, TrackedLink::SHARED_TO_EMAIL).long_tracked_url
+      @invite_friends_url = nil
     end
 
 

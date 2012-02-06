@@ -1,5 +1,9 @@
 class TrackedLink < ActiveRecord::Base
 
+  include Rails.application.routes.url_helpers
+  default_url_options[:host] = Server::Application.config.application_host
+
+
   belongs_to :user
 
   TYPE_INVITATION = 'invitation'
@@ -64,6 +68,24 @@ class TrackedLink < ActiveRecord::Base
   def self.set_test_token(token)
     @@test_token = token
   end
+
+  # returns the short tracked link that gets resolved
+  # by lookup to tracked_links table
+  def tracked_url
+    return tracked_link_url(self.tracking_token)
+  end
+
+  # returns full url with tracking token added to query string
+  # useful in cases (like links in emails) where you need the url to look
+  # more like the original
+  def long_tracked_url
+      if self.url.include? "?"
+        return "#{self.url}&ref=#{self.tracking_token}"
+      else
+        return "#{self.url}?ref=#{self.tracking_token}"
+      end
+  end
+
 
 
 end

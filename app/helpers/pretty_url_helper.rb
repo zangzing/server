@@ -32,7 +32,7 @@ module PrettyUrlHelper
   end
 
   def photo_pretty_url(photo)
-    "#{user_url( photo.album.user)}/#{photo.album.friendly_id}/photos/#!#{photo.id}"
+    "#{user_url( photo.album.user)}/#{photo.album.friendly_id}/photos/#{photo.id}"
   end
 
   def photo_url_with_comments(photo)
