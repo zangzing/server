@@ -130,15 +130,25 @@ class Notifier < ActionMailer::Base
     @album = Album.find(album_id)
     @message = message
     @recipient = ( rcp_user ? rcp_user : to_address )
-    @destination_link = destination_link(  @recipient, album_pretty_url( @album ) )
 
-    # all albums shared to non-users should
+    @recipient_is_user = true
+
+    @join_now_url = nil
+    @album_pretty_url = album_pretty_url(@album)
+    @invite_friends_url = invite_friends_url
+
+    # all shares to non-users should
     # be treated as invitation
     if !rcp_user || rcp_user.automatic?
-      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, @destination_link, TrackedLink::TYPE_ALBUM_SHARE)
-      @destination_link = tracked_link_url(invitation.tracked_link.tracking_token)
-      @is_invitation = true
+      @recipient_is_user = false
+
+      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_PHOTO_SHARE)
+      @join_now_url = invitation.tracked_link.long_tracked_url
+      @album_pretty_url = TrackedLink.create_tracked_link(@user, @album_pretty_url, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL).long_tracked_url
+      @invite_friends_url = nil
     end
+
+
 
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
