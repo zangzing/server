@@ -17,11 +17,7 @@ var zz = zz || {};
 	zz.joinbanner.setup_banner = setup_banner;
     zz.joinbanner.on_show_banner = on_show_banner;
 
-
-
     var element = null;
-
-
 
     function setup_banner(){
         element = $(banner_html());
@@ -36,6 +32,9 @@ var zz = zz || {};
             element.find("img.profile-photo").css(css);
     	});
 
+    	if(zz.invitation.invitername){
+    		element.find("#follow_user_id").remove();
+    	}
     	
     	element.find('.join-form li label').inFieldLabels();
     	
@@ -88,7 +87,9 @@ var zz = zz || {};
 
 	function join_message(){
 		var message;
-		if(zz.page.displayed_user_name){
+		if(zz.invitation.invitername) {
+			message = "<strong>" + zz.invitation.invitername + "</strong> has invited you to ZangZing. Join now and you each get 250MB of extra space free.";
+		} else if(zz.page.displayed_user_name){
 			message = "<strong>" + zz.page.displayed_user_name + "</strong> is using ZangZing. Join for free and follow " + zz.page.displayed_user_name + ".";
 		} else {
 			message = "ZangZing is a free and easy photo sharing service.";
@@ -97,9 +98,13 @@ var zz = zz || {};
 	}
     
     function join_picture(){
-    	var img = "http://downloads.zangzing.com/images/join_default.jpg";
-    	if(zz.page.displayed_user_pic_url != null && zz.page.displayed_user_pic_url != "/images/profile-default-55.png"){
+    	var img;
+    	if(zz.invitation.inviterprofileurl){
+    		img = zz.invitation.inviterprofileurl;
+    	} else if(zz.page.displayed_user_pic_url != null && zz.page.displayed_user_pic_url != "/images/profile-default-55.png"){
     		img = zz.page.displayed_user_pic_url;
+    	} else {
+    		img = "http://downloads.zangzing.com/images/join_default.jpg";
     	}
     	return img;
     }
