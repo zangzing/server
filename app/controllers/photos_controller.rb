@@ -555,7 +555,6 @@ start_time = Time.now
       raise ArgumentError.new("size parameter required. Unable to create photos") if file_size.nil? || file_size == 0
 
       capture_date      = create_photo[:capture_date]
-      capture_date = (Time.at(max_safe_epoch_time(Integer(capture_date))) rescue nil) unless capture_date.nil?
 
       source            = create_photo[:source]
       rotate_to         = create_photo[:rotate_to]    # optional initial rotation leave null to use rotation in file

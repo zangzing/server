@@ -107,7 +107,8 @@ var zz = zz || {};
     // Returns true/false for whether a banner should be shown at all, ie. user is signed in
     function should_show_banner() {
     	// Not currently using: $.cookie('hide_join_banner') == "true";	
-    	return zz.session.current_user_id == null;
+    	return zz.session.current_user_id == null && 
+    		!( zz.page.rails_controller_name == 'users' && zz.page.rails_action_name == 'join' );
     }
     
 
