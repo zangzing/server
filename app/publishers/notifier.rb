@@ -108,6 +108,8 @@ class Notifier < ActionMailer::Base
       @photo_pretty_url = TrackedLink.create_tracked_link(@user, @photo_pretty_url, TrackedLink::TYPE_PHOTO_SHARE, TrackedLink::SHARED_TO_EMAIL).long_tracked_url
       @photo_url_with_comments = TrackedLink.create_tracked_link(@user, @photo_url_with_comments, TrackedLink::TYPE_PHOTO_SHARE, TrackedLink::SHARED_TO_EMAIL).long_tracked_url
       @invite_friends_url = nil
+
+      send_share_invite_zza_event(@user, TrackedLink::TYPE_PHOTO_SHARE)
     end
 
 
@@ -146,6 +148,10 @@ class Notifier < ActionMailer::Base
       @join_now_url = invitation.tracked_link.long_tracked_url
       @album_pretty_url = TrackedLink.create_tracked_link(@user, @album_pretty_url, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL).long_tracked_url
       @invite_friends_url = nil
+
+      send_share_invite_zza_event(@user, TrackedLink::TYPE_ALBUM_SHARE)
+
+
     end
 
 
@@ -196,6 +202,9 @@ class Notifier < ActionMailer::Base
       @album_pretty_url = TrackedLink.create_tracked_link(@user, @album_pretty_url, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL).long_tracked_url
       @album_pretty_url_show_add_photos_dialog = TrackedLink.create_tracked_link(@user, @album_pretty_url_show_add_photos_dialog, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL).long_tracked_url
       @invite_friends_url = nil
+
+      send_share_invite_zza_event(@user, TrackedLink::TYPE_ALBUM_SHARE)
+
     end
 
     vcard = Vpim::Vcard::Maker.make2 do |vc|
@@ -288,6 +297,22 @@ class Notifier < ActionMailer::Base
     create_message( __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
 
+
+
+private
+  def send_share_invite_zza_event(user, share_type)
+     zza.track_event("invitation.send")
+     zza.track_event("invitation.#{share_type}.send")
+  end
+
+  def zza
+    unless @zza
+      @zza = ZZ::ZZA.new
+      @zza.user_type = 1
+    end
+
+    return @zza
+  end
 
 
 end

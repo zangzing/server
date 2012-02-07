@@ -75,7 +75,11 @@
 
                 zz.routes.invitations.send_by_email(email_addresses, function(json){
                     ZZAt.track('invitation.send');
-                    ZZAt.track('invitation.email.send');
+
+                    for(var i=0;i<email_addresses.length; i++){
+                        // send one event per email address
+                        ZZAt.track('invitation.email.send');
+                    }
 
 
                     // close the progress dialog
