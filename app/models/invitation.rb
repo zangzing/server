@@ -99,17 +99,11 @@ class Invitation < ActiveRecord::Base
     tracked_link = TrackedLink.find_by_tracking_token(tracking_token)
 
     if tracked_link
-      # lookup invitatiob based on tracking token
+      # loo for 0 to 1 invitations for this tracked_link that have a status of 'pending'
+      invitation = Invitation.find_by_tracked_link_id_and_status(tracked_link.id, Invitation::STATUS_PENDING)
 
-      invitation = Invitation.find_by_tracked_link_id(tracked_link.id)
-
-      # if invitation is already complete, this means
-      #   that more than one person is using the same invitation
-      #   email (which is fine), so just create a new invitation
-      #   like we do for facebook and twitter
-      # if invitation is nil, it means that we need to create one lazily
-      #   using the tracked_link
-      if invitation.nil? || invitation.status != Invitation::STATUS_PENDING
+      # if invitation is nil, it means that we need to create one on-demand
+      if invitation.nil?
         invitation = Invitation.new
         invitation.tracked_link = tracked_link
         invitation.user = tracked_link.user
