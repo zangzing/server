@@ -117,7 +117,7 @@ class UsersController < ApplicationController
           @guest.save
         end
         
-        if params[:follow_user_id] and User.exists? params[:follow_user_id]
+        if params[:follow_user_id] and (not params[:follow_user_id].empty?) and User.exists? params[:follow_user_id]
           Like.add(@new_user.id, params[:follow_user_id], Like::USER)
         end
 
