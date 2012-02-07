@@ -16,6 +16,11 @@ module TrackedLinkHelper
     if tracked_link  # check in case tracking token got mangled in copy/paste
       TrackedLink.handle_visit(tracking_token, request.referrer)
       session[:tracking_token] = tracking_token
+
+      # todo: if we ever have non-invite tracked links, then need to fix this
+      send_zza_event_from_client("invitation.click")
+      send_zza_event_from_client("invitation.#{tracked_link.shared_to}.click")
+
       redirect_to tracked_link.url
       return true
     else
