@@ -19,7 +19,12 @@ module TrackedLinkHelper
 
       # todo: if we ever have non-invite tracked links, then need to fix this
       send_zza_event_from_client("invitation.click")
-      send_zza_event_from_client("invitation.#{tracked_link.shared_to}.click")
+
+      if tracked_link.shared_to == TrackedLink::SHARED_TO_EMAIL && tracked_link.type != TrackedLink::TYPE_INVITATION
+        send_zza_event_from_client("invitation.#{tracked_link.type}.click")
+      else
+        send_zza_event_from_client("invitation.#{tracked_link.shared_to}.click")
+      end
 
       redirect_to tracked_link.url
       return true
