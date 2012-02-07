@@ -1,7 +1,16 @@
-.people .invite-friends-button{
-    width: 100px;
-    display: inline-block;
+.people .invite-friends-box{
     position: absolute;
-    top: -2px;
-    right: 0px;
+    top: -100px;
+    left: 0px;
+}
+
+.people .invite-friends-box .message{
+    font-size: 18px;
+    font-weight: 300;
+    color:#336699
+}
+
+.people .invite-friends-box .invite-friends-button{
+    margin-top: 2px;
+    width: 100px;
 }
