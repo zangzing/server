@@ -101,24 +101,18 @@ class Invitation < ActiveRecord::Base
     if tracked_link
       # lookup invitatiob based on tracking token
 
-      # for emailed invitations, we created the invitation record up front.
-      # for the rest, we don't create until a user actually joins
-      if tracked_link.shared_to != TrackedLink::SHARED_TO_EMAIL
+      invitation = Invitation.find_by_tracked_link_id(tracked_link.id)
+
+      # if invitation is already complete, this means
+      #   that more than one person is using the same invitation
+      #   email (which is fine), so just create a new invitation
+      #   like we do for facebook and twitter
+      # if invitation is nil, it means that we need to create one lazily
+      #   using the tracked_link
+      if invitation.nil? || invitation.status != Invitation::STATUS_PENDING
         invitation = Invitation.new
         invitation.tracked_link = tracked_link
         invitation.user = tracked_link.user
-      else
-        invitation = Invitation.find_by_tracked_link_id(tracked_link.id)
-
-        # if invitation is already complete, this means
-        # that more than one person is using the same invitation
-        # email (which is fine), so just create a new invitation
-        # like we do for facebook and twitter
-        if invitation.status != Invitation::STATUS_PENDING
-          invitation = Invitation.new
-          invitation.tracked_link = tracked_link
-          invitation.user = tracked_link.user
-        end
       end
     else
 
