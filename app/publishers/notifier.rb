@@ -94,7 +94,7 @@ class Notifier < ActionMailer::Base
     @recipient_is_user = true
 
     @join_now_url = nil
-    @photo_pretty_url = photo_pretty_url(@photo)
+    @photo_pretty_url = photo_pretty_url_no_hash_bang(@photo)
     @photo_url_with_comments = photo_url_with_comments(@photo)
     @invite_friends_url = invite_friends_url
 
