@@ -105,11 +105,11 @@ class Notifier < ActionMailer::Base
 
       invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_PHOTO_SHARE)
       @join_now_url = invitation.tracked_link.long_tracked_url
-      @photo_pretty_url = TrackedLink.create_tracked_link(@user, @photo_pretty_url, TrackedLink::TYPE_PHOTO_SHARE, TrackedLink::SHARED_TO_EMAIL).long_tracked_url
-      @photo_url_with_comments = TrackedLink.create_tracked_link(@user, @photo_url_with_comments, TrackedLink::TYPE_PHOTO_SHARE, TrackedLink::SHARED_TO_EMAIL).long_tracked_url
+      @photo_pretty_url = TrackedLink.create_tracked_link(@user, @photo_pretty_url, TrackedLink::TYPE_PHOTO_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
+      @photo_url_with_comments = TrackedLink.create_tracked_link(@user, @photo_url_with_comments, TrackedLink::TYPE_PHOTO_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
       @invite_friends_url = nil
 
-      send_share_invite_zza_event(@user, TrackedLink::TYPE_PHOTO_SHARE)
+      send_share_invite_zza_event(@user, invitation.tracked_link)
     end
 
 
@@ -146,10 +146,10 @@ class Notifier < ActionMailer::Base
 
       invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_PHOTO_SHARE)
       @join_now_url = invitation.tracked_link.long_tracked_url
-      @album_pretty_url = TrackedLink.create_tracked_link(@user, @album_pretty_url, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL).long_tracked_url
+      @album_pretty_url = TrackedLink.create_tracked_link(@user, @album_pretty_url, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
       @invite_friends_url = nil
 
-      send_share_invite_zza_event(@user, TrackedLink::TYPE_ALBUM_SHARE)
+      send_share_invite_zza_event(@user, invitation.tracked_link)
 
 
     end
@@ -199,11 +199,11 @@ class Notifier < ActionMailer::Base
 
       invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_PHOTO_SHARE)
       @join_now_url = invitation.tracked_link.long_tracked_url
-      @album_pretty_url = TrackedLink.create_tracked_link(@user, @album_pretty_url, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL).long_tracked_url
-      @album_pretty_url_show_add_photos_dialog = TrackedLink.create_tracked_link(@user, @album_pretty_url_show_add_photos_dialog, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL).long_tracked_url
+      @album_pretty_url = TrackedLink.create_tracked_link(@user, @album_pretty_url, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
+      @album_pretty_url_show_add_photos_dialog = TrackedLink.create_tracked_link(@user, @album_pretty_url_show_add_photos_dialog, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
       @invite_friends_url = nil
 
-      send_share_invite_zza_event(@user, TrackedLink::TYPE_ALBUM_SHARE)
+      send_share_invite_zza_event(@user, invitation.tracked_link)
 
     end
 
@@ -300,9 +300,9 @@ class Notifier < ActionMailer::Base
 
 
 private
-  def send_share_invite_zza_event(user, share_type)
+  def send_share_invite_zza_event(user, tracked_link)
      zza.track_event("invitation.send")
-     zza.track_event("invitation.#{share_type}.send")
+     zza.track_event(tracked_link.send_event_name)
   end
 
   def zza
