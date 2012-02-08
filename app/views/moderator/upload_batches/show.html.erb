@@ -24,6 +24,9 @@
           margin-bottom: 150px;
       }
 
+      .good { background: green; }
+      .bad { background: red; }
+
 
     </style>
 
@@ -41,14 +44,22 @@
 <br>
 <br>
 
+<script>
+  function set_batch_status(batch_id, status){
+      $.get('/service/moderator/upload_batches/'+batch_id+'/update', {'status': status}, function(data){
+          $("#upload-batch-"+data.id).addClass(data.review_status);
+      }, 'json');
+  }
+</script>
 
 <% @upload_batches.each do |batch| %>
-<div class="upload-batch" style="clear: both; margin-left: 10px;">
+<div class="upload-batch <%= batch.review_status %>" style="clear: both; margin-left: 10px;" id="upload-batch-<%= batch.id %>">
   <div class="batch-inro" style="text-align: left;">
     User: <%= link_to batch.user.username, user_path(batch.user) rescue "<b>USER DOESN'T EXISTS</b>".html_safe %><br/>
     Album: <%= link_to batch.album.name, album_pretty_url(batch.album) rescue "<b>ALBUM DELETED</b>".html_safe %><br/>
     Batch #<%= batch.id %> from <%= batch.created_at.strftime('%H:%M:%S   %b  %d %Y ') %><br>
     Finished at: <%= batch.updated_at.strftime('%H:%M:%S   %b  %d %Y ') %><br/>
+    Review status: <%= link_to_function 'Good', "set_batch_status(#{batch.id}, 'good')" %> | <%= link_to_function 'Bad', "set_batch_status(#{batch.id}, 'bad')" %>
   </div>
   <br>
   <div class="upload-batch-photos">

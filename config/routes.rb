@@ -355,6 +355,7 @@ Server::Application.routes.draw do
         get   'upload_batches'                  => 'upload_batches#index',  :as => :moderator_upload_batches
         get   'upload_batches/:date'            => 'upload_batches#show',   :as => :moderator_upload_batch
         get   'upload_batches/:id/report_abuse' => 'upload_batches#report', :as => :moderator_upload_batch_report
+        get   'upload_batches/:id/update'       => 'upload_batches#update', :as => :moderator_upload_batch_report
     end
 
     scope  '/admin', :module => "admin" do
