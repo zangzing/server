@@ -99,7 +99,7 @@ class Invitation < ActiveRecord::Base
     tracked_link = TrackedLink.find_by_tracking_token(tracking_token)
 
     if tracked_link
-      # loo for 0 to 1 invitations for this tracked_link that have a status of 'pending'
+      # look for 0 to 1 invitations for this tracked_link that have a status of 'pending'
       invitation = Invitation.find_by_tracked_link_id_and_status(tracked_link.id, Invitation::STATUS_PENDING)
 
       # if invitation is nil, it means that we need to create one on-demand
@@ -132,7 +132,7 @@ class Invitation < ActiveRecord::Base
 
       # inviting and invited user should follow each other
       Like.add(new_user.id, invitation.user.id, Like::USER)
-      #Like.add(invitation.user.id, new_user.id, Like::USER)
+      Like.add(invitation.user.id, new_user.id, Like::USER)
     end
 
 
@@ -140,7 +140,7 @@ class Invitation < ActiveRecord::Base
     Invitation.find(:all, :conditions=>{:email=>new_user.email, :status=>Invitation::STATUS_PENDING}).each do |invalid_invitation|
       invalid_invitation.status = Invitation::STATUS_COMPLETE_BY_OTHER
       invalid_invitation.invited_user = new_user
-      invalid_invitation.save
+      invalid_invitation.save!
     end
 
 

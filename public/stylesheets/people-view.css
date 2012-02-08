@@ -7,8 +7,14 @@
 .people .invite-friends-box .message{
     font-size: 18px;
     font-weight: 300;
-    color:#336699
+    color:#336699;
+    cursor: pointer;
 }
+
+.people .invite-friends-box .message:hover{
+    text-decoration: underline;
+}
+
 
 .people .invite-friends-box .invite-friends-button{
     margin-top: 2px;

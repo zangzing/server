@@ -71,8 +71,17 @@
 <% end %>
 
 <% content_for :zz_js_document_ready do %>
-    $('.people .invite-friends-button').click(function(){
+    var on_click_invite_friends = function(){
         zz.routes.users.goto_invite_friends_screen();
         ZZAt.track('people-view.invite-friends-button.click');
+    };
+
+    $('.people .invite-friends-button').click(function(){
+        on_click_invite_friends();
     });
+
+    $('.people .invite-friends-box .message').click(function(){
+        on_click_invite_friends();
+    });
+
 <% end %>
