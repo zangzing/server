@@ -87,26 +87,31 @@ var zz = zz || {};
                 return '/' + username;
             },
 
-            goto_join_screen: function(return_to){
-                if(return_to){
-                    document.location.href = '/join?return_to=:return_to'.replace(':return_to', return_to);
+            goto_join_screen: function(return_to, message){
+            	var url = '/join?';
+            	
+                if (return_to) {
+                	url += '&return_to=' + encodeURIComponent(return_to);
                 }
-                else{
-                    document.location.href = '/join';
+                
+                if (message) {
+                	url += '&message=' + escape(message);
                 }
+                window.location = url;
             },
 
             goto_signin_screen: function(return_to){
-                if(return_to){
-                    document.location.href = '/signin?return_to=:return_to'.replace(':return_to', encodeURIComponent(return_to));
+            	var url = '/signin';
+            	
+                if (return_to) {
+                	url += '?return_to=' + encodeURIComponent(return_to);
                 }
-                else{
-                    document.location.href = '/signin';
-                }
+                
+                window.location = url;
             },
 
             goto_invite_friends_screen: function(){
-                document.location.href = '/invite_friends'
+                document.location.href = '/invite_friends';
             },
 
             create_user_url: function(){

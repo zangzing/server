@@ -12,7 +12,11 @@ zz.toolbars = {
     init: function() {
         //top bar
         $('#header #home-button').click(function() {
-            document.location.href = zz.routes.path_prefix + '/';
+        	if(zz.session.current_user_id){
+        		document.location.href = zz.routes.path_prefix + '/';
+        	} else {
+        		document.location.href = '/';
+        	}
             ZZAt.track('button.home.click');
         });
         if (zz.page.rails_controller_name == 'photos' || zz.page.rails_controller_name == 'albums') {
@@ -114,7 +118,11 @@ zz.toolbars = {
         });
 
         $('#header #sign-in-button').click(function() {
-            document.location.href = '/signin?return_to=' + encodeURIComponent(document.location.href);
+        	if(zz.page.rails_controller_name == 'users' && zz.page.rails_action_name == 'join'){
+        		zz.routes.users.goto_signin_screen();
+        	} else {
+        		zz.routes.users.goto_signin_screen(document.location.href);
+        	}
             ZZAt.track('button.signin.click');
         });
 

@@ -114,7 +114,7 @@ module ZZ
       # Filter for methods that require a log in
       def require_user
         unless current_user
-          msg = "You must be logged in to access this page"
+          msg = "Join for free or sign in to access that page."
           if zz_api_call?
             render_json_error(nil, msg, 401)
           elsif request.xhr?
@@ -123,7 +123,7 @@ module ZZ
           else
             flash[:error] = msg
             store_location
-            redirect_to new_user_session_url
+            redirect_to join_url :message => msg
           end
           return false
         end
@@ -324,7 +324,7 @@ module ZZ
       # ( Album not private )
       def require_album_viewer_role
         if @album.private?
-          msg = "You have asked to see an Invite Only album. Please login so we know who you are."
+          msg = "You have asked to see an Invite Only album. Join or sign in so we know who you are."
           unless current_user
             if zz_api_call?
               render_json_error(nil, msg, 401)
@@ -334,7 +334,7 @@ module ZZ
             else
               flash[:notice] = msg
               store_location
-              redirect_to new_user_session_url
+              redirect_to join_url :message => msg 
             end
             return false
           end
@@ -385,9 +385,8 @@ module ZZ
             flash.now[:notice] = msg
             head :status => 401
           else
-            flash[:notice] = "You have requested to contribute to this album. Please join/login so we know who you are"
             store_location
-            redirect_to join_url
+            redirect_to join_url :message => "You have requested to contribute to this album. Join or sign in so we know who you are." 
           end
           false
         end

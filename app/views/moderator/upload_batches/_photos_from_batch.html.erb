@@ -1,6 +1,5 @@
 <% upload_batch.photos.each do |photo| %>
-  <div class="photo-from-batch" style="float: left; width: 200px; height: 200px; vertical-align: middle; text-align: center;">
-    <%= image_tag photo.thumb_url, :title => photo.caption %>
+  <div class="photo-from-batch">
+    <%= image_tag photo.stamp_url,  :title => "" %>
   </div>
 <% end %>
-<div style="clear: right;"></div>

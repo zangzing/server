@@ -30,7 +30,7 @@ describe Notifier do
         fill_in 'user[username]', :with => Faker::Name.first_name.downcase
         fill_in 'user[email]', :with    => Faker::Internet.email
         fill_in 'user[password]', :with => 'password'
-        submit_form 'join-form'
+        submit_form 'form'
         response.status.should be 200
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries[0].header['X-SMTPAPI'].value.should include "email.welcome"

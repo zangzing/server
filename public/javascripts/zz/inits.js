@@ -19,25 +19,9 @@ var zz = zz || {};
     		
      template: function() {
 
-    	if(zz.joinbanner.should_show_banner()) { 
-    		var is_photos_page = (zz.page.album_id != null) && (zz.page.rails_controller_name == 'photos'); // Use this as a hack to determine whether there will be .photogrid 		
-            
-    		$('#header').after('<div id="header-join-banner"></div>');
-            
-            if( !is_photos_page ){
-            	$("#article").prepend('<div class="join-banner-spacer"></div>');	
-            }
 
-            
-    		zz.joinbanner.setup_banner();
-    		
-    		zz.joinbanner.banner_refresh();
-    		
-            $(window).resize(function(event) {
-            	zz.joinbanner.banner_refresh();
-            });
-  		
-    	}
+        zz.message_banner.init();
+
 
         //system message banner
         $('#system-message-banner #close-button').click(function() {

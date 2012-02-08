@@ -235,11 +235,11 @@ describe AlbumsController do
   end
 
   describe 'wizard' do
-    it 'should redirect to signin if there is no current user' do
+    it 'should redirect to join page with a message if there is no current user' do
       album = Factory.create(:album )
       get :wizard, { :album_id => album.id, :step => 'group', :email => 'def@leppard.com'}
       response.status.should be 302
-      response.body.should redirect_to( new_user_session_url )
+      response.body.should redirect_to( join_url :message => "Join for free or sign in to access that page.")
       session[:return_to].should contain( album_wizard_path( album.id ) )
     end
 
