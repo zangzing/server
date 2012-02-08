@@ -138,11 +138,7 @@ class UsersController < ApplicationController
         # send zza events
         if invitation
           send_zza_event_from_client('invitation.join')
-
-          if invitation.tracked_link # there should always be one, but just in case of bug
-            send_zza_event_from_client("invitation.#{invitation.tracked_link.shared_to}.join")
-          end
-
+          send_zza_event_from_client(invitation.tracked_link.join_event_name)
         end
 
         return

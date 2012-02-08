@@ -87,5 +87,30 @@ class TrackedLink < ActiveRecord::Base
   end
 
 
+  # this is a bit of a hack so that we can differentiate
+  #  - invitation.email.click
+  #  - invitation.photo-share.click
+  #  - invitation.album-share.click
+  def click_event_name
+      if self.shared_to == TrackedLink::SHARED_TO_EMAIL && self.type != TrackedLink::TYPE_INVITATION
+        return "invitation.#{self.type}.click"
+      else
+        return "invitation.#{self.shared_to}.click"
+      end
+  end
+
+  # this is a bit of a hack so that we can differentiate
+  #  - invitation.email.join
+  #  - invitation.photo-share.join
+  #  - invitation.album-share.join
+  def join_event_name
+    if self.shared_to == TrackedLink::SHARED_TO_EMAIL && self.type != TrackedLink::TYPE_INVITATION
+      return "invitation.#{self.type}.join"
+    else
+      return "invitation.#{self.shared_to}.join"
+    end
+
+  end
+
 
 end
