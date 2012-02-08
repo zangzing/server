@@ -13,10 +13,11 @@ class Share < ActiveRecord::Base
 
   validates  :service, :presence => true, :inclusion => { :in => %w{email social} }
 
-  #if the service is email the recipients array can only contain valid email addresses
+  #if the service is email the recipients array can only contain valid email addresses, or group ids
   validates_each  :recipients, :if => :email? do |record, attr, value|
     value.each do |email|
-      record.errors.add attr, "Email address not valid: "+email unless ZZ::EmailValidator.validate( email )
+      # see if a number or a valid email, numbers mean group_ids
+      record.errors.add attr, "Email address not valid: "+email unless (Integer(email) rescue false) != false || ZZ::EmailValidator.validate( email )
     end
   end
 
@@ -58,13 +59,6 @@ class Share < ActiveRecord::Base
   end
 
 
-  # parses and cleans list of email addresses.
-  # returns emails and any errors
-  def self.validate_email_list( email_list )
-    return ZZ::EmailValidator.validate_email_list(email_list)
-  end
-
-
   # Queues the share for delivery
   # It will queue a job in the mail queue for each email for email shares
   # It will queue a job in the facebook and/or twitter queues for social shares
@@ -75,7 +69,8 @@ class Share < ActiveRecord::Base
     # Create Email or post
     case service
       when 'email'
-        self.recipients.each do |recipient |
+        emails = Group.flatten_emails(recipients) # flatten groups and emails into just emails
+        emails.each do |recipient|
           Guest.register( recipient, 'share' ) #add recipient to guest list for beta period
 
 

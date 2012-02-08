@@ -108,18 +108,20 @@ class Album < ActiveRecord::Base
   # child.
   #
   def destroy
-    Thread.current[:the_album_being_deleted] = self
-    super
-  rescue Exception => ex
-    raise ex
-  ensure
-    Thread.current[:the_album_being_deleted] = nil
+    DeferredCompletionManager.dispatch do
+      begin
+        DeferredCompletionManager.state[:the_album_being_deleted] = self
+        super
+      ensure
+        DeferredCompletionManager.state[:the_album_being_deleted] = nil
+      end
+    end
   end
 
   # using the thread local storage determine
   # if the given album_id is being deleted
   def self.album_being_deleted?(album_id)
-    album = Thread.current[:the_album_being_deleted]
+    album = DeferredCompletionManager.state[:the_album_being_deleted]
     return false if album.nil?
     album.id == album_id
   end
@@ -342,109 +344,95 @@ class Album < ActiveRecord::Base
     end
   end
 
+  # acl for this album
   def acl
-    @acl ||= OldAlbumACL.new( self.id )
+    @acl ||= AlbumACL.new(id)
   end
 
-  def add_contributor( email)
-     user = User.find_by_email( email )
-     if user
-          #if user does not have contributor role, add it
-          unless acl.has_permission?( user.id, OldAlbumACL::CONTRIBUTOR_ROLE)
-            acl.add_user user.id, OldAlbumACL::CONTRIBUTOR_ROLE
-            InviteActivity.create( :user => self.user,
-                                   :subject => self,
-                                   :invite_kind => InviteActivity::CONTRIBUTE,
-                                   :album_id => self.id,
-                                   :invited_user_id => user.id )
-            #reciprocal activity to go in invited_user's activity list.
-            InviteActivity.create( :user => user,
-                                   :subject => user,
-                                   :invite_kind => InviteActivity::CONTRIBUTE,
-                                   :album_id => self.id,
-                                   :invited_user_id => user.id )
-          end
-     else 
-          # if the email does not have contributor role add it.
-          unless acl.has_permission?( email, OldAlbumACL::CONTRIBUTOR_ROLE)
-              acl.add_user email, OldAlbumACL::CONTRIBUTOR_ROLE
-              InviteActivity.create!( :user => self.user,
-                                     :subject => self,
-                                     :invite_kind => InviteActivity::CONTRIBUTE,
-                                     :album_id => self.id,
-                                     :invited_user_email => email )
-             # Guest.register( email, 'contributor' )
-          end
-     end
+  # notify hook when users added to a group that
+  # attain the new permission level
+  # NOT CURRENTLY ACTIVE
+  def group_users_added(group_id, user_ids)
+    # get role of group
+    role = acl.get_group_role(group_id)
+    return if role.nil?
   end
 
-  # Adds the AlbumACL::VIEWER_ROLE to the user associated to this email
-  # or to the email itself if there is no user yet.
-  # If the email/user already has view permissions (through VIEWER or other
-  # ROLES) nothing happen
-  def add_viewer( email )
-     user = User.find_by_email( email )
-     if user
-          #is user does not have vie permissions, add them
-          unless acl.has_permission?( user.id, OldAlbumACL::VIEWER_ROLE)
-            acl.add_user user.id, OldAlbumACL::VIEWER_ROLE
-            InviteActivity.create( :user => self.user,
-                                   :subject => self,
-                                   :invite_kind => InviteActivity::VIEW,
-                                   :album_id => self.id,
-                                   :invited_user_id => user.id )
-            #reciprocal activity to go in invited_user's activity list.
-            InviteActivity.create( :user => user,
-                                   :subject => user,
-                                   :invite_kind => InviteActivity::VIEW,
-                                   :album_id => self.id,
-                                   :invited_user_id => user.id )
-          end
-     else
-          # if the email does not have view permissions add  them
-          unless acl.has_permission?( email, OldAlbumACL::VIEWER_ROLE)
-              acl.add_user email, OldAlbumACL::VIEWER_ROLE
-              InviteActivity.create!( :user => self.user,
-                                     :subject => self,
-                                     :invite_kind => InviteActivity::VIEW,
-                                     :album_id => self.id,
-                                     :invited_user_email => email )
-          end
-     end
+  # add the groups with the given role
+  # if want_affected is true, we also determine which
+  # users ids just obtained this role since they
+  # may have already had the role and we want to
+  # know the new ones
+  def add_groups_with_role(group_ids, role, want_affected)
+    # filter out the owning user so never accidentally downgraded
+    group_ids = filter_owner(group_ids)
+    affected_user_ids = []
+
+    if want_affected
+      # determine users with role currently
+      users_with_role = acl.get_users_with_role(role)
+      # add the groups to the role
+      users_via_add = acl.add_groups(group_ids, role)
+       # now see which users just got this role.  If they already had the role, they
+       # will be in the user_ids_with_role list and can be excluded
+      affected_user_ids = users_via_add - users_with_role
+    else
+      acl.add_groups(group_ids, role)
+    end
+
+    affected_user_ids
   end
 
-
-  def remove_contributor( id )
-     acl.remove_user( id ) if contributor? id
+  # add the set of group_ids to the album acl as
+  # contributors
+  def add_contributors(group_ids, want_affected = false)
+    add_groups_with_role(group_ids, AlbumACL::CONTRIBUTOR_ROLE, want_affected)
   end
 
-  def remove_viewer( id )
-     acl.remove_user( id ) if viewer? id
+  # Adds the viewer role to the groups given
+  def add_viewers(group_ids, want_affected = false)
+    add_groups_with_role(group_ids, AlbumACL::VIEWER_ROLE, want_affected)
   end
 
+  # remove the given group(s) from the acl
+  def remove_from_acl(group_ids)
+    # filter out the owning user so never accidentally removed
+    group_ids = filter_owner(group_ids)
+    acl.remove_groups(group_ids)
+  end
 
-  def viewer?( id )
+  # returns true if id has permission, or not a private album
+  def can_view_or_not_private?( id )
       if private?
-        acl.has_permission?( id, OldAlbumACL::VIEWER_ROLE)
+        acl.has_permission?( id, AlbumACL::VIEWER_ROLE)
       else
         true
       end
   end
 
   #true if the id has viewer role or higher 
-  def viewer_in_group?( id )
-     acl.has_permission?( id, OldAlbumACL::VIEWER_ROLE)
+  # also grants right to moderator or better
+  def viewer?( id )
+     acl.has_permission?( id, AlbumACL::VIEWER_ROLE) || SystemRightsACL.singleton.has_permission?(id, SystemRightsACL::MODERATOR_ROLE)
   end
 
-
   # Returns true if id has contributor role or equivalent
+  # also grants right to support_hero or better
   def contributor?( id )
-    acl.has_permission?( id, OldAlbumACL::CONTRIBUTOR_ROLE)
+    acl.has_permission?(id, AlbumACL::CONTRIBUTOR_ROLE) || SystemRightsACL.singleton.has_permission?(id, SystemRightsACL::SUPPORT_HERO_ROLE)
   end
 
   # Returns true if id has admin role or equivalent
+  # also grants right to support_hero or better
   def admin?( id )
-    acl.has_permission?( id, OldAlbumACL::ADMIN_ROLE)
+    acl.has_permission?(id, AlbumACL::ADMIN_ROLE) || SystemRightsACL.singleton.has_permission?(id, SystemRightsACL::SUPPORT_HERO_ROLE)
+  end
+
+  # filter out the album owner from the list of groups
+  def filter_owner(group_ids)
+    group_ids = Array(group_ids)
+    group_ids.delete(user.my_group_id)
+    group_ids
   end
 
   # Checks of email is that of a contributor and returns user
@@ -453,35 +441,44 @@ class Album < ActiveRecord::Base
   # It will return nil if the email is not that of a contributor.
   # If album is set to allow anyone to contribute, it will skip the contributor
   # check and always create a new user if necessary
-  def get_contributor_user_by_email( email )
-    user = nil
-
+  def get_contributor_user_by_email(email, display_name)
     if self.everyone_can_contribute?
-      # this is open album, so go ahead and create anonymouse user if necessary
-      user = User.find_by_email_or_create_automatic( email, "Anonymous", false )
-    elsif contributor?( email )
-      # was in the ACL via email address so turn into real user, no need to test again as we already passed
-      user = User.find_by_email_or_create_automatic( email, "Anonymous", false )
-    else
-      # not a contributor by email account, could still be one via user id
-      user = User.find_by_email( email )
+      # this is open album, so go ahead and create Anonymous user if necessary
+      return User.find_by_email_or_create_automatic( email, display_name, false )
+    end
 
-      if contributor?(user.id) == false
-        # clear out the user to indicate not valid
-        user = nil  
+    # only contributors allowed to add photos
+    user = User.find_by_email(email)
+    # if we have a user, see if a contributor, if not return nil
+    if user
+      if contributor?(user.id)
+        # this user is a contributor, if we are currently auto_by_contact, upgrade to automatic
+        User.find_by_email_or_create_automatic( email, display_name, false ) if user.auto_by_contact?
+      else
+        user = nil
       end
     end
     user
   end
 
-  #Returns album contributors if exact = true, only the ones with CONTRIBUTOR_ROLE not equivalent ROLES are returned
-  def contributors( exact = false)
-    acl.get_users_with_role( OldAlbumACL::CONTRIBUTOR_ROLE, exact )
+  #Returns album contributors as users if exact = true, only the ones with CONTRIBUTOR_ROLE not equivalent ROLES are returned
+  def contributors(exact = false)
+    acl.get_users_with_role(AlbumACL::CONTRIBUTOR_ROLE, exact)
   end
 
-  #Returns album contributors if exact = true, only the ones with CONTRIBUTOR_ROLE not equivalent ROLES are returned
-  def viewers( exact = false)
-    acl.get_users_with_role( OldAlbumACL::VIEWER_ROLE, exact )
+  #Returns album viewers as users if exact = true, only the ones with VIEWER_ROLE not equivalent ROLES are returned
+  def viewers(exact = false)
+    acl.get_users_with_role(AlbumACL::VIEWER_ROLE, exact)
+  end
+
+  #Returns album contributors as groups if exact = true, only the ones with CONTRIBUTOR_ROLE not equivalent ROLES are returned
+  def group_contributors(exact = false)
+    acl.get_groups_with_role(AlbumACL::CONTRIBUTOR_ROLE, exact)
+  end
+
+  #Returns album viewers as groups if exact = true, only the ones with VIEWER_ROLE not equivalent ROLES are returned
+  def group_viewers(exact = false)
+    acl.get_groups_with_role(AlbumACL::VIEWER_ROLE, exact)
   end
 
 
@@ -490,7 +487,7 @@ class Album < ActiveRecord::Base
   def can_user_buy_photos?(user)
     return true if who_can_buy == WHO_EVERYONE
     return true if who_can_buy == WHO_OWNER && user && admin?(user.id)
-    return true if who_can_buy == WHO_VIEWERS && user && viewer?(user.id)
+    return true if who_can_buy == WHO_VIEWERS && user && can_view_or_not_private?(user.id)
 
     return false
   end
@@ -553,7 +550,7 @@ class Album < ActiveRecord::Base
         when WHO_OWNER
           return true if admin?(user_id)
         when WHO_VIEWERS
-          return true if viewer_in_group?( user_id ) #check ACL even if it is public
+          return true if viewer?( user_id ) #check ACL even if it is public
       end
     end
     false
@@ -748,7 +745,7 @@ private
   end
 
   def add_creator_as_admin
-    acl.add_user( user.id, OldAlbumACL::ADMIN_ROLE )
+    acl.add_user( user, AlbumACL::ADMIN_ROLE )
   end
 
   # this pulls the cover from the db

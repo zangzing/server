@@ -58,67 +58,26 @@ class PagesController < ApplicationController
 
   # method used by pingdom to check the health of the server
   def health_check
-    max_total_time = 25.seconds
-    max_time_per_check = 15.seconds
-    z = ZZ::ZZA.new
-
     response.headers["Content-Type"] = 'text/plain'
 
-    curr_check = ""  # need this here since used in rescue
-    status_msg = ""
+    hc = HealthChecker.health_check
 
-    # wrap the calls with a timeout check so we don't
-    # end up potentially hanging here - we wrap the entire
-    # set and then each individual test
-    SystemTimer.timeout_after(max_total_time) do
+    item = hc[:redis]
+    status_msg = "Redis connectivity check for: #{item[:server]} - #{HealthChecker.status_msg(item)}\n"
+    item = hc[:database]
+    status_msg << "Database connectivity check - #{HealthChecker.status_msg(item)}\n"
+    item = hc[:zza]
+    status_msg << "ZZA Server check - #{HealthChecker.status_msg(item)}\n"
 
-      curr_check = "Redis ACL connectivity check for: #{RedisConfig.config[:redis_acl_server]} - "
-      status_msg << curr_check
-      SystemTimer.timeout_after(max_time_per_check) do
-        full_check = false
-        if full_check
-          status_msg << "Full check\n"
-          # a more thorough check than just ping
-          # make a dummy Album and add a user to check redis for ACL
-          a = OldAlbumACL.new("health_check_album")
-          a.add_user "health_check_user", OldAlbumACL::ADMIN_ROLE
-          a.remove_acl
-        else
-          # just your basic ping check
-          status_msg << "Ping check\n"
-          redis = OldACLManager.get_global_redis
-          redis.ping
-        end
-      end
-
-      curr_check = "Database connectivity check\n"
-      SystemTimer.timeout_after(max_time_per_check) do
-        # build a query that hits the database but does not return any actual data
-        # to minimize performance impact
-        status_msg << curr_check
-        @photo = Photo.first(:conditions => ["TRUE = FALSE"])
-      end
-
-      curr_check = "ZZA Server check\n"
-      status_msg << curr_check
-      if ZZ::ZZA.unreachable? then
-        raise "ZZA server is not reachable."
-      end
+    if HealthChecker.all_ok(hc)
+      msg = "OK\n" + status_msg
+      render :status => 200, :text => msg
+    else
+      msg = "ERROR\nHEALTH_CHECK ERROR\n" + status_msg
+      render :status => 509, :text => msg
     end
 
-    #status_msg << "ZZA Thread state: " +  ZZ::ZZA.sender.thread.status.to_s
-
-    #z.track_event("health_check.ok", status_msg)
-    ok_msg = "OK\n" + status_msg
-
-    render :status => 200, :text => ok_msg
-
-  rescue Exception => ex
-    msg = "ERROR\nHEALTH_CHECK ERROR during #{curr_check}Error: " + ex.message + "\n" + status_msg
-    z.track_event("health_check.fail", msg)
-    Rails.logger.error msg
-    # we use 509 as internal error so it doesn't get remapped by nginx
-    render :status => 509, :text => msg
+    return  msg
   end
 
 end

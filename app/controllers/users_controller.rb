@@ -57,18 +57,7 @@ class UsersController < ApplicationController
     #Check if user is an automatic user ( a contributor that has never logged in but has sent photos )
     @new_user = User.find_by_email( params[:user][:email])
     if @new_user && @new_user.automatic?
-      # The user is an automatic user because she had contributed photos after being invited by email
-      # she has now decided to join, remove automatic flag and reset password.
-      if @new_user.auto_by_contact
-        @new_user.cohort = User.cohort_current # if they are auto due to simply being created because someone referenced that email address then the real cohort is now
-        @new_user.auto_by_contact = false       # a full user now
-      end
-      @new_user.automatic = false
-      @new_user.name      = params[:user][:name]
-      @new_user.username  = params[:user][:username]
-      @new_user.reset_password = true
-      @new_user.password = params[:user][:password]
-      @new_user.password_confirmation  = @new_user.password
+      @new_user.convert_to_full_user(params[:user][:name], params[:user][:username], params[:user][:password])
     else
       @new_user = User.new(params[:user])
     end
@@ -296,24 +285,77 @@ class UsersController < ApplicationController
   # Returns:
   # fetches and returns all users found or created in the form
   #
-  # [
-  #   user_info_hash - the hash containing the user info as returned in the user info call
-  #   ...
-  # ]
+  # {
+  #   :users => [
+  #     user_info_hash - the hash containing the user info as returned in the user info call
+  #     ...
+  #   ]
+  #   :not_found => {
+  #     :user_ids => [
+  #       {
+  #         :index => the index in the corresponding input list location,
+  #         :token => the missing user_id,
+  #         :error => an error string, may be blank
+  #       }
+  #       ...
+  #     ],
+  #     :user_names => [
+  #       {
+  #         :index => the index in the corresponding input list location,
+  #         :token => the missing user name,
+  #         :error => an error string, may be blank
+  #       }
+  #       ...
+  #     ]
+  #   }
+  # }
   #
+  # Errors:
+  # If we have a list validation error with the emails we collect the items that were
+  # in error into a list for each type and raise an exception. The exception will be returned to the client
+  # as json in the standard error format.  The code will be INVALID_LIST_ARGS (1001) and the
+  # message part of the error will contain:
+  #
+  # {
+  #   :emails => [
+  #     {
+  #       :index => the index in the corresponding input list location,
+  #       :token => the invalid email,
+  #       :error => an error string
+  #     }
+  #     ...
+  #   ],
+  # }
+  # NOTE that we do not consider a not found user_name or user_id to be an error since this is a find
+  # call but instead return as part of the normal results.
   def zz_api_find_or_create
     return unless require_user
 
     zz_api do
-      user_ids = []
-      user_ids += User.validate_user_ids(params[:user_ids], false)
-      user_ids += User.validate_user_names(params[:user_names], false)
-      addresses = User.validate_emails(params[:emails])
-      converted_ids, user_id_to_email = User.convert_to_users(addresses)
+      user_ids, user_id_errors = User.validate_user_ids(params[:user_ids])
+      ids_by_name, user_name_errors = User.validate_user_names(params[:user_names])
+      user_ids += ids_by_name
+      emails, email_errors, addresses = ZZ::EmailValidator.validate_email_list(params[:emails])
+
+      unless email_errors.empty?
+        # at least one error so raise exception
+        raise ZZAPIInvalidListError.new({:emails => email_errors})
+      end
+
+      converted_users, user_id_to_email = User.convert_to_users(addresses, current_user)
+      converted_ids = converted_users.map(&:id)
       user_ids += converted_ids
 
       members = preload_users(user_ids)
-      User.as_array(members, user_id_to_email)
+      users = User.as_array(members, user_id_to_email)
+      hash = {
+          :users => users,
+          :not_found => {
+              :user_ids => user_id_errors,
+              :user_names => user_name_errors
+          }
+      }
+      hash
     end
   end
 

@@ -41,7 +41,7 @@ class OldAlbumACL < OldBaseACL
       num_user_id = user_id.to_i
       if num_user_id != 0
         # only notify if it is a valid numeric user id
-        Cache::Album::Manager.shared.user_albums_acl_modified(num_user_id)
+        Cache::Album::Manager.shared.user_albums_acl_modified([num_user_id])
       end
     end
   end

@@ -4,6 +4,7 @@ class GroupMember < ActiveRecord::Base
   attr_accessible  :group_id, :user_id, :email_id
 
   belongs_to :user
+  belongs_to :group
 
   # perform a bulk insert/update of group members
   # takes rows in the form

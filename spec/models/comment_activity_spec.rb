@@ -11,12 +11,12 @@ describe CommentActivity do
       @album  = @comment.commentable.subject.album
       @some_user = Factory(:user)
       @group_member = Factory.create(:user)
-      @album.add_viewer(@group_member.email)
+      @album.add_viewers(@group_member.my_group_id)
       @album.save!
 
 
       @album.activities.each do |activity|
-        if activity.instance_of?(InviteActivity) || activity.instance_of?(CreateAlbumActivity)
+        if activity.instance_of?(CreateAlbumActivity)
           activity.destroy
         end
       end

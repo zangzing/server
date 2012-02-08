@@ -24,9 +24,26 @@ describe "ZZ API Groups" do
       j = zz_api_get zz_api_info_group_path(j[:id]), 200
       j[:name].should == group_name
       # get all groups by this user
+      group_name = "agroup"
+      j = zz_api_post zz_api_create_group_path, {:name => group_name}, 200
+      group_name = "Zgroup"
+      j = zz_api_post zz_api_create_group_path, {:name => group_name}, 200
+
       j = zz_api_get zz_api_users_groups_path, 200
-      j.length.should == 1    # group just created and wrapped group
-      j[0][:name].should == group_name
+      j.length.should == 3    # group just created and wrapped group
+      j[0][:name].should == "agroup"
+
+      # now add a group with a . and it should not appear in list
+      j = zz_api_post zz_api_create_group_path, {:name => '.hidden'}, 200
+      group_id = j[:id]
+      j = zz_api_get zz_api_users_groups_path, 200
+      j.length.should == 3    # count should remain 3 since just added as hidden
+
+      # now rename and should be back
+      j = zz_api_post zz_api_update_group_path(group_id), {:name => 'not hidden'}, 200
+      j = zz_api_get zz_api_users_groups_path, 200
+      j.length.should == 4    # count should remain 3 since just added as hidden
+
     end
 
     it "should get the wrapped user group" do
@@ -53,6 +70,9 @@ describe "ZZ API Groups" do
       j[:name].should == new_group_name
       # should fail to create a duplicate group
       j = zz_api_post zz_api_create_group_path, {:name => new_group_name}, 409
+      # should fail to rename group if already exists
+      j = zz_api_post zz_api_create_group_path, {:name => 'unique_name'}, 200
+      j = zz_api_post zz_api_update_group_path(j[:id]), {:name => new_group_name}, 409
     end
 
     it "should create a group and add username members" do
@@ -132,14 +152,18 @@ describe "ZZ API Groups" do
 
       users = []
       ids = []
+      char_name = "bZa"
       3.times do |i|
-        user = Factory.create(:user)
+        user = Factory.create(:user, :first_name => char_name[i..i])
         users << user
         ids << user.id
       end
       j = zz_api_post zz_api_add_members_group_path(group_id), {:user_ids => ids}, 200
       j.length.should == ids.length
       members = j
+      members[0][:user][:first_name].should == 'a'
+      members[1][:user][:first_name].should == 'b'
+      members[2][:user][:first_name].should == 'Z'
 
       # now delete the group
       zz_api_post zz_api_destroy_group_path(group_id), nil, 200
@@ -217,6 +241,34 @@ describe "ZZ API Groups" do
       j.length.should == 0
     end
 
+    it "should fail to add bad users, id, and emails" do
+      group_name = "mytestgroup"
+      j = zz_api_post zz_api_create_group_path, {:name => group_name}, 200
+      j[:name].should == group_name
+      group_id = j[:id]
+
+      bad_user_id = 999999999999
+      bad_user_name = 'neverfindme'
+      bad_email = 'this is a bad email address'
+      j = zz_api_post zz_api_add_members_group_path(group_id), {:user_ids => [bad_user_id], :emails => [bad_email], :user_names => [bad_user_name]}, ZZAPIError::INVALID_LIST_ARGS
+      message = j[:message]
+
+      user_id_errors = message[:user_ids]
+      user_id_errors.length.should == 1
+      user_id_errors[0][:index].should == 0
+      user_id_errors[0][:token].should == bad_user_id
+
+      user_name_errors = message[:user_names]
+      user_name_errors.length.should == 1
+      user_name_errors[0][:index].should == 0
+      user_name_errors[0][:token].should == bad_user_name
+
+      email_errors = message[:emails]
+      email_errors.length.should == 1
+      email_errors[0][:index].should == 0
+      email_errors[0][:token].should == bad_email
+    end
+
     describe "ACL" do
       def verify_tuples(tuples, expected)
         tuples.length.should == expected.length
@@ -228,6 +280,7 @@ describe "ZZ API Groups" do
       it "should assign user to ACL and verify permission" do
         album = Factory.create(:album)
         user = album.user
+        profile_acl = user.profile_album.acl
         acl = AlbumACL.new(album.id)
         acl2 = AlbumACL.new(Factory.create(:album, :user => user).id)
         acl3 = AlbumACL.new(Factory.create(:album, :user => user).id)
@@ -261,17 +314,28 @@ describe "ZZ API Groups" do
         acl2.add_user(user, AlbumACL::VIEWER_ROLE)
         acl3.add_user(user, AlbumACL::ADMIN_ROLE)
         tuples = AlbumACL.get_acls_for_user(user.id, AlbumACL::CONTRIBUTOR_ROLE, false)
-        verify_tuples(tuples, [acl.acl_id, acl3.acl_id])
+        verify_tuples(tuples, [profile_acl.acl_id, acl.acl_id, acl3.acl_id])
         tuples = AlbumACL.get_acls_for_user(user.id, AlbumACL::CONTRIBUTOR_ROLE, true)
         verify_tuples(tuples, [acl.acl_id])
         tuples = AlbumACL.get_all_acls_for_user(user.id)
-        verify_tuples(tuples, [acl.acl_id, acl2.acl_id, acl3.acl_id])
+        verify_tuples(tuples, [profile_acl.acl_id, acl.acl_id, acl2.acl_id, acl3.acl_id])
+
+        roles = acl3.get_users_and_roles
+        admins = roles[AlbumACL::ADMIN_ROLE]
+        admins.length.should == 1
+        admins[0].should == user.id
+
+        # now destroy the user and make sure acls have gone away
+        user.destroy
+        tuples = AlbumACL.get_all_acls_for_user(user.id)
+        tuples.length.should == 0
       end
 
 
       it "should assign group to ACL and verify permission" do
         album = Factory.create(:album)
-        user1 = album.user
+        profile_acl = album.user.profile_album.acl
+        user1 = Factory.create(:user)
         user2 = Factory.create(:user)
         user3 = Factory.create(:user)
         user4 = Factory.create(:user)
@@ -303,7 +367,7 @@ describe "ZZ API Groups" do
         acl3 = AlbumACL.new(Factory.create(:album, :user => user3).id)
 
         acl = AlbumACL.new(album.id)
-        acl.add_group(group1.id, AlbumACL::CONTRIBUTOR_ROLE)
+        acl.add_groups(group1.id, AlbumACL::CONTRIBUTOR_ROLE)
         acl.has_permission?(user1.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == true
         acl.has_permission?(user2.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == false
         acl.has_permission?(user3.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == true
@@ -319,27 +383,37 @@ describe "ZZ API Groups" do
 
 
         # now add group 1a so we should have 1,2,3
-        acl.add_group(group1a.id, AlbumACL::CONTRIBUTOR_ROLE)
+        acl.add_groups(group1a.id, AlbumACL::CONTRIBUTOR_ROLE)
         acl.has_permission?(user1.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == true
         acl.has_permission?(user2.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == true
         acl.has_permission?(user3.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == true
         acl.has_permission?(user4.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == false
 
         # now downgrade group1a to viewer
-        acl.add_group(group1a.id, AlbumACL::VIEWER_ROLE)
+        acl.add_groups(group1a.id, AlbumACL::VIEWER_ROLE)
         acl.has_permission?(user1.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == true
         acl.has_permission?(user2.id, AlbumACL::VIEWER_ROLE, true).should == true
         acl.has_permission?(user3.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == true
         acl.has_permission?(user4.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == false
 
+        # now see if group1 is a contrib and group1a is a viewer
+        roles = acl.get_groups_and_roles
+        contribs = roles[AlbumACL::CONTRIBUTOR_ROLE]
+        viewers = roles[AlbumACL::VIEWER_ROLE]
+        contribs.length.should == 1
+        contribs[0].should == group1.id
+        viewers.length.should == 1
+        viewers[0].should == group1a.id
+
+
         # now remove the group
-        acl.remove_group(group1a.id)
+        acl.remove_groups(group1a.id)
         acl.has_permission?(user1.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == true
         acl.has_permission?(user2.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == false
         acl.has_permission?(user3.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == true
         acl.has_permission?(user4.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == false
         # add it back
-        acl.add_group(group1a.id, AlbumACL::VIEWER_ROLE)
+        acl.add_groups(group1a.id, AlbumACL::VIEWER_ROLE)
 
         # now delete a group without removing from acl
         #todo need to add cleanup code to group to remove self from acls and verify
@@ -349,48 +423,37 @@ describe "ZZ API Groups" do
         acl.has_permission?(user3.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == true
         acl.has_permission?(user4.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == false
 
-        acl.add_group(group2.id, AlbumACL::ADMIN_ROLE)
-        acl.add_group(group3.id, AlbumACL::VIEWER_ROLE)
+        acl.add_groups(group2.id, AlbumACL::ADMIN_ROLE)
+        acl.add_groups(group3.id, AlbumACL::VIEWER_ROLE)
         acl.has_permission?(user1.id, AlbumACL::ADMIN_ROLE, true).should == true
         acl.has_permission?(user2.id, AlbumACL::VIEWER_ROLE, true).should == true
         acl.has_permission?(user3.id, AlbumACL::CONTRIBUTOR_ROLE, true).should == true
         acl.has_permission?(user4.id, AlbumACL::ADMIN_ROLE, true).should == true
 
         group_ids = acl.get_groups_with_role(AlbumACL::ADMIN_ROLE)
-        group_ids.length.should == 1
+        group_ids.length.should == 2  # 1 + album owner
         group_ids.include?(group2.id).should == true
 
         user_ids = acl.get_users_with_role(AlbumACL::ADMIN_ROLE)
-        user_ids.length.should == 2
+        user_ids.length.should == 3   # 2 + album owner
         user_ids.include?(user1.id).should == true
         user_ids.include?(user4.id).should == true
 
         group_ids = acl.get_groups_with_role(AlbumACL::VIEWER_ROLE)
-        group_ids.length.should == 3
+        group_ids.length.should == 4  # 3 + album owner
         group_ids.include?(group1.id).should == true
         group_ids.include?(group2.id).should == true
         group_ids.include?(group3.id).should == true
 
-        acl2.add_group(group2.id, AlbumACL::VIEWER_ROLE)
-        acl3.add_group(group2.id, AlbumACL::CONTRIBUTOR_ROLE)
-        acl3.add_group(group3.id, AlbumACL::ADMIN_ROLE)
+        acl2.add_groups(group2.id, AlbumACL::VIEWER_ROLE)
+        acl3.add_groups(group2.id, AlbumACL::CONTRIBUTOR_ROLE)
+        acl3.add_groups(group3.id, AlbumACL::ADMIN_ROLE)
         tuples = AlbumACL.get_acls_for_group(group1.id, AlbumACL::CONTRIBUTOR_ROLE, false)
         verify_tuples(tuples, [acl.acl_id])
         tuples = AlbumACL.get_acls_for_group(group2.id, AlbumACL::VIEWER_ROLE, true)
         verify_tuples(tuples, [acl2.acl_id])
         tuples = AlbumACL.get_all_acls_for_group(group2.id)
         verify_tuples(tuples, [acl.acl_id, acl2.acl_id, acl3.acl_id])
-
-        #todo notes
-        # need to modify groups class to invalidate caches when membership of a group changes
-        # have to decide if we simply notify all the users changed, or only the ones that
-        # were tied to one or more acls.  Probably easiest for now just to notify all changed when adding or
-        # removing members from a group or removing the whole group
-        # need to see about collecting all invalidations into a batch and then invalidating the cache
-        # in one or few calls rather than one per invalidation
-        #
-        # need to modify cache notification to take multiple notifies
-        #
       end
     end
 end

@@ -22,8 +22,8 @@ end
 
 # By using the symbol ':user', we get Factory Girl to simulate the User model.
 Factory.define :user do |this|
-  this.first_name          "Juan"
-  this.last_name           "Penas"
+  this.first_name          {"Juan_#{next_id}"}
+  this.last_name           {"Penas_#{next_id}"}
   this.username            {"user#{next_id}"}
   this.email                {"user#{next_id}@test.zangzing.com"}
   this.password            "password"

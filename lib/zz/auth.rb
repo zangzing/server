@@ -56,6 +56,12 @@ module ZZ
         @current_user = current_user_session && current_user_session.user
       end
 
+      # current_user will return false if no current user so
+      # to simplify cases where we want nil we do that here
+      def current_user_or_nil
+        current_user || nil
+      end
+
       def current_user=(user)
         @current_user = user
       end
@@ -293,7 +299,7 @@ module ZZ
 
       # Assumes @album is the album in question and current_user is the user we are evaluating
       def require_album_admin_role
-        unless  @album.admin?( current_user.id ) || current_user.support_hero?
+        unless  @album.admin?( current_user.id )
           msg = "Only Album admins can perform this operation"
           if zz_api_call?
             render_json_error(nil, msg, 401)
@@ -332,7 +338,7 @@ module ZZ
             end
             return false
           end
-          unless @album.viewer?( current_user.id ) || current_user.moderator?
+          unless @album.can_view_or_not_private?( current_user.id ) || current_user.moderator?
             if zz_api_call?
               render_json_error(nil, msg, 401)
             elsif request.xhr?
@@ -357,7 +363,7 @@ module ZZ
           if @album.everyone_can_contribute?
             return true
           else
-            if @album.contributor?( current_user.id ) || current_user.support_hero?
+            if @album.contributor?( current_user.id )
               return true
             else
               if zz_api_call?
@@ -419,7 +425,7 @@ module ZZ
       # @photo is the photo to be acted upon
       # current_user is the user we are evaluating
       def require_photo_owner_or_album_admin_role
-        unless  @photo.user.id == current_user.id || @photo.album.admin?( current_user.id ) || current_user.support_hero?
+        unless  @photo.user.id == current_user.id || @photo.album.admin?( current_user.id )
           msg = "Only Photo Owners or Album Admins can perform this operation"
           if zz_api_call?
             render_json_error(nil, msg, 401)
@@ -459,10 +465,26 @@ module ZZ
       end
 
       # To be run as a before_filter
-      # Will render a 401 page if the currently logged in user is not an admin
+      # Will render a 401 page if the currently logged in user is not a moderator
       def require_moderator
         unless current_user.moderator?
           msg = "Moderator privileges required for this operation"
+          if zz_api_call?
+            render_json_error(nil, msg, 401)
+          else
+            flash.now[:error] = msg
+            render_401
+          end
+          return false
+        end
+        return true
+      end
+
+      # To be run as a before_filter
+      # Will render a 401 page if the currently logged in user is not super moderator
+      def require_super_moderator
+        unless current_user.super_moderator?
+          msg = "Super Moderator privileges required for this operation"
           if zz_api_call?
             render_json_error(nil, msg, 401)
           else

@@ -45,16 +45,25 @@ describe "ZZ API Users" do
 
     it "should find and create users" do
       user1 = Factory.create(:user)
-      names = [user1.username, 'neverfindthisuser']
+      dont_find_user = 'neverfindthisuser'
+      names = [user1.username, dont_find_user]
       user2 = Factory.create(:user)
-      ids = [user2.id, 99999999999999]  # the bogus id should not cause failure
+      dont_find_id = 99999999999999
+      ids = [user2.id, dont_find_id]  # the bogus id should not cause failure but should end up in missing list
       last_name = "SomeUser_#{rand(99999)}"
       email_only = "joe_some_user99@usertest.com"
       emails = ["Joe #{last_name} <#{email_only}>"]
 
       j = zz_api_post zz_api_find_or_create_user_path, {:user_ids => ids, :emails => emails, :user_names => names}, 200
-      j.length.should == 3
-      members = j
+      members = j[:users]
+      members.length.should == 3
+      missing = j[:not_found]
+      missing_ids = missing[:user_ids]
+      missing_user_names = missing[:user_names]
+      missing_ids[0][:token].should == dont_find_id
+      missing_ids[0][:index].should == 1
+      missing_user_names[0][:token].should == dont_find_user
+      missing_user_names[0][:index].should == 1
 
       is_matching_user?(names[0], :username, members).should == true
       is_matching_user?(ids[0], :id, members).should == true
@@ -70,7 +79,8 @@ describe "ZZ API Users" do
 
       # Now call again but this time only using emails.  In this case they should all return the extra email field
       emails = [user1.email, user2.email, email_only]
-      members = zz_api_post zz_api_find_or_create_user_path, {:user_ids => ids, :emails => emails, :user_names => names}, 200
+      j = zz_api_post zz_api_find_or_create_user_path, {:user_ids => ids, :emails => emails, :user_names => names}, 200
+      members = j[:users]
       members.length.should == 3
 
       is_matching_user?(names[0], :username, members).should == true

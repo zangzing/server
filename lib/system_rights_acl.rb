@@ -7,6 +7,7 @@ end
 class SystemRightsACL < ACLBase
   ADMIN_ROLE = ACLRole.new('Admin', 100)
   SUPPORT_HERO_ROLE = ACLRole.new('Hero', 200)
+  SUPER_MODERATOR_ROLE = ACLRole.new('SuperModerator', 250)
   MODERATOR_ROLE = ACLRole.new('Moderator', 300)
   USER_ROLE = ACLRole.new('User', 400)
 
@@ -14,7 +15,7 @@ class SystemRightsACL < ACLBase
 
   def self.initialize
     if SystemRightsACL.initialized.nil?
-      SystemRightsACL.base_init 'System', make_roles
+      SystemRightsACL.base_init 'System', nil, make_roles
     end
   end
 
@@ -29,6 +30,7 @@ class SystemRightsACL < ACLBase
     roles = [
         ADMIN_ROLE,
         SUPPORT_HERO_ROLE,
+        SUPER_MODERATOR_ROLE,
         MODERATOR_ROLE,
         USER_ROLE
     ]
@@ -67,7 +69,7 @@ class SystemRightsACL < ACLBase
       puts "Role named #{role_name} does not exist."
       return
     end
-    acl.add_user(user.id, role)
+    acl.add_user(user, role)
   end
 
   # helper method that lets you pass a user name

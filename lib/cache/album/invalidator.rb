@@ -5,10 +5,9 @@ module Cache
     # and then modifies the database and any
     # dependent versions
     class Invalidator
-      attr_accessor :user_id, :cache_man, :tracker
+      attr_accessor :cache_man, :tracker
 
-      def initialize(cache_man, user_id)
-        self.user_id = user_id
+      def initialize(cache_man)
         self.cache_man = cache_man
 
         # this tracks the albums that need to be updated in the database for
@@ -45,7 +44,7 @@ module Cache
       # Invalidate the tracks and related versions
       # in the db.  Also deletes the tracks from
       # the database.
-      def invalidate
+      def invalidate_now
         return if tracker.length == 0
         # used for our intermediate results on delete
         tx_id = Manager.next_tx_id
@@ -56,17 +55,8 @@ module Cache
           # delete any related tracking rows
           cmd =   "INSERT INTO c_working_track_set(user_id, track_type, tx_id) "
           cmd <<  "(SELECT distinct t.user_id, t.track_type, #{tx_id} FROM c_tracks t INNER JOIN c_versions v ON v.user_id = t.user_id AND v.track_type = t.track_type WHERE "
-          first = true
-          tracker.each do |t|
-            tracked_id = t[0]
-            tracked_id_type = t[1]
-            track_type = t[2]
-            cmd << " OR " unless first
-            first = false
-            cmd << "(t.tracked_id = #{tracked_id} AND t.tracked_id_type = #{tracked_id_type} AND t.track_type = #{track_type})"
-          end
-          cmd << ")"
-          results = cache_man.execute(cmd)
+          rows = tracker.to_a
+          RawDB.fast_multi_execute(db, rows, ['t.tracked_id', 't.tracked_id_type', 't.track_type'], cmd, ')')
 
 
           # Delete the tracked items - they will be recreated the next time a user tries to
@@ -97,6 +87,10 @@ module Cache
         ensure
           tracker.clear
         end
+      end
+
+      def invalidate
+        invalidate_now
       end
 
       # Flush the cache for a specific user

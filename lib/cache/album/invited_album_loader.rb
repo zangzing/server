@@ -24,7 +24,7 @@ module Cache
             # can attach that local data to each album result
             album_ids = []
             album_roles = {}
-            tuples = OldAlbumACL.get_acls_for_user(user_id, OldAlbumACL::VIEWER_ROLE, false)
+            tuples = AlbumACL.get_acls_for_user(user_id, AlbumACL::VIEWER_ROLE, false)
             tuples.each do |tuple|
               album_id = tuple.acl_id.to_i
               album_ids << album_id

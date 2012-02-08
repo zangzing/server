@@ -457,6 +457,9 @@ Server::Application.routes.draw do
     get     '/identities' => 'identities#zz_api_identities'
     get     '/identities/:service_name' => 'identities#zz_api_identity'
 
+    # system status
+    get    '/system/status'                             => 'system#zz_api_status',                   :as => :zz_api_system_status
+
   end
 
 

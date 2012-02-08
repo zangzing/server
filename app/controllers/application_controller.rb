@@ -33,7 +33,17 @@ class ApplicationController < ActionController::Base
 
   after_filter :flash_to_headers
 
+  around_filter :deferred_wrapper
+
   layout  proc{ |c| c.request.xhr? ? false : 'main' }
+
+  # for each request that we dispatch, give the deferred manager a chance
+  # to run
+  def deferred_wrapper
+    # &Proc.new below effectively passes the block down
+    DeferredCompletionManager.dispatch(&Proc.new)
+  end
+
 
   # If its an AJAX request, move the flashes to a custom header for JS handling on the client
   # removes the flash from the session because it was a json cal so we do not want it there
@@ -301,6 +311,7 @@ class ApplicationController < ActionController::Base
       end
     rescue Exception => ex
       ex = filter.custom_error(ex) if filter
+      logger.info("zz_api call failed with: #{ex.message}")
       if ex.is_a?(ZZAPIError)
         # a custom error which can have a string, hash, or array
         render_json_error(ex, ex.result, ex.code)

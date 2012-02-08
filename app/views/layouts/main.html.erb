@@ -133,8 +133,8 @@
         zz.session.current_user_name     = '<%= escape_javascript current_user.username %>';
         zz.session.current_user_email    = '<%= escape_javascript current_user.email %>'
         zz.session.profile_photo_url     = '<%= escape_javascript current_user.profile_photo_url %>';
-        zz.session.has_facebook_token    = <%= !current_user.identity_for_facebook.credentials_valid?.nil? %>;
-        zz.session.has_twitter_token     = <%= !current_user.identity_for_twitter.credentials_valid?.nil? %>;
+        zz.session.has_facebook_token    = <%= current_user.identity_for_facebook.credentials_valid? %>;
+        zz.session.has_twitter_token     = <%= current_user.identity_for_twitter.credentials_valid? %>;
         <%  end -%>
         zz.session.cart_item_count       = <%= current_order ? current_order.cart_count : 0 %>
 

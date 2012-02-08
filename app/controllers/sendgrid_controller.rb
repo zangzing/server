@@ -99,7 +99,7 @@ class SendgridController < ApplicationController
         end
 
         if attachments.count > 0 && @album
-          user = @album.get_contributor_user_by_email( from.address )
+          user = @album.get_contributor_user_by_email(from.address, from.display_name)
           if user
             if !subject.match(/^RE:.*/i)
               add_photos(@album, user, attachments, subject)
@@ -253,9 +253,9 @@ class SendgridController < ApplicationController
       # Add contributors from cc: if this email created a new album (exception thrown above would prevent this)
       if params[:cc] && params[:cc].length > 0
         ccs = Mail::AddressList.new( params[:cc].to_slug.to_ascii.to_s  )
-        ccs.addresses.each do | contributor|
-          album.add_contributor( contributor.address )
-        end
+        users, user_id_to_email = User.convert_to_users(ccs.addresses, user)
+        group_ids = users.map(&:my_group_id)
+        album.add_contributors(group_ids)
       end
     rescue
       # If any exceptions are thrown while parsing contributors

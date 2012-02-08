@@ -67,20 +67,28 @@ class RawDB
     result
   end
 
+  # a fast multi part select, can operate with a multi part key
+  # but does it by building a set of AND clauses separated
+  # by OR rather than a multi column IN clause.  Multi column
+  # IN clauses do not optimize properly in mysql
+  # this call will break the call up over multiple executions
+  # if need be based on max packet size
+  # call with an array of column names and then a subsequent of
+  # array of arrays for each rows value
   #
   # takes the names and rows and builds an IN clause like condition but
   # does it in the for of (a AND b) OR (a1 AND b1) because mysql
   # does not optimize multi in clause statements of the form (f1, f2) in ((v1,v2),(v3,v4))
   #
-  # also splits the query of multiple sets if needed.  It is up to the caller
-  # to filter out any duplicates if needed
+  # It is up to the caller to filter out any duplicates if needed
   #
-  def self.multi_execute(db, base_cmd, names, rows)
+  def self.fast_multi_execute(db, rows, names, base_cmd, end_cmd = '')
     return [] if rows.empty?
     result = []
     # empirical testing has shown that we want to keep the max statement for the condition to a reasonable size
     # so 32k bytes seems to be a good happy medium
     max_stmt_size = [32768, global_max_size(db)].min
+
     cmd = base_cmd.dup
     cmd << '('
     cur_rows = 0
@@ -104,6 +112,7 @@ class RawDB
       if cmd.length > max_stmt_size
         # over the safe limit so execute this one now
         cmd << ')'
+        cmd << end_cmd
         rows = execute(db, cmd)
         append_rows(result, rows)
         cmd = base_cmd.dup
@@ -114,23 +123,12 @@ class RawDB
     # and do last batch if needed
     if cur_rows > 0
       cmd << ')'
+      cmd << end_cmd
       rows = execute(db, cmd)
       append_rows(result, rows)
     end
 
     result
-  end
-
-  # a fast multi part select, can operate with a multi part key
-  # but does it by building a set of AND clauses separated
-  # by OR rather than a multi column IN clause.  Multi column
-  # IN clauses do not optimize properly in mysql
-  # this call will break the delete up over multiple deletes
-  # if need be based on max packet size
-  # call with an array of column names and then a subsequent of
-  # array of arrays for each rows value
-  def self.fast_multi_execute(db, base_cmd, names, rows)
-    multi_execute(db, base_cmd, names, rows)
   end
 
 
@@ -142,9 +140,9 @@ class RawDB
   # if need be based on max packet size
   # call with an array of column names and then a subsequent of
   # array of arrays for each rows value
-  def self.fast_delete(db, table, names, rows)
+  def self.fast_delete(db, rows, names, table)
     base_cmd = "DELETE FROM #{table} WHERE "
-    multi_execute(db, base_cmd, names, rows)
+    fast_multi_execute(db, rows, names, base_cmd)
   end
 
 

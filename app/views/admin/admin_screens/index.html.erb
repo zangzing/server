@@ -17,48 +17,56 @@
       <div class="content">
         <table  width="500px" >
           <tr>
-            <td><%=number_with_delimiter(User.count()) %> Users</td>
-            <td><%=number_with_delimiter(@today_usercount)%> Today</td>
-            <td><%=number_with_delimiter(@this_week_usercount)%> This Week</td>
-            <td><%=number_with_delimiter(@this_month_usercount)%> This Month</td>
+            <td><%=number_with_delimiter(@stats[:users][:total]) %> Users</td>
+            <td><%=number_with_delimiter(@stats[:users][:today])%> Today</td>
+            <td><%=number_with_delimiter(@stats[:users][:this_week])%> This Week</td>
+            <td><%=number_with_delimiter(@stats[:users][:this_month])%> This Month</td>
           </tr>
           <tr>
             <td></td>
-            <td><%=number_with_delimiter(@yesterday_usercount)%> Yesterday</td>
-            <td><%=number_with_delimiter(@last_week_usercount)%> Last Week</td>
-            <td><%=number_with_delimiter(@last_month_usercount)%> Last Month</td>
+            <td><%=number_with_delimiter(@stats[:users][:yesterday])%> Yesterday</td>
+            <td><%=number_with_delimiter(@stats[:users][:last_week])%> Last Week</td>
+            <td><%=number_with_delimiter(@stats[:users][:last_month])%> Last Month</td>
           </tr>
           <tr><td><br></td></tr>
           <tr>
-            <td><%=number_with_delimiter(Invitation.count(:conditions => ["status <> 'pending'"])) %> By Invite</td>
-            <td><%=number_with_delimiter(@today_invited_usercount)%> Today</td>
-            <td><%=number_with_delimiter(@this_week_invited_usercount)%> This Week</td>
-            <td><%=number_with_delimiter(@this_month_invited_usercount)%> This Month</td>
+            <td><%=number_with_delimiter(@stats[:invited_users][:total]) %> By Invite</td>
+            <td><%=number_with_delimiter(@stats[:invited_users][:today])%> Today</td>
+            <td><%=number_with_delimiter(@stats[:invited_users][:this_week])%> This Week</td>
+            <td><%=number_with_delimiter(@stats[:invited_users][:this_month])%> This Month</td>
           </tr>
           <tr>
             <td></td>
-            <td><%=number_with_delimiter(@yesterday_invited_usercount)%> Yesterday</td>
-            <td><%=number_with_delimiter(@last_week_invited_usercount)%> Last Week</td>
-            <td><%=number_with_delimiter(@last_month_invited_usercount)%> Last Month</td>
+            <td><%=number_with_delimiter(@stats[:invited_users][:yesterday])%> Yesterday</td>
+            <td><%=number_with_delimiter(@stats[:invited_users][:last_week])%> Last Week</td>
+            <td><%=number_with_delimiter(@stats[:invited_users][:last_month])%> Last Month</td>
           </tr>
           <tr><td><br></td></tr>
 
           <tr>
-            <td><%=number_with_delimiter(Album.count())%> Albums</td>
-            <td><%=number_with_delimiter(@today_albumcount)%> Today</td>
+            <td><%=number_with_delimiter(@stats[:albums][:total]) %> Albums</td>
+            <td><%=number_with_delimiter(@stats[:albums][:today])%> Today</td>
+            <td><%=number_with_delimiter(@stats[:albums][:this_week])%> This Week</td>
+            <td><%=number_with_delimiter(@stats[:albums][:this_month])%> This Month</td>
           </tr>
           <tr>
             <td></td>
-            <td><%=number_with_delimiter(@this_week_albumcount)%> This Week</td>
+            <td><%=number_with_delimiter(@stats[:albums][:yesterday])%> Yesterday</td>
+            <td><%=number_with_delimiter(@stats[:albums][:last_week])%> Last Week</td>
+            <td><%=number_with_delimiter(@stats[:albums][:last_month])%> Last Month</td>
           </tr>
           <tr><td><br></td></tr>
           <tr>
-            <td><%=number_with_delimiter(Photo.count())%> Photos</td>
-            <td><%=number_with_delimiter(@today_photocount)%> Today</td>
+            <td><%=number_with_delimiter(@stats[:photos][:total]) %> Photos</td>
+            <td><%=number_with_delimiter(@stats[:photos][:today])%> Today</td>
+            <td><%=number_with_delimiter(@stats[:photos][:this_week])%> This Week</td>
+            <td><%=number_with_delimiter(@stats[:photos][:this_month])%> This Month</td>
           </tr>
           <tr>
             <td></td>
-            <td><%=number_with_delimiter(@this_week_photocount)%> This Week</td>
+            <td><%=number_with_delimiter(@stats[:photos][:yesterday])%> Yesterday</td>
+            <td><%=number_with_delimiter(@stats[:photos][:last_week])%> Last Week</td>
+            <td><%=number_with_delimiter(@stats[:photos][:last_month])%> Last Month</td>
           </tr>
         </table>
       </div>

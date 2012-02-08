@@ -59,7 +59,9 @@ class SharesController < ApplicationController
       # We are in an email, validate emails, if they ALL pass
       # create share otherwise return error info
       zza.track_event("#{share_event}.share.email")
-      emails,errors = Share.validate_email_list(  params[:recipients] )
+      emails, errors, addresses, group_ids = Group.filter_groups_and_emails(current_user.id, params[:recipients])
+      # ok, if we have things that aren't valid emails or group names
+      # report it to the user
       if errors.length > 0
         flash[:error] = "Please verify highlighted addresses"
         render :json => errors, :status => 200 and return
@@ -69,11 +71,14 @@ class SharesController < ApplicationController
       if @subject.is_a?(Album)
         album = @subject
         if album.admin?( current_user.id )
-          emails.each { |email| album.add_viewer( email )}
+          # create automatic users if needed
+          users, user_id_to_email = User.convert_to_users(addresses, current_user)
+          view_group_ids = group_ids + users.map(&:my_group_id)
+          album.add_viewers(view_group_ids)
         end
       end
 
-      @rcp = emails
+      @rcp = emails + group_ids
     end
 
     @share = Share.new( :user =>        current_user,

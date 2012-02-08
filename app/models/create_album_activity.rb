@@ -15,7 +15,7 @@ class CreateAlbumActivity < Activity
     return false unless subject
     return true if subject.public?
     return true if view == ALBUM_VIEW && subject.hidden?
-    return true if current_user && subject.viewer_in_group?( current_user.id )
+    return true if current_user && subject.viewer?( current_user.id )
     false
   end
 end

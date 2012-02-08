@@ -5,13 +5,13 @@
 # "automatic" users are created when a contributor adds photos by email but does not have
 # an account
 require 'mail'
+require 'zzapi_error'
 
 class User < ActiveRecord::Base
-  attr_writer      :name
-  attr_accessor    :old_password, :reset_password
+  attr_accessor    :old_password, :reset_password, :change_matters
   attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :password_confirmation,
                    :old_password, :automatic, :profile_photo_id, :subscriptions_attributes,
-                   :ship_address_id, :bill_address_id, :creditcard_id, :auto_by_contact
+                   :ship_address_id, :bill_address_id, :creditcard_id, :auto_by_contact, :created_by_user_id
 
   has_many :albums      # we have a manual dependency to delete albums on destroy since nested rails callbacks don't seem to be triggered
 
@@ -49,7 +49,7 @@ class User < ActiveRecord::Base
 
   has_many :identities,          :dependent => :destroy
   has_many :contacts,            :through => :identities, :class_name => "Contact"
-  has_many :groups,              :dependent => :destroy
+  has_many :groups
 
   has_many :shares
   has_many :activities,          :dependent => :destroy
@@ -84,14 +84,14 @@ class User < ActiveRecord::Base
 
   before_save    :split_name
   before_create  :set_dependents
-  after_commit   :update_acls_with_id, :on => :create
+  after_commit   :add_system_rights, :on => :create
   after_commit   :like_mr_zz, :on => :create
   after_commit   :subscribe_to_lists, :on => :create
 
-  after_create   :make_wrapped_group
+  after_save    :check_cache_manager_change
+  after_commit  :notify_cache_manager
 
-  before_save    :queue_update_acls_with_id, :if => :email_changed?
-  after_commit   :update_acls_with_id, :if => '@update_acls_with_id_queued'
+  after_create   :make_wrapped_group
 
   before_validation :username_to_downcase
   validates_presence_of   :name,      :unless => :automatic?
@@ -128,13 +128,55 @@ class User < ActiveRecord::Base
   # in bulk.
   #
   def destroy
-    albums = self.albums
-    if !albums.nil?
-      albums.each do |album|
-        album.destroy
+    DeferredCompletionManager.dispatch do
+      # unsubscribe all emails
+      (MailingList.user_cleanup(self) rescue nil) unless automatic?
+
+      # destroy in bulk any groups and group members related to this id and perform acl notifications
+      # for all of them, also removes all groups from the acls
+      User.remove_all_groups_for_user(id)
+
+      # destroy the albums
+      # someday we should do this in bulk
+      albums = self.albums
+      if !albums.nil?
+        albums.each do |album|
+          album.destroy
+        end
       end
+      super
     end
-    super
+  end
+
+  # given a user_id, remove all groups owned by that
+  # user for all resources and types, also bulk deletes
+  # the groups and notifies the cache manager for each user
+  # affected
+  def self.remove_all_groups_for_user(user_id)
+    # get group ids owned by this user
+    group_ids = Group.groups_for_user(user_id)
+
+    Group.delete_groups_and_acls(group_ids)
+  end
+
+  # check to see if the change matters - we do this
+  # before the commit because once it is committed we
+  # no longer know what changed
+  #
+  def check_cache_manager_change
+    self.change_matters = username_changed?
+    true
+  end
+
+  # We have been committed so call the album cache manager
+  # to let it invalidate caches if needed.  We do this separately from
+  # the change check because we must do this after the commit to
+  # make sure we are not in a transaction
+  def notify_cache_manager
+    if destroyed? == false && change_matters
+      Cache::Album::Manager.shared.user_invalidate_cache(id)
+    end
+    true
   end
 
   # cohort related calculations
@@ -177,21 +219,47 @@ class User < ActiveRecord::Base
     # set the cohort we belong to
     self.cohort = User.cohort_current
 
-    #build subscriptions
+    #build subscriptions, initially all are on so turn off news and marketing which are mail chimp lists
     self.subscriptions = Subscriptions.find_or_initialize_by_email( self.email )
+    self.subscriptions.unsubscribe(Email::NEWS) if automatic?
+    self.subscriptions.unsubscribe(Email::MARKETING) if automatic?
   end
 
+  # convert an automatic user to a full user
+  def convert_to_full_user(name, username, password)
+    return unless automatic?
+
+    # The user is an automatic user because she had contributed photos after being invited by email
+    # she has now decided to join, remove automatic flag and reset password.
+    if auto_by_contact?
+      self.cohort = User.cohort_current # if they are auto due to simply being created because someone referenced that email address then the real cohort is now
+      self.auto_by_contact = false       # a full user now
+    end
+    self.automatic = false
+    self.name      = name
+    self.username  = username
+    self.reset_password = true
+    self.password  = password
+    self.password_confirmation = password
+
+    # now add back mail chimp only since we keep all internal subscription types on initially
+    self.subscriptions.update_subscription(Email::MARKETING, Subscriptions::IMMEDIATELY)
+    self.subscriptions.update_subscription(Email::NEWS, Subscriptions::IMMEDIATELY)
+  end
 
   def subscribe_to_lists
-    MailingList.subscribe_new_user id
+    # don't subscribe to mail chimp lists when automatic user
+    MailingList.subscribe_new_user(id) unless automatic?
   end
 
-  def self.create_automatic(email, name = '', auto_by_contact = false)
-    name = ( name.blank? ? email.split('@')[0] : name )
+  def self.create_automatic(email, name = '', auto_by_contact = false, created_by_user = nil)
+    name = ( name.blank? ? '' : name )
+    created_by_user_id = created_by_user.nil? ? nil : created_by_user.id
     # create an automatic user with a random password
     user = User.new(  :automatic => true,
                          :email => email,
                          :name => name,
+                         :created_by_user_id => created_by_user_id,
                          :auto_by_contact => auto_by_contact,
                          :username => UUIDTools::UUID.random_create.to_s.gsub('-','').to_s,
                          :password => UUIDTools::UUID.random_create.to_s)
@@ -210,7 +278,7 @@ class User < ActiveRecord::Base
   def self.find_by_email_or_create_automatic( email, name='', auto_by_contact = false)
     user = User.find_by_email( email )
     if user
-      if user.automatic? && user.auto_by_contact && !auto_by_contact
+      if user.automatic? && user.auto_by_contact? && auto_by_contact == false
         # no longer an auto by contact user
         user.auto_by_contact = false
         user.cohort = User.cohort_current # we now have a cohort
@@ -264,24 +332,19 @@ class User < ActiveRecord::Base
   end
 
   def admin?
-    @is_admin ||= lambda {
-      acl = OldSystemRightsACL.singleton
-      acl.has_permission?(self.id, OldSystemRightsACL::ADMIN_ROLE)
-    }.call
+    @is_admin ||= SystemRightsACL.singleton.has_permission?(self.id, SystemRightsACL::ADMIN_ROLE)
   end
 
   def support_hero?
-      @is_support_hero ||= lambda {
-        acl = OldSystemRightsACL.singleton
-        acl.has_permission?(self.id, OldSystemRightsACL::SUPPORT_HERO_ROLE)
-      }.call
+    @is_support_hero ||= SystemRightsACL.singleton.has_permission?(self.id, SystemRightsACL::SUPPORT_HERO_ROLE)
   end
 
   def moderator?
-       @is_moderator ||= lambda {
-         acl = OldSystemRightsACL.singleton
-         acl.has_permission?(self.id, OldSystemRightsACL::MODERATOR_ROLE)
-       }.call
+    @is_moderator ||= SystemRightsACL.singleton.has_permission?(self.id, SystemRightsACL::MODERATOR_ROLE)
+  end
+
+  def super_moderator?
+    @is_super_moderator ||= SystemRightsACL.singleton.has_permission?(self.id, SystemRightsACL::SUPER_MODERATOR_ROLE)
   end
 
   def email=(email)
@@ -291,10 +354,30 @@ class User < ActiveRecord::Base
     end
   end
 
-  def name
-    @name ||= [first_name, last_name].compact.join(' ')
+  # override behavior of name to optionally not
+  # show the anonymous user name when blank for automatic users
+  def name(show_anonymous = true)
+    if show_anonymous && automatic? && first_name.blank? && last_name.blank?
+      'Anonymous'
+    else
+      @name ||= [first_name, last_name].compact.join(' ').strip
+    end
   end
 
+  def name=(val)
+    @name = val
+    split_name    # and update first, last
+  end
+
+  def first_name=(name)
+    super(name)
+    @name = nil   # invalidate full name
+  end
+
+  def last_name=(name)
+    super(name)
+    @name = nil   # invalidate full name
+  end
 
   #returns whichever has a value: first name, last name, username
   def short_name
@@ -333,7 +416,11 @@ class User < ActiveRecord::Base
 
   def self.find_by_email_or_username(login)
     # both are case insensitive
-    find_by_email(login) || find_by_username(login)
+    if login.index('@')
+      find_by_email(login)
+    else
+      find_by_username(login)
+    end
   end
 
   def profile_photo_id=(id)
@@ -363,6 +450,19 @@ class User < ActiveRecord::Base
       "#{self.name} <#{self.email}>"
   end
 
+  # used when someone wants to sort on name
+  # determines proper name to use based on type
+  def name_sort_value
+    real_name = name(false)   # no anonymous conversion
+    if automatic? && real_name.blank?
+      val = email
+    else
+      val = real_name
+    end
+    val
+  end
+
+
   # return the list of users as an array
   def self.as_array(members, user_id_to_email)
     result = []
@@ -377,15 +477,18 @@ class User < ActiveRecord::Base
   # if present will be used to supplement the email
   # address which is normally not returned
   def basic_user_info_hash(user_id_to_email = nil)
+    # fetch profile photo, if automatic won't have one so don't waste overhead trying to fetch
+    profile_photo = automatic? ? nil : profile_photo_url(false)   # do not want default url if nil, want nil in that case
     user_info = {
       :id => id,
       :my_group_id => my_group_id,
       :username => username,
-      :profile_photo_url => profile_photo_url(false),   # do not want default url if nil, want nil in that case
+      :profile_photo_url => profile_photo,
       :first_name => first_name,
       :last_name => last_name,
-      :automatic => automatic,
-      :auto_by_contact => auto_by_contact,
+      :automatic => automatic?,
+      :auto_by_contact => auto_by_contact?,
+      :created_by_user_id => created_by_user_id,
     }
     # see if email should be included in returned data
     add_email = automatic? ? email : nil
@@ -397,7 +500,7 @@ class User < ActiveRecord::Base
     user_info
   end
 
-  # Generate a friendly string randomically to be used as token.
+  # Generate a friendly string randomly to be used as token.
   def self.friendly_token
     ActiveSupport::SecureRandom.base64(15).tr('+/=', '-_ ').strip.delete("\n")
   end
@@ -411,101 +514,92 @@ class User < ActiveRecord::Base
   end
   
   # validates user ids
-  # takes an array of user ids, if any are invalid, returns an error
+  # takes an array of user ids, if any are invalid, they will be returned in error list
   #
-  def self.validate_user_ids(ids, error_not_found = true)
+  # returns array of user_ids, errors
+  # errors list is in the standard format defined by ZZAPIInvalidListError
+  #
+  def self.validate_user_ids(ids)
+    errors = []
     user_ids = []
     if ids && ids.length > 0
       users = User.select("id").where(:id => ids)
-      found_ids = Set.new(users.map(&:id))
-      ids.each do |id|
-        if found_ids.include?(id)
-          user_ids << id  # try to preserve the order
-        elsif error_not_found
-          raise ArgumentError.new("Invalid user_id specified: #{id}")
-        end
-      end
+      user_ids = users.map(&:id)
+      found_ids = Set.new(user_ids)
+      errors = ZZAPIInvalidListError.build_missing_list(ids, found_ids)
     end
-    user_ids
+    [user_ids, errors]
   end
 
   # validates user names
-  # takes an array of user names, if any are invalid, returns an error
+  # takes an array of user names, if any are invalid, they will be returned in error list
   #
-  # returns array of user_ids
+  # returns array of user_ids, errors
+  # errors list is in the standard format defined by ZZAPIInvalidListError
   #
-  def self.validate_user_names(names, error_not_found = true)
+  def self.validate_user_names(names)
+    errors = []
     user_ids = []
     if names && names.length > 0
       users = User.select("id, username").where(:username => names)
       found_names = {}
       users.each do |user|
-        found_names[user.username] = user.id
+        user_id = user.id
+        user_ids << user_id
+        found_names[user.username] = user_id
       end
-      names.each do |name|
-        found_id = found_names[name]
-        if found_id
-          user_ids << found_id  # try to preserve the order
-        elsif error_not_found
-          raise ArgumentError.new("Invalid username specified: #{name}")
-        end
-      end
+      errors = ZZAPIInvalidListError.build_missing_list(names, found_names)
     end
-    user_ids
+    [user_ids, errors]
   end
 
-  # validates emails, just checks to see if they are in a valid email
-  # format and returns them as address records
+  # For each member in the array, try to find an existing email to user id mapping.
+  # For those not found, create new automatic users.
   #
-  def self.validate_emails(emails)
-    addresses = []
-    if emails && emails.length > 0
-      emails.each do |email|
-        addresses << ZZ::EmailValidator.validate_email(email)
-      end
-    end
-    addresses
-  end
-
-  # for each member in the array, try to find an existing email to user id mapping
-  # for those not found, create new automatic users
-  #
-  # returns array of user_ids, and a hash of user_id => email, the mapping to email
+  # returns array of users, and a hash of user_id => email, the mapping to email
   # is used when we return the info about a user to the caller because if they pass
   # in the email we want to give it back to them so they can associate the returned
   # user with the email they passed
   #
-  # user_ids, user_id_to_email
-  def self.convert_to_users(addresses)
-    user_ids = []
+  # users, user_id_to_email
+  #
+  # NOTE: the users returned only contain id, email, my_group_id
+  def self.convert_to_users(addresses, created_by_user)
+    users = []
     user_id_to_email = nil
 
     if addresses.empty? == false
       user_id_to_email = {}
       # first find the ones that map to a user
       emails = addresses.map(&:address)
-      found_users = User.select("id,email").where(:email => emails)
+      found_users = User.select("id,email,my_group_id").where(:email => emails)
       # create a map from email to user_id
-      email_to_user_id = {}
-      found_users.each {|user| email_to_user_id[user.email] = user.id }
+      email_to_user = {}
+      found_users.each {|user| email_to_user[user.email] = user }
+      #todo, for missing users, check secondary email table here once we have it
 
       # ok, now walk the members to find out which ones need a new user created
       addresses.each do |address|
         email = address.address
-        user_id = email_to_user_id[email]
-        if user_id
-          user_ids << user_id
+        user = email_to_user[email]
+        if user
+          users << user
         else
           # not found, so make an automatic user
-          user = User.create_automatic(email, address.display_name, true)
-          user_id = user.id
-          user_ids << user_id
+          name = address.display_name
+          if name.blank?
+            # when blank, and they have a matching contact, use the name from it
+            contact = created_by_user.contacts.find_by_address(email)
+            name = contact.formatted_email if contact
+          end
+          user = User.create_automatic(email, name, true, created_by_user)
+          users << user
         end
-        user_id_to_email[user_id] = email
+        user_id_to_email[user.id] = email
       end
     end
 
-    return user_ids, user_id_to_email
+    return users, user_id_to_email
   end
 
 
@@ -581,32 +675,39 @@ class User < ActiveRecord::Base
     password_changed? || (crypted_password.blank? && !new_record?) || reset_password 
   end
 
-
+  # split name into first and last, if more than 2 parts
+  # the extra goes with first, last gets only the last one
+  # if nil or empty gives empty strings for first,last
   def split_name
-    unless name.nil?
-      names = name.split
-      if names.length > 1
-        self.last_name = names.pop
-        self.first_name = names.join(' ')
-      else
-        self.first_name = names.pop
-        self.last_name = ""
+    first = ''
+    last = ''
+    long_name = name(false) # name without anonymous
+    if
+      names = long_name.split
+      len = names.length
+      if len > 1
+        last = names.pop
+        first = names.join(' ')
+      elsif len == 1
+        first = names.pop
+        last = ''
       end
     end
+    self.first_name = first
+    self.last_name = last
   end
-  
+
   def username_to_downcase
     self.username.downcase!
   end
  
-  # if we trigger the update within a transaction, it will be rolled back so
-  # we set a variable and then we do the update after commit
-  def queue_update_acls_with_id
-    @update_acls_with_id_queued = true
-  end
-
-  # does a direct update of my_group_id
-  def direct_update_my_group_id(group_id)
+  # after creating, make the wrapped group for this user
+  # also updates the my_group_id field of this user directly because
+  # we don't want to trigger another save since we are in a callback now
+  def make_wrapped_group
+    group = Group.create_wrapped_user(self.id)
+    group_id = group.id
+    # direct write the my_group_id
     base_cmd = "INSERT INTO #{User.quoted_table_name}(id, my_group_id) VALUES "
     end_cmd = "ON DUPLICATE KEY UPDATE my_group_id = VALUES(my_group_id)"
     rows = [[self.id, group_id]]
@@ -614,54 +715,12 @@ class User < ActiveRecord::Base
     self.my_group_id = group_id
   end
 
-  # after creating, make the wrapped group for this user
-  # also updates the my_group_id field of this user directly
-  def make_wrapped_group
-    group = Group.create_wrapped_user(self.id)
-    # direct write the my_group_id
-    direct_update_my_group_id(group.id)
-  end
-
   # Replaces any occurrences of the new user's email
   # in acl keys with the users new id
   # (runs as an after_create callback)
-  def update_acls_with_id
-    OldACLManager.global_replace_user_key( self.email, self.id )
-    # set proper acl rights - new users default to regular user rights
-    OldSystemRightsACL.singleton.add_user(self.id, OldSystemRightsACL::USER_ROLE) unless self.moderator?
-
-    # Look for invitation activities that may need to be created and updated
-    #now that we have a user for an email
-    user_album_acls =  OldAlbumACL.get_all_acls_for_user( self.id )
-    user_album_acls.each do | acl |
-      album = Album.find_by_id( acl.acl_id )
-      if album
-        activities = InviteActivity.where( "subject_id = ? AND subject_type = 'Album' AND payload LIKE ?", album.id, '%'+self.email+'%' )
-        activities.each do |activity|
-          new_activity                    = activity.clone()
-          new_activity.user               = self
-          new_activity.subject            = self
-          new_activity.invited_user_id    = self.id
-          new_activity.invited_user_email = nil
-          new_activity.save
-
-          #update exisitng activity with user_id
-          activity.invited_user_id = self.id
-          activity.invited_user_email = nil
-          activity.save
-
-          #backdate new activity created_at date
-          new_activity.created_at = activity.created_at
-          new_activity.save
-        end
-      end
-    end
-
-    # if the method was queued because of an email change, clear the queue flag.
-     if @update_acls_with_id_queued
-        @update_acls_with_id_queued = false
-        Cache::Album::Manager.shared.user_albums_acl_modified(id)
-     end
+  def add_system_rights
+    # new user, so set system rights to default
+    SystemRightsACL.singleton.add_user(self, SystemRightsACL::USER_ROLE)
   end
 
 

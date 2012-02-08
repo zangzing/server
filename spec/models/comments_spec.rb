@@ -144,8 +144,9 @@ describe "Comments Model" do
         user_from_email = "user1@test.zangzing.com"
 
         # add users to group
-        photo.album.add_contributor(user_in_group.email)
-        photo.album.add_viewer(user_from_email)
+        photo.album.add_contributors(user_in_group.my_group_id)
+        viewer_user = User.create_automatic(user_from_email, '', true, photo_owner)
+        photo.album.add_viewers(viewer_user.my_group_id)
 
         # add comment to photo. make commenter the photo owner so we don't get extra emails.
         comment = Factory.create(:comment, :commentable => commentable, :user => photo_owner)
@@ -160,7 +161,7 @@ describe "Comments Model" do
           messages.index { |message| message.to == [user_in_group.email] }
         end
 
-        # expect email to user without an account
+        # expect no email to user without an account since auto users have social emails turned off
         ActionMailer::Base.deliveries.should satisfy do |messages|
           messages.index { |message| message.to == [user_from_email] }
         end

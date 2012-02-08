@@ -38,10 +38,10 @@ class Identity < ActiveRecord::Base
     return @new_id
   end
 
+  # return as a boolean
   def credentials_valid?
-
     # we may want to validate with a call to the specific service
-    self.identity_source.to_sym == :local || self.credentials
+    (self.identity_source.to_sym == :local) || !!self.credentials   # the !! turns nil into false
   end
 
   UI_INFO = {

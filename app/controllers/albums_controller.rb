@@ -296,7 +296,7 @@ class AlbumsController < ApplicationController
   #   :has_twitter_token => true if twitter token set up
   #   },
   #   :album => standard album info see hash album,
-  #   :group => [
+  #   :group => [   # this should be replaced with members style, Do Not Use for iPhone, use :members
   #   {
   #     :id => group id,
   #     :user_id => id of the group owner
@@ -306,6 +306,11 @@ class AlbumsController < ApplicationController
   #   }
   #   ...
   #   ],
+  #   :members => [
+  #     hash of group info with permission attribute added (contributor/viewer)
+  #     see groups zz_api_info for detailed contents
+  #   ...
+  #   ]
   #   :share => {
   #        :facebook => {
   #           :message => default message
@@ -324,11 +329,12 @@ class AlbumsController < ApplicationController
     zz_api do
       hash = {
           :user => {
-            :has_facebook_token => !current_user.identity_for_facebook.credentials_valid?.nil?,
-            :has_twitter_token => !current_user.identity_for_twitter.credentials_valid?.nil?
+            :has_facebook_token => current_user.identity_for_facebook.credentials_valid?,
+            :has_twitter_token => current_user.identity_for_twitter.credentials_valid?
           },
           :album => @album.as_hash,
-          :group => get_group_members,
+          :group => get_flat_sharing_members,   #TODO change web client to use group form and get rid of this
+          :members => get_sharing_members,      # this is the new form, get rid of above when web ui supports this
           :share => {
                  :facebook => {
                     :message => "",
@@ -347,71 +353,241 @@ class AlbumsController < ApplicationController
 
   # change a group member from contributor to viewer
   # or vice-versa
+  #
+  # This is called as (POST):
+  #
+  # /zz_api/albums/:album_id/update_sharing_member
+  #
+  # You must have an album admin role as determined by the current logged in users rights.
+  #
+  # Returns current sharing members
+  #
+  # Input:
+  #
+  # {
+  #   :member => {
+  #     :id => group id to modify
+  #     :permission => the role for this set of users contributor/viewer
+  #   }
+  # }
+  #
+  # Output:
+  # See zz_api_sharing_members
+  #
   def zz_api_update_sharing_member
     return unless require_user && require_album && require_album_admin_role
     zz_api do
-      user_id = params[:member][:id]
+      member = params[:member]
+      group_id = member[:id].to_i
 
-      if params[:member][:permission] == 'contributor'
-        role = OldAlbumACL::CONTRIBUTOR_ROLE
+      if member[:permission] == 'contributor'
+        @album.add_contributors(group_id)
       else
-        role = OldAlbumACL::VIEWER_ROLE
+        @album.add_viewers(group_id)
       end
 
-      @album.acl.add_user(user_id, role)
-      nil
+      get_sharing_members
     end
   end
 
-  # remove member from group
+  # remove a member from the acl
+  #
+  # This is called as (POST):
+  #
+  # /zz_api/albums/:album_id/delete_sharing_member
+  #
+  # You must have an album admin role as determined by the current logged in users rights.
+  #
+  # Returns current sharing members
+  #
+  # Input:
+  #
+  # {
+  #   :member => {
+  #     :id => group id to delete
+  #   }
+  # }
+  #
+  # Output:
+  # See zz_api_sharing_members
+  #
   def zz_api_delete_sharing_member
     return unless require_user && require_album && require_album_admin_role
     zz_api do
-      user_id = params[:member][:id]
-      @album.acl.remove_user(user_id)
-      nil
+      group_id = params[:member][:id].to_i
+      @album.remove_from_acl(group_id)
+
+      get_sharing_members
     end
   end
 
 
+  # Add members to the share
+  #
+  # This is called as (POST):
+  #
+  # /zz_api/albums/:album_id/add_sharing_members
+  #
+  # You must have an album admin role as determined by the current logged in users rights.
+  #
+  # Returns the sharing members as in sharing members.
+  #
+  # Input:
+  #
+  # {
+  #   :emails => [...] an array of emails to add
+  #   :group_ids => [...] optional array of group ids to add (must belong to this user or be wrapped users)
+  #   :message => the message to send (set to nil if you don't want a message)
+  #   :permission => the role for this set of users contributor/viewer
+  # }
+  #
+  # Output will differ based on if you are passing in group_ids or not.  If you set
+  # the group_id attribute even if it is an empty array we use the groups info model
+  # to return the results.
+  #
+  # If groups_id is missing, we assume backwards compatability
+  # mode and return results the form:
+  # [
+  # {
+  #      :id => group_id,
+  #      :name => name,
+  #      :permission => permission,
+  #      :profile_photo_url => profile_photo
+  #  }
+  #  ...
+  #  ]
+  #
+  # if group_ids is set indicating new api style we return the form as in zz_api_sharing_members api call
+  # as:
+  # [
+  #   {
+  #     groups api info attributes for each group as in zz_api_info method of groups controller
+  #     :permission => 'contributor' or 'viewer'    # this attribute is added in to each group
+  #   }
+  # ...
+  # ]
+  #
+  #
+  # On Error:
+  # If we have a list validation error with either the emails or group_ids we collect the items that were
+  # in error into a list for each type and raise an exception. The exception will be returned to the client
+  # as json in the standard error format.  The code will be INVALID_LIST_ARGS (1001) and the
+  # result part of the error will contain:
+  #
+  # {
+  #   :emails => [
+  #     {
+  #       :index => the index in the corresponding input list location,
+  #       :token => the invalid email,
+  #       :error => an error string
+  #     }
+  #     ...
+  #   ],
+  #   :group_ids => [
+  #     {
+  #       :index => the index in the corresponding input list location,
+  #       :token => the missing group_id,
+  #       :error => an error string, may be blank
+  #     }
+  #     ...
+  #   ]
+  # }
+  #
   def zz_api_add_sharing_members
     return unless require_user && require_album && require_album_admin_role
 
     zz_api do
-      emails,errors = Share.validate_email_list(  params[:emails] )
-      if errors.length > 0
-        #todo: just ignore errors. might want to fix this alter
+      emails, email_errors, addresses = ZZ::EmailValidator.validate_email_list(params[:emails])
+
+      # grab any group ids and get the allowed ones
+      group_ids = params[:group_ids]
+      if group_ids
+        found_group_ids = Group.allowed_group_ids(current_user.id, group_ids)
+        missing_group_ids = ZZAPIInvalidListError.build_missing_list(group_ids, Set.new(found_group_ids))
+        group_ids = found_group_ids
+
+        # we only generate the error if using version of api where the groups attr was set, can be empty
+        # todo web ui should also operate with this list at some point
+        unless missing_group_ids.empty? && email_errors.empty?
+          # got at least one error, so raise the exception
+          raise ZZAPIInvalidListError.new({:group_ids => missing_group_ids, :emails => email_errors})
+        end
+      else
+        group_ids = []
       end
 
+      # convert emails to user_ids, creating automatic users if need be
+      users, user_id_to_email = User.convert_to_users(addresses, current_user)
+
+      # now append all of the users groups to the group_ids
+      group_ids += users.map(&:my_group_id)
+
+      # determine who needs to get emails - only those users
+      # that did not already have this role or higher should
+      # get the emails
       if params[:permission] == 'contributor'
         type = Share::TYPE_CONTRIBUTOR_INVITE
+        # grant the new role and return a list of only the affected users
+        affected_user_ids = @album.add_contributors(group_ids, true)
       else
         type = Share::TYPE_VIEWER_INVITE
+        affected_user_ids = @album.add_viewers(group_ids, true)
       end
 
-      Share.create!(    :user =>         current_user,
-                        :subject =>     @album,
-                        :subject_url => album_pretty_url(@album),
-                        :service =>     Share::SERVICE_EMAIL,
-                        :recipients =>  emails,
-                        :share_type =>  type,
-                        :message    =>  params[:message])
+      # determine the set of emails to send if any
+      if affected_user_ids.empty? == false
+        users = User.select('id, email').where(:id => affected_user_ids).all
+        emails = users.map(&:email)
 
-      if type == Share::TYPE_CONTRIBUTOR_INVITE
-         emails.each { |email| @album.add_contributor( email )}
+        message = params[:message]
+        if message
+          # send a share message
+          Share.create!(    :user =>         current_user,
+                            :subject =>     @album,
+                            :subject_url => album_pretty_url(@album),
+                            :service =>     Share::SERVICE_EMAIL,
+                            :recipients =>  emails,
+                            :share_type =>  type,
+                            :message    =>  message)
+
+          zza.track_event('album.share.email')
+        end
+      end
+
+      if params[:group_ids].nil?
+        #todo old form, the web ui should be changed to use new
+        #model so we can get rid of this
+        members = get_flat_sharing_members
       else
-         emails.each { |email| @album.add_viewer( email )}
+        members = get_sharing_members
       end
 
-      zza.track_event('album.share.email')
-      get_group_members
+      members
     end
   end
 
-  def sharing_members
+  # return the sharing members for the given album
+  #
+  # This is called as (GET):
+  #
+  # /zz_api/albums/:album_id/sharing_members
+  #
+  # You must have an album admin role as determined by the current logged in users rights.
+  #
+  # Returns the sharing info in the following form:
+  #
+  # [
+  #   {
+  #     groups api info attributes for each group as in zz_api_info method of groups controller
+  #     :permission => 'contributor' or 'viewer'    # this attribute is added in to each group
+  #   }
+  # ...
+  # ]
+  #
+  def zz_api_sharing_members
     return unless require_user && require_album && require_album_admin_role
     zz_api do
-      get_group_members
+      get_sharing_members
     end
   end
 
@@ -921,42 +1097,82 @@ class AlbumsController < ApplicationController
     @session_loader = session_loader
   end
 
-  def get_group_members
-    group = []
-
-    # collect contributors
-    #
-    @album.contributors( true ).each do |id|
-      user = User.find_by_id( id )
-      if user
-        group << { :id => id, :name => user.formatted_email, :permission => "contributor", :profile_photo_url => user.profile_photo_url }
-      else
-        contact = current_user.contacts.find_by_address( id )
-        if contact
-          group << { :id => id, :name => contact.formatted_email, :permission => "contributor" }
-        else
-          group << { :id => id, :name => id, :permission => "contributor" }
-        end
-      end
+  # return the hash for a single member
+  # probably will want to unify this with
+  # how we return group members but for compatibility with the web ui
+  # we keep it in the current form
+  #todo Once Jeremy begins work on changing this, lets switch to the new api
+  def get_sharing_member(user, permission)
+    if user.automatic?
+      name = user.email
+      profile_photo = nil
+    else
+      name = user.formatted_email
+      profile_photo = user.profile_photo_url(false)
     end
 
-    # collect viewers
-    #
-    @album.viewers( true ).each do |id|
-      user = User.find_by_id( id )
-      if user
-        group << { :id => id, :name => user.formatted_email, :permission => "viewer", :profile_photo_url => user.profile_photo_url }
-      else
-        contact = current_user.contacts.find_by_address( id )
-        if contact
-          group << { :id => id, :name => contact.formatted_email, :permission => "viewer" }
-        else
-          group << { :id => id, :name => id , :permission => "viewer"}
-        end
-      end
-    end
-
-    return group
+    hash = {
+        :id => user.my_group_id,
+        :name => name,
+        :permission => permission,
+        :profile_photo_url => profile_photo
+    }
   end
 
+  # For the web ui until we update it we return
+  # the flattened list of sharing members as all users
+  def get_flat_sharing_members
+    roles = @album.acl.get_users_and_roles
+    contributors = roles[AlbumACL::CONTRIBUTOR_ROLE]
+    viewers = roles[AlbumACL::VIEWER_ROLE]
+
+    # do efficient single query to fetch all groups at once
+    # and create a user_id => user hash for lookup
+    all_ids = Array(contributors + viewers)
+    users = User.where(:id => all_ids).includes(:profile_album).all
+    users = users.sort do |a,b|
+      a_name = a.name_sort_value
+      b_name = b.name_sort_value
+      a_name.casecmp(b_name)
+    end
+
+    # now build the final output form with permissions added in
+    members = []
+    contributors = Set.new(contributors)  # as a set for efficient checks
+    users.each do |user|
+      permission = contributors.include?(user.id) ? 'contributor' : 'viewer'
+      members << get_sharing_member(user, permission)
+    end
+
+    members
+  end
+
+  # this form of sharing members returns all groups in the same form
+  # as the groups controller zz_api method but also appends a :permission
+  # attribute to each of the group hashes.  The permission will
+  # be contributor or viewer
+  #
+  def get_sharing_members
+    # fetch them all in a single query
+    roles = @album.acl.get_groups_and_roles
+    contributors = roles[AlbumACL::CONTRIBUTOR_ROLE]
+    viewers = roles[AlbumACL::VIEWER_ROLE]
+
+    # do efficient single query to fetch all groups at once
+    # and create a user_id => user hash for lookup
+    all_group_ids = Array(contributors + viewers)
+    groups = Group.where(:id => all_group_ids).includes(:user => :profile_album).all
+    # now sort them
+    groups = Group.sort(groups)
+
+    # now build the final output form with permissions added in
+    members = []
+    contributors = Set.new(contributors)  # as a set for efficient checks
+    groups.each do |group|
+      permission = contributors.include?(group.id) ? 'contributor' : 'viewer'
+      members << group.as_hash({:permission => permission})
+    end
+
+    members
+  end
 end

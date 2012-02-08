@@ -15,6 +15,17 @@ class ACLTupleBase
   attr_accessor :acl_id, :role
 end
 
+# this class instance is notified when changes happen
+# to an underlying group membership
+# the base class has the behavior of doing nothin
+# currently this is not hooked up to anything see the groups_controller
+# zz_api_add_members method for more info
+class ACLGroupHandler
+  def added_members(group_id, resource_id, user_ids)
+  end
+end
+
+
 # this is the base ACL management class - it provides the low level
 # interfaces to the db to perform ACL operations.  You should inherit
 # this to create a specific type of ACL.  For instance you might have
@@ -49,18 +60,21 @@ class ACLBase
   class_inheritable_accessor :initialized, :roles, :type, :role_value_first, :role_value_last, :priority_to_role
   attr_accessor :acl_id, :redis
 
-  def self.base_init type, roles
+  # initialize the class, type is the type of acl such as Album
+  # group_handler is an instance of a class that will be notified on changes to groups via the ACLManager
+  def self.base_init type, group_handler, roles
     self.type = type
     self.roles = roles
-    self.role_value_first = self.roles.first.priority
-    self.role_value_last = self.roles.last.priority
+    self.role_value_first = self.roles.first.priority   # highest priority
+    self.role_value_last = self.roles.last.priority     # lowest priority
     # make a map of priority to role for quick lookup
     # later
     self.priority_to_role = Hash.new()
     roles.each do |role|
       self.priority_to_role[role.priority] = role
     end
-    ACLManager.register_type type
+    group_handler ||= ACLGroupHandler.new   # default if not passed in
+    ACLManager.register_type type, group_handler
     self.initialized = true
   end
 
@@ -100,8 +114,16 @@ class ACLBase
     return nil
   end
 
+  # builds a hash containing keys of role to empty arrays
+  def self.hash_of_arrays_for_roles
+    hash = {}
+    roles.each do |role|
+      hash[role] = []
+    end
+    hash
+  end
 
-  # Add a group to an acl or modify an existing groups role.
+  # Add a set of groups to an acl or modify an existing groups role.
   #
   # You also must specify a role which indicates the level
   # of access that this user has against this objects acl
@@ -115,33 +137,48 @@ class ACLBase
   # that wraps that user and only contains that user
   # in its members.
   #
-  def add_group(group_id, role)
-    raise ArgumentError.new("group_id must be an Integer") unless group_id.is_a?(Integer)
+  # Returns an array of the affected user ids
+  #
+  def add_groups(group_ids, role)
+    group_ids = Array(group_ids)
     priority = role.priority
-    rows = [[acl_id, type, group_id, priority]]
+    rows = build_group_rows(group_ids, priority)
     affected_user_ids = ACL.update_groups(rows)
     notify_user_acl_modified(affected_user_ids)
+    affected_user_ids
   end
 
   # helper that adds a user by fetching it's wrapped group
   def add_user(user, role)
     raise ArgumentError.new("user must be a User") unless user.is_a?(User)
-    add_group(user.my_group_id, role)
+    add_groups(user.my_group_id, role)
   end
 
   # Remove the group from the acl
   #
-  def remove_group(group_id)
-    raise ArgumentError.new("group_id must be an Integer") unless group_id.is_a?(Integer)
-    rows = [[acl_id, type, group_id]]
+  #
+  # Returns an array of the affected user ids
+  #
+  def remove_groups(group_ids)
+    group_ids = Array(group_ids)
+    rows = build_group_rows(group_ids)
     affected_user_ids = ACL.remove_groups(rows)
     notify_user_acl_modified(affected_user_ids)
+    affected_user_ids
+  end
+
+  def build_group_rows(group_ids, priority = nil)
+    rows = []
+    group_ids.each do |group_id|
+      rows << [acl_id, type, group_id, priority]
+    end
+    rows
   end
 
   # helper that removes a user by fetching it's wrapped group
   def remove_user(user)
     raise ArgumentError.new("user must be a User") unless user.is_a?(User)
-    remove_group(user.my_group_id)
+    remove_groups(user.my_group_id)
   end
 
   # Remove an acl - removes all users from the
@@ -208,10 +245,28 @@ class ACLBase
   # specific role
   #
   def get_users_with_role(role, exact = false)
-    # get the priority range
-    last = role.priority
-    first = exact ? last : self.role_value_first
-    user_ids = ACL.users_with_role(acl_id, type, first, last)
+    rows = users_and_roles(role, exact)
+    user_ids = rows.map {|r| r[0]}
+  end
+
+  # returns a hash having a key for each role that contains the list
+  # of users for that role
+  #
+  # as in has_permission? the matching is done based on priority
+  # so a user that is an admin would match that of viewer but
+  # not the other way around.
+  #
+  # if the exact flag is set then we only return matches for that
+  # specific role
+  #
+  # {
+  #   role1 => [user_id,...]   where role is a role such as AlbumACL::ADMIN_ROLE
+  #   role2 => [user_id,...]   where role is a role such as AlbumACL::ADMIN_ROLE
+  #   ...
+  # }
+  def get_users_and_roles
+    rows = users_and_roles(self.class.roles.last, false)
+    return make_roles_to_ids(rows)
   end
 
   # returns a list of group_ids that match a specific role
@@ -224,12 +279,22 @@ class ACLBase
   # specific role
   #
   def get_groups_with_role(role, exact = false)
-    # get the priority range
-    last = role.priority
-    first = exact ? last : self.role_value_first
-    group_ids = ACL.groups_with_role(acl_id, type, first, last)
+    rows = groups_and_roles(role, exact)
+    group_ids = rows.map {|r| r[0]}
   end
 
+  # returns a hash having a key for each role that contains the list
+  # of groups for that role
+  #
+  # {
+  #   role1 => [group_id,...]   where role is a role such as AlbumACL::ADMIN_ROLE
+  #   role2 => [group_id,...]   where role is a role such as AlbumACL::ADMIN_ROLE
+  #   ...
+  # }
+  def get_groups_and_roles
+    rows = groups_and_roles(self.class.roles.last, false)
+    return make_roles_to_ids(rows)
+  end
 
   # the following section of methods are related to this ACL type but are class methods
   # because they are not for a particular acl but a group of them
@@ -251,12 +316,7 @@ class ACLBase
 
     rows = ACL.acls_for_user(user_id, type, first, last)
 
-    tuples = []
-    rows.each do |row|
-      tuples << build_tuple(row[0], row[1])
-    end
-
-    return tuples
+    return build_tuples(rows)
   end
 
   # Find all the acls for a given group with rights at least as high as
@@ -275,12 +335,7 @@ class ACLBase
 
     rows = ACL.acls_for_group(group_id, type, first, last)
 
-    tuples = []
-    rows.each do |row|
-      tuples << build_tuple(row[0], row[1])
-    end
-
-    return tuples
+    return build_tuples(rows)
   end
 
   # convenience method to fetch all the acls for a given user
@@ -291,6 +346,49 @@ class ACLBase
   # convenience method to fetch all the acls for a given group
   def self.get_all_acls_for_group(group_id)
     return get_acls_for_group(group_id, roles.last, false)
+  end
+
+private
+
+  # build up tuples for rows of the form
+  # [[resource_id, role],...]
+  def self.build_tuples(rows)
+    tuples = []
+    rows.each do |row|
+      tuples << build_tuple(row[0], row[1])
+    end
+    tuples
+  end
+
+  # fetch the users and roles array
+  # [[user_id, role]...]
+  def users_and_roles(role, exact)
+    # get the priority range
+    last = role.priority
+    first = exact ? last : self.role_value_first
+    rows = ACL.users_with_role(acl_id, type, first, last)
+  end
+
+  # get groups and roles
+  # [[group_id, role], ...]
+  def groups_and_roles(role, exact)
+    # get the priority range
+    last = role.priority
+    first = exact ? last : self.role_value_first
+    rows = ACL.groups_with_role(acl_id, type, first, last)
+  end
+
+  # takes rows and turns them into role to id has
+  # rows in form
+  # [[id, role]...]
+  def make_roles_to_ids(rows)
+    roles = self.class.hash_of_arrays_for_roles
+    rows.each do |row|
+      role = self.class.get_role(row[1])
+      ids = roles[role]
+      ids << row[0]   # append the id
+    end
+    roles
   end
 
 end
