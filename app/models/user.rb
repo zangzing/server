@@ -208,10 +208,12 @@ class User < ActiveRecord::Base
 
 
   def set_dependents
-    # build a profile album
-    p = ProfileAlbum.new()
-    p.make_private
-    self.profile_album = p
+    # build a profile album only when not auto_by_contact?
+    if auto_by_contact? == false
+      p = ProfileAlbum.new()
+      p.make_private
+      self.profile_album = p
+    end
 
     # build user preferences
     self.build_preferences
@@ -241,6 +243,9 @@ class User < ActiveRecord::Base
     self.reset_password = true
     self.password  = password
     self.password_confirmation = password
+
+    # add in the profile album now
+    create_profile_album if profile_album.nil?
 
     # now add back mail chimp only since we keep all internal subscription types on initially
     self.subscriptions.update_subscription(Email::MARKETING, Subscriptions::IMMEDIATELY)

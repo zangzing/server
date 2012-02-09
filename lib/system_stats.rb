@@ -20,13 +20,13 @@ class SystemStats
             :last_month => Photo.count(:conditions => ["created_at >= ? AND created_at < ?", Time.now.at_beginning_of_month - 1.month, Time.now.at_beginning_of_month])
         },
         :albums => {
-            :total => Album.count,
-            :today => Album.count(:conditions => ["created_at >= ?", Time.now.at_beginning_of_day]),
-            :yesterday => Album.count(:conditions => ["created_at >= ? AND created_at < ?", Time.now.at_beginning_of_day - 1.day, Time.now.at_beginning_of_day]),
-            :this_week => Album.count(:conditions => ["created_at >= ?", Time.now.at_beginning_of_week]),
-            :last_week => Album.count(:conditions => ["created_at >= ? AND created_at < ?", Time.now.at_beginning_of_week - 1.week, Time.now.at_beginning_of_week]),
-            :this_month => Album.count(:conditions => ["created_at >= ?", Time.now.at_beginning_of_month]),
-            :last_month => Album.count(:conditions => ["created_at >= ? AND created_at < ?", Time.now.at_beginning_of_month - 1.month, Time.now.at_beginning_of_month])
+            :total => Album.count(:conditions => ["type <> 'ProfileAlbum'"]),
+            :today => Album.count(:conditions => ["type <> 'ProfileAlbum' AND created_at >= ?", Time.now.at_beginning_of_day]),
+            :yesterday => Album.count(:conditions => ["type <> 'ProfileAlbum' AND created_at >= ? AND created_at < ?", Time.now.at_beginning_of_day - 1.day, Time.now.at_beginning_of_day]),
+            :this_week => Album.count(:conditions => ["type <> 'ProfileAlbum' AND created_at >= ?", Time.now.at_beginning_of_week]),
+            :last_week => Album.count(:conditions => ["type <> 'ProfileAlbum' AND created_at >= ? AND created_at < ?", Time.now.at_beginning_of_week - 1.week, Time.now.at_beginning_of_week]),
+            :this_month => Album.count(:conditions => ["type <> 'ProfileAlbum' AND created_at >= ?", Time.now.at_beginning_of_month]),
+            :last_month => Album.count(:conditions => ["type <> 'ProfileAlbum' AND created_at >= ? AND created_at < ?", Time.now.at_beginning_of_month - 1.month, Time.now.at_beginning_of_month])
         },
         :users => {
             :total => User.count(:conditions => ["auto_by_contact = false"]),

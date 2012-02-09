@@ -392,7 +392,8 @@ private
     members = group.group_members.includes(:user => :profile_album).all
     albums = []
     members.each do |member|
-      albums << member.user.profile_album
+      profile_album = member.user.profile_album
+      albums << profile_album if profile_album
     end
     Album.fetch_bulk_covers(albums)
     # ok, we are pre-flighted with everything we need loaded now

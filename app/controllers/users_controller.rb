@@ -369,7 +369,8 @@ class UsersController < ApplicationController
     users = User.where(:id => user_ids).includes(:profile_album).all
     albums = []
     users.each do |user|
-      albums << user.profile_album
+      profile_album = user.profile_album
+      albums << profile_album if profile_album
     end
     Album.fetch_bulk_covers(albums)
     # ok, we are pre-flighted with everything we need loaded now

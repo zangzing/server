@@ -108,7 +108,10 @@ class MailingList < ActiveRecord::Base
   # don't want to wait for resque job because we will be gone by then and this
   # obviously happens only rarely in the system
   def self.user_cleanup(user)
-    unsubscribe_user([Email::NEWS, Email::MARKETING, Email::ONCE], user.id, true)
+    # make sure that resque worker is not filtered for this call
+    if MailingListSync.loopback_on? == false || MailingListSync.should_loopback?
+      unsubscribe_user([Email::NEWS, Email::MARKETING, Email::ONCE], user.id, true)
+    end
   end
 
   def self.update_user old_email, user_id
