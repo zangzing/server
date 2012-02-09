@@ -99,8 +99,8 @@ zz.store.checkout = {};
                 }
             },
             submitHandler: function(form){
-                ZZAt.track('buy.checkout.shipping.submit');
                 form.submit();
+                ZZAt.track('buy.checkout.shipping.submit');
             },
             errorElement: "div",
             errorClass: "errormsg",
@@ -212,9 +212,10 @@ zz.store.checkout = {};
 
                 zz.dialog.show_spinner_progress_dialog("Verifying payment information...");
                 // need to defer the submit otherwise progress dialog spinner doesn't load
-                ZZAt.track('buy.checkout.payment.submit');
+                
                 _.defer(function(){
                     form.submit();
+                    ZZAt.track('buy.checkout.payment.submit');
                 });
             },
             errorElement: "div",
@@ -268,8 +269,8 @@ zz.store.checkout = {};
                 'user[password]': '6 characters or more, please'
             },
             submitHandler: function(form){
-                ZZAt.track('buy.checkout.thankyou.join.submit');
                 form.submit();
+                ZZAt.track('buy.checkout.thankyou.join.submit');
             },
              errorElement: "div",
             errorClass: "errormsg",
