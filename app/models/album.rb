@@ -369,8 +369,8 @@ class Album < ActiveRecord::Base
     affected_user_ids = []
 
     if want_affected
-      # determine users with role currently
-      users_with_role = acl.get_users_with_role(role)
+      # determine users with the exact role currently
+      users_with_role = acl.get_users_with_role(role, true)
       # add the groups to the role
       users_via_add = acl.add_groups(group_ids, role)
        # now see which users just got this role.  If they already had the role, they

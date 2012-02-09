@@ -29,13 +29,13 @@ class SystemStats
             :last_month => Album.count(:conditions => ["created_at >= ? AND created_at < ?", Time.now.at_beginning_of_month - 1.month, Time.now.at_beginning_of_month])
         },
         :users => {
-            :total =>User.count,
-            :today => User.count(:conditions => ["created_at >= ?", Time.now.at_beginning_of_day]),
-            :yesterday => User.count(:conditions => ["created_at >= ? AND created_at < ?", Time.now.at_beginning_of_day - 1.day, Time.now.at_beginning_of_day]),
-            :this_week => User.count(:conditions => ["created_at >= ?", Time.now.at_beginning_of_week]),
-            :last_week => User.count(:conditions => ["created_at >= ? AND created_at < ?", Time.now.at_beginning_of_week - 1.week, Time.now.at_beginning_of_week]),
-            :this_month => User.count(:conditions => ["created_at >= ?", Time.now.at_beginning_of_month]),
-            :last_month => User.count(:conditions => ["created_at >= ? AND created_at < ?", Time.now.at_beginning_of_month - 1.month, Time.now.at_beginning_of_month])
+            :total => User.count(:conditions => ["auto_by_contact = false"]),
+            :today => User.count(:conditions => ["auto_by_contact = false AND created_at >= ?", Time.now.at_beginning_of_day]),
+            :yesterday => User.count(:conditions => ["auto_by_contact = false AND created_at >= ? AND created_at < ?", Time.now.at_beginning_of_day - 1.day, Time.now.at_beginning_of_day]),
+            :this_week => User.count(:conditions => ["auto_by_contact = false AND created_at >= ?", Time.now.at_beginning_of_week]),
+            :last_week => User.count(:conditions => ["auto_by_contact = false AND created_at >= ? AND created_at < ?", Time.now.at_beginning_of_week - 1.week, Time.now.at_beginning_of_week]),
+            :this_month => User.count(:conditions => ["auto_by_contact = false AND created_at >= ?", Time.now.at_beginning_of_month]),
+            :last_month => User.count(:conditions => ["auto_by_contact = false AND created_at >= ? AND created_at < ?", Time.now.at_beginning_of_month - 1.month, Time.now.at_beginning_of_month])
         },
         :invited_users => {
             :total => Invitation.count(:conditions => ["status <> 'pending'"]),
