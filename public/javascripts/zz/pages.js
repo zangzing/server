@@ -811,8 +811,6 @@ zz.pages.download_agent = {
     },
 
     download: function() {
-        ZZAt.track('agentdownload.get');
-
         if ($.client.os == 'Mac') {
             document.location.href = zz.config.mac_download_url; //'http://downloads.zangzing.com/agent/darwin/ZangZing-Setup.pkg'
         }
@@ -826,7 +824,7 @@ zz.pages.download_agent = {
             }
 
         }
-
+        ZZAt.track('agentdownload.get');
     }
 };
 
