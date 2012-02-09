@@ -65,11 +65,11 @@ class Admin::UsersController < Admin::AdminController
     GeoIp.api_key = "b3be65bc4b850a03cc12200100937debca7a842d9afc7ae40394d1d823c22cae"
     if @user.current_login_ip
       @current_login_ip_info = false
-      @current_login_ip_info = GeoIp.geolocation(@user.current_login_ip)
+      #@current_login_ip_info = GeoIp.geolocation(@user.current_login_ip)
     end
     if @user.last_login_ip
       @last_login_ip_info = false
-      @last_login_ip_info = GeoIp.geolocation(@user.last_login_ip)
+      #@last_login_ip_info = GeoIp.geolocation(@user.last_login_ip)
     end
     @agent = Agent.where(:user_id => @user.id).order('authorized_at DESC').first
   end
