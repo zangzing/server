@@ -1161,7 +1161,7 @@ class AlbumsController < ApplicationController
     # do efficient single query to fetch all groups at once
     # and create a user_id => user hash for lookup
     all_group_ids = Array(contributors + viewers)
-    groups = Group.where(:id => all_group_ids).includes(:user => :profile_album).all
+    groups = Group.where(:id => all_group_ids).includes(:wrapped_user => :profile_album).all
     # now sort them
     groups = Group.sort(groups)
 
