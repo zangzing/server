@@ -621,7 +621,7 @@ zz.comments = {};
 
         $('#right-drawer .header .title').html("Comments");
         $('#right-drawer .content').html(comments_widget.element);
-        $('#right-drawer .header .close-button').click(function(){
+        $('#right-drawer .header .close-button').unbind('click').click(function(){
             $('#footer #comments-button').click(); //todo: this is a hack; should be a better way to wire this together
         });
 
