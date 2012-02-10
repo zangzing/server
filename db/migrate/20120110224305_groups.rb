@@ -1,20 +1,6 @@
 class Groups < ActiveRecord::Migration
   def self.up
-    #TODO move the acl creation to a new migration
-    # doing this directly because migrations don't support ENUMs
-#    execute("
-#CREATE TABLE acls (
-#  id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-#  type ENUM('SystemRights', 'Album', 'SharedUser') NOT NULL,
-#  group_id bigint(20) unsigned NOT NULL,
-#  resource_id bigint(20) unsigned NOT NULL,
-#  role tinyint(3) unsigned NOT NULL,
-#  PRIMARY KEY (id),
-#  UNIQUE KEY `index_type_resource_id_group_id` (type, resource_id, group_id),
-#  KEY `index_group_id` (group_id)
-#) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-#")
-    # also define group related tables
+    # define group related tables
     create_table :groups  do |t|
       t.column   :user_id,     :bigint,  :null => false
       t.column   :name,        :string,  :null => false
