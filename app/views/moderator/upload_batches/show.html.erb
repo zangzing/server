@@ -44,13 +44,39 @@
 <br>
 <br>
 
-<script>
-  function set_batch_status(batch_id, status){
-      $.get('/service/moderator/upload_batches/'+batch_id+'/update', {'status': status}, function(data){
-          $("#upload-batch-"+data.id).addClass(data.review_status);
-      }, 'json');
-  }
-</script>
+  <% content_for :page_javascript do %>
+    <script>
+      function set_batch_status(batch_id, status){
+          $.get('/service/moderator/upload_batches/'+batch_id+'/update', {'status': status}, function(data){
+              var batch = $("#upload-batch-"+data.id)
+              batch.removeClass();
+              batch.addClass('upload-batch');
+              batch.addClass(data.review_status);
+          }, 'json');
+      }
+
+      $(document).ready(function(){
+        $(".upload-batch").click(function(){
+            var id = $(this).attr('id').split('-')[2]
+            var current_state = 'unreviewed';
+            if($(this).hasClass('good')){
+              current_state = 'good';
+            } else if($(this).hasClass('bad')){
+              current_state= 'bad';
+            }
+            var new_state = 'oops';
+            if(current_state=='unreviewed'){
+                new_state = 'good';
+            } else if(current_state=='good'){
+                new_state = 'bad';
+            } else if(current_state=='bad'){
+                new_state = 'unreviewed';
+            }
+            set_batch_status(id, new_state);
+        });
+      });
+    </script>
+  <% end %>
 
 <% @upload_batches.each do |batch| %>
 <div class="upload-batch <%= batch.review_status %>" style="clear: both; margin-left: 10px;" id="upload-batch-<%= batch.id %>">

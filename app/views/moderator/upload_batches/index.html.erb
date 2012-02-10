@@ -7,8 +7,10 @@
       <ul>
         <% @upload_batches_days.each do |date, counts| %>
           <li style="font-size:14px; margin: 5px 0;">
-            <%= link_to "Upload Batches from #{date}", moderator_upload_batch_path(date) %>
-            [<%= counts.map{|k, v| "#{k}: #{v}" }.join(', ') %>]
+            <%= link_to "#{date}", moderator_upload_batch_path(date, 'all') %>
+            <% counts.each do |filter, count| %>
+                [<%= link_to "#{filter} - #{count}", moderator_upload_batch_path(date, filter)  %>]
+            <% end %>
           </li>
         <% end %>
       </ul>

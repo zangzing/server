@@ -6,13 +6,18 @@ class Moderator::UploadBatchesController < Moderator::BaseController
     @upload_batches_days = {}
     data.each do |data_row|
       @upload_batches_days[data_row['date']] ||= {}
-      @upload_batches_days[data_row['date']][data_row['review_status'] || 'unreviewed'] = data_row['count']
+      @upload_batches_days[data_row['date']][data_row['review_status']] = data_row['count']
     end
   end
 
   def show
     date = DateTime.parse(params[:date])
-    @upload_batches = UploadBatch.where(:created_at => (date.beginning_of_day..date.end_of_day), :state => 'finished').order('created_at DESC').paginate(:page => params[:page], :per_page => 80)
+    where = {
+      :created_at => (date.beginning_of_day..date.end_of_day),
+      :state => 'finished'
+    }
+    where[:review_status] = params[:filter] if %w(good bad unreviewed).include?(params[:filter])
+    @upload_batches = UploadBatch.where(where).order('created_at DESC').paginate(:page => params[:page], :per_page => 80)
   end
 
   def update
