@@ -100,7 +100,7 @@ class GroupsMigrationHelper
   end
 
   def self.migrate_all
-    backup_current_database
+    #backup_current_database
     system_rights
     album_acls
     remove_invite_activities
