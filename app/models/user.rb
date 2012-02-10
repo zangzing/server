@@ -559,7 +559,7 @@ class User < ActiveRecord::Base
   end
 
   # For each member in the array, try to find an existing email to user id mapping.
-  # For those not found, create new automatic users.
+  # For those not found when the create flag is true we create new automatic users.
   #
   # returns array of users, and a hash of user_id => email, the mapping to email
   # is used when we return the info about a user to the caller because if they pass
@@ -569,40 +569,42 @@ class User < ActiveRecord::Base
   # users, user_id_to_email
   #
   # NOTE: the users returned only contain id, email, my_group_id
-  def self.convert_to_users(addresses, created_by_user)
+  def self.convert_to_users(addresses, created_by_user, create)
     users = []
-    user_id_to_email = nil
 
     if addresses.empty? == false
-      user_id_to_email = {}
       # first find the ones that map to a user
       emails = addresses.map(&:address)
-      found_users = User.select("id,email,my_group_id").where(:email => emails)
-      # create a map from email to user_id
-      email_to_user = {}
-      found_users.each {|user| email_to_user[user.email] = user }
-      #todo, for missing users, check secondary email table here once we have it
+      users = User.select("id,email,my_group_id").where(:email => emails)
 
-      # ok, now walk the members to find out which ones need a new user created
-      addresses.each do |address|
-        email = address.address
-        user = email_to_user[email]
-        if user
-          users << user
-        else
-          # not found, so make an automatic user
-          name = address.display_name
-          if name.blank?
-            # when blank, and they have a matching contact, use the name from it
-            contact = created_by_user.contacts.find_by_address(email)
-            name = contact.formatted_email if contact
+      if create
+        # create a map from email to user_id
+        email_to_user = {}
+        users.each {|user| email_to_user[user.email] = user }
+        #todo, for missing users, check secondary email table here once we have it
+
+        # ok, now walk the members to find out which ones need a new user created
+        addresses.each do |address|
+          email = address.address
+          user = email_to_user[email]
+          if user.nil?
+            # not found, so make an automatic user
+            name = address.display_name
+            if name.blank?
+              # when blank, and they have a matching contact, use the name from it
+              contact = created_by_user.contacts.find_by_address(email)
+              name = contact.formatted_email if contact
+            end
+            user = User.create_automatic(email, name, true, created_by_user)
+            users << user
           end
-          user = User.create_automatic(email, name, true, created_by_user)
-          users << user
         end
-        user_id_to_email[user.id] = email
       end
     end
+
+    # build user_id to email hash
+    user_id_to_email = {}
+    users.each {|user| user_id_to_email[user.id] = user.email }
 
     return users, user_id_to_email
   end

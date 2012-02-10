@@ -253,7 +253,7 @@ class SendgridController < ApplicationController
       # Add contributors from cc: if this email created a new album (exception thrown above would prevent this)
       if params[:cc] && params[:cc].length > 0
         ccs = Mail::AddressList.new( params[:cc].to_slug.to_ascii.to_s  )
-        users, user_id_to_email = User.convert_to_users(ccs.addresses, user)
+        users, user_id_to_email = User.convert_to_users(ccs.addresses, user, true)
         group_ids = users.map(&:my_group_id)
         album.add_contributors(group_ids)
       end

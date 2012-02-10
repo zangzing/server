@@ -361,7 +361,7 @@ describe "ZZ API Groups" do
             [group3.id, user3.id],
             [group3.id, user4.id],
         ]
-        GroupMember.fast_update_members(rows)
+        GroupMember.update_members(rows)
 
         acl2 = AlbumACL.new(Factory.create(:album, :user => user2).id)
         acl3 = AlbumACL.new(Factory.create(:album, :user => user3).id)

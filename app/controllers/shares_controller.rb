@@ -72,7 +72,7 @@ class SharesController < ApplicationController
         album = @subject
         if album.admin?( current_user.id )
           # create automatic users if needed
-          users, user_id_to_email = User.convert_to_users(addresses, current_user)
+          users, user_id_to_email = User.convert_to_users(addresses, current_user, true)
           view_group_ids = group_ids + users.map(&:my_group_id)
           album.add_viewers(view_group_ids)
         end

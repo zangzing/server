@@ -517,7 +517,7 @@ class AlbumsController < ApplicationController
       end
 
       # convert emails to user_ids, creating automatic users if need be
-      users, user_id_to_email = User.convert_to_users(addresses, current_user)
+      users, user_id_to_email = User.convert_to_users(addresses, current_user, true)
 
       # now append all of the users groups to the group_ids
       group_ids += users.map(&:my_group_id)

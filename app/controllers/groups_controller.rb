@@ -1,25 +1,5 @@
 class GroupsController < ApplicationController
 
-  # shared code for album update and creation that
-  # throws a friendly error message from the exception or error
-  # If it gets an exception it doesn't understand it simply
-  # returns that exception
-  def handle_create_update_error(ex, name = nil)
-    if ex.is_a?(ActiveRecord::RecordNotUnique)
-      msg = "The group #{name} already exists"
-      logger.error("#{msg} due to #{ex.message}")
-      raise ZZAPIError.new(msg)
-    elsif ex.is_a?(Exception)
-      msg = "Unable to create the group #{name}"
-      logger.error("#{msg} due to #{ex.message}")
-      raise ZZAPIError.new(msg)
-    elsif ex.is_a?(ActiveModel::Errors)
-      ZZAPIError.new(ex)
-    else
-      ex
-    end
-  end
-
   # Creates a group for the current user.
   #
   # This is called as (POST):
@@ -290,21 +270,18 @@ class GroupsController < ApplicationController
         raise ZZAPIInvalidListError.new({:user_ids => user_id_errors, :user_names => user_name_errors, :emails => email_errors})
       end
 
-      converted_users, user_id_to_email = User.convert_to_users(addresses, current_user)
+      converted_users, user_id_to_email = User.convert_to_users(addresses, current_user, true)
       converted_ids = converted_users.map(&:id)
       user_ids += converted_ids
 
       # ok now the user_ids array contains all members in user_id form so do the
       # bulk update
-      rows = []
       user_ids.uniq!
-      user_ids.each do |user_id|
-        rows << [group_id, user_id]
-      end
+      rows = user_ids.map {|r| [group_id, r]}
 
       if true
         # no notify support
-        GroupMember.fast_update_members(rows)
+        GroupMember.update_members(rows)
       else
         # NOTE: this code has not been tested, it was put here to support notifying
         # albums that the membership of an InviteActivity has changed which we decided
@@ -321,7 +298,7 @@ class GroupsController < ApplicationController
         resource_ids = ACL.all_resource_ids_for_group(group_id)
         before_acls = ACL.all_acls_for_users_in_resources(user_ids, resource_ids)
 
-        GroupMember.fast_update_members(rows)
+        GroupMember.update_members(rows)
 
         after_acls = ACL.all_acls_for_users_in_resources(user_ids, resource_ids)
 
@@ -363,8 +340,12 @@ class GroupsController < ApplicationController
       # build up a list of user_ids
       user_ids = params[:user_ids]
 
+      group_id = @group.id
+      user_ids.uniq!
+      rows = user_ids.map {|r| [group_id, r]}
+
       # and delete them
-      GroupMember.where(:group_id => @group.id, :user_id => user_ids).delete_all
+      GroupMember.remove_members(rows)
 
       # now fetch them all and return
       GroupMember.as_array(fetch_group_members(@group), nil)
@@ -372,6 +353,26 @@ class GroupsController < ApplicationController
   end
 
 private
+  # shared code for album update and creation that
+  # throws a friendly error message from the exception or error
+  # If it gets an exception it doesn't understand it simply
+  # returns that exception
+  def handle_create_update_error(ex, name = nil)
+    if ex.is_a?(ActiveRecord::RecordNotUnique)
+      msg = "The group #{name} already exists"
+      logger.error("#{msg} due to #{ex.message}")
+      raise ZZAPIError.new(msg)
+    elsif ex.is_a?(Exception)
+      msg = "Unable to create the group #{name}"
+      logger.error("#{msg} due to #{ex.message}")
+      raise ZZAPIError.new(msg)
+    elsif ex.is_a?(ActiveModel::Errors)
+      ZZAPIError.new(ex)
+    else
+      ex
+    end
+  end
+
   # sort the members of a groups, because
   # the fields vary we sort by precedence of
   # if automatic user, just the email is used

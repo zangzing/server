@@ -262,8 +262,10 @@ class UsersController < ApplicationController
 
   # Finds or creates users.
   #
-  # This will find existing users and in the email case create automatic users
-  # for emails that do not map to a current user. Finding by user_ids and user_names
+  # This will find existing users.  It will also create users from the emails
+  # when the create flag is true for any that are not found already.
+  #
+  # Finding by user_ids and user_names
   # do not auto create users, only via email.  For emails, if the user is found
   # we return it with the additional email context added to that user object.  If the
   # email user is not found we create a new automatic users.  You can specify the
@@ -281,6 +283,7 @@ class UsersController < ApplicationController
   # {
   #   :user_ids => [ array of user ids to find ],
   #   :user_names => [ array of user names to find ],
+  #   :create => when true or not set tells us to create users from missing emails, false acts as find only
   #   :emails => [ array of emails to find or create ],
   # }
   #
@@ -294,6 +297,14 @@ class UsersController < ApplicationController
   #     ...
   #   ]
   #   :not_found => {
+  #     :emails => [
+  #       {
+  #         :index => the index in the corresponding input list location,
+  #         :token => the missing email,
+  #         :error => an error string, may be blank
+  #       }
+  #       ...
+  #     ],
   #     :user_ids => [
   #       {
   #         :index => the index in the corresponding input list location,
@@ -335,25 +346,43 @@ class UsersController < ApplicationController
     return unless require_user
 
     zz_api do
+      orig_emails = params[:emails]
       user_ids, user_id_errors = User.validate_user_ids(params[:user_ids])
       ids_by_name, user_name_errors = User.validate_user_names(params[:user_names])
       user_ids += ids_by_name
-      emails, email_errors, addresses = ZZ::EmailValidator.validate_email_list(params[:emails])
+      emails, email_errors, addresses = ZZ::EmailValidator.validate_email_list(orig_emails)
 
       unless email_errors.empty?
         # at least one error so raise exception
         raise ZZAPIInvalidListError.new({:emails => email_errors})
       end
 
-      converted_users, user_id_to_email = User.convert_to_users(addresses, current_user)
+      # the :create flag defaults to true if missing
+      should_create = params[:create].nil? || params[:create]
+
+      converted_users, user_id_to_email = User.convert_to_users(addresses, current_user, should_create)
       converted_ids = converted_users.map(&:id)
       user_ids += converted_ids
+
+      missing_emails = []
+      if should_create == false
+        found_emails = Set.new
+        converted_users.each { |user| found_emails.add(user.email) }
+        index = 0
+        # walk the parsed emails
+        emails.each do |email|
+          # if missing use the original full email field not the parsed one to report the error
+          missing_emails << ZZAPIInvalidListError.build_missing_item(index, orig_emails[index]) unless found_emails.include?(email)
+          index += 1
+        end
+      end
 
       members = preload_users(user_ids)
       users = User.as_array(members, user_id_to_email)
       hash = {
           :users => users,
           :not_found => {
+              :emails => missing_emails,
               :user_ids => user_id_errors,
               :user_names => user_name_errors
           }

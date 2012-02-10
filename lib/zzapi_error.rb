@@ -71,7 +71,6 @@ class ZZAPIInvalidListError < ZZAPIError
     list
   end
 
-
 end
 
 #begin

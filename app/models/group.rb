@@ -29,8 +29,8 @@ class Group < ActiveRecord::Base
     group.save!
     # fall through to create the group member
 
-    # update or create the group member
-    GroupMember.fast_update_members([[group.id, wrapped_id]])
+    # update or create the group member, no need to notify acl manager
+    GroupMember.update_members([[group.id, wrapped_id]], false)
 
     group
   end
@@ -126,10 +126,7 @@ class Group < ActiveRecord::Base
   # deletes all the given groups and also any associated ACLs
   def self.delete_groups_and_acls(group_ids)
     # convert to the form that the ACL api wants for removing all groups
-    rows = []
-    group_ids.each do |group_id|
-      rows << [group_id]
-    end
+    rows = group_ids.map {|id| [id]}
 
     # remove all acls for the given groups
     affected_user_ids = ACL.remove_groups_for_any_type(rows)

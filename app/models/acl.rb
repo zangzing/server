@@ -139,20 +139,6 @@ class ACL < ActiveRecord::Base
     RawDB.single_values(RawDB.execute(connection, sql))
   end
 
-
-def self.test(count)
-  rows = []
-  acls = []
-  count.times do |i|
-    rows << [i, 'Album', 2, 100]
-    acls << [i, 'Album']
-  end
-  update_groups(rows)
-
-#  delete_acls(acls)
-  #delete_groups(rows)
-end
-
   # takes data in the form passed to update_groups
   # and returns a array of user_ids
   def self.affected_users(rows, offset = 2)
@@ -166,5 +152,18 @@ end
     }
     hash
   end
+
+  #def self.test(count)
+  #  rows = []
+  #  acls = []
+  #  count.times do |i|
+  #    rows << [i, 'Album', 2, 100]
+  #    acls << [i, 'Album']
+  #  end
+  #  update_groups(rows)
+  #
+  ##  delete_acls(acls)
+  #  #delete_groups(rows)
+  #end
 
 end
