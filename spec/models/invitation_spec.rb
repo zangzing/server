@@ -300,7 +300,7 @@ describe Invitation do
 
           to_user.received_invitations.first.status.should == Invitation::STATUS_COMPLETE
 
-          ActionMailer::Base.deliveries.length.should == 2 # invite success email and follow email
+          ActionMailer::Base.deliveries.length.should == 3 # invite success email and 2 follow emails
 
 
           User.find(from_user.id).bonus_storage.should == User::BONUS_STORAGE_MB_PER_INVITE
