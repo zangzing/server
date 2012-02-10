@@ -543,8 +543,8 @@ zz.buy = zz.buy || {};
 
 
             $('#checkout-banner .checkout-button').click(function(){
-                ZZAt.track('buy.checkout-banner.cart-button.click');
                 zz.routes.store.goto_cart();
+                ZZAt.track('buy.checkout-banner.cart-button.click');
             });
 
 

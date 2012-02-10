@@ -64,7 +64,6 @@ zz.toolbars = {
             if ($(this).hasClass('disabled') || $(this).hasClass('selected')) {
                 return;
             }
-            ZZAt.track('button.peopleview.click');
             $('#header #view-buttons').children().removeClass('selected');
             $('#header #view-buttons #people-view-button').addClass('selected');
             $('#article').fadeOut(200);
@@ -73,7 +72,7 @@ zz.toolbars = {
             } else {
                 document.location.href = zz.page.displayed_user_base_url + '/people';
             }
-
+            ZZAt.track('button.peopleview.click');
         });
 
         $('#header #view-buttons #activities-view-button').click(function() {

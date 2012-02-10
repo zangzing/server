@@ -121,7 +121,6 @@ module ZZ
             flash.now[:error] = msg
             head :status => 401
           else
-            flash[:error] = msg
             store_location
             redirect_to join_url :message => msg
           end
