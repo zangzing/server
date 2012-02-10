@@ -4,7 +4,8 @@ class Group < ActiveRecord::Base
   attr_accessible  :user_id, :name, :wrapped_user_id
 
   has_many :group_members
-  belongs_to :user,             :foreign_key => 'wrapped_user_id'
+  belongs_to :wrapped_user,             :class_name => 'User', :foreign_key => 'wrapped_user_id'
+  belongs_to :user
 
   validates_each  :name do |record, attr, value|
     record.errors.add attr, 'must not have @' if value.match(/@/)
@@ -153,7 +154,7 @@ class Group < ActiveRecord::Base
   def self.name_sort_value(group)
     return group.name if group.wrapped_user_id.nil?
     # a wrapped user, so use users name
-    group.user.name_sort_value
+    group.wrapped_user.name_sort_value
   end
 
   def self.sort(groups)
@@ -190,7 +191,7 @@ class Group < ActiveRecord::Base
     }
     hash = hash.merge(add_ins)
     # if a wrapped user, add in user related info
-    hash[:user] = user.basic_user_info_hash if self.wrapped_user_id
+    hash[:user] = wrapped_user.basic_user_info_hash if self.wrapped_user_id
     hash
   end
 

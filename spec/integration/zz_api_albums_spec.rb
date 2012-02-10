@@ -1,6 +1,8 @@
 require 'spec_helper'
 require 'test_utils'
 
+resque_filter = {:except => [ZZ::Async::MailingListSync]}
+
 include PrettyUrlHelper
 
 describe "ZZ API Albums" do
@@ -196,6 +198,9 @@ describe "ZZ API Albums" do
 
     describe "album share acl" do
       before(:each) do
+        ActionMailer::Base.delivery_method = :test
+        ActionMailer::Base.perform_deliveries = true
+        ActionMailer::Base.deliveries = []
         @album = Factory.create(:album, :user => @user, :name => "ACL Test")
       end
 
@@ -207,8 +212,10 @@ describe "ZZ API Albums" do
         found_emails = {}
         members.each do |info|
           user = info[:user]
-          email = user[:email]
-          found_emails[email] = info if email
+          if user
+            email = user[:email]
+            found_emails[email] = info if email
+          end
         end
         found_group_ids = {}
         members.each do |info|
@@ -255,74 +262,229 @@ describe "ZZ API Albums" do
         error[:emails].length.should == 1
       end
 
+      def match_delivered_email(email)
+        ActionMailer::Base.deliveries.should satisfy do |messages|
+          messages.index { |message| message.to == [email] }
+        end
+      end
 
-      it "should add, delete, and update individual members and verify their role" do
-        u1 = Factory.create(:user)
-        u2 = Factory.create(:user)
-        u3 = Factory.create(:user)
-        email_user = 'email_user1@bitbucket.zangzing.com'
-        members = {
-            :emails => [email_user],
-            :group_ids => [u1.my_group_id],
-            :message => 'viewers welcome',
-            :permission => 'viewer'
-        }
-        expected_emails = [email_user]
-        expected_ids = [u1.my_group_id]
-        j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
-        j.length.should == 2
-        match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+      it "should add, delete, and update members and verify their role" do
+        resque_jobs(resque_filter) do
+          u1 = Factory.create(:user)
+          u2 = Factory.create(:user)
+          u3 = Factory.create(:user)
+          email_user = 'email_user1@bitbucket.zangzing.com'
+          members = {
+              :emails => [email_user],
+              :group_ids => [u1.my_group_id],
+              :message => 'viewers welcome',
+              :permission => 'viewer'
+          }
+          expected_emails = [email_user]
+          expected_ids = [u1.my_group_id]
+          j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
+          j.length.should == 2
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          ActionMailer::Base.deliveries.length.should == 2
+          match_delivered_email(email_user)
+          match_delivered_email(u1.email)
+          ActionMailer::Base.deliveries = []
 
-        members = {
-            :emails => [],
-            :group_ids => [u2.my_group_id, u3.my_group_id],
-            :message => 'contributors welcome',
-            :permission => 'contributor'
-        }
-        j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
-        j.length.should == 4
-        # first verify that viewers haven't changed
-        match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          # add them again as viewers, should cause no emails
+          j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
+          j.length.should == 2
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          ActionMailer::Base.deliveries.length.should == 0
 
-        # now see if we got the expected contribs
-        expected_emails = []
-        expected_ids = [u2.my_group_id, u3.my_group_id]
-        match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+          # now as contribs
+          members[:permission] = 'contributor'
+          j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
+          j.length.should == 2
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+          ActionMailer::Base.deliveries.length.should == 2
+          match_delivered_email(email_user)
+          match_delivered_email(u1.email)
+          ActionMailer::Base.deliveries = []
 
-        # now upgrade one of the viewers
-        member = {
-            :member => {
-                :id => u1.my_group_id,
-                :permission => 'contributor'
-            }
-        }
-        j = zz_api_post zz_api_update_sharing_member_album_path(@album), member, 200
-        j.length.should == 4
-        expected_emails = [email_user]
-        expected_ids = []
-        match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
-        expected_emails = []
-        expected_ids = [u1.my_group_id, u2.my_group_id, u3.my_group_id]
-        match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+          # again as contribs
+          j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
+          j.length.should == 2
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+          ActionMailer::Base.deliveries.length.should == 0
 
-        # now delete one of the contribs
-        member = {
-            :member => {
-                :id => u1.my_group_id,
-            }
-        }
-        j = zz_api_post zz_api_delete_sharing_member_album_path(@album), member, 200
-        j.length.should == 3
-        # this time verify with sharing members call
-        j = zz_api_get zz_api_sharing_members_album_path(@album), 200
-        j.length.should == 3
-        expected_emails = [email_user]
-        expected_ids = []
-        match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
-        expected_emails = []
-        expected_ids = [u2.my_group_id, u3.my_group_id]
-        match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+          # now back to viewers
+          members[:permission] = 'viewer'
+          j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
+          j.length.should == 2
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          ActionMailer::Base.deliveries.length.should == 2
+          match_delivered_email(email_user)
+          match_delivered_email(u1.email)
+          ActionMailer::Base.deliveries = []
 
+          # now add a group with new members
+          group = Factory.create(:group, :user => @user)
+          gm1 = Factory.create(:group_member, :group => group)
+          gm2 = Factory.create(:group_member, :group => group)
+          gm3 = Factory.create(:group_member, :group => group)
+          members = {
+              :emails => [],
+              :group_ids => [group.id],
+              :message => 'contributors welcome',
+              :permission => 'contributor'
+          }
+          j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
+          j.length.should == 3
+          expected_emails = [email_user]
+          expected_ids = [u1.my_group_id]
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          expected_emails = []
+          expected_ids = [group.id]
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+          ActionMailer::Base.deliveries.length.should == 3
+          match_delivered_email(gm1.user.email)
+          match_delivered_email(gm2.user.email)
+          match_delivered_email(gm3.user.email)
+          ActionMailer::Base.deliveries = []
+
+          # now remove the group
+          member = {
+              :member => {
+                  :id => group.id,
+              }
+          }
+          j = zz_api_post zz_api_delete_sharing_member_album_path(@album), member, 200
+          j.length.should == 2
+          expected_emails = [email_user]
+          expected_ids = [u1.my_group_id]
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+
+          members = {
+              :emails => [],
+              :group_ids => [u2.my_group_id, u3.my_group_id],
+              :message => 'contributors welcome',
+              :permission => 'contributor'
+          }
+          expected_emails = [email_user]
+          expected_ids = [u1.my_group_id]
+          j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
+          j.length.should == 4
+          # first verify that viewers haven't changed
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+
+          # now see if we got the expected contribs
+          expected_emails = []
+          expected_ids = [u2.my_group_id, u3.my_group_id]
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+
+          # now upgrade one of the viewers
+          member = {
+              :member => {
+                  :id => u1.my_group_id,
+                  :permission => 'contributor'
+              }
+          }
+          j = zz_api_post zz_api_update_sharing_member_album_path(@album), member, 200
+          j.length.should == 4
+          expected_emails = [email_user]
+          expected_ids = []
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          expected_emails = []
+          expected_ids = [u1.my_group_id, u2.my_group_id, u3.my_group_id]
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+
+          # now delete one of the contribs
+          member = {
+              :member => {
+                  :id => u1.my_group_id,
+              }
+          }
+          j = zz_api_post zz_api_delete_sharing_member_album_path(@album), member, 200
+          j.length.should == 3
+          # this time verify with sharing members call
+          j = zz_api_get zz_api_sharing_members_album_path(@album), 200
+          j.length.should == 3
+          expected_emails = [email_user]
+          expected_ids = []
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          expected_emails = []
+          expected_ids = [u2.my_group_id, u3.my_group_id]
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+        end
+      end
+
+      it "should add, delete, and update group members and verify their role" do
+        resque_jobs(resque_filter) do
+          u1 = Factory.create(:user)
+          u2 = Factory.create(:user)
+          u3 = Factory.create(:user)
+          email_user = 'email_user1@bitbucket.zangzing.com'
+          members = {
+              :emails => [email_user],
+              :group_ids => [u1.my_group_id],
+              :message => 'viewers welcome',
+              :permission => 'viewer'
+          }
+          expected_emails = [email_user]
+          expected_ids = [u1.my_group_id]
+          j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
+          j.length.should == 2
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+
+          ActionMailer::Base.deliveries.length.should == 2
+          match_delivered_email(email_user)
+          match_delivered_email(u1.email)
+
+          members = {
+              :emails => [],
+              :group_ids => [u2.my_group_id, u3.my_group_id],
+              :message => 'contributors welcome',
+              :permission => 'contributor'
+          }
+          j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
+          j.length.should == 4
+          # first verify that viewers haven't changed
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+
+          # now see if we got the expected contribs
+          expected_emails = []
+          expected_ids = [u2.my_group_id, u3.my_group_id]
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+
+          # now upgrade one of the viewers
+          member = {
+              :member => {
+                  :id => u1.my_group_id,
+                  :permission => 'contributor'
+              }
+          }
+          j = zz_api_post zz_api_update_sharing_member_album_path(@album), member, 200
+          j.length.should == 4
+          expected_emails = [email_user]
+          expected_ids = []
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          expected_emails = []
+          expected_ids = [u1.my_group_id, u2.my_group_id, u3.my_group_id]
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+
+          # now delete one of the contribs
+          member = {
+              :member => {
+                  :id => u1.my_group_id,
+              }
+          }
+          j = zz_api_post zz_api_delete_sharing_member_album_path(@album), member, 200
+          j.length.should == 3
+          # this time verify with sharing members call
+          j = zz_api_get zz_api_sharing_members_album_path(@album), 200
+          j.length.should == 3
+          expected_emails = [email_user]
+          expected_ids = []
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          expected_emails = []
+          expected_ids = [u2.my_group_id, u3.my_group_id]
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+        end
       end
 
     end

@@ -44,6 +44,20 @@ Factory.define :album do |this|
   end
 end
 
+Factory.define :group do |this|
+  this.name          {"Group #{next_id}"}
+  this.after_build do |this, proxy|
+    this.user ||= Factory.create(:user)
+  end
+end
+
+Factory.define :group_member do |this|
+  this.after_build do |this, proxy|
+    this.group ||= Factory.create(:group)
+    this.user ||= Factory.create(:user)
+  end
+end
+
 
 Factory.define :comment do |this|
   this.text "this is a comment"
