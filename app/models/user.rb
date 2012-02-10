@@ -85,7 +85,7 @@ class User < ActiveRecord::Base
   before_save    :split_name
   before_create  :set_dependents
   after_commit   :add_system_rights, :on => :create
-  after_commit   :like_mr_zz, :on => :create
+  after_commit   :like_mr_zz_if_full_user, :on => :create
   after_commit   :subscribe_to_lists, :on => :create
 
   after_save    :check_cache_manager_change
@@ -250,6 +250,9 @@ class User < ActiveRecord::Base
     # now add back mail chimp only since we keep all internal subscription types on initially
     self.subscriptions.update_subscription(Email::MARKETING, Subscriptions::IMMEDIATELY)
     self.subscriptions.update_subscription(Email::NEWS, Subscriptions::IMMEDIATELY)
+
+    # and like mr zz
+    like_mr_zz
   end
 
   def subscribe_to_lists
@@ -772,6 +775,10 @@ class User < ActiveRecord::Base
         ZZ::Async::ProcessLike.enqueue( 'add', self.id, auto_like_id , 'user' )
       end
     end
+  end
+
+  def like_mr_zz_if_full_user
+    like_mr_zz unless automatic?
   end
 
   # handy utility method to delete an array of ids all at once
