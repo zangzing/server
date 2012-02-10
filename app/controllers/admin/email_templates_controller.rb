@@ -199,12 +199,12 @@ class Admin::EmailTemplatesController < Admin::AdminController
   end
 
   def test_invite_to_join(template_id)
-    invitation = Invitation.create_invitation_for_email(sender, 'test@test.zangzing.com')
+    invitation = Invitation.find_or_create_invitation_for_email(sender, 'test@test.zangzing.com')
     Notifier.invite_to_join(sender.id, user_or_not_user_email_address, invitation.tracked_link.url, template_id)
   end
 
   def test_joined_from_invite(template_id)
-    invitation = Invitation.create_invitation_for_email(sender, 'test@test.zangzing.com')
+    invitation = Invitation.find_or_create_invitation_for_email(sender, 'test@test.zangzing.com')
     invitation = Invitation.process_invitations_for_new_user(current_user, invitation.tracked_link.tracking_token)
     Notifier.joined_from_invite(invitation.id, true, template_id)
   end

@@ -26,7 +26,7 @@ describe InvitationsController do
   describe '#send_reminder' do
     it "should work for pending invitation" do
       resque_jobs(resque_filter) do
-        invitation = Invitation.create_invitation_for_email(@current_user, 'test@test.zangzing.com')
+        invitation = Invitation.find_or_create_invitation_for_email(@current_user, 'test@test.zangzing.com')
 
         xhr :post, :send_reminder, {:invitation_id => invitation.id}
         response.status.should be(200)

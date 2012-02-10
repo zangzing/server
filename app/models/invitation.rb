@@ -20,7 +20,7 @@ class Invitation < ActiveRecord::Base
   STATUS_COMPLETE_BY_OTHER = 'complete-by-other'
   STATUS_PENDING = 'pending'
 
-  def self.create_and_send_invitation(from_user, to_address)
+  def self.send_invitation(from_user, to_address)
 
     user = User.find_by_email(to_address)
 
@@ -28,23 +28,8 @@ class Invitation < ActiveRecord::Base
       raise InvitedUserAlreadyExists.new(to_address)
     end
 
-    invitation = from_user.sent_invitations.find_by_email(to_address)
-
-
-    if invitation && invitation.status == Invitation::STATUS_PENDING
-
-      # if we already have a pending invite to this user then just send reminder
-      send_invitation_to_email(invitation)
-
-    else
-
-      # if there is no invitation to this email address, or the invitation
-      # is complete (meaning user signed up under different email address) then go ahead
-      # and create new invitation to track...
-      invitation = create_invitation_for_email(from_user, to_address)
-      send_invitation_to_email(invitation)
-
-    end
+    invitation = Invitation.find_or_create_invitation_for_email(from_user, to_address)
+    send_invitation_to_email(invitation)
 
     return invitation
   end
@@ -68,16 +53,26 @@ class Invitation < ActiveRecord::Base
     ZZ::Async::Email.enqueue(:invite_to_join, from_user.id, to_address, invitation_url)
    end
 
-  def self.create_invitation_for_email(from_user, to_address)
-    tracked_link = TrackedLink.create_tracked_link(from_user, get_invitation_url, TrackedLink::TYPE_INVITATION, TrackedLink::SHARED_TO_EMAIL, shared_to_address=to_address)
-    invitation = Invitation.new
-    invitation.tracked_link = tracked_link
-    invitation.user = from_user
-    invitation.status = Invitation::STATUS_PENDING
-    invitation.email = to_address
-    invitation.save!
+  def self.find_or_create_invitation_for_email(from_user, to_address, url = get_invitation_url, link_type = TrackedLink::TYPE_INVITATION)
+
+    invitation = from_user.sent_invitations.find_by_email(to_address)
+
+
+    # if there is no invitation, or if the invitation was completed
+    # under a different email address, then go ahead and create new invitation
+    if (!invitation || (invitation.status == Invitation::STATUS_COMPLETE && invitation.invited_user && invitation.invited_user.email != to_address))
+      tracked_link = TrackedLink.create_tracked_link(from_user, url, link_type, TrackedLink::SHARED_TO_EMAIL, shared_to_address=to_address)
+      invitation = Invitation.new
+      invitation.tracked_link = tracked_link
+      invitation.user = from_user
+      invitation.status = Invitation::STATUS_PENDING
+      invitation.email = to_address
+      invitation.save!
+
+    end
 
     return invitation
+
   end
 
 
@@ -104,26 +99,14 @@ class Invitation < ActiveRecord::Base
     tracked_link = TrackedLink.find_by_tracking_token(tracking_token)
 
     if tracked_link
-      # lookup invitatiob based on tracking token
+      # look for 0 to 1 invitations for this tracked_link that have a status of 'pending'
+      invitation = Invitation.find_by_tracked_link_id_and_status(tracked_link.id, Invitation::STATUS_PENDING)
 
-      # for emailed invitations, we created the invitation record up front.
-      # for the rest, we don't create until a user actually joins
-      if tracked_link.shared_to != TrackedLink::SHARED_TO_EMAIL
+      # if invitation is nil, it means that we need to create one on-demand
+      if invitation.nil?
         invitation = Invitation.new
         invitation.tracked_link = tracked_link
         invitation.user = tracked_link.user
-      else
-        invitation = Invitation.find_by_tracked_link_id(tracked_link.id)
-
-        # if invitation is already complete, this means
-        # that more than one person is using the same invitation
-        # email (which is fine), so just create a new invitation
-        # like we do for facebook and twitter
-        if invitation.status != Invitation::STATUS_PENDING
-          invitation = Invitation.new
-          invitation.tracked_link = tracked_link
-          invitation.user = tracked_link.user
-        end
       end
     else
 
@@ -147,8 +130,9 @@ class Invitation < ActiveRecord::Base
       ZZ::Async::Email.enqueue(:joined_from_invite, invitation.id, can_use_bonus_storage)
 
 
-      # new user should follow user who invited...
+      # inviting and invited user should follow each other
       Like.add(new_user.id, invitation.user.id, Like::USER)
+      Like.add(invitation.user.id, new_user.id, Like::USER)
     end
 
 
@@ -156,7 +140,7 @@ class Invitation < ActiveRecord::Base
     Invitation.find(:all, :conditions=>{:email=>new_user.email, :status=>Invitation::STATUS_PENDING}).each do |invalid_invitation|
       invalid_invitation.status = Invitation::STATUS_COMPLETE_BY_OTHER
       invalid_invitation.invited_user = new_user
-      invalid_invitation.save
+      invalid_invitation.save!
     end
 
 
