@@ -90,7 +90,28 @@ class Notifier < ActionMailer::Base
     @message = message
     rcp_user = User.find_by_email( to_address )
     @recipient = ( rcp_user ? rcp_user : to_address )
-    @destination_link = destination_link( @recipient, photo_pretty_url( @photo ) )
+
+    @recipient_is_user = true
+
+    @join_now_url = nil
+    @photo_pretty_url = photo_pretty_url_no_hash_bang(@photo)
+    @photo_url_with_comments = photo_url_with_comments(@photo)
+    @invite_friends_url = invite_friends_url
+
+    # all shares to non-users should
+    # be treated as invitation
+    if !rcp_user || rcp_user.automatic?
+      @recipient_is_user = false
+
+      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_PHOTO_SHARE)
+      @join_now_url = invitation.tracked_link.long_tracked_url
+      @photo_pretty_url = TrackedLink.create_tracked_link(@user, @photo_pretty_url, TrackedLink::TYPE_PHOTO_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
+      @photo_url_with_comments = TrackedLink.create_tracked_link(@user, @photo_url_with_comments, TrackedLink::TYPE_PHOTO_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
+      @invite_friends_url = nil
+
+      send_share_invite_zza_event(@user, invitation.tracked_link)
+    end
+
 
     create_message(  __method__, template_id, @recipient, { :to => to_address })
   end
@@ -107,11 +128,32 @@ class Notifier < ActionMailer::Base
 
   def album_shared(from_user_id,to_address,album_id, message, template_id = nil)
     @user = User.find(from_user_id)
+    rcp_user = User.find_by_email( to_address )
     @album = Album.find(album_id)
     @message = message
-    rcp_user = User.find_by_email( to_address )
     @recipient = ( rcp_user ? rcp_user : to_address )
-    @destination_link = destination_link(  @recipient, album_pretty_url( @album ) )
+
+    @recipient_is_user = true
+
+    @join_now_url = nil
+    @album_pretty_url = album_pretty_url(@album)
+    @invite_friends_url = invite_friends_url
+
+    # all shares to non-users should
+    # be treated as invitation
+    if !rcp_user || rcp_user.automatic?
+      @recipient_is_user = false
+
+      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_PHOTO_SHARE)
+      @join_now_url = invitation.tracked_link.long_tracked_url
+      @album_pretty_url = TrackedLink.create_tracked_link(@user, @album_pretty_url, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
+      @invite_friends_url = nil
+
+      send_share_invite_zza_event(@user, invitation.tracked_link)
+
+
+    end
+
 
 
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
@@ -137,11 +179,34 @@ class Notifier < ActionMailer::Base
 
 
   def contributor_added(album_id, to_address, message, template_id = nil )
+    rcp_user = User.find_by_email( to_address )
     @album = Album.find(album_id)
     @user = @album.user
-    rcp_user = User.find_by_email( to_address )
-    @recipient = ( rcp_user ? rcp_user : to_address )
     @message = message
+    @recipient = ( rcp_user ? rcp_user : to_address )
+
+    @recipient_is_user = true
+
+    @join_now_url = nil
+    @album_pretty_url = album_pretty_url(@album)
+    @invite_friends_url = invite_friends_url
+    @album_pretty_url_show_add_photos_dialog = album_pretty_url_show_add_photos_dialog(@album)
+
+    # all shares to non-users should
+    # be treated as invitation
+    if !rcp_user || rcp_user.automatic?
+      @recipient_is_user = false
+
+      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_PHOTO_SHARE)
+      @join_now_url = invitation.tracked_link.long_tracked_url
+      @album_pretty_url = TrackedLink.create_tracked_link(@user, @album_pretty_url, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
+      @album_pretty_url_show_add_photos_dialog = TrackedLink.create_tracked_link(@user, @album_pretty_url_show_add_photos_dialog, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
+      @invite_friends_url = nil
+
+      send_share_invite_zza_event(@user, invitation.tracked_link)
+
+    end
+
     vcard = Vpim::Vcard::Maker.make2 do |vc|
       vc.add_name do |name|
         name.given = @album.name
@@ -150,9 +215,9 @@ class Notifier < ActionMailer::Base
       vc.add_email @album.short_email
     end
     attachments["#{@album.name}.vcf"] = vcard.to_s
-    @destination_link = destination_link( @recipient, album_pretty_url( @album ) )
 
-    create_message(  __method__, template_id, @recipient, { :user_id => @user.id })
+    create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
+
   end
 
 
@@ -231,6 +296,24 @@ class Notifier < ActionMailer::Base
     @received_bonus = received_bonus
     create_message( __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
+
+
+
+private
+  def send_share_invite_zza_event(user, tracked_link)
+     zza.track_event("invitation.send")
+     zza.track_event(tracked_link.send_event_name)
+  end
+
+  def zza
+    unless @zza
+      @zza = ZZ::ZZA.new
+      @zza.user_type = 1
+    end
+
+    return @zza
+  end
+
 
 end
 

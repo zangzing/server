@@ -1104,7 +1104,8 @@ class AlbumsController < ApplicationController
   #todo Once Jeremy begins work on changing this, lets switch to the new api
   def get_sharing_member(user, permission)
     if user.automatic?
-      name = user.email
+      real_name = user.name(false)   # no anonymous conversion
+      name = real_name.blank? ? user.email : user.formatted_email
       profile_photo = nil
     else
       name = user.formatted_email

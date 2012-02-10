@@ -571,6 +571,8 @@ class User < ActiveRecord::Base
   # NOTE: the users returned only contain id, email, my_group_id
   def self.convert_to_users(addresses, created_by_user, create)
     users = []
+    # make a copy of only the unique entries
+    addresses = addresses.uniq
 
     if addresses.empty? == false
       # first find the ones that map to a user
