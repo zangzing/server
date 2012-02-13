@@ -2,9 +2,9 @@
 
 
 <div class="invite-friends-header">
-    <div class="title">Invite Your Friends to ZangZing</div>
+    <div class="title">Invite Friends and Get Free Space!</div>
     <div class="description">
-      For each friend that joins, we'll give<br> you both 250MB of free space, up to 8GB
+      For every friend that joins, you both get 250MB of extra space free&mdash;up to 8GB.
     </div>
 </div>
 
@@ -12,7 +12,7 @@
   <div class="invite-by-email">
     <div class="header">
       <div class="title">Invite by Email</div>
-      <div class="import"><span>Import from </span>
+      <div class="import"><span>Import</span>
         <a data-service="google" class="gray-square-button contacts-btn"><span><div class="off"></div>Google</span></a>
         <a data-service="local" class="gray-square-button contacts-btn"><span><div class="off"></div>Local</span></a>
         <a data-service="yahoo" class="gray-square-button contacts-btn"><span><div class="off"></div>Yahoo</span></a>
@@ -25,7 +25,7 @@
   </div>
 
   <div class="invite-by-social">
-    <div class="title">Invite on Facebook or Twitter</div>
+    <div class="title">Post Invite to Facebook or Twitter</div>
     <textarea class="message">I am using @ZangZing to to share my photos. Join for free and we both get 250MB of extra space!</textarea>
     <div class="facebook-button"></div>
     <div class="twitter-button"></div>
@@ -33,7 +33,7 @@
 
 
   <div class="invite-by-copy-paste">
-    <div class="title">Share a link</div>
+    <div class="title">Share Your Personal Invite Link</div>
     <input type=text class="link" value="<%= @invite_url_for_copy_paste %>"/>
   </div>
 </div>
@@ -75,7 +75,11 @@
 
                 zz.routes.invitations.send_by_email(email_addresses, function(json){
                     ZZAt.track('invitation.send');
-                    ZZAt.track('invitation.email.send');
+
+                    for(var i=0;i<email_addresses.length; i++){
+                        // send one event per email address
+                        ZZAt.track('invitation.email.send');
+                    }
 
 
                     // close the progress dialog

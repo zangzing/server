@@ -136,7 +136,16 @@
         zz.session.has_facebook_token    = <%= !current_user.identity_for_facebook.credentials_valid?.nil? %>;
         zz.session.has_twitter_token     = <%= !current_user.identity_for_twitter.credentials_valid?.nil? %>;
         <%  end -%>
-        zz.session.cart_item_count       = <%= current_order ? current_order.cart_count : 0 %>
+        zz.session.cart_item_count       = <%= current_order ? current_order.cart_count : 0 %>;
+        
+        zz.invitation = zz.invitation || {};
+        <% if current_tracking_token
+        	trackedlink = TrackedLink.find_by_tracking_token(current_tracking_token)
+        	if trackedlink %>
+        		zz.invitation.invitername = '<%= trackedlink.user.name %>';
+        		zz.invitation.inviterprofileurl = '<%= trackedlink.user.profile_photo_url %>';
+        	<% end -%>
+        <% end -%>
 
         zz.page = zz.page || {};
         zz.page.rails_controller_name       = '<%= controller.controller_name %>';
