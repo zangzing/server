@@ -5,12 +5,12 @@
 
     <div id="batch-list" style="text-align: left; margin-left: 100px;">
       <ul>
-        <% @upload_batches_days.each do |date, counts| %>
+        <% @upload_batches_days.each do | row | %>
           <li style="font-size:14px; margin: 5px 0;">
-            <%= link_to "#{date}", moderator_upload_batch_path(date, 'all') %>
-            <% counts.each do |filter, count| %>
-                [<%= link_to "#{filter} - #{count}", moderator_upload_batch_path(date, filter)  %>]
-            <% end %>
+            <%= link_to "#{row['date']}", moderator_upload_batch_path(row['date'], 'all') %>
+            [<%= link_to "unreviewed - #{row['unreviewed'] || 0}", moderator_upload_batch_path(row['date'], 'unreviewed')  %>]
+            [<%= link_to "good - #{row['good'] || 0}", moderator_upload_batch_path(row['date'], 'good')  %>]
+            [<%= link_to "bad - #{row['bad'] || 0}", moderator_upload_batch_path(row['date'], 'bad')  %>]
           </li>
         <% end %>
       </ul>
