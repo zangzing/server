@@ -17,6 +17,17 @@ describe "ZZ API Users" do
       zz_api_debug(@@old_debug_state)
     end
 
+    it "should verify system rights" do
+      username = 'test1'
+      j = zz_api_post zz_api_login_path, {:email => username, :password => 'testtest'}, 200, true
+      j[:role].should == SystemRightsACL::USER_ROLE.name
+      SystemRightsACL.set_role(username, SystemRightsACL::SUPER_MODERATOR_ROLE.name)
+      j = zz_api_post zz_api_login_path, {:email => username, :password => 'testtest'}, 200, true
+      j[:role].should == SystemRightsACL::SUPER_MODERATOR_ROLE.name
+      SystemRightsACL.set_role(username, SystemRightsACL::USER_ROLE.name)
+      j = zz_api_post zz_api_login_path, {:email => username, :password => 'testtest'}, 200, true
+      j[:role].should == SystemRightsACL::USER_ROLE.name
+    end
 
     it "should fail to get user info" do
       j = zz_api_get zz_api_user_info_path(99999999), 509

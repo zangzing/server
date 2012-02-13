@@ -64,14 +64,54 @@ class UserSessionsController < ApplicationController
     end
   end
 
+  # Logs a user in.
+  #
+  # After login, the user credentials will be returned as well as the
+  # system rights for that user.
+  #
+  # This is called as (POST):
+  #
+  # /zz_api/login
+  #
+  #
+  # Input:
+  # {
+  #   :email => the username or email to log in with,
+  #   :password => the password,
+  # }
+  #
+  #
+  # Returns:
+  # the credentials and user rights
+  #
+  # {
+  #   :user_id => id of this user,
+  #   :user_credentials => a string representing the user credentials, to use, set
+  #       the user_credentials cookie to this value
+  #   :username => the username for this user,
+  #   :role => the system rights for this user, can be one of
+  #     User,Moderator,SuperModerator,Hero,Admin
+  #     The roles are shown from least access to greatest
+  #     So, for example, if you need Moderator rights and you are an Admin
+  #     you will be granted access.  On the other hand, if
+  #     you are a User you will not be granted access.
+  # }
+  #
   def zz_api_create
     zz_api do
       user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => false)
       if user_session.save
+        acl = SystemRightsACL.singleton
+        role = acl.get_user_role(current_user.id)
+        if role.nil?
+          role = SystemRightsACL::USER_ROLE
+          acl.add_user(current_user, role)
+        end
         result = {
-            :user_credentials => user_session.record.persistence_token,
-            :user_id =>  user_session.record.id,
-            :username => user_session.record.username
+            :user_credentials => current_user.persistence_token,
+            :user_id =>  current_user.id,
+            :username => current_user.username,
+            :role => role.name
         }
       else
         raise ZZAPIError.new(user_session.errors.full_messages, 401)
