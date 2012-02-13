@@ -1,16 +1,17 @@
 <% content_for :page_title, "Upload Batches list per day" %>
 
-
-
-
-
 <div class="viewlist">
 
 
     <div id="batch-list" style="text-align: left; margin-left: 100px;">
       <ul>
-        <% @upload_batches_days.each do |date| %>
-          <li style="font-size:14px; margin: 5px 0;"><%= link_to "Upload Batches from #{date}", moderator_upload_batch_path(date) %></li>
+        <% @upload_batches_days.each do |date, counts| %>
+          <li style="font-size:14px; margin: 5px 0;">
+            <%= link_to "#{date}", moderator_upload_batch_path(date, 'all') %>
+            <% counts.each do |filter, count| %>
+                [<%= link_to "#{filter} - #{count}", moderator_upload_batch_path(date, filter)  %>]
+            <% end %>
+          </li>
         <% end %>
       </ul>
     </div>
