@@ -64,12 +64,13 @@
 
       $(document).ready(function(){
         $(".upload-batch-photos").click(function(){
-            var id = $(this).parent().attr('id').split('-')[2]
+            var el = $(this).parent();
+            var id = el.attr('id').split('-')[2]
 
             var current_state = 'unreviewed';
-            if($(this).hasClass('good')){
+            if(el.hasClass('good')){
               current_state = 'good';
-            } else if($(this).hasClass('bad')){
+            } else if(el.hasClass('bad')){
               current_state= 'bad';
             }
             var new_state = 'oops';
