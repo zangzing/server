@@ -56,7 +56,7 @@
       }
 
       $(document).ready(function(){
-        $(".upload-batch").click(function(){
+        $(".upload-batch-photos").click(function(){
             var id = $(this).attr('id').split('-')[2]
             var current_state = 'unreviewed';
             if($(this).hasClass('good')){
@@ -85,7 +85,6 @@
     Album: <%= link_to batch.album.name, album_pretty_url(batch.album) rescue "<b>ALBUM DELETED</b>".html_safe %><br/>
     Batch #<%= batch.id %> from <%= batch.created_at.strftime('%H:%M:%S   %b  %d %Y ') %><br>
     Finished at: <%= batch.updated_at.strftime('%H:%M:%S   %b  %d %Y ') %><br/>
-    Review status: <%= link_to_function 'Good', "set_batch_status(#{batch.id}, 'good')" %> | <%= link_to_function 'Bad', "set_batch_status(#{batch.id}, 'bad')" %>
   </div>
   <br>
   <div class="upload-batch-photos">
