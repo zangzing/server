@@ -6,6 +6,8 @@ class GroupMember < ActiveRecord::Base
   belongs_to :user
   belongs_to :group
 
+  after_commit  :notify_cache_for_me
+
   # perform a bulk insert/update of group members
   # takes rows in the form
   # [ [group_id, user_id], ... ]
@@ -26,6 +28,12 @@ class GroupMember < ActiveRecord::Base
   def self.remove_members(rows, notify = true)
     RawDB.fast_delete(connection, rows, ['group_id','user_id'], quoted_table_name)
     notify_cache(rows) if notify
+  end
+
+  # saved via rails, so notify the cache of a change
+  def notify_cache_for_me
+    rows = [[group_id, user_id]]
+    GroupMember.notify_cache(rows)
   end
 
   # takes rows in the form

@@ -415,5 +415,161 @@ describe "ZZ API Albums" do
 
 
     end
+
+    describe "cache and acl" do
+      before(:each) do
+        @password = 'testtest'
+        @u1 = Factory.create(:user, :password => @password)
+        @u2 = Factory.create(:user, :password => @password)
+        @u3 = Factory.create(:user, :password => @password)
+        @u4 = Factory.create(:user, :password => @password)
+        @u5 = Factory.create(:user, :password => @password)
+
+        @g1u1 = Factory.create(:group, :user => @u1)
+        Factory.create(:group_member, :group => @g1u1, :user => @u3)
+        Factory.create(:group_member, :group => @g1u1, :user => @u4)
+        @g2u1 = Factory.create(:group, :user => @u1)
+        Factory.create(:group_member, :group => @g2u1, :user => @u3)
+        Factory.create(:group_member, :group => @g2u1, :user => @u4)
+        Factory.create(:group_member, :group => @g2u1, :user => @u5)
+
+        @g1u2 = Factory.create(:group, :user => @u2)
+        Factory.create(:group_member, :group => @g1u2, :user => @u3)
+        Factory.create(:group_member, :group => @g1u2, :user => @u4)
+        @g2u2 = Factory.create(:group, :user => @u2)
+        Factory.create(:group_member, :group => @g2u2, :user => @u4)
+
+        @a1u1 = Factory.create(:album, :privacy => Album::PASSWORD, :user => @u1, :name => "User 1 Cache Test 1")
+        @a2u1 = Factory.create(:album, :privacy => Album::PASSWORD, :user => @u1, :name => "User 1 Cache Test 2")
+
+        @a1u2 = Factory.create(:album, :privacy => Album::PASSWORD, :user => @u2, :name => "User 2 Cache Test 1")
+        @a2u2 = Factory.create(:album, :privacy => Album::PASSWORD, :user => @u2, :name => "User 2 Cache Test 2")
+      end
+
+      def find_album_by_id(albums, id)
+        albums.each do |album|
+          return album if album[:id] == id
+        end
+        nil
+      end
+
+      it "should add groups to acl and verify they see albums" do
+        @a1u1.add_contributors([@g1u1.id])
+        @a1u1.add_viewers([@g2u1.id])
+
+        zz_login(@u2.username, @password)
+        j = zz_api_get zz_api_albums_path(@u2.id), 200
+        path = j[:invited_albums_path]
+        albums = zz_api_get path, 200
+        albums.length.should == 0   #  not in any of the groups added so should get nothing
+
+        zz_login(@u3.username, @password)
+        j = zz_api_get zz_api_albums_path(@u3.id), 200
+        path = j[:invited_albums_path]
+        albums = zz_api_get path, 200
+        albums.length.should == 1
+        albums[0][:id].should == @a1u1.id
+        albums[0][:my_role].should == 'Contrib'
+
+        # now add user 2 and see if he can see it
+        GroupMember.update_members([[@g2u1.id, @u2.id]])  # do the low level member change to get cache invalidate
+        zz_login(@u2.username, @password)
+        j = zz_api_get zz_api_albums_path(@u2.id), 200
+        path = j[:invited_albums_path]
+        albums = zz_api_get path, 200
+        albums.length.should == 1
+        albums[0][:id].should == @a1u1.id
+        albums[0][:my_role].should == 'Viewer'
+
+        # add group to a second album
+        @a2u1.add_contributors([@g2u1.id])
+        j = zz_api_get zz_api_albums_path(@u2.id), 200
+        path = j[:invited_albums_path]
+        albums = zz_api_get path, 200
+        albums.length.should == 2
+        a1 = find_album_by_id(albums, @a1u1.id)
+        a1.should_not == nil
+        a1[:my_role].should == 'Viewer'
+        a2 = find_album_by_id(albums, @a2u1.id)
+        a2.should_not == nil
+        a2[:my_role].should == 'Contrib'
+
+        # now downgrade group 1, which had Contrib rights to viewer
+        @a1u1.add_viewers([@g1u1.id])
+
+        # user 3 should now only be a viewer on a1
+        zz_login(@u3.username, @password)
+        j = zz_api_get zz_api_albums_path(@u3.id), 200
+        path = j[:invited_albums_path]
+        albums = zz_api_get path, 200
+        albums.length.should == 2
+        a1 = find_album_by_id(albums, @a1u1.id)
+        a1.should_not == nil
+        a1[:my_role].should == 'Viewer'
+        a2 = find_album_by_id(albums, @a2u1.id)
+        a2.should_not == nil
+        a2[:my_role].should == 'Contrib'
+
+        # now delete group 2
+        @g2u1.destroy
+
+        # user 3 should have one invited albums
+        zz_login(@u3.username, @password)
+        j = zz_api_get zz_api_albums_path(@u3.id), 200
+        path = j[:invited_albums_path]
+        albums = zz_api_get path, 200
+        albums.length.should == 1
+        a1 = find_album_by_id(albums, @a1u1.id)
+        a1.should_not == nil
+        a1[:my_role].should == 'Viewer'
+        a2 = find_album_by_id(albums, @a2u1.id)
+        a2.should == nil
+
+        # user 2 should have no albums
+        zz_login(@u2.username, @password)
+        j = zz_api_get zz_api_albums_path(@u2.id), 200
+        path = j[:invited_albums_path]
+        albums = zz_api_get path, 200
+        albums.length.should == 0
+      end
+
+      it "should add user to groups to acl and detect album changes" do
+        @a1u1.add_contributors([@g1u1.id])
+        @a2u1.add_viewers([@g2u1.id])
+        @a1u2.add_viewers([@g1u2.id])
+        @a2u2.add_contributors([@g2u2.id])
+
+        zz_login(@u4.username, @password)
+        j = zz_api_get zz_api_albums_path(@u4.id), 200
+        path = j[:invited_albums_path]
+        albums = zz_api_get path, 200
+        albums.length.should == 4
+        a1 = find_album_by_id(albums, @a1u1.id)
+        a1.should_not == nil
+        a1[:my_role].should == 'Contrib'
+        a2 = find_album_by_id(albums, @a2u1.id)
+        a2.should_not == nil
+        a2[:my_role].should == 'Viewer'
+        a1 = find_album_by_id(albums, @a1u2.id)
+        a1.should_not == nil
+        a1[:my_role].should == 'Viewer'
+        a2 = find_album_by_id(albums, @a2u2.id)
+        a2.should_not == nil
+        a2[:my_role].should == 'Contrib'
+
+        # now update the name of album 1
+        new_album_name = "Album Name Changed 1"
+        @a1u1.name = new_album_name
+        @a1u1.save!
+        j = zz_api_get zz_api_albums_path(@u4.id), 200
+        path = j[:invited_albums_path]
+        albums = zz_api_get path, 200
+        albums.length.should == 4
+        a1 = find_album_by_id(albums, @a1u1.id)
+        a1.should_not == nil
+        a1[:my_role].should == 'Contrib'
+        a1[:name].should == new_album_name
+      end
+    end
   end
 end

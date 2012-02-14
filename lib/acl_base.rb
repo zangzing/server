@@ -57,7 +57,7 @@ end
 # role filter.  Such as show me all my objects that I am an admin for.
 #
 class ACLBase
-  class_inheritable_accessor :initialized, :roles, :type, :role_value_first, :role_value_last, :priority_to_role
+  class_inheritable_accessor :initialized, :roles, :role_names, :type, :role_value_first, :role_value_last, :priority_to_role
   attr_accessor :acl_id, :redis
 
   # initialize the class, type is the type of acl such as Album
@@ -70,9 +70,12 @@ class ACLBase
     # make a map of priority to role for quick lookup
     # later
     self.priority_to_role = Hash.new()
+    role_names = []
     roles.each do |role|
+      role_names << role.name
       self.priority_to_role[role.priority] = role
     end
+    self.role_names = role_names
     group_handler ||= ACLGroupHandler.new   # default if not passed in
     ACLManager.register_type type, group_handler
     self.initialized = true
@@ -112,6 +115,16 @@ class ACLBase
       end
     end
     return nil
+  end
+
+  # return an array of role names
+  # from least access to most
+  def self.ordered_role_names
+    names = []
+    roles.each do |role|
+      names << role.name
+    end
+    names
   end
 
   # builds a hash containing keys of role to empty arrays

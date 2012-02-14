@@ -21,6 +21,14 @@ describe "ZZ API Users" do
       username = 'test1'
       j = zz_api_post zz_api_login_path, {:email => username, :password => 'testtest'}, 200, true
       j[:role].should == SystemRightsACL::USER_ROLE.name
+
+      role_names = SystemRightsACL.role_names
+      index = 0
+      j[:available_roles].each do |name|
+        name.should == role_names[index]
+        index += 1
+      end
+
       username = 'test2'
       SystemRightsACL.set_role(username, SystemRightsACL::SUPER_MODERATOR_ROLE.name)
       j = zz_api_post zz_api_login_path, {:email => username, :password => 'testtest'}, 200, true

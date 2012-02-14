@@ -89,12 +89,16 @@ class UserSessionsController < ApplicationController
   #   :user_credentials => a string representing the user credentials, to use, set
   #       the user_credentials cookie to this value
   #   :username => the username for this user,
+  #   :server => the host you are connected to
   #   :role => the system rights for this user, can be one of
-  #     User,Moderator,SuperModerator,Hero,Admin
-  #     The roles are shown from least access to greatest
+  #     the :available_roles such as:
+  #     Admin,Hero,SuperModerator,Moderator,User
+  #     The roles are shown from most access to least
   #     So, for example, if you need Moderator rights and you are an Admin
   #     you will be granted access.  On the other hand, if
   #     you are a User you will not be granted access.
+  #   :available_roles => Ordered from most access to least lets you determine
+  #     the available roles and their order
   # }
   #
   def zz_api_create
@@ -111,7 +115,9 @@ class UserSessionsController < ApplicationController
             :user_credentials => current_user.persistence_token,
             :user_id =>  current_user.id,
             :username => current_user.username,
-            :role => role.name
+            :server => Server::Application.config.application_host,
+            :role => role.name,
+            :available_roles => SystemRightsACL.role_names
         }
       else
         raise ZZAPIError.new(user_session.errors.full_messages, 401)
