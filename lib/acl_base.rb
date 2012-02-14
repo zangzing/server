@@ -117,16 +117,6 @@ class ACLBase
     return nil
   end
 
-  # return an array of role names
-  # from least access to most
-  def self.ordered_role_names
-    names = []
-    roles.each do |role|
-      names << role.name
-    end
-    names
-  end
-
   # builds a hash containing keys of role to empty arrays
   def self.hash_of_arrays_for_roles
     hash = {}
