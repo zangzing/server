@@ -22,6 +22,15 @@
 
       .upload-batch-photos{
           margin-bottom: 150px;
+          cursor: pointer;
+      }
+
+      .good {
+          background: green;
+      }
+
+      .bad {
+          background: red;
       }
 
 
@@ -41,22 +50,59 @@
 <br>
 <br>
 
+  <% content_for :page_javascript do %>
+    <script>
+      function set_batch_status(batch_id, status){
+          $.get('/service/moderator/upload_batches/'+batch_id+'/update', {'status': status}, function(data){
+              var batch = $("#upload-batch-" + batch_id )
+              batch.removeClass("bad");
+              batch.removeClass("good");
+              batch.removeClass("unreviewed");
+              batch.addClass(data.review_status);
+          }, 'json');
+      }
+
+      $(document).ready(function(){
+        $(".upload-batch-photos").click(function(){
+            var el = $(this).parent();
+            var id = el.attr('id').split('-')[2]
+
+            var current_state = 'unreviewed';
+            if(el.hasClass('good')){
+              current_state = 'good';
+            } else if(el.hasClass('bad')){
+              current_state= 'bad';
+            }
+            var new_state = 'oops';
+            if(current_state=='unreviewed'){
+                new_state = 'good';
+            } else if(current_state=='good'){
+                new_state = 'bad';
+            } else if(current_state=='bad'){
+                new_state = 'unreviewed';
+            }
+            set_batch_status(id, new_state);
+        });
+      });
+    </script>
+  <% end %>
 
 <% @upload_batches.each do |batch| %>
-<div class="upload-batch" style="clear: both; margin-left: 10px;">
+<div class="upload-batch <%= batch.review_status %>" style="clear: both; margin-left: 10px;" id="upload-batch-<%= batch.id %>">
   <div class="batch-inro" style="text-align: left;">
     User: <%= link_to batch.user.username, user_path(batch.user) rescue "<b>USER DOESN'T EXISTS</b>".html_safe %><br/>
     Album: <%= link_to batch.album.name, album_pretty_url(batch.album) rescue "<b>ALBUM DELETED</b>".html_safe %><br/>
     Batch #<%= batch.id %> from <%= batch.created_at.strftime('%H:%M:%S   %b  %d %Y ') %><br>
     Finished at: <%= batch.updated_at.strftime('%H:%M:%S   %b  %d %Y ') %><br/>
+    Review status: <%= link_to_function 'Good', "set_batch_status(#{batch.id}, 'good')" %> | <%= link_to_function 'Bad', "set_batch_status(#{batch.id}, 'bad')" %> | <%= link_to_function 'Unreviewed', "set_batch_status(#{batch.id}, 'unreviewed')" %>
   </div>
   <br>
   <div class="upload-batch-photos">
     <%= render :partial => 'photos_from_batch', :locals => {:upload_batch => batch} %>
   </div>
-  <br/>
 </div>
 <% end %>
+<br>
 <br>
 <br>
 <div><%= will_paginate @upload_batches %></div>
