@@ -1,7 +1,7 @@
 class UserSessionsController < ApplicationController
 
-  ssl_required :new, :create, :zz_api_create
-  skip_filter  :verify_authenticity_token, :only => [:zz_api_create, :create]
+  ssl_required :new, :create, :zz_api_login
+  skip_filter  :verify_authenticity_token, :only => [:zz_api_login, :create]
 
 
   after_filter :associate_order, :only => [:create]
@@ -101,7 +101,7 @@ class UserSessionsController < ApplicationController
   #     the available roles and their order
   # }
   #
-  def zz_api_create
+  def zz_api_login
     zz_api do
       user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => false)
       if user_session.save
@@ -126,7 +126,7 @@ class UserSessionsController < ApplicationController
     end
   end
 
-  def zz_api_destroy
+  def zz_api_logout
     zz_api do
       current_user_session.destroy if current_user
       nil

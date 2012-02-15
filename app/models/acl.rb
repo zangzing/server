@@ -146,13 +146,6 @@ class ACL < ActiveRecord::Base
     user_ids = Group.users_in_groups(group_ids)
   end
 
-  # return a single group as a hash
-  def as_hash
-    hash = {
-    }
-    hash
-  end
-
   #def self.test(count)
   #  rows = []
   #  acls = []

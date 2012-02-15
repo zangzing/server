@@ -69,13 +69,23 @@ private
   # this will only be called at the top level entry (i.e. if we nest it
   # will not be called)
   def self.handlers_prepare(state)
-    Cache::Album::Manager.shared.deferred_prepare(state)
+    begin
+      Cache::Album::Manager.shared.deferred_prepare(state)
+    rescue Exception => ex
+      Rails.logger.error("DeferredCompletionManager failed in deferred_prepare: #{small_back_trace(ex)}")
+      raise ex
+    end
   end
 
   # called when we are about to exit our context and not nested
   # this is where the handlers should do whatever deferrals they need
   def self.handlers_finish(state)
-    Cache::Album::Manager.shared.deferred_finish(state)
+    begin
+      Cache::Album::Manager.shared.deferred_finish(state)
+    rescue Exception => ex
+      Rails.logger.error("DeferredCompletionManager failed in deferred_finish: #{small_back_trace(ex)}")
+      raise ex
+    end
   end
 end
 

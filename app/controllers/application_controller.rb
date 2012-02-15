@@ -68,8 +68,20 @@ class ApplicationController < ActionController::Base
     add_javascript_action('send_zza_event_from_client', {:event => event})
   end
 
-
-
+  # TODO
+  # Decide what if any session support we want to have for
+  # zz_api callers.  We use session in numerous places but
+  # the iPhone does not set the session so we will keep
+  # creating new copies.
+  # Uncomment the following code if we decide to turn off
+  # session support for zz_api clients.
+  def session
+    if defined?(@session) || zz_api_call?
+      @session ||= {}
+    else
+      super
+    end
+  end
 
   #
   #  these helpers and filters are used to manage the 'all albums' back button
@@ -277,11 +289,6 @@ class ApplicationController < ActionController::Base
     filtered
   end
 
-  # wraps an active model error with a ZZAPIError
-  # by extracting the full error text array
-  def active_model_error(err)
-    return ZZAPIError
-  end
   # wraps a zz api call and ensures that
   # we handle exceptions cleanly and put into proper
   # format - does the render so expects the block

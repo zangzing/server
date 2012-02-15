@@ -68,7 +68,7 @@ module Cache
       # we are exiting the top level deferral, so we do our actual deferred work here
       def deferred_finish(state)
         invalidator = state[:album_cache_invalidator]
-        invalidator.invalidate_now  # do the real invalidation
+        invalidator.invalidate_now if invalidator  # do the real invalidation
       end
 
       # fetches the appropriate invalidator type

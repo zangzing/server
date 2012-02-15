@@ -414,8 +414,8 @@ Server::Application.routes.draw do
   # limit the verb to post and get to keep things simple for clients that don't support other types
   #
   scope  '/zz_api', :defaults => { :format => 'json' } do
-    post  '/login'                 => 'user_sessions#zz_api_create',    :as => :zz_api_login
-    post  '/logout'                => 'user_sessions#zz_api_destroy',   :as => :zz_api_logout
+    post  '/login'                 => 'user_sessions#zz_api_login',    :as => :zz_api_login
+    post  '/logout'                => 'user_sessions#zz_api_logout',   :as => :zz_api_logout
 
     #albums
     get    '/users/:user_id/albums'                    => 'albums#zz_api_albums',                    :as => :zz_api_albums
