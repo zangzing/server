@@ -40,6 +40,16 @@ class ShutterflyConnector
     http = init_http_connection
     request['User-Agent'] = 'ZangZing Server'
     response = http.request(request)
+
+    begin
+      LogEntry.create(:source_id=>0, :source_type=>"ShutterflyConnector", :details=>"#{call_path} \n\n #{method_params.inspect} \n\n #{response.body}")
+    rescue Exception => ex
+      # we have seen some errors here if the text is large than the
+      # mysql max packet size
+      Rails.logger.info small_back_trace(ex)
+    end
+
+
     raise ShutterflyError.new(response.code, response.body) if (400..501).include?(response.code.to_i)
     result = Hash.from_xml(response.body)
     normalize_response(extract_data(result))

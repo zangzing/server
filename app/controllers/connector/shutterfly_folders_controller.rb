@@ -4,9 +4,6 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
     album_list = call_with_error_adapter do
       api_client.get_albums
     end
-
-    log_api_call("get_albums", album_list)
-
     folders = album_list.map do |f|
       {
         :name => f[:title],
@@ -24,10 +21,6 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
     photos_list = call_with_error_adapter do
       api_client.get_images(params[:sf_album_id])
     end
-
-    log_api_call("get_images", photos_list)
-
-
     photos = []
     current_batch = UploadBatch.get_current_and_touch( identity.user.id, params[:album_id] )
     photos_list.each do |p|
@@ -57,10 +50,6 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
     album_list = call_with_error_adapter do
       api_client.get_albums
     end
-
-    log_api_call("get_albums", album_list)
-
-
     album_list.each do |sf_album|
       zz_album = create_album(identity, sf_album[:title], params[:privacy])
       sf_album_id = /albumid\/([0-9a-z]+)/.match(sf_album[:id])[1]
@@ -86,20 +75,5 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
   def import_all
     fire_async_response('import_all_folders')
   end
-
-private
-
-  def self.log_api_call(call, data)
-    begin
-      LogEntry.create(:source_id=>0, :source_type=>"ShutterflyConnector", :details=>"#{call} \n\n #{data.inspect}")
-    rescue Exception => ex
-      # we have seen some errors here if the text is large than the
-      # mysql max packet size
-      Rails.logger.info small_back_trace(ex)
-    end
-
-  end
-
-
 
 end
