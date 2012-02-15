@@ -60,7 +60,18 @@ class ShutterflyConnector
   #http://www.shutterfly.com/documentation/howto_Album.sfly
   def get_albums
     data = call_api("/userid/#{userid_token}/album")
-    data[:entry] || []
+    albums = data[:entry] || []
+
+    if !albums.kind_of?(Array)
+      # if there is just one album in the account, then the
+      # response is just a hash for that album
+      # need to wrap it in an array
+      albums = [albums]
+    end
+
+    return albums
+
+
   end
 
   def get_images(album_id)
