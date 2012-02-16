@@ -363,12 +363,12 @@ class UsersController < ApplicationController
       missing_emails = []
       if should_create == false
         found_emails = Set.new
-        converted_users.each { |user| found_emails.add(user.email) }
+        converted_users.each { |user| found_emails.add(user.email.downcase) }
         index = 0
         # walk the parsed emails
         emails.each do |email|
           # if missing use the original full email field not the parsed one to report the error
-          missing_emails << ZZAPIInvalidListError.build_missing_item(index, orig_emails[index]) unless found_emails.include?(email)
+          missing_emails << ZZAPIInvalidListError.build_missing_item(index, orig_emails[index]) unless found_emails.include?(email.downcase)
           index += 1
         end
       end
