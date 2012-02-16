@@ -585,13 +585,13 @@ class User < ActiveRecord::Base
       if create
         # create a map from email to user_id
         email_to_user = {}
-        users.each {|user| email_to_user[user.email] = user }
+        users.each {|user| email_to_user[user.email.downcase] = user }
         #todo, for missing users, check secondary email table here once we have it
 
         # ok, now walk the members to find out which ones need a new user created
         addresses.each do |address|
           email = address.address
-          user = email_to_user[email]
+          user = email_to_user[email.downcase]
           if user.nil?
             # not found, so make an automatic user
             name = address.display_name

@@ -71,7 +71,7 @@ describe "ZZ API Users" do
       dont_find_id = 99999999999999
       ids = [user2.id, dont_find_id]  # the bogus id should not cause failure but should end up in missing list
       last_name = "SomeUser_#{rand(99999)}"
-      email_only = "joe_some_user99@usertest.com"
+      email_only = "Joe_Some_User99@Usertest.com"
       emails = ["Joe #{last_name} <#{email_only}>"]
 
       j = zz_api_post zz_api_find_or_create_user_path, {:user_ids => ids, :create => true, :emails => emails, :user_names => names}, 200
@@ -98,7 +98,8 @@ describe "ZZ API Users" do
       user[:email].should == nil
 
       # Now call again but this time only using emails.  In this case they should all return the extra email field
-      emails = [user1.email, user2.email, email_only]
+      # also, upcase one of the emails to verify case insensitive match
+      emails = [user1.email, user2.email, email_only.upcase]
       j = zz_api_post zz_api_find_or_create_user_path, {:user_ids => ids, :emails => emails, :user_names => names}, 200
       members = j[:users]
       members.length.should == 3
