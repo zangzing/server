@@ -71,11 +71,11 @@ class ApplicationController < ActionController::Base
   # Determine if we want session support.  If we
   # have a zz_api call and the caller is in the
   # session less category (such as iPhone), we
-  # carry and expect no session state support
-  # In reality, the only case where we want
-  # session based support is for the Web UI.
+  # carry and expect no session state support.
   def session
-    if defined?(@session) || zz_api_session_less?
+    if zz_api_session_less?
+      # use our own bucket to store the throw away session state
+      # this is not persisted, nor is a cookie sent back to the client
       @session ||= {}
     else
       super

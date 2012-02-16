@@ -99,13 +99,15 @@ module ZZ
       # checks to see if we were called via the zz_api, impacts
       # how we form error responses
       def zz_api_call?
-        ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER]) || request.path.index("/zz_api/") == 0
+        return @zz_api_call if defined?(@zz_api_call)
+        @zz_api_call = ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER]) || request.path.index("/zz_api/") == 0
       end
 
       # if we have a non web caller return true for
       # no session support
       def zz_api_session_less?
-        zz_api_call? && request.headers[ZZ_API_HEADER] != ZZ_API_WEB_CLIENT
+        return @zz_api_session_less if defined?(@zz_api_session_less)
+        @zz_api_session_less = zz_api_call? && request.headers[ZZ_API_HEADER] == ZZ_API_IPHONE_CLIENT
       end
 
       # just used as a placeholder in code to make it clear
