@@ -68,15 +68,14 @@ class ApplicationController < ActionController::Base
     add_javascript_action('send_zza_event_from_client', {:event => event})
   end
 
-  # TODO
-  # Decide what if any session support we want to have for
-  # zz_api callers.  We use session in numerous places but
-  # the iPhone does not set the session so we will keep
-  # creating new copies.
-  # Uncomment the following code if we decide to turn off
-  # session support for zz_api clients.
+  # Determine if we want session support.  If we
+  # have a zz_api call and the caller is in the
+  # sessionless category (such as iPhone), we
+  # carry and expect no session state support
+  # In reality, the only case where we want
+  # session based support is for the Web UI.
   def session
-    if defined?(@session) || zz_api_call?
+    if defined?(@session) || zz_api_session_less?
       @session ||= {}
     else
       super

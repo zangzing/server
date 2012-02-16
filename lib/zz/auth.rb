@@ -12,7 +12,9 @@ module ZZ
     unless defined? ZZ_API_HEADER
       ZZ_API_HEADER = 'X-ZangZing-API'.freeze
       ZZ_API_HEADER_RAILS = 'HTTP_X_ZANGZING_API'.freeze
-      ZZ_API_VALID_VALUES = ['iphone'].freeze
+      ZZ_API_IPHONE_CLIENT = 'iphone'.freeze
+      ZZ_API_WEB_CLIENT = 'web'.freeze
+      ZZ_API_VALID_VALUES = [ZZ_API_IPHONE_CLIENT, ZZ_API_WEB_CLIENT]
     end
 
 
@@ -98,6 +100,12 @@ module ZZ
       # how we form error responses
       def zz_api_call?
         ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER]) || request.path.index("/zz_api/") == 0
+      end
+
+      # if we have a non web caller return true for
+      # no session support
+      def zz_api_session_less?
+        zz_api_call? && request.headers[ZZ_API_HEADER] != ZZ_API_WEB_CLIENT
       end
 
       # just used as a placeholder in code to make it clear
