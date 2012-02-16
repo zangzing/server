@@ -70,7 +70,7 @@ class ApplicationController < ActionController::Base
 
   # Determine if we want session support.  If we
   # have a zz_api call and the caller is in the
-  # sessionless category (such as iPhone), we
+  # session less category (such as iPhone), we
   # carry and expect no session state support
   # In reality, the only case where we want
   # session based support is for the Web UI.
