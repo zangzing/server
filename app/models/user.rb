@@ -290,6 +290,7 @@ class User < ActiveRecord::Base
         # no longer an auto by contact user
         user.auto_by_contact = false
         user.cohort = User.cohort_current # we now have a cohort
+        user.name = name unless name.blank? # email coming from user gets to set the name
         user.save # not crucial if this fails so ignore any error
       end
     else
