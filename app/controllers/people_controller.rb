@@ -10,12 +10,8 @@ class PeopleController < ApplicationController
     @contributors = []
 
     # collect all invited contributors
-    @album.contributors.each do | id |
-      user = User.find_by_id( id )
-      if user
-        @contributors << user
-      end
-    end
+    user_ids = @album.contributors
+    @contributors = User.where(:id => user_ids).all
 
     # collect everone who has contributed
     # includes the case where non-"contributors" contribute to
