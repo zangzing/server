@@ -1,8 +1,10 @@
 <div class="stacked-badge">
 
-  <a class="sb-photo" href="<%=user_path(user)%>">
-    <%= render :partial => 'users/profile_photo', :locals => { :user => user }    %>
-  </a>
+  <% if user.automatic? == false %>
+      <a class="sb-photo" href="<%=user_path(user)%>">
+        <%= render :partial => 'users/profile_photo', :locals => { :user => user }    %>
+      </a>
+  <%end%>
 
 
 

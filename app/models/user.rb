@@ -144,6 +144,13 @@ class User < ActiveRecord::Base
           album.destroy
         end
       end
+
+      # also destroy any photos this user
+      # created that are in other peoples albums
+      photos = Photo.find_all_by_user_id(self.id)
+      Photo.destroy(photos)
+
+      # and now let the super do the rest
       super
     end
   end
@@ -381,6 +388,20 @@ class User < ActiveRecord::Base
     else
       @name ||= [first_name, last_name].compact.join(' ').strip
     end
+  end
+
+  # shows the name as combined in the database without
+  # the anonymous conversion for automatic users
+  def actual_name
+    name(false)
+  end
+
+  # returns the users name if it is not
+  # blank.  Otherwise gives us the email
+  def name_then_email
+    name = actual_name
+    name = email if name.blank?
+    name
   end
 
   def name=(val)
