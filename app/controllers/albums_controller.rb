@@ -199,9 +199,9 @@ class AlbumsController < ApplicationController
   # :name => the album name
   # :privacy => the album privacy can be (public*, hidden, password)
   # :cover_photo_id => the optional cover photo id
-  # :who_can_download => who is allowed to download (everyone*,viewers,contributors,owner)
-  # :who_can_upload => who is allowed to upload (everyone,viewers,contributors*,owner)
-  # :who_can_buy => who is allowed to buy (everyone*,viewers,contributors,owner)
+  # :who_can_download => who is allowed to download (everyone*,contributors,owner)
+  # :who_can_upload => who is allowed to upload (everyone,contributors*)
+  # :who_can_buy => who is allowed to buy (everyone*,contributors,owner)
   # :stream_to_twitter => true if you want to stream updates to twitter
   # :stream_to_facebook => true if you want to stream updates to facebook
   # :stream_to_email => stream to email
@@ -248,9 +248,9 @@ class AlbumsController < ApplicationController
   # {
   # :name => the album name
   # :privacy => the album privacy can be (public*, hidden, password)
-  # :who_can_download => who is allowed to download (everyone*,viewers,contributors,owner)
-  # :who_can_upload => who is allowed to upload (everyone,viewers,contributors*,owner)
-  # :who_can_buy => who is allowed to buy (everyone*,viewers,contributors,owner)
+  # :who_can_download => who is allowed to download (everyone*,contributors,owner)
+  # :who_can_upload => who is allowed to upload (everyone,contributors*)
+  # :who_can_buy => who is allowed to buy (everyone*,contributors,owner)
   # :stream_to_twitter => true if you want to stream updates to twitter
   # :stream_to_facebook => true if you want to stream updates to facebook
   # :stream_to_email => stream to email
