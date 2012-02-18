@@ -455,7 +455,7 @@ class Album < ActiveRecord::Base
     if user
       if contributor?(user.id)
         # this user is a contributor, if we are currently auto_by_contact, upgrade to automatic
-        User.find_by_email_or_create_automatic( email, display_name, false ) if user.auto_by_contact?
+        user = User.find_by_email_or_create_automatic( email, display_name, false ) if user.auto_by_contact?
       else
         user = nil
       end
