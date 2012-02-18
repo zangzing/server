@@ -105,9 +105,11 @@ class UsersController < ApplicationController
           @guest.status = 'Active Account'
           @guest.save
         end
-        
-        if params[:follow_user_id] and (not params[:follow_user_id].empty?) and User.exists? params[:follow_user_id]
-          Like.add(@new_user.id, params[:follow_user_id], Like::USER)
+
+        follow_user_id = params[:follow_user_id]
+        if follow_user_id
+          follow_user = User.find_by_id(follow_user_id)
+          Like.add(@new_user.id, follow_user.id, Like::USER) if follow_user && !follow_user.automatic?
         end
 
         flash[:success] = "Welcome to ZangZing!"

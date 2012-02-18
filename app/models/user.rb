@@ -159,6 +159,16 @@ class User < ActiveRecord::Base
     Group.delete_groups_and_acls(group_ids)
   end
 
+  # this is a flavor of find that looks
+  # for a full fledged user via the find
+  # method and then checks to see if
+  # not automatic
+  def self.find_full_user!(user_id)
+    user = User.find(user_id)
+    raise ActiveRecord::RecordNotFound.new("User not found") if user.automatic?
+    user
+  end
+
   # check to see if the change matters - we do this
   # before the commit because once it is committed we
   # no longer know what changed
@@ -599,7 +609,7 @@ class User < ActiveRecord::Base
             if name.blank?
               # when blank, and they have a matching contact, use the name from it
               contact = created_by_user.contacts.find_by_address(email)
-              name = contact.formatted_email if contact
+              name = contact.name if contact
             end
             user = User.create_automatic(email, name, true, created_by_user)
             users << user

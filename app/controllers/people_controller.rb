@@ -21,7 +21,8 @@ class PeopleController < ApplicationController
     # includes the case where non-"contributors" contribute to
     # open album
     @album.upload_batches.each do |batch|
-      @contributors << batch.user
+      batch_user = batch.user
+      @contributors << batch_user if batch_user
     end
     @contributors.uniq!
 

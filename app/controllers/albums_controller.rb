@@ -603,7 +603,7 @@ class AlbumsController < ApplicationController
   def index
     return unless require_nothing
     begin
-      @user = User.find(params[:user_id])
+      @user = User.find_full_user!(params[:user_id])
     rescue ActiveRecord::RecordNotFound => e
       user_not_found_redirect_to_homepage_or_potd
       return
