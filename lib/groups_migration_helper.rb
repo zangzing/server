@@ -53,7 +53,13 @@ class GroupsMigrationHelper
       puts "Migrating ACLs for Album: #{album.name}"
       old_acl = OldAlbumACL.new(album.id)
       from_roles.each_index do |i|
-        user_ids = old_acl.get_users_with_role(from_roles[i], true)
+        if from_roles[i] == OldAlbumACL::ADMIN_ROLE
+          # special case admin role since only the owner should be an admin currently
+          # just set that one to be safe
+          user_ids = [album.user_id]
+        else
+          user_ids = old_acl.get_users_with_role(from_roles[i], true)
+        end
         convert_rights(album.acl, user_ids, to_roles[i])
       end
     end
