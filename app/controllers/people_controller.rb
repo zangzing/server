@@ -33,7 +33,7 @@ class PeopleController < ApplicationController
 
   def user_index
     begin
-      @user = User.find(params[:user_id])
+      @user = User.find_full_user!(params[:user_id])
       @user_is_auto_follow = User.auto_like_ids.include?( @user.id )
       @is_homepage_view = true
     rescue ActiveRecord::RecordNotFound => e
