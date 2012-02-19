@@ -706,7 +706,7 @@ class Album < ActiveRecord::Base
           :photos_ready_count => album.photos_ready_count,
           :cache_version => album.cache_version_key,
           :updated_at => album.updated_at.to_i,
-          :my_role => album.my_role, # valid values are Viewer, Contrib, Admin
+          :my_role => album.my_role, # valid values are viewer, contributor, admin
           :privacy => album.privacy,
           :all_can_contrib => album.everyone_can_contribute?,
           :who_can_download => album.who_can_download, #Valid values are viewers, owner, everyone

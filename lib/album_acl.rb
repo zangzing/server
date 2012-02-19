@@ -18,9 +18,9 @@ end
 
 # implements the ACL control for Albums
 class AlbumACL < ACLBase
-  ADMIN_ROLE = ACLRole.new('Admin', 100)
-  CONTRIBUTOR_ROLE = ACLRole.new('Contrib', 200)
-  VIEWER_ROLE = ACLRole.new('Viewer', 300)
+  ADMIN_ROLE = ACLRole.new('admin', 100)
+  CONTRIBUTOR_ROLE = ACLRole.new('contributor', 200)
+  VIEWER_ROLE = ACLRole.new('viewer', 300)
 
   def self.initialize
     if AlbumACL.initialized.nil?

@@ -469,7 +469,7 @@ describe "ZZ API Albums" do
         albums = zz_api_get path, 200
         albums.length.should == 1
         albums[0][:id].should == @a1u1.id
-        albums[0][:my_role].should == 'Contrib'
+        albums[0][:my_role].should == AlbumACL::CONTRIBUTOR_ROLE.name
 
         # now add user 2 and see if he can see it
         GroupMember.update_members([[@g2u1.id, @u2.id]])  # do the low level member change to get cache invalidate
@@ -479,7 +479,7 @@ describe "ZZ API Albums" do
         albums = zz_api_get path, 200
         albums.length.should == 1
         albums[0][:id].should == @a1u1.id
-        albums[0][:my_role].should == 'Viewer'
+        albums[0][:my_role].should == AlbumACL::VIEWER_ROLE.name
 
         # add group to a second album
         @a2u1.add_contributors([@g2u1.id])
@@ -489,10 +489,10 @@ describe "ZZ API Albums" do
         albums.length.should == 2
         a1 = find_album_by_id(albums, @a1u1.id)
         a1.should_not == nil
-        a1[:my_role].should == 'Viewer'
+        a1[:my_role].should == AlbumACL::VIEWER_ROLE.name
         a2 = find_album_by_id(albums, @a2u1.id)
         a2.should_not == nil
-        a2[:my_role].should == 'Contrib'
+        a2[:my_role].should == AlbumACL::CONTRIBUTOR_ROLE.name
 
         # now downgrade group 1, which had Contrib rights to viewer
         @a1u1.add_viewers([@g1u1.id])
@@ -505,10 +505,10 @@ describe "ZZ API Albums" do
         albums.length.should == 2
         a1 = find_album_by_id(albums, @a1u1.id)
         a1.should_not == nil
-        a1[:my_role].should == 'Viewer'
+        a1[:my_role].should == AlbumACL::VIEWER_ROLE.name
         a2 = find_album_by_id(albums, @a2u1.id)
         a2.should_not == nil
-        a2[:my_role].should == 'Contrib'
+        a2[:my_role].should == AlbumACL::CONTRIBUTOR_ROLE.name
 
         # now delete group 2
         @g2u1.destroy
@@ -521,7 +521,7 @@ describe "ZZ API Albums" do
         albums.length.should == 1
         a1 = find_album_by_id(albums, @a1u1.id)
         a1.should_not == nil
-        a1[:my_role].should == 'Viewer'
+        a1[:my_role].should == AlbumACL::VIEWER_ROLE.name
         a2 = find_album_by_id(albums, @a2u1.id)
         a2.should == nil
 
@@ -546,16 +546,16 @@ describe "ZZ API Albums" do
         albums.length.should == 4
         a1 = find_album_by_id(albums, @a1u1.id)
         a1.should_not == nil
-        a1[:my_role].should == 'Contrib'
+        a1[:my_role].should == AlbumACL::CONTRIBUTOR_ROLE.name
         a2 = find_album_by_id(albums, @a2u1.id)
         a2.should_not == nil
-        a2[:my_role].should == 'Viewer'
+        a2[:my_role].should == AlbumACL::VIEWER_ROLE.name
         a1 = find_album_by_id(albums, @a1u2.id)
         a1.should_not == nil
-        a1[:my_role].should == 'Viewer'
+        a1[:my_role].should == AlbumACL::VIEWER_ROLE.name
         a2 = find_album_by_id(albums, @a2u2.id)
         a2.should_not == nil
-        a2[:my_role].should == 'Contrib'
+        a2[:my_role].should == AlbumACL::CONTRIBUTOR_ROLE.name
 
         # now update the name of album 1
         new_album_name = "Album Name Changed 1"
@@ -567,7 +567,7 @@ describe "ZZ API Albums" do
         albums.length.should == 4
         a1 = find_album_by_id(albums, @a1u1.id)
         a1.should_not == nil
-        a1[:my_role].should == 'Contrib'
+        a1[:my_role].should == AlbumACL::CONTRIBUTOR_ROLE.name
         a1[:name].should == new_album_name
       end
     end

@@ -164,7 +164,7 @@ class AlbumsController < ApplicationController
   #    :cache_version => album.cache_version_key,
   #    :updated_at => album.updated_at.to_i,
   #    :cover_date => cover_date.to_i,
-  #    :my_role => album.my_role, # valid values are Viewer, Contrib, Admin - if null and you are the owner then Admin
+  #    :my_role => album.my_role, # valid values are viewer, contributor, admin - if null and you are the owner then Admin
   #    :privacy => album.privacy,
   #    :all_can_contrib => true if everyone can contribute,
   #    :who_can_download => who can download
@@ -307,8 +307,8 @@ class AlbumsController < ApplicationController
   #   ...
   #   ],
   #   :members => [
-  #     hash of group info with permission attribute added (contributor/viewer)
-  #     see groups zz_api_info for detailed contents
+  #     hash of group info with permission attribute added (contributor or viewer or admin)
+  #     see groups zz_api_info for detailed contents, admin cannot be currently set but can be returned
   #   ...
   #   ]
   #   :share => {
@@ -380,7 +380,7 @@ class AlbumsController < ApplicationController
       member = params[:member]
       group_id = member[:id].to_i
 
-      if member[:permission] == 'contributor'
+      if member[:permission] == AlbumACL::CONTRIBUTOR_ROLE.name
         @album.add_contributors(group_id)
       else
         @album.add_viewers(group_id)
@@ -462,7 +462,7 @@ class AlbumsController < ApplicationController
   # [
   #   {
   #     groups api info attributes for each group as in zz_api_info method of groups controller
-  #     :permission => 'contributor' or 'viewer'    # this attribute is added in to each group
+  #     :permission => 'contributor' or 'viewer' or 'admin'    # this attribute is added in to each group
   #   }
   # ...
   # ]
@@ -525,7 +525,7 @@ class AlbumsController < ApplicationController
       # determine who needs to get emails - only those users
       # that did not already have this role or higher should
       # get the emails
-      if params[:permission] == 'contributor'
+      if params[:permission] == AlbumACL::CONTRIBUTOR_ROLE.name
         type = Share::TYPE_CONTRIBUTOR_INVITE
         # grant the new role and return a list of only the affected users
         affected_user_ids = @album.add_contributors(group_ids, true)
@@ -579,7 +579,7 @@ class AlbumsController < ApplicationController
   # [
   #   {
   #     groups api info attributes for each group as in zz_api_info method of groups controller
-  #     :permission => 'contributor' or 'viewer'    # this attribute is added in to each group
+  #     :permission => 'contributor' or 'viewer' or 'admin'    # this attribute is added in to each group
   #   }
   # ...
   # ]
@@ -954,7 +954,7 @@ class AlbumsController < ApplicationController
 # Receives and processes a user's request for access into a password protected album
   def request_access
     return unless require_user && require_album
-    if params[:access_type ] && params[:access_type] =="contributor"
+    if params[:access_type ] && params[:access_type] == AlbumACL::CONTRIBUTOR_ROLE.name
       ZZ::Async::Email.enqueue( :request_contributor, current_user.id, @album.id,  params[:message] )
     else
       ZZ::Async::Email.enqueue( :request_access, current_user.id, @album.id,  params[:message] )
@@ -1173,7 +1173,7 @@ class AlbumsController < ApplicationController
     members = []
     contributors = Set.new(contributors)  # as a set for efficient checks
     users.each do |user|
-      permission = contributors.include?(user.id) ? 'contributor' : 'viewer'
+      permission = contributors.include?(user.id) ? AlbumACL::CONTRIBUTOR_ROLE.name : AlbumACL::VIEWER_ROLE.name
       members << get_sharing_member(user, permission)
     end
 
@@ -1188,6 +1188,7 @@ class AlbumsController < ApplicationController
   def get_sharing_members
     # fetch them all in a single query
     roles = @album.acl.get_groups_and_roles
+    admins = roles[AlbumACL::ADMIN_ROLE]
     contributors = roles[AlbumACL::CONTRIBUTOR_ROLE]
     viewers = roles[AlbumACL::VIEWER_ROLE]
 
@@ -1202,7 +1203,14 @@ class AlbumsController < ApplicationController
     members = []
     contributors = Set.new(contributors)  # as a set for efficient checks
     groups.each do |group|
-      permission = contributors.include?(group.id) ? 'contributor' : 'viewer'
+      group_id = group.id
+      if admins.include?(group_id)
+        permission = AlbumACL::ADMIN_ROLE.name
+      elsif contributors.include?(group_id)
+        permission = AlbumACL::CONTRIBUTOR_ROLE.name
+      else
+        permission = AlbumACL::VIEWER_ROLE.name
+      end
       members << group.as_hash({:permission => permission})
     end
 
