@@ -1194,7 +1194,7 @@ class AlbumsController < ApplicationController
 
     # do efficient single query to fetch all groups at once
     # and create a user_id => user hash for lookup
-    all_group_ids = Array(contributors + viewers)
+    all_group_ids = Array(contributors + viewers + admins)
     groups = Group.where(:id => all_group_ids).includes(:wrapped_user => :profile_album).all
     # now sort them
     groups = Group.sort(groups)
@@ -1202,6 +1202,7 @@ class AlbumsController < ApplicationController
     # now build the final output form with permissions added in
     members = []
     contributors = Set.new(contributors)  # as a set for efficient checks
+    admins = Set.new(admins)  # as a set for efficient checks
     groups.each do |group|
       group_id = group.id
       if admins.include?(group_id)
