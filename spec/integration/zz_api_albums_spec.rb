@@ -241,12 +241,12 @@ describe "ZZ API Albums" do
         [found_group_ids, found_emails]
       end
 
-      it "should have no members when new" do
+      it "should have one member when new" do
         j = zz_api_get zz_api_sharing_edit_album_path(@album), 200
-        j[:members].length.should == 0
+        j[:members].length.should == 1
 
         j = zz_api_get zz_api_sharing_members_album_path(@album), 200
-        j.length.should == 0
+        j.length.should == 1
       end
 
       it "should fail with bad groups and emails" do
@@ -254,7 +254,7 @@ describe "ZZ API Albums" do
             :emails => ['bad2@@@email.com'],
             :group_ids => [999999999999],
             :message => 'viewers welcome',
-            :permission => 'viewer'
+            :permission => AlbumACL::VIEWER_ROLE.name
         }
         j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, ZZAPIError::INVALID_LIST_ARGS
         error = j[:message]
@@ -278,13 +278,13 @@ describe "ZZ API Albums" do
               :emails => [email_user],
               :group_ids => [u1.my_group_id],
               :message => 'viewers welcome',
-              :permission => 'viewer'
+              :permission => AlbumACL::VIEWER_ROLE.name
           }
           expected_emails = [email_user]
           expected_ids = [u1.my_group_id]
           j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
-          j.length.should == 2
-          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          j.length.should == 3
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, AlbumACL::VIEWER_ROLE.name)
           ActionMailer::Base.deliveries.length.should == 2
           match_delivered_email(email_user)
           match_delivered_email(u1.email)
@@ -292,15 +292,15 @@ describe "ZZ API Albums" do
 
           # add them again as viewers, should cause no emails
           j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
-          j.length.should == 2
-          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          j.length.should == 3
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, AlbumACL::VIEWER_ROLE.name)
           ActionMailer::Base.deliveries.length.should == 0
 
           # now as contribs
-          members[:permission] = 'contributor'
+          members[:permission] = AlbumACL::CONTRIBUTOR_ROLE.name
           j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
-          j.length.should == 2
-          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+          j.length.should == 3
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, AlbumACL::CONTRIBUTOR_ROLE.name)
           ActionMailer::Base.deliveries.length.should == 2
           match_delivered_email(email_user)
           match_delivered_email(u1.email)
@@ -308,15 +308,15 @@ describe "ZZ API Albums" do
 
           # again as contribs
           j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
-          j.length.should == 2
-          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+          j.length.should == 3
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, AlbumACL::CONTRIBUTOR_ROLE.name)
           ActionMailer::Base.deliveries.length.should == 0
 
           # now back to viewers
-          members[:permission] = 'viewer'
+          members[:permission] = AlbumACL::VIEWER_ROLE.name
           j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
-          j.length.should == 2
-          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          j.length.should == 3
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, AlbumACL::VIEWER_ROLE.name)
           ActionMailer::Base.deliveries.length.should == 2
           match_delivered_email(email_user)
           match_delivered_email(u1.email)
@@ -331,16 +331,16 @@ describe "ZZ API Albums" do
               :emails => [],
               :group_ids => [group.id],
               :message => 'contributors welcome',
-              :permission => 'contributor'
+              :permission => AlbumACL::CONTRIBUTOR_ROLE.name
           }
           j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
-          j.length.should == 3
+          j.length.should == 4
           expected_emails = [email_user]
           expected_ids = [u1.my_group_id]
-          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, AlbumACL::VIEWER_ROLE.name)
           expected_emails = []
           expected_ids = [group.id]
-          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, AlbumACL::CONTRIBUTOR_ROLE.name)
           ActionMailer::Base.deliveries.length.should == 3
           match_delivered_email(gm1.user.email)
           match_delivered_email(gm2.user.email)
@@ -354,44 +354,44 @@ describe "ZZ API Albums" do
               }
           }
           j = zz_api_post zz_api_delete_sharing_member_album_path(@album), member, 200
-          j.length.should == 2
+          j.length.should == 3
           expected_emails = [email_user]
           expected_ids = [u1.my_group_id]
-          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, AlbumACL::VIEWER_ROLE.name)
 
           members = {
               :emails => [],
               :group_ids => [u2.my_group_id, u3.my_group_id],
               :message => 'contributors welcome',
-              :permission => 'contributor'
+              :permission => AlbumACL::CONTRIBUTOR_ROLE.name
           }
           expected_emails = [email_user]
           expected_ids = [u1.my_group_id]
           j = zz_api_post zz_api_add_sharing_members_album_path(@album), members, 200
-          j.length.should == 4
+          j.length.should == 5
           # first verify that viewers haven't changed
-          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, AlbumACL::VIEWER_ROLE.name)
 
           # now see if we got the expected contribs
           expected_emails = []
           expected_ids = [u2.my_group_id, u3.my_group_id]
-          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, AlbumACL::CONTRIBUTOR_ROLE.name)
 
           # now upgrade one of the viewers
           member = {
               :member => {
                   :id => u1.my_group_id,
-                  :permission => 'contributor'
+                  :permission => AlbumACL::CONTRIBUTOR_ROLE.name
               }
           }
           j = zz_api_post zz_api_update_sharing_member_album_path(@album), member, 200
-          j.length.should == 4
+          j.length.should == 5
           expected_emails = [email_user]
           expected_ids = []
-          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, AlbumACL::VIEWER_ROLE.name)
           expected_emails = []
           expected_ids = [u1.my_group_id, u2.my_group_id, u3.my_group_id]
-          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, AlbumACL::CONTRIBUTOR_ROLE.name)
 
           # now delete one of the contribs
           member = {
@@ -400,16 +400,16 @@ describe "ZZ API Albums" do
               }
           }
           j = zz_api_post zz_api_delete_sharing_member_album_path(@album), member, 200
-          j.length.should == 3
+          j.length.should == 4
           # this time verify with sharing members call
           j = zz_api_get zz_api_sharing_members_album_path(@album), 200
-          j.length.should == 3
+          j.length.should == 4
           expected_emails = [email_user]
           expected_ids = []
-          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'viewer')
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, AlbumACL::VIEWER_ROLE.name)
           expected_emails = []
           expected_ids = [u2.my_group_id, u3.my_group_id]
-          match_expected_groups_and_emails(j, expected_ids, expected_emails, 'contributor')
+          match_expected_groups_and_emails(j, expected_ids, expected_emails, AlbumACL::CONTRIBUTOR_ROLE.name)
         end
       end
 
