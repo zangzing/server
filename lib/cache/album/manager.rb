@@ -151,7 +151,7 @@ module Cache
       # We are changing the users we like so it doesn't really matter
       # which user change because the cache is now stale and must
       # be re-fetched when next requested which will retrack any items of interest
-      def user_like_modified(user_id, tracked_user_id)
+      def user_like_modified(user_id, tracked_user_id = nil)
         invalidator = make_invalidator
         invalidator.add_tracked_user(user_id, AlbumTypes::LIKED_USERS_ALBUMS_PUBLIC)
         invalidator.add_tracked_user_like_membership(user_id, AlbumTypes::LIKED_USERS_ALBUMS_PUBLIC)
@@ -163,7 +163,7 @@ module Cache
       # is not used because we delete all of them since the cache is now stale
       # and we expect the next visit for this cache to retrack the items
       # that user cares about
-      def album_like_modified(user_id, tracked_album_id)
+      def album_like_modified(user_id, tracked_album_id = nil)
         invalidator = make_invalidator
         invalidator.add_tracked_user(user_id, AlbumTypes::LIKED_ALBUMS)
         invalidator.add_tracked_album_like_membership(user_id, AlbumTypes::LIKED_ALBUMS)
@@ -209,6 +209,13 @@ module Cache
         end
 
         invalidator.invalidate
+      end
+
+      # user has been deleted so invalidate any related caches
+      def user_deleted(user_id)
+        user_albums_acl_modified([user_id])
+        user_like_modified(user_id)
+        album_like_modified(user_id)
       end
 
       # trim out old entries, called by

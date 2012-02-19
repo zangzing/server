@@ -129,12 +129,14 @@ class User < ActiveRecord::Base
   #
   def destroy
     DeferredCompletionManager.dispatch do
+      user_id = self.id
+
       # unsubscribe all emails
       (MailingList.user_cleanup(self) rescue nil) unless automatic?
 
       # destroy in bulk any groups and group members related to this id and perform acl notifications
       # for all of them, also removes all groups from the acls
-      User.remove_all_groups_for_user(id)
+      User.remove_all_groups_for_user(user_id)
 
       # destroy the albums
       # someday we should do this in bulk
@@ -147,8 +149,11 @@ class User < ActiveRecord::Base
 
       # also destroy any photos this user
       # created that are in other peoples albums
-      photos = Photo.find_all_by_user_id(self.id)
+      photos = Photo.find_all_by_user_id(user_id)
       Photo.destroy(photos)
+
+      # invalidate all cache references to this user
+      Cache::Album::Manager.shared.user_deleted(user_id)
 
       # and now let the super do the rest
       super
