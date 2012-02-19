@@ -43,4 +43,10 @@ ActiveRecord::Schema.define(:version => 20110407145731) do
   add_index "c_working_track_set", ["tx_id"], :name => "index_c_working_track_set_on_tx_id"
   add_index "c_working_track_set", ["user_id", "track_type", "tx_id"], :name => "working_track_set_index", :unique => true
 
+  create_table "test", :id => false, :force => true do |t|
+    t.integer "user_id",    :limit => 8, :null => false
+    t.integer "track_type", :limit => 1, :null => false
+    t.integer "tx_id",      :limit => 8, :null => false
+  end
+
 end

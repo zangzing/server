@@ -6,7 +6,7 @@
 require 'resque/server'
 require 'resque-retry'
 require 'resque-retry/server'
-
+require 'zz_env_helpers'
 
 if defined?(Rails.root) and File.exists?("#{Rails.root}/config/resque.yml")
 
@@ -135,7 +135,9 @@ module ZZInstrument
           NewRelic::Agent.reset_stats if Server::Application.config.resque_run_forked && (NewRelic::Agent.respond_to? :reset_stats)
           perform_action_with_newrelic_trace(:name => 'perform', :class_name => class_name,
                                              :category => 'OtherTransaction/ResqueJob') do
-            old_perform_method.bind(self).call
+            DeferredCompletionManager.dispatch {
+              old_perform_method.bind(self).call
+            }
           end
 
           if Server::Application.config.resque_run_forked

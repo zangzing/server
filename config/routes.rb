@@ -90,15 +90,8 @@ Server::Application.routes.draw do
     put    '/albums/:album_id'                     => 'albums#update',              :as => :update_album
     delete '/albums/:album_id'                     => 'albums#destroy',             :as => :delete_album
     post   'albums/:album_id/request_access'       => 'albums#request_access',      :as => :request_album_access
-    get    '/albums/:album_id/edit_group'          => 'albums#edit_group'
     get    '/albums/:album_id/add_photos'          => 'albums#add_photos',          :as => :album_add_photos
     get    '/albums/:album_id/wizard/:step'        => 'albums#wizard',              :as => :album_wizard
-
-    #todo: these are not very REST-ful
-    post   '/albums/:album_id/add_group_members'   => 'albums#add_group_members'
-    put    '/albums/:album_id/update_group_member' => 'albums#update_group_member'
-    delete '/albums/:album_id/delete_group_member' => 'albums#delete_group_member'
-    get    '/albums/:album_id/group_members'       => 'albums#group_members'
 
     #shares
     get    '/albums/:album_id/shares'             => 'shares#index',            :as => :album_shares
@@ -418,9 +411,11 @@ Server::Application.routes.draw do
   # ====================================================================================================
   # ============================================= ZZ_API  ==============================================
   # ====================================================================================================
+  # limit the verb to post and get to keep things simple for clients that don't support other types
+  #
   scope  '/zz_api', :defaults => { :format => 'json' } do
-    post  '/login'                 => 'user_sessions#zz_api_create',    :as => :zz_api_login
-    match '/logout'                => 'user_sessions#zz_api_destroy',   :as => :zz_api_logout
+    post  '/login'                 => 'user_sessions#zz_api_login',    :as => :zz_api_login
+    post  '/logout'                => 'user_sessions#zz_api_logout',   :as => :zz_api_logout
 
     #albums
     get    '/users/:user_id/albums'                    => 'albums#zz_api_albums',                    :as => :zz_api_albums
@@ -431,23 +426,45 @@ Server::Application.routes.draw do
     get    '/users/:user_id/liked_users_public_albums' => 'albums#zz_api_liked_users_public_albums', :as => :zz_api_liked_users_public_albums
     get    '/users/:user_id/invited_albums'            => 'albums#zz_api_invited_albums',            :as => :zz_api_invited_albums
     post   '/users/albums/create'                      => 'albums#zz_api_create',                    :as => :zz_api_create_album
-    put    '/albums/:album_id'                         => 'albums#zz_api_update',                    :as => :zz_api_update_album
-    put    '/albums/:album_id/close_batch'             => 'albums#zz_api_close_batch',               :as => :zz_api_close_batch
+    post   '/albums/:album_id/update'                  => 'albums#zz_api_update',                    :as => :zz_api_update_album
+    get    '/albums/:album_id'                         => 'albums#zz_api_album_info',                :as => :zz_api_album_info
+    post   '/albums/:album_id/delete'                  => 'albums#zz_api_destroy',                   :as => :zz_api_destroy_album
+    post   '/albums/:album_id/close_batch'             => 'albums#zz_api_close_batch',               :as => :zz_api_close_batch
+    get    '/albums/:album_id/sharing_edit'            => 'albums#zz_api_sharing_edit',              :as => :zz_api_sharing_edit_album
+    post   '/albums/:album_id/add_sharing_members'     => 'albums#zz_api_add_sharing_members',       :as => :zz_api_add_sharing_members_album
+    post   '/albums/:album_id/update_sharing_member'   => 'albums#zz_api_update_sharing_member',     :as => :zz_api_update_sharing_member_album
+    post   '/albums/:album_id/delete_sharing_member'   => 'albums#zz_api_delete_sharing_member',     :as => :zz_api_delete_sharing_member_album
+    get    '/albums/:album_id/sharing_members'         => 'albums#zz_api_sharing_members',           :as => :zz_api_sharing_members_album
 
     #photos
     get    '/albums/:album_id/photos'                  => 'photos#zz_api_photos',                    :as => :zz_api_photos
     post   '/albums/:album_id/photos/create_photos'    => 'photos#zz_api_create_photos',             :as => :zz_api_create_photos
     get    '/photos/:agent_id/pending_uploads'         => 'photos#zz_api_pending_uploads',           :as => :zz_api_pending_uploads
+    # internal, used by nginx, external upload is /zz_api/photos/:photo_id/upload
+    # needs to remain a put
     put    '/photos/:id/upload_fast'                   => 'photos#upload_fast',                      :as => :zz_api_upload_photo_fast
 
-
     #users
-    get    '/users/:user_id/info' => 'users#zz_api_user_info',                  :as => :zz_api_user_info
+    get    '/users/:user_id/info'                      => 'users#zz_api_user_info',                  :as => :zz_api_user_info
+    post   '/users/find_or_create'                     => 'users#zz_api_find_or_create',             :as => :zz_api_find_or_create_user
+
+    #groups
+    post   '/groups/create'                            => 'groups#zz_api_create',                    :as => :zz_api_create_group
+    post   '/groups/:group_id/delete'                  => 'groups#zz_api_destroy',                   :as => :zz_api_destroy_group
+    post   '/groups/:group_id/update'                  => 'groups#zz_api_update',                    :as => :zz_api_update_group
+    get    '/groups/:group_id'                         => 'groups#zz_api_info',                      :as => :zz_api_info_group
+    get    '/users/groups/all'                         => 'groups#zz_api_users_groups',              :as => :zz_api_users_groups
+    get    '/groups/:group_id/members'                 => 'groups#zz_api_members',                   :as => :zz_api_members_group
+    post   '/groups/:group_id/add_members'             => 'groups#zz_api_add_members',               :as => :zz_api_add_members_group
+    post   '/groups/:group_id/remove_members'          => 'groups#zz_api_remove_members',            :as => :zz_api_remove_members_group
 
 
     #identities
     get     '/identities' => 'identities#zz_api_identities'
     get     '/identities/:service_name' => 'identities#zz_api_identity'
+
+    # system status
+    get    '/system/status'                             => 'system#zz_api_status',                   :as => :zz_api_system_status
 
   end
 

@@ -10,18 +10,15 @@ class PeopleController < ApplicationController
     @contributors = []
 
     # collect all invited contributors
-    @album.contributors.each do | id |
-      user = User.find_by_id( id )
-      if user
-        @contributors << user
-      end
-    end
+    user_ids = @album.contributors
+    @contributors = User.where(:id => user_ids).all
 
     # collect everone who has contributed
     # includes the case where non-"contributors" contribute to
     # open album
     @album.upload_batches.each do |batch|
-      @contributors << batch.user
+      batch_user = batch.user
+      @contributors << batch_user if batch_user
     end
     @contributors.uniq!
 
@@ -36,7 +33,7 @@ class PeopleController < ApplicationController
 
   def user_index
     begin
-      @user = User.find(params[:user_id])
+      @user = User.find_full_user!(params[:user_id])
       @user_is_auto_follow = User.auto_like_ids.include?( @user.id )
       @is_homepage_view = true
     rescue ActiveRecord::RecordNotFound => e

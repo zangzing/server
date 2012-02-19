@@ -65,7 +65,7 @@ class PhotosController < ApplicationController
   # :user_id is derived from your current account session.
   #
   # You must have permission to add photos to this album.  This means that you are either the owner (your user id matches
-  # that of the album), a contributor (checking your role on the album as being Contrib or Admin),
+  # that of the album), a contributor (checking your role on the album as being contributor or admin),
   # or the all_can_contrib flag in the albums is set to true.
   #
   # the expected parameters are:
