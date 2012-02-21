@@ -368,7 +368,7 @@ zz.pages.group_tab = {
                         '</div>' +
                     '</div>' +
                     '<div class="to"><input class="contact-list"></div>' +
-                    '<textarea placeholder="' + MESSAGE_PLACEHOLDER_TEXT + '" class="message"></textarea>' +
+                    '<textarea placeholder="' + self.MESSAGE_PLACEHOLDER_TEXT + '" class="message"></textarea>' +
                     '<div class="permission">Add them as: <select size="1"><option value="viewer">Viewer</option><option selected="true" value="contributor">Contributor</option></select></div>' +
                     '<a class="cancel-button black-button"><span>Cancel</span></a>' +
                     '<a class="submit-button green-button"><span>OK</span></a>' +
@@ -586,7 +586,7 @@ zz.pages.group_tab = {
                         };
 
                         // in case user didn't change placeholder text...
-                        if(data.message == MESSAGE_PLACEHOLDER_TEXT){
+                        if(data.message == self.MESSAGE_PLACEHOLDER_TEXT){
                             data.message = '';
                         }
 
