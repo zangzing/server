@@ -361,6 +361,7 @@ Server::Application.routes.draw do
         get   'upload_batches/:id/report_abuse' => 'upload_batches#report', :as => :moderator_upload_batch_report
         get   'upload_batches/:id/update'       => 'upload_batches#update', :as => :moderator_upload_batch_update
         get   'upload_batches/:date/:filter'    => 'upload_batches#show',   :as => :moderator_upload_batch
+        get   'upload_batches/clean_empty_batches' => 'upload_batches#clean_empty_batches', :as => :moderator_upload_batch_clean_empty
     end
 
     scope  '/admin', :module => "admin" do

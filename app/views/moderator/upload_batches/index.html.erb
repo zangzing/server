@@ -1,8 +1,8 @@
 <% content_for :page_title, "Upload Batches list per day" %>
 
+<p><%= link_to 'Clean Empty Batches', moderator_upload_batch_clean_empty %></p>
+
 <div class="viewlist">
-
-
     <div id="batch-list" style="text-align: left; margin-left: 100px;">
       <ul>
         <% @upload_batches_days.each do | row | %>
@@ -15,5 +15,4 @@
         <% end %>
       </ul>
     </div>
-
 </div>
