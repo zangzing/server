@@ -291,13 +291,22 @@
             var batch_size = 60;
             var time_lapse = 0; //milliseconds between batches
             //console.log('create-some-photos photo_count is'+self.photo_count );
+
+            // store these values up-front. used for single pic view
+            var index_of_current = null;
+            if( o.currentPhotoId != null){
+                index_of_current = self.indexOfPhoto(o.currentPhotoId);
+            }
+
             var create_some_photos = function(i) {
                 //console.log('create-some-photos batch '+i+'-'+ ( i+batch_size-1) );
                 if (i < self.photo_count) { //recursion termination condition
                     //console.log('create-some-photos batch needs work');
                     //create a batch of photos
                     for (var j = i; j < i + batch_size && j < self.photo_count; j++) {
-                        create_photo(j, self._get_photo(j));
+                        if(index_of_current && index_of_current != j){  //skip current photo because we already created (below)
+                            create_photo(j, self._get_photo(j));
+                        }
                     }
 
                     // Display the grid after the first batch is ready
@@ -305,13 +314,15 @@
                     if( i < batch_size ){
                         //  Single picture view - Display the selected photo
                         if( o.singlePictureMode  ){
-                            var index = 0;
-                            if( o.currentPhotoId != null){
-                                index = self.indexOfPhoto(o.currentPhotoId);
-                            }
-                            var current_photo = self._get_photo( index )
-                            if( index >= batch_size ){ // create photo if not in first batch
-                                create_photo(index, current_photo );
+//                            var index = 0;
+//                            if( o.currentPhotoId != null){
+//                                index = self.indexOfPhoto(o.currentPhotoId);
+//                            }
+                            if(index_of_current){
+                                var current_photo = self._get_photo( index_of_current )
+                                if( index_of_current >= batch_size ){ // create photo if not in first batch
+                                    create_photo(index_of_current, current_photo );
+                                }
                             }
                             self._show_and_arm();
                             self.offset = el.offset();
