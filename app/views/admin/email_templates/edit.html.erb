@@ -2,7 +2,7 @@
 <div id="main-container">
 
   <ul class="viewlist">
-    <li class="header bar">Edit Email Template</li>
+    <li class="header bar">Edit <%= 'Outer ' if @email_template.is_outer? %>Email Template</li>
     <li class="item">
       <%=form_for @email_template  do | f |%>
 
@@ -32,23 +32,32 @@
             <%= f.label :email_id, "email" %>
             <%= f.select :email_id, options_for_select(@email_options,f.object.email_id), {:prompt => 'Select Email' } %>
           </div>
+          <% unless @email_template.is_outer? %>
+              <div>
+                <%= f.label :from_name%> : <%=@email_template.from_name%>
+              </div>
+              <div>
+                <%= f.label :from_address%> : <%=@email_template.from_address%>
+              </div>
+              <div>
+                <%= f.label :subject%> : <%=@email_template.subject%>
+              </div>
+              <div>
+                <%= f.label :reply_to%> <%= f.text_field :reply_to %>
+              </div>
+              <div>
+                <%= f.label :category%> <%= f.text_field :category %>
+              </div>
+          <% end %>
           <div>
-            <%= f.label :from_name%> : <%=@email_template.from_name%>
+            <%= f.label :html_body%><br/><%= f.text_area :html_body, :cols => 80 %>
           </div>
           <div>
-            <%= f.label :from_address%> : <%=@email_template.from_address%>
-          </div>
-          <div>
-            <%= f.label :subject%> : <%=@email_template.subject%>
-          </div>
-          <div>
-            <%= f.label :reply_to%> <%= f.text_field :reply_to %>
-          </div>
-          <div>
-            <%= f.label :category%> <%= f.text_field :category %>
+            <%= f.label :text_body%><br/><%= f.text_area :text_body, :cols => 80 %>
           </div>
           <div style="float:left;">
             <%= f.submit "Update"%>
+            <%= button_to "Preview","javascript:void(0);" ,{:onclick => "window.open('#{test_email_template_url( @email_template )}?onscreen=true','_blank','left=20,top=20,width=700,height=900,toolbar=0,resizable=0,scrollbars=1');return false;" } unless @email_template.is_outer? %>
           </div>
       <%end%>
     </li>

@@ -1,7 +1,6 @@
 class EmailTemplate < ActiveRecord::Base
   attr_accessible :name, :email_id, :mc_campaign_id, :from_name, :from_address, :subject, :reply_to, :category
 
-
   belongs_to :email
   has_one :production_email, :class_name => "Email",
           :inverse_of => :production_template,
@@ -26,8 +25,21 @@ class EmailTemplate < ActiveRecord::Base
     save
   end
 
+  def outer_template
+    @outer_template ||= self.class.outer
+  end
+
+  def self.outer
+    Email.outer_template.first.production_template
+  end
+
+  def is_outer?
+    self.outer_template == self
+  end
+
 
   def is_campaign_valid?
+    return true if Rails.env.development?
     @campaign = nil
     campaigns =gb.campaigns(:filters => { :folder_id => 21177, :campaign_id => self.mc_campaign_id })['data']
     @campaign = campaigns[0] if campaigns
@@ -35,6 +47,7 @@ class EmailTemplate < ActiveRecord::Base
   end
 
  def reload_mc_content_no_save
+   return true if Rails.env.development?
     #Get the template info from MC
     campaign = is_campaign_valid?
     content =  gb.campaign_content(  {'cid' => campaign['id'] , 'for_archive' => false} )
