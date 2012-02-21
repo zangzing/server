@@ -1,5 +1,8 @@
 class EmailTemplate < ActiveRecord::Base
-  attr_accessible :name, :email_id, :mc_campaign_id, :from_name, :from_address, :subject, :reply_to, :category
+  BODY_SUBSTITUTION_MACRO = '*|BODY|*'
+
+  attr_accessible :name, :email_id, :mc_campaign_id, :from_name, :from_address, :subject, :reply_to, :category, :html_body, :text_body
+  attr_accessor :skip_merge
 
   belongs_to :email
   has_one :production_email, :class_name => "Email",
@@ -12,6 +15,26 @@ class EmailTemplate < ActiveRecord::Base
        record.errors.add attr, 'MailChimp Campaign ID is not valid'
      end
    end
+
+  before_save do |inner_template|
+    unless inner_template.is_outer? || inner_template.skip_merge
+      inner_template.html_content = inner_template.outer_template.html_body.gsub(BODY_SUBSTITUTION_MACRO, inner_template.html_body || '')
+      inner_template.text_content = inner_template.outer_template.text_body.gsub(BODY_SUBSTITUTION_MACRO, inner_template.text_body || '')
+    end
+  end
+
+  after_save do |template|
+    if template.is_outer?
+      EmailTemplate.all.each do |inner_template|
+        next if inner_template==template #Don't update the outer template
+        inner_template.skip_merge = true
+        inner_template.html_content = template.html_body.gsub(BODY_SUBSTITUTION_MACRO, inner_template.html_body || '')
+        inner_template.text_content = template.text_body.gsub(BODY_SUBSTITUTION_MACRO, inner_template.text_body || '')
+        inner_template.save
+      end
+    end
+  end
+
 
   before_save :reload_mc_content_no_save
  
@@ -36,6 +59,8 @@ class EmailTemplate < ActiveRecord::Base
   def is_outer?
     self.outer_template == self
   end
+
+
 
 
   def is_campaign_valid?
