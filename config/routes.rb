@@ -388,6 +388,7 @@ Server::Application.routes.draw do
         put   'users/:id/activate'               => 'users#activate',             :as => :admin_activate_user
         put   'users/:id/reset_password'         => 'users#reset_password',       :as => :admin_reset_password
         put   'users/:id/impersonate'            => 'users#impersonate',          :as => :admin_impersonate
+        delete 'users/:id'                       => 'users#destroy',              :as => :admin_delete_user
 
         get   'heap'                            => 'heap#index'
         get   'heap_track'                      => 'heap#track'
