@@ -354,6 +354,7 @@ Server::Application.routes.draw do
         get   'upload_batches/:id/report_abuse' => 'upload_batches#report', :as => :moderator_upload_batch_report
         get   'upload_batches/:id/update'       => 'upload_batches#update', :as => :moderator_upload_batch_update
         get   'upload_batches/:date/:filter'    => 'upload_batches#show',   :as => :moderator_upload_batch
+        get   'upload_batches/clean_empty_batches' => 'upload_batches#clean_empty_batches', :as => :moderator_upload_batch_clean_empty
     end
 
     scope  '/admin', :module => "admin" do
@@ -380,6 +381,7 @@ Server::Application.routes.draw do
         put   'users/:id/activate'               => 'users#activate',             :as => :admin_activate_user
         put   'users/:id/reset_password'         => 'users#reset_password',       :as => :admin_reset_password
         put   'users/:id/impersonate'            => 'users#impersonate',          :as => :admin_impersonate
+        delete 'users/:id'                       => 'users#destroy',              :as => :admin_delete_user
 
         get   'heap'                            => 'heap#index'
         get   'heap_track'                      => 'heap#track'

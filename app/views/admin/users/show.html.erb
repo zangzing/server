@@ -3,7 +3,7 @@
   <ul class="viewlist">
     <li class type="item">
       <div class='header bar' style="width: 800px;">
-        <%="#{@user.name} #{(@user.automatic? ? '(Automatic User)': '')}"%>
+        <%="#{@user.name} #{(@user.automatic? ? '(Automatic User)': '')}"%>  <button class="delete-user" style="font-size:12px; font-family: Lucida Grande">Delete User...</button>
         <div style="float:right; text-align: right; font-size: 80%;"><%=link_to "Back to Users", :back %></div>
       </div>
       <div class="content">
@@ -125,3 +125,30 @@
       </div>
   </ul>
 </div>
+
+
+<% content_for :page_javascript do %>
+
+    <script>
+        $(document).ready(function(){
+            var username = "<%= @user.username %>";
+
+            $('.delete-user').click(function(){
+                var result = prompt("Are you sure you want to delete this user?\n Type 'delete " + username + "' to confirm.");
+
+                if (result == "delete " + username){
+                    var url = "<%= admin_delete_user_path(@user) %>";
+                    var dialog = zz.dialog.show_progress_dialog("Deleting user...");
+                    $.post(url, {'_method': 'delete'}, function(response){
+                        dialog.close();
+                        alert('Delete operation has been queued. It may take a few minutes to finish.')
+                    });
+                }
+            });
+        });
+    </script>
+<% end %>
+
+
+
+
