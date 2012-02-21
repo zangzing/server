@@ -78,7 +78,7 @@ class Subscriptions< ActiveRecord::Base
     end
     self.save
   end
-
+  alias update_subscription :unsubscribe
 
   def wants_email?( zzemail )
     false if zzemail.nil?

@@ -50,7 +50,7 @@ class Photo < ActiveRecord::Base
                   :updated_at, :image_content_type, :headline, :error_message, :image_bucket,
                   :orientation, :height, :suspended, :longitude, :pos, :image_path, :image_updated_at,
                   :generate_queued_at, :width, :state, :source, :deleted_at, :for_print, :original_suffix, :size_version,
-                  :crc32, :import_context
+                  :crc32, :import_context, :work_priority
 
   # this is just a placeholder used by the connectors to track some extra state
   # now that we do batch operations
@@ -81,6 +81,13 @@ class Photo < ActiveRecord::Base
   validates_presence_of             :album_id, :user_id, :upload_batch_id
 
 
+  # wrap the destroy in a deferred dispatch, allows us to batch cache invalidates
+  def destroy
+    DeferredCompletionManager.dispatch do
+      super
+    end
+  end
+
   # since we allow batch operations, we don't get the normal callbacks for things
   # like before_create.  So, to keep things simple we have this helper method
   # that is used when you plan to do a batch insert.  This lets us run the proper
@@ -107,7 +114,7 @@ class Photo < ActiveRecord::Base
   # :rotate_to - new rotation
   # :for_print - will only produce print related resized photos
   #
-  # returns the new copys array - the copy still has to go through the
+  # returns the new copies array - the copy still has to go through the
   # resque jobs for copy of the s3 data and resizing steps so
   # is initially in the uploading state
   def self.copy_photos(originals)

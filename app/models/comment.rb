@@ -62,18 +62,11 @@ class Comment < ActiveRecord::Base
 
       # all viewers and contributors of album
       if album.stream_to_email?
-        viewers ||= album.viewers(false)
+        viewers ||= Set.new(album.viewers(false))
 
-        # viewers comes back as strings of ids or emails
-        viewers.each do |viewer|
-          # if viewer doesn't parse, this will return 0
-          viewer_id = viewer.to_i
-          if viewer_id == 0
-            users_to_notify << viewer
-          else
-            users_to_notify << viewer_id
-          end
-
+        # viewers comes back as user ids
+        viewers.each do |user_id|
+          users_to_notify << user_id
         end
       end
 
@@ -85,14 +78,14 @@ class Comment < ActiveRecord::Base
 
       # if password album, remove users who are not in ACL
       if album.private?
-        viewers ||= album.viewers(false)
-        users_to_notify.reject! { |userid_or_email|
-          !viewers.include?(userid_or_email.to_s)
+        viewers ||= Set.new(album.viewers(false))
+        users_to_notify.reject! { |user_id|
+          !viewers.include?(user_id)
         }
       end
 
-      users_to_notify.each do |user_to_notify|
-        ZZ::Async::Email.enqueue(:photo_comment, self.user.id, user_to_notify, self.id)
+      users_to_notify.each do |user_id|
+        ZZ::Async::Email.enqueue(:photo_comment, self.user.id, user_id, self.id)
       end
 
     end

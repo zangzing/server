@@ -22,8 +22,6 @@
             <%= render :partial => 'create_album_activity', :locals => {:activity => activity, :view => Activity::USER_VIEW } %>
         <%  when LikeActivity then%>
             <%= render :partial => 'like_activity', :locals => {:activity => activity, :view => Activity::USER_VIEW } %>
-        <%  when InviteActivity then%>
-            <%= render :partial => 'invite_activity', :locals => {:activity => activity, :view => Activity::USER_VIEW } %>
         <%  when CommentActivity then%>
             <%= render :partial => 'comment_activity', :locals => {:activity => activity, :view => Activity::USER_VIEW } %>
         <%else%>

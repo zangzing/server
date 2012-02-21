@@ -72,22 +72,6 @@ class SettingsController < ApplicationController
     render :json => true #Invalid call return not valid
   end
 
-  # zz api
-  def zz_api_user_info
-    zz_api do
-      user_id = params[:user_id]
-      user = User.find(user_id)
-
-      user_info = {
-        :user_id                        => user_id,
-        :username                       => user.username,
-        :first_name                     => user.first_name,
-        :last_name                      => user.last_name,
-        :profile_url                    => user.profile_photo_url,
-      }
-    end
-  end
-
 
   private
   def admin_user
