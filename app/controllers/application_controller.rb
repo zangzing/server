@@ -33,7 +33,17 @@ class ApplicationController < ActionController::Base
 
   after_filter :flash_to_headers
 
+  around_filter :deferred_wrapper
+
   layout  proc{ |c| c.request.xhr? ? false : 'main' }
+
+  # for each request that we dispatch, give the deferred manager a chance
+  # to run
+  def deferred_wrapper
+    # &Proc.new below effectively passes the block down
+    DeferredCompletionManager.dispatch(&Proc.new)
+  end
+
 
   # If its an AJAX request, move the flashes to a custom header for JS handling on the client
   # removes the flash from the session because it was a json cal so we do not want it there
@@ -58,8 +68,19 @@ class ApplicationController < ActionController::Base
     add_javascript_action('send_zza_event_from_client', {:event => event})
   end
 
-
-
+  # Determine if we want session support.  If we
+  # have a zz_api call and the caller is in the
+  # session less category (such as iPhone), we
+  # carry and expect no session state support.
+  def session
+    if zz_api_session_less?
+      # use our own bucket to store the throw away session state
+      # this is not persisted, nor is a cookie sent back to the client
+      @session ||= {}
+    else
+      super
+    end
+  end
 
   #
   #  these helpers and filters are used to manage the 'all albums' back button
@@ -283,7 +304,7 @@ class ApplicationController < ActionController::Base
   # block must not use return at the top level since
   # return in a block exits out to our caller without
   # coming back to us first
-  def zz_api_core(skip_render, block)
+  def zz_api_core(filter, skip_render, block)
     return unless require_zz_api # anything using these api wrappers enforces require_zz_api
     begin
       result = block.call
@@ -294,20 +315,24 @@ class ApplicationController < ActionController::Base
           render :json => JSON.fast_generate(result)
         end
       end
-    rescue ZZAPIError => ex
-      # a custom error which can have a string, hash, or array
-      render_json_error(ex, ex.result, ex.code)
     rescue Exception => ex
-      render_json_error(ex)
+      ex = filter.custom_error(ex) if filter
+      logger.info("zz_api call failed with: #{ex.message}")
+      if ex.is_a?(ZZAPIError)
+        # a custom error which can have a string, hash, or array
+        render_json_error(ex, ex.result, ex.code)
+      else
+        render_json_error(ex)
+      end
     end
   end
 
-  def zz_api_self_render(&block)
-    zz_api_core(true, block)
+  def zz_api_self_render(filter = nil, &block)
+    zz_api_core(filter, true, block)
   end
 
-  def zz_api(&block)
-    zz_api_core(false, block)
+  def zz_api(filter = nil, &block)
+    zz_api_core(filter, false, block)
   end
 
 end

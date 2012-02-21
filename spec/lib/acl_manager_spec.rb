@@ -1,15 +1,16 @@
-require "rspec"
-require "config/application"
-require "lib/album_acl"
-require "redis"
+require 'spec_helper'
+#require "rspec"
+#require "config/application"
+require "lib/old_album_acl"
+#require "redis"
 require 'benchmark'
 require 'system_timer'
 
-class TestAlbumACLTuple < BaseACLTuple
+class TestAlbumACLTuple < OldBaseACLTuple
 end
 
 # implements the ACL control for Albums
-class TestAlbumACL < BaseACL
+class TestAlbumACL < OldBaseACL
   ADMIN_ROLE = ACLRole.new('Admin', 1)
   CONTRIBUTOR_ROLE = ACLRole.new('Contrib', 2)
 
@@ -38,7 +39,7 @@ TestAlbumACL.initialize
 
 def clean_up_album_range(start_album_id, end_album_id, include_test_album = false)
   (start_album_id..end_album_id).each do |album_id|
-    a = AlbumACL.new(album_id)
+    a = OldAlbumACL.new(album_id)
     a.remove_acl
     if include_test_album
       ta = TestAlbumACL.new(album_id + 10000)
@@ -53,18 +54,18 @@ describe "ACL Test" do
 
   it "should get the same redis object" do
 
-    redis = ACLManager.get_global_redis
+    redis = OldACLManager.get_global_redis
 
     redis.should_not == nil
 
-    redis2 = ACLManager.get_global_redis
+    redis2 = OldACLManager.get_global_redis
 
     redis2.should == redis
   end
 
   it "should make an album acl" do
 
-    a = AlbumACL.new(999)
+    a = OldAlbumACL.new(999)
 
     a.should_not == nil
 
@@ -72,7 +73,7 @@ describe "ACL Test" do
 
     a.type.should == "Album"
 
-    b = AlbumACL.new(999)
+    b = OldAlbumACL.new(999)
 
     a.type.should == b.type
     a.roles[0].should == b.roles[0]
@@ -82,7 +83,7 @@ describe "ACL Test" do
   end
 
   it "should have different roles" do
-    a = AlbumACL.new(999)
+    a = OldAlbumACL.new(999)
     t = TestAlbumACL.new(999)
 
     a.roles.should_not == t.roles
@@ -91,11 +92,11 @@ describe "ACL Test" do
   end
 
   it "should remove an acl" do
-    a = AlbumACL.new(999)
+    a = OldAlbumACL.new(999)
 
-    a.add_user 1000, AlbumACL::ADMIN_ROLE
-    a.add_user 1001, AlbumACL::VIEWER_ROLE
-    a.add_user 3000, AlbumACL::CONTRIBUTOR_ROLE
+    a.add_user 1000, OldAlbumACL::ADMIN_ROLE
+    a.add_user 1001, OldAlbumACL::VIEWER_ROLE
+    a.add_user 3000, OldAlbumACL::CONTRIBUTOR_ROLE
 
 
     removed = a.remove_acl
@@ -106,12 +107,12 @@ describe "ACL Test" do
   it "should ignore case" do
     user_id = "MyUser@myemail.com"
     alt_user_id = "myuser@myemail.com"
-    a = AlbumACL.new(999)
+    a = OldAlbumACL.new(999)
 
-    a.add_user user_id, AlbumACL::ADMIN_ROLE
+    a.add_user user_id, OldAlbumACL::ADMIN_ROLE
 
     role = a.get_user_role(alt_user_id)
-    role.should == AlbumACL::ADMIN_ROLE
+    role.should == OldAlbumACL::ADMIN_ROLE
 
     removed = a.remove_acl
 
@@ -125,34 +126,34 @@ describe "ACL Test" do
     end_album_id = 2003
 
     (start_album_id..end_album_id).each do |album_id|
-      a = AlbumACL.new(album_id)
+      a = OldAlbumACL.new(album_id)
       ta = TestAlbumACL.new(album_id + 10000)
-      a.add_user user_id, AlbumACL::ADMIN_ROLE
+      a.add_user user_id, OldAlbumACL::ADMIN_ROLE
       ta.add_user user_id, TestAlbumACL::ADMIN_ROLE
     end
 
     # see if user is found with correct role using existing id
-    a = AlbumACL.new(start_album_id)
+    a = OldAlbumACL.new(start_album_id)
     ta = TestAlbumACL.new(start_album_id + 10000)
 
     role = a.get_user_role(user_id)
-    role.should == AlbumACL::ADMIN_ROLE
+    role.should == OldAlbumACL::ADMIN_ROLE
 
     role = ta.get_user_role(user_id)
     role.should == TestAlbumACL::ADMIN_ROLE
 
     # now globally rename this user id
-    ACLManager.global_replace_user_key user_id, new_user_id
+    OldACLManager.global_replace_user_key user_id, new_user_id
 
     # see if user is found with correct role using existing id
     role = a.get_user_role(new_user_id)
-    role.should == AlbumACL::ADMIN_ROLE
+    role.should == OldAlbumACL::ADMIN_ROLE
 
     role = ta.get_user_role(new_user_id)
     role.should == TestAlbumACL::ADMIN_ROLE
 
     # clean up
-    ACLManager.global_delete_user new_user_id
+    OldACLManager.global_delete_user new_user_id
     clean_up_album_range(start_album_id, end_album_id, true)
   end
 
@@ -162,24 +163,24 @@ describe "ACL Test" do
     end_album_id = 2003
 
     (start_album_id..end_album_id).each do |album_id|
-      a = AlbumACL.new(album_id)
+      a = OldAlbumACL.new(album_id)
       ta = TestAlbumACL.new(album_id + 10000)
-      a.add_user user_id, AlbumACL::ADMIN_ROLE
+      a.add_user user_id, OldAlbumACL::ADMIN_ROLE
       ta.add_user user_id, TestAlbumACL::ADMIN_ROLE
     end
 
     # see if user is found with correct role using existing id
-    a = AlbumACL.new(start_album_id)
+    a = OldAlbumACL.new(start_album_id)
     ta = TestAlbumACL.new(start_album_id + 10000)
 
     role = a.get_user_role(user_id)
-    role.should == AlbumACL::ADMIN_ROLE
+    role.should == OldAlbumACL::ADMIN_ROLE
 
     role = ta.get_user_role(user_id)
     role.should == TestAlbumACL::ADMIN_ROLE
 
     # now delete this user id from all
-    ACLManager.global_delete_user user_id
+    OldACLManager.global_delete_user user_id
 
     # see if user is found with correct role using existing id
     role = a.get_user_role(user_id)
@@ -194,15 +195,15 @@ describe "ACL Test" do
 
   it "should list roles" do
     users = [
-        {"8888" =>  AlbumACL::ADMIN_ROLE},
-        {"8889" =>  AlbumACL::CONTRIBUTOR_ROLE},
-        {"8890" =>  AlbumACL::VIEWER_ROLE},
-        {"8891" =>  AlbumACL::CONTRIBUTOR_ROLE},
-        {"8892" =>  AlbumACL::VIEWER_ROLE},
-        {"8893" =>  AlbumACL::VIEWER_ROLE},
-        {"8894" =>  AlbumACL::ADMIN_ROLE},
-        {"8895" =>  AlbumACL::CONTRIBUTOR_ROLE},
-        {"8896" =>  AlbumACL::VIEWER_ROLE},
+        {"8888" =>  OldAlbumACL::ADMIN_ROLE},
+        {"8889" =>  OldAlbumACL::CONTRIBUTOR_ROLE},
+        {"8890" =>  OldAlbumACL::VIEWER_ROLE},
+        {"8891" =>  OldAlbumACL::CONTRIBUTOR_ROLE},
+        {"8892" =>  OldAlbumACL::VIEWER_ROLE},
+        {"8893" =>  OldAlbumACL::VIEWER_ROLE},
+        {"8894" =>  OldAlbumACL::ADMIN_ROLE},
+        {"8895" =>  OldAlbumACL::CONTRIBUTOR_ROLE},
+        {"8896" =>  OldAlbumACL::VIEWER_ROLE},
     ]
     admins = 2
     contribs = 3
@@ -211,7 +212,7 @@ describe "ACL Test" do
     album_id = 2000
 
     # create the test album entry, make sure it doesn't exist first
-    a = AlbumACL.new(album_id)
+    a = OldAlbumACL.new(album_id)
     a.remove_acl
 
     # now add the users
@@ -222,24 +223,24 @@ describe "ACL Test" do
     end
 
     # now fetch and check them
-    check_users = a.get_users_with_role(AlbumACL::VIEWER_ROLE, true)
+    check_users = a.get_users_with_role(OldAlbumACL::VIEWER_ROLE, true)
     check_users.count.should == viewers
-    check_users = a.get_users_with_role(AlbumACL::VIEWER_ROLE, false)
+    check_users = a.get_users_with_role(OldAlbumACL::VIEWER_ROLE, false)
     check_users.count.should == viewers + admins + contribs
 
-    check_users = a.get_users_with_role(AlbumACL::CONTRIBUTOR_ROLE, true)
+    check_users = a.get_users_with_role(OldAlbumACL::CONTRIBUTOR_ROLE, true)
     check_users.count.should == contribs
-    check_users = a.get_users_with_role(AlbumACL::CONTRIBUTOR_ROLE, false)
+    check_users = a.get_users_with_role(OldAlbumACL::CONTRIBUTOR_ROLE, false)
     check_users.count.should == contribs + admins
 
-    check_users = a.get_users_with_role(AlbumACL::ADMIN_ROLE, true)
+    check_users = a.get_users_with_role(OldAlbumACL::ADMIN_ROLE, true)
     check_users.count.should == admins
-    check_users = a.get_users_with_role(AlbumACL::ADMIN_ROLE, false)
+    check_users = a.get_users_with_role(OldAlbumACL::ADMIN_ROLE, false)
     check_users.count.should == admins
 
     a.remove_user(8888)
     a.get_user_role(8888).should == nil
-    check_users = a.get_users_with_role(AlbumACL::ADMIN_ROLE, true)
+    check_users = a.get_users_with_role(OldAlbumACL::ADMIN_ROLE, true)
     check_users.count.should == admins - 1
 
     clean_up_album_range(album_id, album_id)
@@ -252,19 +253,19 @@ describe "ACL Test" do
     album_count = end_album_id - start_album_id + 1
 
     (start_album_id..end_album_id).each do |album_id|
-      a = AlbumACL.new(album_id)
+      a = OldAlbumACL.new(album_id)
       ta = TestAlbumACL.new(album_id)
-      a.add_user user_id, AlbumACL::ADMIN_ROLE
+      a.add_user user_id, OldAlbumACL::ADMIN_ROLE
       ta.add_user user_id, TestAlbumACL::CONTRIBUTOR_ROLE
     end
 
-    tuples = AlbumACL.get_acls_for_user(user_id, AlbumACL::ADMIN_ROLE, true)
+    tuples = OldAlbumACL.get_acls_for_user(user_id, OldAlbumACL::ADMIN_ROLE, true)
     tuples.count.should == album_count
 
-    tuples = AlbumACL.get_acls_for_user(user_id, AlbumACL::VIEWER_ROLE, true)
+    tuples = OldAlbumACL.get_acls_for_user(user_id, OldAlbumACL::VIEWER_ROLE, true)
     tuples.count.should == 0
 
-    tuples = AlbumACL.get_acls_for_user(user_id, AlbumACL::VIEWER_ROLE, false)
+    tuples = OldAlbumACL.get_acls_for_user(user_id, OldAlbumACL::VIEWER_ROLE, false)
     tuples.count.should == album_count
 
     tuples = TestAlbumACL.get_acls_for_user(user_id, TestAlbumACL::CONTRIBUTOR_ROLE, true)
@@ -274,7 +275,7 @@ describe "ACL Test" do
     tuples.count.should == 0
 
     # clean up
-    ACLManager.global_delete_user user_id
+    OldACLManager.global_delete_user user_id
   end
 
   it "should validate permissions" do
@@ -282,22 +283,22 @@ describe "ACL Test" do
     start_album_id = 2000
 
     # see if user is found with correct role using existing id
-    a = AlbumACL.new(start_album_id)
+    a = OldAlbumACL.new(start_album_id)
 
-    a.add_user user_id, AlbumACL::ADMIN_ROLE
-    a.has_permission?(user_id, AlbumACL::ADMIN_ROLE).should == true
-    a.has_permission?(user_id, AlbumACL::CONTRIBUTOR_ROLE).should == true
-    a.has_permission?(user_id, AlbumACL::VIEWER_ROLE).should == true
+    a.add_user user_id, OldAlbumACL::ADMIN_ROLE
+    a.has_permission?(user_id, OldAlbumACL::ADMIN_ROLE).should == true
+    a.has_permission?(user_id, OldAlbumACL::CONTRIBUTOR_ROLE).should == true
+    a.has_permission?(user_id, OldAlbumACL::VIEWER_ROLE).should == true
 
-    a.add_user user_id, AlbumACL::CONTRIBUTOR_ROLE
-    a.has_permission?(user_id, AlbumACL::ADMIN_ROLE).should == false
-    a.has_permission?(user_id, AlbumACL::CONTRIBUTOR_ROLE).should == true
-    a.has_permission?(user_id, AlbumACL::VIEWER_ROLE).should == true
+    a.add_user user_id, OldAlbumACL::CONTRIBUTOR_ROLE
+    a.has_permission?(user_id, OldAlbumACL::ADMIN_ROLE).should == false
+    a.has_permission?(user_id, OldAlbumACL::CONTRIBUTOR_ROLE).should == true
+    a.has_permission?(user_id, OldAlbumACL::VIEWER_ROLE).should == true
 
-    a.add_user user_id, AlbumACL::VIEWER_ROLE
-    a.has_permission?(user_id, AlbumACL::ADMIN_ROLE).should == false
-    a.has_permission?(user_id, AlbumACL::CONTRIBUTOR_ROLE).should == false
-    a.has_permission?(user_id, AlbumACL::VIEWER_ROLE).should == true
+    a.add_user user_id, OldAlbumACL::VIEWER_ROLE
+    a.has_permission?(user_id, OldAlbumACL::ADMIN_ROLE).should == false
+    a.has_permission?(user_id, OldAlbumACL::CONTRIBUTOR_ROLE).should == false
+    a.has_permission?(user_id, OldAlbumACL::VIEWER_ROLE).should == true
 
     clean_up_album_range(start_album_id, start_album_id)
   end
@@ -311,19 +312,19 @@ describe "ACL Test" do
       x.report('create and add') do
         1.times do |i|
           (start_album_id..end_album_id).each do |album_id|
-            a = AlbumACL.new(album_id)
-            a.add_user user_id, AlbumACL::ADMIN_ROLE
+            a = OldAlbumACL.new(album_id)
+            a.add_user user_id, OldAlbumACL::ADMIN_ROLE
           end
         end
       end
     end
 
 
-    a = AlbumACL.new(start_album_id)
+    a = OldAlbumACL.new(start_album_id)
     Benchmark.bm(25) do |x|
       x.report('access check') do
         10000.times do |i|
-          a.has_permission?(user_id, AlbumACL::ADMIN_ROLE)
+          a.has_permission?(user_id, OldAlbumACL::ADMIN_ROLE)
         end
       end
     end
@@ -340,9 +341,9 @@ describe "ACL Test" do
     Benchmark.bm(25) do |x|
       x.report('album 10k users create') do
         1.times do |i|
-          a = AlbumACL.new(start_album_id)
+          a = OldAlbumACL.new(start_album_id)
           10000.times do |i|
-            a.add_user user_id + i, AlbumACL::ADMIN_ROLE
+            a.add_user user_id + i, OldAlbumACL::ADMIN_ROLE
           end
         end
       end

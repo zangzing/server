@@ -2,9 +2,9 @@
 # are defined as a priority where the lower
 # number has all the rights of the higher numbered
 # roles.  So for example we might have:
-# Admin => 1
-# Contributor => 2
-# Viewer => 3
+# admin => 10
+# contributor => 20
+# viewer => 30
 #
 # when rights checks are done and we want to know if
 # a user has viewer rights it can be either a viewer,

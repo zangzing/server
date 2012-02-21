@@ -103,8 +103,17 @@ silence_warnings do #To avoid warning of overwriting constant
   # make a single instance of the the album cache manager
   Cache::Album::Manager.make_shared
 
-
-
-
 end
 
+# handy helper for calling methods from the console that require
+# the deferred completion manager, gives you a way to utilize
+# the efficient batching from the console, pass in a proc
+# to execute such as:
+#
+# dcm_call {u.save}
+#
+# the call we be wrapped with the deferred state set up properly
+def dcm_call
+    # &Proc.new below effectively passes the block down
+    DeferredCompletionManager.dispatch(&Proc.new)
+end
