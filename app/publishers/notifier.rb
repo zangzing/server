@@ -15,6 +15,13 @@ class Notifier < ActionMailer::Base
     @photos  = @batch.photos
     @recipient = @user
     @album_url = album_pretty_url( @album )
+
+
+    @invite_friends_url = invite_friends
+    @join_now_url = join_url
+    @recipient_is_user = true
+
+
     vcard = Vpim::Vcard::Maker.make2 do |vc|
       vc.add_name do |name|
         name.given = @album.name
@@ -48,6 +55,12 @@ class Notifier < ActionMailer::Base
     @album     = Album.find( album_id )
     @recipient = @album.user
 
+    @invite_friends_url = invite_friends
+    @join_now_url = join_url
+    @recipient_is_user = true
+
+
+
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
@@ -59,6 +72,12 @@ class Notifier < ActionMailer::Base
     @photo     = Photo.find( photo_id )
     @recipient = User.find( recipient_id )
 
+    @invite_friends_url = invite_friends
+    @join_now_url = join_url
+    @recipient_is_user = true
+
+
+
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
@@ -68,6 +87,11 @@ class Notifier < ActionMailer::Base
   def user_liked( user_id, liked_user_id,  template_id = nil )
     @user      = User.find( user_id )
     @recipient = User.find( liked_user_id )
+
+    @invite_friends_url = invite_friends
+    @join_now_url = join_url
+    @recipient_is_user = true
+
 
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
@@ -171,6 +195,10 @@ class Notifier < ActionMailer::Base
     rcp_user = User.find_by_id( to_address_or_id )
     @recipient = ( rcp_user ? rcp_user : to_address_or_id )
     @destination_link = destination_link( @recipient, album_pretty_url( @album ) )
+
+    @invite_friends_url = invite_friends
+    @join_now_url = join_url
+    @recipient_is_user = @recipient.is_a?(User)
 
     create_message(  __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
