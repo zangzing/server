@@ -17,7 +17,7 @@ class Notifier < ActionMailer::Base
     @album_url = album_pretty_url( @album )
 
 
-    @invite_friends_url = invite_friends
+    @invite_friends_url = invite_friends_url
     @join_now_url = join_url
     @recipient_is_user = true
 
@@ -55,7 +55,7 @@ class Notifier < ActionMailer::Base
     @album     = Album.find( album_id )
     @recipient = @album.user
 
-    @invite_friends_url = invite_friends
+    @invite_friends_url = invite_friends_url
     @join_now_url = join_url
     @recipient_is_user = true
 
@@ -72,7 +72,7 @@ class Notifier < ActionMailer::Base
     @photo     = Photo.find( photo_id )
     @recipient = User.find( recipient_id )
 
-    @invite_friends_url = invite_friends
+    @invite_friends_url = invite_friends_url
     @join_now_url = join_url
     @recipient_is_user = true
 
@@ -88,7 +88,7 @@ class Notifier < ActionMailer::Base
     @user      = User.find( user_id )
     @recipient = User.find( liked_user_id )
 
-    @invite_friends_url = invite_friends
+    @invite_friends_url = invite_friends_url
     @join_now_url = join_url
     @recipient_is_user = true
 
@@ -196,7 +196,7 @@ class Notifier < ActionMailer::Base
     @recipient = ( rcp_user ? rcp_user : to_address_or_id )
     @destination_link = destination_link( @recipient, album_pretty_url( @album ) )
 
-    @invite_friends_url = invite_friends
+    @invite_friends_url = invite_friends_url
     @join_now_url = join_url
     @recipient_is_user = @recipient.is_a?(User)
 
