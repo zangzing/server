@@ -22,7 +22,7 @@ module OrderNotifier
         end
       end
 
-      @order_status_url = token_order_url(@order, @order.token)
+      @order_status_url = bitly_url(token_order_url(@order, @order.token))
       create_message(  __method__, template_id, @recipient, (@user ? { :user_id => @user.id } : nil ) )
     end
 
@@ -47,7 +47,7 @@ module OrderNotifier
       else
         @recipient = @order.email
       end
-      @order_status_url = token_order_url(@order, @order.token)
+      @order_status_url = bitly_url(token_order_url(@order, @order.token))
       @tracking_number  = @shipment.tracking_number
       @tracking_carrier = @shipment.tracking_carrier
       @tracking_url     = tracking_url( @shipment.tracking )

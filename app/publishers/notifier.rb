@@ -33,7 +33,7 @@ class Notifier < ActionMailer::Base
   def password_reset(user_id, template_id = nil)
     @user = User.find(user_id)
     @recipient = @user
-    @password_reset_url = edit_password_reset_url(@user.perishable_token)
+    @password_reset_url = bitly_url(edit_password_reset_url(@user.perishable_token))
     # Add a header for fast delivery
     sendgrid_headers.merge!( {'bypass_list_management' => { 'enable' => 1 }} )
 
