@@ -226,6 +226,7 @@ class Notifier < ActionMailer::Base
   def welcome(user_id, template_id = nil)
     @user = User.find(user_id)
     @recipient = @user
+    @joined_from_invitation = @user.received_invitations.find_by_status(Invitation::STATUS_COMPLETE)
 
     create_message(  __method__, template_id, @recipient,   { :user_id => @user.id })
   end
