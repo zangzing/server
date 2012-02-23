@@ -30,8 +30,14 @@ module ZZ
         @@loopback_on ||= false
       end
 
+      # in loopback mode we ignore errors just like a rescue job would
+      # we log them however, we don't do any failure retry in this mode
       def self.do_loopback(*args)
-        DeferredCompletionManager.dispatch {self.perform(*args)}
+        begin
+          DeferredCompletionManager.dispatch {self.perform(*args)}
+        rescue Exception => ex
+          Rails.logger.error("Loopback Resque job #{self.name} failed: #{ex.message}")
+        end
       end
 
 

@@ -168,19 +168,56 @@ class PhotosController < ApplicationController
     end
   end
 
-
+  # Create and upload a single photo
+  # This call is typically called from flash and can take the user_credentials
+  # as a param to the call.  If not called this way, the user_credentials is expected
+  # to be passed via the normal means as a cookie
+  #
+  # The call expects :album_id to be passed in the url the photo submitted as a multipart
+  # form file upload.  See http://www.ietf.org/rfc/rfc1867.txt for more details.
+  #
+  # You must be logged in, and have permissions to upload to the album specified
+  #
+  # This call is shared between flash and the zz_api.  In the zz_api form it is called
+  # as:
+  # /zz_api/albums/:album_id/upload
+  # The non api form is:
+  # /service/albums/:album_id/upload
+  #
+  # When called via the api form we return the photo.  Will be nil
+  # if no error with a status of 200, if we encounter an error, standard error response.
+  #
+  # {
+  #   photo, see hashed_photo
+  # }
   def simple_upload_fast
-    # because we are called via flash we don't get the user_credentials cookie set
-    # and instead it gets passed as part of the posted data so we manually extract
-    # it and then set it up as current_user
-    persistence_token = params[:user_credentials].split('::')[0]
-    user = User.find_all_by_persistence_token(persistence_token)
-    user = user[0] if user
-    self.current_user = user
+    if zz_api_call? == false && current_user_or_nil.nil?
+      # because we are called via flash we don't get the user_credentials cookie set
+      # and instead it gets passed as part of the posted data so we manually extract
+      # it and then set it up as current_user
+      persistence_token = params[:user_credentials].split('::')[0]
+      user = User.find_all_by_persistence_token(persistence_token)
+      user = user[0] if user
+      self.current_user = user
+    else
+      user = current_user
+    end
+
     return unless require_user && require_album(true) && require_album_contributor_role
 
-    album = @album
+    if zz_api_call?
+      zz_api do
+        photo = do_simple_upload(user, @album)
+        Photo.hash_one_photo(photo) # return the photo just created
+      end
+    else
+      do_simple_upload(user, @album)
+      render :text=>'', :status=>200
+    end
+  end
 
+  # common code for simple upload
+  def do_simple_upload(user, album)
     current_batch = UploadBatch.get_current_and_touch( user.id, album.id )
 
     photo = Photo.new_for_batch(current_batch, {
@@ -195,8 +232,7 @@ class PhotosController < ApplicationController
 
     photo.file_to_upload = params[:fast_local_image][0][:filepath]
     photo.save()
-    render :text=>'', :status=>200
-
+    photo
   end
 
   # Upload a file for a given photo id -

@@ -122,6 +122,12 @@ class Subscriptions< ActiveRecord::Base
      end
   end
 
+  # do a subscribe to the once list which isn't tracked by subscriptions but
+  # just does the MailingListSync directly
+  def subscribe_to_once
+    ZZ::Async::MailingListSync.enqueue('subscribe_user', Email::ONCE, user.id )
+  end
+
   # When the marketing preferences change, update subscriptions to marketing mailing lists
   def want_marketing_email=( period )
     write_attribute( :want_marketing_email, period )
