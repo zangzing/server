@@ -24,22 +24,13 @@
 
           <% @email_templates.each do |et| %>
               <tr>
-                <td>
+                <td width="30">
                   <a href="<%=edit_email_template_path( et )%>">
                     <%=et.id%>
                   </a>
                 </td>
                 <td>
-                  <a href="<%=edit_email_template_path( et )%>">
-                    <% index = @campaign_options.index{ |co|  co[1] == et.mc_campaign_id} %>
-                    <% if index.nil? %>
-                        <span style="color: red;" title="<%="You've deleted mailchimp campaign <#{et.mc_campaign_id}> <#{et.name}> Please delete Email Template With ID #{et.id}" %>">
-                          <%=et.name%> (MC Campaign Deleted)
-                        </span>
-                    <% else %>
-                       <%= @campaign_options[ index ][0] %>
-                    <%end%>
-                  </a>
+                  <%= link_to et.name, edit_email_template_path(et) %>
                 </td>
 
                 <td>
@@ -58,12 +49,6 @@
                   <%= et.updated_at.strftime("%B %d#{", %Y" if et.updated_at.year != Date.today.year} %l:%M %p") %>
                 </td>
 
-                <td>
-                  <%=form_for et, :url => reload_email_template_path( et ) do  | f |%>
-                      <input onclick="return confirm('Are you sure you want to reload the template?');"
-                             value="Reload" type="submit" />
-                  <%end%>
-                </td>
                 <td>
                   <%=button_to "Send A Test",   {:action => :test, :id=> et.id}, {:method => :get, :onclick =>'insert_target_address(this); return true;'}  %>
                 </td>

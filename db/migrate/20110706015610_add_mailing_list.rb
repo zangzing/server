@@ -14,6 +14,6 @@ class AddMailingList < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table
+    drop_table :mailing_lists
   end
 end

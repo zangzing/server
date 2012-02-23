@@ -1,11 +1,16 @@
-<h1>New Email Template</h1>
+<%= render :partial =>  'admin/admin_screens/adminmenu' %>
+<div id="main-container">
 
-<%=form_for @email_template  do | f |%>
-    <%= render :partial => 'fields', :object => f.object, :locals =>{:f => f }%>
-    <div style="float: left;">
-        <%= f.submit%>
-    </div>
-<%end%>
-<div style="float:left;">
-        <%= button_to "Cancel", email_templates_url, :method => 'get' %>
+  <ul class="viewlist">
+    <li class="header bar">New Email Template</li>
+    <li class="item">
+      <%= form_for @email_template  do | f | %>
+          <%= render :partial => 'fields', :object => f.object, :locals => { :f => f }%>
+          <div style="float: left;">
+            <%= f.submit %>
+            <%= link_to 'Cancel / Return', email_templates_path, { :method => :get } %>
+          </div>
+      <% end %>
+    </li>
+  </ul>
 </div>

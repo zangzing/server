@@ -1,59 +1,56 @@
-
+<% email_template ||= f.object %>
 
 <% flash.each do |key, value| %>
         <div class="flash <%= key %>"><%= value %></div>
 <% end %>
 
-<% if @email_template.errors.any? %>
-  <div id="error_explanation">
-    <h2><%= pluralize(@email_template.errors.count, "error") %>
+<% if email_template.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(email_template.errors.count, "error") %>
         prohibited this email template from being saved:</h2>
-    <p>There were problems with the following fields:</p>
-    <ul>
-    <% @email_template.errors.full_messages.each do |msg| %>
-      <li><%= msg %></li>
-    <% end %>
-    </ul>
-  </div>
+      <p>There were problems with the following fields:</p>
+      <ul>
+        <% email_template.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
 <% end %>
 
+<% unless email_template.new_record? %>
+    <div>
+      <%= f.label :id %> :<%= email_template.id %>
+    </div>
+<% end %>
 <div>
-<%= f.label :mc_campaign_id, "MC Campaign" %>
-<%= f.select :mc_campaign_id, options_for_select(@campaign_options,f.object.mc_campaign_id), {:prompt => 'Select Campaign' } %>
-</div>
-
-<div>
-<%= f.label :email_id, "email" %>
-<%= f.select :email_id, options_for_select(@email_options,f.object.email_id), {:prompt => 'Select Email' } %>
-</div>
-
-<div>
-<%= f.label :reply_to%>
-<%= f.text_field :reply_to %>
+  <%= f.label :name %> : <%= f.text_field :name, :size => 80 %>
 </div>
 <div>
-<%= f.label :category%>
-<%= f.text_field :category %>
+  <%= f.label :email_id, "email" %>
+  <%= f.select :email_id, options_from_collection_for_select(@emails, :id, :name, f.object.email_id), {:prompt => 'Select Email' } %>
 </div>
-<!--
+<% unless email_template.is_outer? %>
+    <div>
+      <%= f.label :from_name%> : <%= f.text_field :from_name, :size => 80 %>
+    </div>
+    <div>
+      <%= f.label :from_address%> : <%= f.text_field :from_address, :size => 80 %>
+    </div>
+    <div>
+      <%= f.label :subject%> : <%= f.text_field :subject, :size => 80 %>
+    </div>
+    <div>
+      <%= f.label :reply_to%> <%= f.text_field :reply_to, :size => 80 %>
+    </div>
+    <div>
+      <%= f.label :category%> <%= f.text_field :category, :size => 80 %>
+    </div>
+<% end %>
+<br/>
 <div>
-<%= f.label :name%>
-<%= f.text_field :name %>
+  <%= f.label :html_body%><br/><%= f.text_area :html_body, :cols => 80 %>
 </div>
-
+<br/>
 <div>
-<%= f.label :from_name%>
-<%= f.text_field :from_name%>
+  <%= f.label :text_body%><br/><%= f.text_area :text_body, :cols => 80 %>
 </div>
-
-<div>
-<%= f.label :from_address%>
-<%= f.text_field :from_address%>
-</div>
-
-<div>
-<%= f.label :subject%>
-<%= f.text_field :subject%>
-</div>
-
--->

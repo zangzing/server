@@ -1,7 +1,6 @@
 class EmailTemplate < ActiveRecord::Base
   BODY_SUBSTITUTION_MACRO = '*|BODY|*'
 
-  attr_accessible :name, :email_id, :mc_campaign_id, :from_name, :from_address, :subject, :reply_to, :category, :html_body, :text_body
   attr_accessor :skip_merge
 
   belongs_to :email
@@ -9,12 +8,8 @@ class EmailTemplate < ActiveRecord::Base
           :inverse_of => :production_template,
           :foreign_key => 'production_template_id'
 
-  validates_presence_of :mc_campaign_id, :email_id
-  validates_each :mc_campaign_id, :on => :create do |record, attr, value|
-     unless record.is_campaign_valid?
-       record.errors.add attr, 'MailChimp Campaign ID is not valid'
-     end
-   end
+  validates :email_id, :presence => true
+  validates :name, :presence => true
 
   before_save do |inner_template|
     unless inner_template.is_outer? || inner_template.skip_merge
@@ -36,18 +31,6 @@ class EmailTemplate < ActiveRecord::Base
   end
 
 
-  before_save :reload_mc_content_no_save
- 
-
-  # Gets the MC campaign by id, retrieves the content from MC
-  # unescapes the html and stores it in the DB
-  # stores the text in the DB. reload_no save does not save the record
-  # reload does
-  def reload_mc_content
-    #reload_mc_content_no_save
-    save
-  end
-
   def outer_template
     @outer_template ||= self.class.outer
   end
@@ -58,39 +41,6 @@ class EmailTemplate < ActiveRecord::Base
 
   def is_outer?
     self.outer_template == self
-  end
-
-
-
-
-  def is_campaign_valid?
-    return true if Rails.env.development?
-    @campaign = nil
-    campaigns =gb.campaigns(:filters => { :folder_id => 21177, :campaign_id => self.mc_campaign_id })['data']
-    @campaign = campaigns[0] if campaigns
-    @campaign
-  end
-
- def reload_mc_content_no_save
-   return true if Rails.env.development?
-    #Get the template info from MC
-    campaign = is_campaign_valid?
-    content =  gb.campaign_content(  {'cid' => campaign['id'] , 'for_archive' => false} )
-
-    # Set instance values from template
-    self.name = campaign['title']
-    self.from_name = campaign['from_name']
-    self.from_address = campaign['from_email']
-    self.subject = campaign['subject']
-    self.text_content = content['text']
-
-    # unescape and interpolate images and other special elements
-    self.html_content = EmailTemplate.interpolate_images(  CGI::unescapeHTML( content['html'] )  )
-    remove_double_http
-    unescape_links
-    replace_unsub
-    replace_at_media
-    true
   end
 
   def formatted_from

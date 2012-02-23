@@ -36,16 +36,9 @@
                     %>
                 <%end%>
               </td>
-              </td>
               <% if email.production_template %>
                   <td>
                     <%= email.production_template.updated_at.strftime("%B %d#{", %Y" if email.production_template.updated_at.year != Date.today.year} %l:%M %p") %>
-                  </td>
-                  <td>
-                    <%=form_for email.production_template, :url => reload_email_template_path( email.production_template )   do | f |%>
-                        <input onclick="return confirm('Are you sure you want to reload the template?');"
-                               value="Reload" type="submit" />
-                    <%end%>
                   </td>
               <%end%>
             </tr>

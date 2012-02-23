@@ -5,9 +5,10 @@
 class Admin::EmailTemplatesController < Admin::AdminController
 
   helper :all
+  before_filter :load_emails, :only => [:new, :create, :edit, :update]
+  before_filter :fetch_email_template, :only => [:destroy, :edit, :update]
 
   def new
-    load_info
     @email_template = EmailTemplate.new()
   end
 
@@ -17,52 +18,32 @@ class Admin::EmailTemplatesController < Admin::AdminController
       flash[:notice]="Template #{@email_template.name} has been created"
       redirect_to email_templates_path()
     else
-      load_info
       render :new
     end
   end
 
   def index
-    load_info
-    @email_templates = EmailTemplate.find(:all)
-  end
-
-  def show
+    @email_templates = EmailTemplate.all
   end
 
   def edit
-    fetch_email_template
-    load_info
   end
 
   def update
-    fetch_email_template
     if @email_template.update_attributes(params[:email_template])
       flash[:notice]="Template '#{@email_template.name}' has been updated"
-      redirect_to email_templates_path()
-    else
-      load_info
-      render :edit
     end
+    render :edit
   end
 
   def destroy
-    fetch_email_template
     if @email_template.destroy
       flash[:notice]="Template '#{@email_template.name}' has been deleted"
       redirect_to email_templates_path()
     else
-      load_info
       render :edit
     end
   end
-
-  def reload
-    fetch_email_template
-    @email_template.reload_mc_content
-    redirect_to :back
-  end
-
 
   def test
     if params[:id] && params[:id]=='all'
@@ -106,19 +87,10 @@ class Admin::EmailTemplatesController < Admin::AdminController
 
   end
 
-  private
+private
 
-
-  def load_info
-    gb = Gibbon::API.new(MAILCHIMP_API_KEYS[:api_key])
-
-    @campaigns = gb.campaigns({'filters' => {'folder_id' => "21177"}, 'limit' => 100})['data']
-    @campaign_options = []
-    @campaigns.each { |c| @campaign_options << [c['title'], "#{c['id']}"] }
-
-    @emails = Email.find(:all)
-    @email_options = []
-    @emails.each { |e| @email_options << [e.name, "#{e.id}"] }
+  def load_emails
+    @emails = Email.all
   end
 
   def fetch_email_template
