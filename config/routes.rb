@@ -445,6 +445,9 @@ Server::Application.routes.draw do
     # internal, used by nginx, external upload is /zz_api/photos/:photo_id/upload
     # needs to remain a put
     put    '/photos/:id/upload_fast'                   => 'photos#upload_fast',                      :as => :zz_api_upload_photo_fast
+    # internal, used by nginx, external upload is /zz_api/albums/:album_id/upload
+    # needs to remain a put
+    put    '/albums/:album_id/upload_fast'             => 'photos#simple_upload_fast',               :as => :zz_api_upload_photo_fast
 
     #users
     get    '/users/:user_id/info'                      => 'users#zz_api_user_info',                  :as => :zz_api_user_info
@@ -460,6 +463,8 @@ Server::Application.routes.draw do
     post   '/groups/:group_id/add_members'             => 'groups#zz_api_add_members',               :as => :zz_api_add_members_group
     post   '/groups/:group_id/remove_members'          => 'groups#zz_api_remove_members',            :as => :zz_api_remove_members_group
 
+    # shares
+    post   '/shares/send'                              => 'shares#zz_api_send',                      :as => :zz_api_send_share
 
     #identities
     get     '/identities' => 'identities#zz_api_identities'
