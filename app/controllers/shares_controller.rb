@@ -178,6 +178,11 @@ class SharesController < ApplicationController
       # validate the input
       emails, email_errors, addresses = ZZ::EmailValidator.validate_email_list(params[:emails])
 
+      message = params[:message]
+      raise ArgumentError.new("No message specified") if message.nil?
+      share_type = params[:share_type]
+      raise ArgumentError.new("No share type specified") if share_type.nil?
+
       # grab any group ids and get the allowed ones
       group_ids = params[:group_ids]
       if group_ids
