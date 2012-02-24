@@ -118,7 +118,13 @@ module ZZ
 
       # used to enforce invoked via zz api style call
       def require_zz_api
-        zz_api_call?
+        unless zz_api_call?
+          msg = "You must call the api via the api path with zz_api"
+          flash.now[:error] = msg
+          head :status => 401
+          return false
+        end
+        return true
       end
 
       # Filter for methods that require a log in

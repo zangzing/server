@@ -8,7 +8,7 @@ require 'mail'
 require 'zzapi_error'
 
 class User < ActiveRecord::Base
-  attr_accessor    :old_password, :reset_password, :change_matters
+  attr_accessor    :old_password, :reset_password, :change_matters, :needs_after_full_user_convert
   attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :password_confirmation,
                    :old_password, :automatic, :profile_photo_id, :subscriptions_attributes,
                    :ship_address_id, :bill_address_id, :creditcard_id, :auto_by_contact, :created_by_user_id
@@ -89,7 +89,7 @@ class User < ActiveRecord::Base
   after_commit   :subscribe_to_lists, :on => :create
 
   after_save    :check_cache_manager_change
-  after_commit  :notify_cache_manager
+  after_commit  :general_after_commit
 
   after_create   :make_wrapped_group
 
@@ -190,13 +190,29 @@ class User < ActiveRecord::Base
     true
   end
 
-  # We have been committed so call the album cache manager
+  # We have been committed so do the general purpose
+  # after commit operations.
+  #
+  # Call the album cache manager
   # to let it invalidate caches if needed.  We do this separately from
   # the change check because we must do this after the commit to
   # make sure we are not in a transaction
-  def notify_cache_manager
-    if destroyed? == false && change_matters
-      Cache::Album::Manager.shared.user_invalidate_cache(id)
+  def general_after_commit
+    if destroyed? == false
+      if change_matters
+        Cache::Album::Manager.shared.user_invalidate_cache(id)
+        self.change_matters = false
+      end
+      if needs_after_full_user_convert
+        self.needs_after_full_user_convert = false
+        # now add back mail chimp only since we keep all internal subscription types on initially
+        self.subscriptions.update_subscription(Email::MARKETING, Subscriptions::IMMEDIATELY)
+        self.subscriptions.update_subscription(Email::NEWS, Subscriptions::IMMEDIATELY)
+        self.subscriptions.subscribe_to_once
+
+        # do the initial auto following
+        like_mr_zz
+      end
     end
     true
   end
@@ -243,7 +259,7 @@ class User < ActiveRecord::Base
     # set the cohort we belong to
     self.cohort = User.cohort_current
 
-    #build subscriptions, initially all are on so turn off news and marketing which are mail chimp lists
+    #build subscriptions, initially all are on so turn off news and marketing for automatic users which are mail chimp lists
     self.subscriptions = Subscriptions.find_or_initialize_by_email( self.email )
     self.subscriptions.unsubscribe(Email::NEWS) if automatic?
     self.subscriptions.unsubscribe(Email::MARKETING) if automatic?
@@ -269,12 +285,9 @@ class User < ActiveRecord::Base
     # add in the profile album now
     create_profile_album if profile_album.nil?
 
-    # now add back mail chimp only since we keep all internal subscription types on initially
-    self.subscriptions.update_subscription(Email::MARKETING, Subscriptions::IMMEDIATELY)
-    self.subscriptions.update_subscription(Email::NEWS, Subscriptions::IMMEDIATELY)
+    # set up after conversion steps for after we commit
+    self.needs_after_full_user_convert = true
 
-    # and like mr zz
-    like_mr_zz
   end
 
   def subscribe_to_lists
@@ -481,6 +494,11 @@ class User < ActiveRecord::Base
     profile_album.save
   end
 
+  def profile_album_id
+    create_profile_album if profile_album.nil?
+    @profile_album_id ||= profile_album.id
+  end
+
   def profile_photo_id
       create_profile_album if profile_album.nil?
       @profile_photo_id ||= profile_album.profile_photo_id
@@ -523,12 +541,19 @@ class User < ActiveRecord::Base
   # address which is normally not returned
   def basic_user_info_hash(user_id_to_email = nil)
     # fetch profile photo, if automatic won't have one so don't waste overhead trying to fetch
-    profile_photo = automatic? ? nil : profile_photo_url(false)   # do not want default url if nil, want nil in that case
+    if automatic?
+      profile_url = nil
+      profile_album_id = nil
+    else
+      profile_url = profile_photo_url(false)  # do not want default url if nil, want nil in that case
+      profile_album_id = self.profile_album_id
+    end
     user_info = {
       :id => id,
       :my_group_id => my_group_id,
       :username => username,
-      :profile_photo_url => profile_photo,
+      :profile_photo_url => profile_url,
+      :profile_album_id => profile_album_id,
       :first_name => first_name,
       :last_name => last_name,
       :automatic => automatic?,
