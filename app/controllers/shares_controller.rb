@@ -178,8 +178,7 @@ class SharesController < ApplicationController
       # validate the input
       emails, email_errors, addresses = ZZ::EmailValidator.validate_email_list(params[:emails])
 
-      message = params[:message]
-      raise ArgumentError.new("No message specified") if message.nil?
+      message = params[:message] || ''
       share_type = params[:share_type]
       raise ArgumentError.new("No share type specified") if share_type.nil?
 
@@ -204,8 +203,6 @@ class SharesController < ApplicationController
       # get the info about the share type
       subject, subject_url, share_event = determine_share_type_from_params
 
-      message = params[:message]
-      share_type = params[:share_type]
       delayed = false
 
       # see if we have twitter and/or facebook
