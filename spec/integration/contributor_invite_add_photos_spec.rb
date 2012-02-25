@@ -6,7 +6,7 @@ describe 'album_pretty_url_show_add_photos_dialog' do
     pending 'not implemented yet'
     #album = Factory.create(:album)
     #user = Factory.create(:user)
-    #album.add_contributor(contributor.id)
+    #album.add_contributors(contributor.my_group_id)
     #
     #get_via_redirect signin_path
     #
@@ -24,7 +24,7 @@ describe 'album_pretty_url_show_add_photos_dialog' do
 
     #album = Factory.create(:album)
     #user = Factory.create(:user)
-    #album.add_contributor(user.id)
+    #album.add_contributors(user.my_group_id)
     #
     #get_via_redirect album_pretty_url_show_add_photos_dialog(album)
     #

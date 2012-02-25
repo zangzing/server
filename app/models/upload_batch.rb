@@ -228,24 +228,24 @@ state <> 'finished' AND (
             viewers = nil
 
             # add OWNER to list
-            update_notification_list << album.user.id.to_s
+            update_notification_list << album.user.id
 
             # add ALBUM LIKERS to list
             album.likers.each do |liker|
-              update_notification_list << liker.id.to_s
+              update_notification_list << liker.id
             end
 
             # if password album, remove all users who are not
             # in ACL (these would have come from album.likers)
             if album.private?
-              viewers ||= album.viewers(false)     # these are already strings, so no need to convert
+              viewers ||= album.viewers(false)     # fetch all the viewers by id
               update_notification_list &= viewers  # filters the set of items only in both lists (i.e. filters out everyone who does not show up in the acl in one fell swoop)
             end
 
             # add ALBUM OWNER'S FOLLOWERS to list
             if album.public?
               album.user.followers.each do |follower|
-                update_notification_list << follower.id.to_s
+                update_notification_list << follower.id
               end
             end
 
@@ -253,13 +253,13 @@ state <> 'finished' AND (
             # removed per request by Kathryn
             #if contributor_id != owner_id
             #  self.user.followers.each do |follower|
-            #    update_notification_list << follower.id.to_s
+            #    update_notification_list << follower.id
             #  end
             #end
 
             # for streaming album always include viewers and contributors
             if album.stream_to_email?
-              viewers ||= album.viewers(false)     # these are already strings, so no need to convert
+              viewers ||= album.viewers(false)     # fetch all the viewers by id
 
               if viewers.length > 0
                 zza.track_event('album.stream.email')
@@ -275,15 +275,15 @@ state <> 'finished' AND (
 
             # never send 'album updated' email to current CONTRIBUTOR
             # current contributor gets the 'photos ready' email instead
-            contributor_id = self.user.id.to_s
+            contributor_id = self.user.id
             update_notification_list.reject! do |id|
               id == contributor_id
             end
 
             # SEND 'album updated' email
-            update_notification_list.each do | recipient_id_or_email |
+            update_notification_list.each do | recipient_id |
               #ZZ::Async::Email.enqueue( :album_updated, recipient_id, album_id, self.id )
-              ZZ::Async::Email.enqueue( :album_updated, contributor_id, recipient_id_or_email , album_id, self.id )
+              ZZ::Async::Email.enqueue( :album_updated, contributor_id, recipient_id , album_id, self.id )
             end
 
 

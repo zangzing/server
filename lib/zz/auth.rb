@@ -12,7 +12,9 @@ module ZZ
     unless defined? ZZ_API_HEADER
       ZZ_API_HEADER = 'X-ZangZing-API'.freeze
       ZZ_API_HEADER_RAILS = 'HTTP_X_ZANGZING_API'.freeze
-      ZZ_API_VALID_VALUES = ['iphone'].freeze
+      ZZ_API_IPHONE_CLIENT = 'iphone'.freeze
+      ZZ_API_WEB_CLIENT = 'web'.freeze
+      ZZ_API_VALID_VALUES = [ZZ_API_IPHONE_CLIENT, ZZ_API_WEB_CLIENT]
     end
 
 
@@ -56,6 +58,12 @@ module ZZ
         @current_user = current_user_session && current_user_session.user
       end
 
+      # current_user will return false if no current user so
+      # to simplify cases where we want nil we do that here
+      def current_user_or_nil
+        current_user || nil
+      end
+
       def current_user=(user)
         @current_user = user
       end
@@ -91,7 +99,15 @@ module ZZ
       # checks to see if we were called via the zz_api, impacts
       # how we form error responses
       def zz_api_call?
-        ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER]) || request.path.index("/zz_api/") == 0
+        return @zz_api_call if defined?(@zz_api_call)
+        @zz_api_call = ZZ_API_VALID_VALUES.include?(request.headers[ZZ_API_HEADER]) || request.path.index("/zz_api/") == 0
+      end
+
+      # if we have a non web caller return true for
+      # no session support
+      def zz_api_session_less?
+        return @zz_api_session_less if defined?(@zz_api_session_less)
+        @zz_api_session_less = zz_api_call? && request.headers[ZZ_API_HEADER] == ZZ_API_IPHONE_CLIENT
       end
 
       # just used as a placeholder in code to make it clear
@@ -126,6 +142,23 @@ module ZZ
 
       # for act_as_authenticated compatibility with oauth plugin
       alias_method :login_required, :require_user
+
+      # require the user passed to be the logged in user
+      def require_same_user
+        return false unless require_user
+        if params[:id]
+          @user = User.find(params[:id])
+        elsif params[:username]
+          @user = User.find_by_username(params[:username])
+        end
+
+        if current_user?(@user)
+          return true
+        else
+          redirect_to( root_path )
+          return false
+        end
+      end
 
       # This is the json version of require user. Saves the request referer instead of the
       # resquest fullpath so that the user returns to the page from where the xhr call originated
@@ -175,6 +208,18 @@ module ZZ
             add_javascript_action( 'show_message_dialog',  {:message => flash[:notice]})
             redirect_to root_url
           end
+          return false
+        end
+        return true
+      end
+
+      # expects the group to exist and belong to the current user
+      # returns the group found as @group
+      def require_owned_group
+        group_id = params[:group_id]
+        @group = Group.where('user_id = :user_id AND (name = :id OR id = :id)', :user_id => current_user.id, :id => group_id).first
+        if @group.nil?
+          render_json_error(nil, "This operation requires a group but the group was not found", 404)
           return false
         end
         return true
@@ -263,7 +308,7 @@ module ZZ
 
       # Assumes @album is the album in question and current_user is the user we are evaluating
       def require_album_admin_role
-        unless  @album.admin?( current_user.id ) || current_user.support_hero?
+        unless  @album.admin?( current_user.id )
           msg = "Only Album admins can perform this operation"
           if zz_api_call?
             render_json_error(nil, msg, 401)
@@ -302,7 +347,7 @@ module ZZ
             end
             return false
           end
-          unless @album.viewer?( current_user.id ) || current_user.moderator?
+          unless @album.can_view_or_not_private?( current_user.id ) || current_user.moderator?
             if zz_api_call?
               render_json_error(nil, msg, 401)
             elsif request.xhr?
@@ -327,7 +372,7 @@ module ZZ
           if @album.everyone_can_contribute?
             return true
           else
-            if @album.contributor?( current_user.id ) || current_user.support_hero?
+            if @album.contributor?( current_user.id )
               return true
             else
               if zz_api_call?
@@ -388,7 +433,7 @@ module ZZ
       # @photo is the photo to be acted upon
       # current_user is the user we are evaluating
       def require_photo_owner_or_album_admin_role
-        unless  @photo.user.id == current_user.id || @photo.album.admin?( current_user.id ) || current_user.support_hero?
+        unless  @photo.user.id == current_user.id || @photo.album.admin?( current_user.id )
           msg = "Only Photo Owners or Album Admins can perform this operation"
           if zz_api_call?
             render_json_error(nil, msg, 401)
@@ -428,10 +473,26 @@ module ZZ
       end
 
       # To be run as a before_filter
-      # Will render a 401 page if the currently logged in user is not an admin
+      # Will render a 401 page if the currently logged in user is not a moderator
       def require_moderator
         unless current_user.moderator?
           msg = "Moderator privileges required for this operation"
+          if zz_api_call?
+            render_json_error(nil, msg, 401)
+          else
+            flash.now[:error] = msg
+            render_401
+          end
+          return false
+        end
+        return true
+      end
+
+      # To be run as a before_filter
+      # Will render a 401 page if the currently logged in user is not super moderator
+      def require_super_moderator
+        unless current_user.super_moderator?
+          msg = "Super Moderator privileges required for this operation"
           if zz_api_call?
             render_json_error(nil, msg, 401)
           else

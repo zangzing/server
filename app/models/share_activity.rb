@@ -37,11 +37,11 @@ class ShareActivity < Activity
     if share.subject.is_a?(Photo)
       return true if share.subject.album.public?
       return true if view == ALBUM_VIEW && share.subject.album.hidden?
-      return true if current_user && share.subject.album.viewer_in_group?( current_user.id )
+      return true if current_user && share.subject.album.viewer?( current_user.id )
     elsif share.subject.is_a?(Album)
       return true if share.subject.public?
       return true if view == ALBUM_VIEW && share.subject.hidden?
-      return true if current_user && share.subject.viewer_in_group?( current_user.id )
+      return true if current_user && share.subject.viewer?( current_user.id )
     elsif share.subject.is_a?(User)
       return true
     end
