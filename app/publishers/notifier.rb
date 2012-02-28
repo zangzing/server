@@ -124,7 +124,7 @@ class Notifier < ActionMailer::Base
 
     # all shares to non-users should
     # be treated as invitation
-    if !rcp_user || rcp_user.automatic?
+    if !rcp_user || !rcp_user.has_joined?
       @recipient_is_user = false
 
       invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_PHOTO_SHARE)
@@ -165,7 +165,7 @@ class Notifier < ActionMailer::Base
 
     # all shares to non-users should
     # be treated as invitation
-    if !rcp_user || rcp_user.automatic?
+    if !rcp_user || !rcp_user.has_joined?
       @recipient_is_user = false
 
       invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_PHOTO_SHARE)
@@ -222,7 +222,7 @@ class Notifier < ActionMailer::Base
 
     # all shares to non-users should
     # be treated as invitation
-    if !rcp_user || rcp_user.automatic?
+    if !rcp_user || !rcp_user.has_joined?
       @recipient_is_user = false
 
       invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_PHOTO_SHARE)
