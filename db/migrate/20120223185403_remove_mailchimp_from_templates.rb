@@ -4,7 +4,7 @@ class RemoveMailchimpFromTemplates < ActiveRecord::Migration
   end
 
   def self.down
-    add_column :email_templates, :mc_campaign_id, :default => ""
+    add_column :email_templates, :mc_campaign_id, :string, :default => ""
     EmailTemplate.reset_column_information
     campaign_ids = {
       'email.photosready' => 'ed39f93a53',

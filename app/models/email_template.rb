@@ -40,7 +40,7 @@ class EmailTemplate < ActiveRecord::Base
   end
 
   def merge_with_outer!
-    return nil if is_outer?
+    return nil if self.is_outer? || self.outer_template.nil?
 
     html = self.outer_template.html_body.gsub(BODY_SUBSTITUTION_MACRO, self.html_body || '')
     text = self.outer_template.text_body.gsub(BODY_SUBSTITUTION_MACRO, self.text_body || '')
