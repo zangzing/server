@@ -45,10 +45,17 @@ class EmailTemplate < ActiveRecord::Base
     html = self.outer_template.html_body.gsub(BODY_SUBSTITUTION_MACRO, self.html_body || '')
     text = self.outer_template.text_body.gsub(BODY_SUBSTITUTION_MACRO, self.text_body || '')
 
-    html_inliner = Premailer.new(html, :with_html_string => true, :warn_level => Premailer::Warnings::SAFE)
+    html_inliner = Premailer.new(html.gsub('<%=', '&lt;%=').gsub('%>', '%&gt;'),
+      :with_html_string => true,
+      :warn_level => Premailer::Warnings::SAFE,
+      :preserve_styles => true,
+      :preserve_reset => true,
+      :adapter => :nokogiri
+    )
+    html_final = html_inliner.to_inline_css.gsub('&lt;%=', '<%=').gsub('%&gt;', '%>')
 
     self.html_content_will_change!
-    self.html_content = html_inliner.to_inline_css
+    self.html_content = html_final
     self.text_content_will_change!
     self.text_content = text
     replace_unsub
