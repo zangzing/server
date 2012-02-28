@@ -462,12 +462,6 @@ class User < ActiveRecord::Base
   end
 
 
-  # has the user actually joined? or his he/she
-  # and automatic or auto-by-contact user?
-  def has_joined?
-    return !automatic? && !auto_by_contact?
-  end
-
   def activate!
       self.active = true
       save
