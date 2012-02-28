@@ -30,6 +30,9 @@ module ZZ
         @@loopback_on ||= false
       end
 
+      def self.do_loopback(*args)
+        DeferredCompletionManager.dispatch {self.perform(*args)}
+      end
 
 
 #      # plug ourselves into the retry framework
@@ -133,7 +136,7 @@ module ZZ
       # Resque enqueue
       def self.enqueue( *args )
         if should_loopback?
-          self.perform(*args)
+          self.do_loopback(*args)
         else
           Resque.enqueue( self, *args) unless loopback_on?
         end
@@ -142,7 +145,7 @@ module ZZ
       # lets you enqueue on on a named queue
       def self.enqueue_on_queue(queue, *args)
         if should_loopback?
-          self.perform(*args)
+          self.do_loopback(*args)
         else
           Resque::Job.create(queue, self, *args) unless loopback_on?  # when loopback_on just drop it if was not allowed
         end
@@ -151,7 +154,7 @@ module ZZ
       def self.enqueue_in(secs_from_now, queue, *args)
         if should_loopback?
           # delay not supported in loopback mode
-          self.perform(*args)
+          self.do_loopback(*args)
         else
           begin
             current_queue = @queue

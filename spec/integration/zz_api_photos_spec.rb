@@ -3,7 +3,7 @@ require 'test_utils'
 
 include PrettyUrlHelper
 
-describe "ZZ API" do
+describe "ZZ API Photos" do
 
   describe "photos" do
     before(:each) do

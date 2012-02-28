@@ -37,8 +37,12 @@ module ZZ
 
         #Process recipient ( decide if it is an address or a user, build address and clean the double bytes)
         if recipient.is_a?(User)
-          encoded_name = Mail::Encodings::decode_encode( recipient.name, :encode )
-          @to_address  = Mail::Address.new("\"#{encoded_name}\" <#{recipient.email}>")
+          encoded_name = Mail::Encodings::decode_encode( recipient.actual_name, :encode )
+          if encoded_name.blank?
+            @to_address  = Mail::Address.new("#{recipient.email}")
+          else
+            @to_address  = Mail::Address.new("\"#{encoded_name}\" <#{recipient.email}>")
+          end
         else
           @to_address = Mail::Address.new( recipient.to_slug.to_ascii.to_s )
         end

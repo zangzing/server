@@ -128,7 +128,7 @@ class BulkIdManager
   #
   # if you want to ensure more than 1,
   # specify the amount you want via the reserved_count
-  # if we don't have enought left in our
+  # if we don't have enough left in our
   # current range, we will fetch a continuous
   # range of ids from the db in a single call
   #

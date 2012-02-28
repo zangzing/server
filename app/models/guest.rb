@@ -19,7 +19,7 @@ class Guest < ActiveRecord::Base
   def self.register( email, source )
     guest = Guest.find_or_create_by_email( :email => email)
     user = User.find_by_email( email )
-    if user
+    if user && user.automatic? == false
       guest.user_id = user.id
       unless user.active?
         user.activate!

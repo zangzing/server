@@ -4,7 +4,7 @@ class Email < ActiveRecord::Base
   belongs_to  :production_template, :class_name => "EmailTemplate"
   has_many    :email_templates
 
-  validates :name, :uniqueness => true
+  #validates :name, :uniqueness => true
 
   scope :outer_template, where(:name => 'outer_template')
 

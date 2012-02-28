@@ -48,7 +48,8 @@ class InvitationsController < ApplicationController
     already_joined_emails = []
 
     emails.each do |email|
-      if User.find_by_email(email)
+      user = User.find_by_email(email)
+      if user && !user.automatic?
         already_joined_emails << email
       else
         Invitation.send_invitation(current_user, email)

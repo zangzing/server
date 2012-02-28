@@ -1,20 +1,34 @@
 require "acl_base"
 
-class AlbumACLTuple < BaseACLTuple
+class AlbumACLTuple < ACLTupleBase
+end
+
+# this class instance is notified when changes happen
+# to an underlying group membership - this class is a
+# singleton created on init of the AlbumACL
+# NOT CURRENTLY ACTIVE
+class AlbumGroupHandler < ACLGroupHandler
+  def added_members(group_id, resource_id, user_ids)
+    album = Album.find_by_id(resource_id)
+    if album
+      album.group_users_added(group_id, user_ids)
+    end
+  end
 end
 
 # implements the ACL control for Albums
-class AlbumACL < BaseACL
-  ADMIN_ROLE = ACLRole.new('Admin', 10)
-  CONTRIBUTOR_ROLE = ACLRole.new('Contrib', 20)
-  VIEWER_ROLE = ACLRole.new('Viewer', 30)
+class AlbumACL < ACLBase
+  ADMIN_ROLE = ACLRole.new('admin', 100)
+  CONTRIBUTOR_ROLE = ACLRole.new('contributor', 200)
+  VIEWER_ROLE = ACLRole.new('viewer', 300)
 
   def self.initialize
     if AlbumACL.initialized.nil?
-      AlbumACL.base_init 'Album', make_roles
+      AlbumACL.base_init 'Album', AlbumGroupHandler.new, make_roles
     end
   end
 
+  # order these with most privs first, least last
   def self.make_roles
     roles = [
         ADMIN_ROLE,
@@ -34,19 +48,11 @@ class AlbumACL < BaseACL
   # currently we only care that a modification happened so
   # we don't need the specifics
   def notify_user_acl_modified(user_ids)
-    user_ids.each do |user_id|
-      #todo call album cache manager here to let it know
-      # it should invalidate the trackers for this user on
-      # contributor albums
-      num_user_id = user_id.to_i
-      if num_user_id != 0
-        # only notify if it is a valid numeric user id
-        Cache::Album::Manager.shared.user_albums_acl_modified(num_user_id)
-      end
-    end
+    Cache::Album::Manager.shared.user_albums_acl_modified(user_ids)
   end
 
 end
+
 
 # let the class initialize and register
 AlbumACL.initialize

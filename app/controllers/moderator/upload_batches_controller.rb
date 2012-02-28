@@ -1,7 +1,7 @@
 class Moderator::UploadBatchesController < Moderator::BaseController
 
   def index
-    sql = "SELECT DISTINCT DATE_FORMAT( DATE_SUB( created_at, INTERVAL 8 HOUR), '%Y-%m-%d') as date, review_status, COUNT(*) as count FROM upload_batches WHERE state='finished' GROUP BY date, review_status ORDER BY date DESC"
+    sql = "SELECT DISTINCT DATE_FORMAT( DATE( created_at), '%Y-%m-%d') as date, review_status, COUNT(*) as count FROM upload_batches WHERE state='finished' GROUP BY date, review_status ORDER BY date DESC"
     data = UploadBatch.connection.select_all(sql)
     @upload_batches_days = []
     current_date = nil
@@ -32,5 +32,13 @@ class Moderator::UploadBatchesController < Moderator::BaseController
     render :json => @batch
   end
 
+  def clean_empty_batches
+    sql = 'select upload_batches.* from upload_batches where upload_batches.state = "finished" and upload_batches.review_status != "good" and not exists (select upload_batch_id from photos where photos.upload_batch_id = upload_batches.id)'
+    upload_batches = UploadBatch.find_by_sql(sql)
+    upload_batches.each { |batch|
+      batch.update_attribute(:review_status, "good")
+    }
 
+    redirect_to moderator_upload_batches_path
+  end
 end
