@@ -41,6 +41,7 @@ gem 'instagram'                                       # Instagram
 gem 'dropbox'                                         # Dropbox
 gem 'money'
 gem 'addressable'                                     # Better URL parser
+gem 'premailer'                                       # Used for CSS inlining in EmailTemplates
 
 gem 'vpim'                                            # VCard creator
 gem 'rpm_contrib'                                     # For New Relic Performance Instrumentation
