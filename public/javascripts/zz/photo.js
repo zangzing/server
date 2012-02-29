@@ -55,7 +55,7 @@ zz.template_cache = zz.template_cache || {};
 
             // Store a finished template re-use for every photo.
             if ( photo_template == null ) {
-                photo_caption_template = $('<div class="photo-caption multiline"></div>');
+                photo_caption_template = $('<div class="photo-caption ellipsis multiline"></div>');
                 photo_template = $('<div class="photo-border">' +
                                                      '<img class="photo-image" src="' +zz.routes.image_url('/images/photo_placeholder.png') + '">' +
                                                      '<img class="bottom-shadow" src="' + zz.routes.image_url('/images/photo/bottom-full.png') + '">' +
