@@ -1,0 +1,168 @@
+/**
+
+Use: finish_profile.html.erb
+Author: Bowen Li
+Date: 2012-02
+
+Copyright 2012, ZangZing LLC. All rights reserved.
+
+**/
+
+/* TODO: resize widnow small why no scrollbar? */
+
+html #users-finish_profile{
+    overflow: auto;
+}
+
+.clear {clear:both;}
+
+#users-finish_profile {
+    text-align: left;
+    color: #333;
+}
+
+#users-finish_profile .main {
+    width: 860px;
+    margin: 160px auto 0;
+    border: 1px solid #999;
+}
+
+#users-finish_profile .main  {
+    padding: 40px;
+}
+
+#users-finish_profile .main h1 {
+    padding-bottom: 40px;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #ccc;
+    font-size: 32px;
+    font-weight: normal;
+}
+
+
+#users-finish_profile .main .fieldscontainer {
+    margin-bottom: 40px;
+}
+
+
+#users-finish_profile .main .section {
+    width: 284px;
+    height: 100px;
+    float:left;
+    position: relative;
+    border: 0px solid green;
+}
+
+#users-finish_profile .main .section .flag-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 32px;
+    height: 100%;
+    border-left: 1px solid #fdc113;
+}
+
+#users-finish_profile .main .flag {
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    color: #fff;
+    font-size: 18px;
+    text-align: center;
+    background-color: #fdc113;
+}
+
+#users-finish_profile .main .right {
+    width: 180px;
+    height: 100%;
+    margin-left: 48px;
+    color: #999;
+    position: relative;
+}
+
+#users-finish_profile .main .right .title {
+    font-size:  14px;
+    font-weight: bold;
+    color: #333;
+    line-height: 32px;
+}
+
+#users-finish_profile .main .right > .content  {
+    position:absolute;
+    top:50%;
+    /* Need margin: -height/2 for real centering */
+}
+
+
+#users-finish_profile .main .right  label {
+    position: absolute;
+    top: 5px;
+    left: 6px;
+    color: #999;
+    font-size: 14px;
+}
+
+/* TODO: alignment in Safari */
+
+#users-finish_profile .main .right  input {
+    padding: 6px 6px;
+    width: 180px;
+    height: 14px;
+    font-size: 14px;
+
+    box-shadow: #ddd 0px -1px 0px;
+    -webkit-box-shadow: #ddd 0px -1px 0px;
+    -moz-box-shadow: #ddd 0px -1px 0px;
+}
+
+#users-finish_profile .main .right  input#user_username {
+    padding-left: 99px;
+    width: 137px;
+}
+
+#users-finish_profile .main .donecontainer {
+    width: 100%;
+    height: 20px;
+}
+
+#users-finish_profile .main #done {
+    width: 155px;
+    height: 36px;
+    float:right;
+
+    padding: 6px 9px;
+
+    font-size: 16px;
+    color: #fff;
+
+    text-shadow: 0 0 0 transparent, 0px 1px 1px #000;
+    background:#318e2c url('/images/btn-green-38.png') repeat-x 0 0px; /* TODO: */
+    border: 1px solid #318e2c;
+    border-radius:5px;
+    -moz-border-radius:5px;
+    -webkit-border-radius: 5px;
+
+    box-shadow:inset 0 1px 0 #83c680;
+    -webkit-box-shadow:inset 0 1px 0 #83c680;
+    -moz-box-shadow:inset 0 1px 0 #83c680;
+
+    cursor: pointer;
+}
+
+
+/* green hover */
+#users-finish_profile .main #done:hover {
+    background-position: 0 -50px;
+    border-color: #026404;
+    box-shadow:inset 0 1px 0 #7ab478;
+    -webkit-box-shadow:inset 0 1px 0 #7ab478;
+    -moz-box-shadow:inset 0 1px 0 #7ab478;
+}
+
+/* green active */
+
+#users-finish_profile .main #done:active {
+    box-shadow:inset 0 2px 2px #318e2c;
+    -webkit-box-shadow:inset 0 2px 3px #026404;
+    -moz-box-shadow:inset 0 2px 2px #318e2c;
+}

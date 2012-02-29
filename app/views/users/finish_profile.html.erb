@@ -1,0 +1,79 @@
+<%= render :partial => 'layouts/top_nav'  %>
+
+
+<div class="main">
+
+<h1>Welcome to ZangZing. Let's create your profile.</h1>
+
+<div class="fieldscontainer">
+<input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
+<div class="section">
+  <div class="flag-left">
+    <div class="flag">1</div>
+  </div>
+  <div class="right">
+      <div class="title">Add your profile photo</div>
+      <div class="content">
+        <img src="">
+        Pick photo.
+      </div>
+  </div>
+</div>
+
+  <div class="section">
+    <div class="flag-left">
+      <div class="flag">2</div>
+    </div>
+    <div class="right">
+        <div class="title">Tell us your name</div>
+        <div class="content">
+          <label for="user_name" >First &amp; Last Name</label>
+          <input type="text" name="user[name]" id="user_name" value="<%=(@new_user ? @new_user.name : '')%>" />
+
+        </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="flag-left">
+      <div class="flag">3</div>
+    </div>
+    <div class="right">
+        <div class="title">Pick your username</div>
+        <div class="content">
+          <label for="user_username">zangzing.com/</label>
+          <input type="text" name="user[username]" id="user_username" value="<%=(@new_user ? @new_user.username: '')%>" />
+        </div>
+    </div>
+  </div>
+
+  <div class="clear"></div>
+</div><!--fieldscontainer-->
+
+<div class="donecontainer">
+  <input type="submit" id="done" value="Done" />
+</div>
+
+</div><!--main-->
+
+<% content_for :zz_js_document_ready do %>
+    zz.local_storage.clear();
+
+    // TODO: add second validation
+    var validator = zz.joinform.add_validation( $('.join-form') );
+
+    $('.content label').first().inFieldLabels();
+
+    $('#submit').click(function(){
+    zz.joinform.submit_form($(".join-form"), validator, "join.joinpage");
+    });
+
+    $('.join-form').bind('keypress', function(e){
+    if ( e.keyCode == 13 ) {
+    zz.joinform.submit_form($(".join-form"), validator, "join.joinpage");
+    }
+    });
+
+    $('#user_email').focus();
+
+<%end%>

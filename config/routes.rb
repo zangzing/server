@@ -44,6 +44,7 @@ Server::Application.routes.draw do
     get    '/users/new'                 => 'users#new',               :as => :new_user
     get    '/users/validate_email'      => 'users#validate_email',    :as => :validate_email
     get    '/users/validate_username'   => 'users#validate_username', :as => :validate_username
+    get    '/users/finish_profile'      => 'users#finish_profile',    :as => :finish_profile
     post   '/users'                     => 'users#create',            :as => :create_user, :requirements => {:protocol => 'https'}
     put    '/users/:id'                 => 'users#update',            :as => :update_user
     delete '/users/:id'                 => 'users#destroy',           :as => :delete_user

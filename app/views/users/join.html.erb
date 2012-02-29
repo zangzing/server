@@ -9,7 +9,7 @@
 	</div>
 	<% end %>
 	<div class="formcontainer">
-    <form class="join-form" method="post" enctype="multipart/form-data" action="<%=create_user_url%>" >
+    <form class="join-form">
       <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
       <ul>
         <li>
@@ -45,14 +45,9 @@
 
 	$('.join-form li label').inFieldLabels();
 
-    $('#submit').click(function(){
+    $('.join-form').submit(function(){
         zz.joinform.submit_form($(".join-form"), validator, "join.joinpage");
-    });
-
-    $('.join-form').bind('keypress', function(e){
-        if ( e.keyCode == 13 ) {
-            zz.joinform.submit_form($(".join-form"), validator, "join.joinpage");
-        }
+        return false;
     });
 
     $('#user_email').focus();

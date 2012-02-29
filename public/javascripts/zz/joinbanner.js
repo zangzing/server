@@ -41,8 +41,6 @@ var zz = zz || {};
     	element.find('form input').focus(function (object) { $(object.target).css("border", "1px solid orange"); });
     	element.find('form input').focusout(function (object) { $(object.target).css("border", "1px solid #666"); });
     	
-    	element.find('.join-form').first().attr("action", 'https://'+document.domain+zz.routes.users.create_user_url());
-	
     	validator = zz.joinform.add_validation( element.find('.join-form') );
     	
     	element.find('.join-form .submit-button').click(function(){
@@ -65,7 +63,7 @@ var zz = zz || {};
 		    html = '<div class="picture"><div class="container"><div class="mask"><img src="'+ join_picture() +'" class="profile-photo"/></div><img class="bottom-shadow" src="/images/photo/bottom-full.png"/></div></div>' +
 		    		'<div class="header">'+join_message()+'</div>' +    
 		            '<div class="feature">' +
-		                '<form method="post" class="join-form" enctype="multipart/form-data" action="foo">' +
+		                '<form class="join-form" enctype="multipart/form-data">' +
 		                '<input type="hidden" name="follow_user_id" id="follow_user_id" value="'+ zz.page.displayed_user_id +'" />' + 
 		                '<ul>' +
 		                '<li><label for="user_email">Email address</label><input type="text" name="user[email]" id="user_email" value="" /></li>' +

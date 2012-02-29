@@ -164,6 +164,10 @@ class UsersController < ApplicationController
     render :action=>:join,  :layout => false
   end
 
+  def finish_profile
+    render :layout => 'plain'
+  end
+  
   def show
     @user = User.find(params[:id])
     redirect_to user_pretty_url(@user )

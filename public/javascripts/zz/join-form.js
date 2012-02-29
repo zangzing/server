@@ -66,7 +66,6 @@ var zz = zz || {};
     
     // takes a jquery element that is both the form and contains the fields
     function submit_form(form_element, validator, zza_string){
-
         var num_fields_nonempty = 0;
 		num_fields_nonempty =
             // name and username no longer in this form
@@ -88,9 +87,20 @@ var zz = zz || {};
 //			});
 //    	} else
         if(form_element.valid()){
-            form_element.submit();
+        	var res;
+        	var nexturl;
+            //form_element.submit();
+        	
+        	// Call API
+        	// res = zz.callAPI();
+        	nexturl = '/service/users/finish_profile';
+        	if(true){
+        		window.location = nexturl;
+        	}
+
     		ZZAt.track(zza_string+".click");
     		ZZAt.track(zza_string+".click.valid");
+
     	} else {
     		var num_fields_valid = 0;
     		var bit_notation = 0;

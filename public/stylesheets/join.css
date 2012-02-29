@@ -93,6 +93,7 @@
 	text-align: left;
 }
 
+/* TODO: change this to be not global */
 #submit {
 	width: 350px;
 	height: 36px;
