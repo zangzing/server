@@ -191,19 +191,21 @@ class PhotosController < ApplicationController
   #   photo, see hashed_photo
   # }
   def simple_upload_fast
-    if zz_api_call? == false && current_user_or_nil.nil?
+    if zz_api_call? == false && current_user == false
       # because we are called via flash we don't get the user_credentials cookie set
       # and instead it gets passed as part of the posted data so we manually extract
       # it and then set it up as current_user
       persistence_token = params[:user_credentials].split('::')[0]
       user = User.find_all_by_persistence_token(persistence_token)
       user = user[0] if user
-      self.current_user = user
+      self.current_user = user  # set the current user manually since not in cookie
     else
-      user = current_user
+      user = any_current_user
     end
 
-    return unless require_user && require_album(true) && require_album_contributor_role
+    # Let in logged in automatic users as well as normal users.  This is so
+    # we can create profile photos before converting to a full user
+    return unless require_any_user && require_album(true) && require_any_album_contributor_role
 
     if zz_api_call?
       zz_api do

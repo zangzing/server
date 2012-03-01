@@ -16,7 +16,7 @@ end %>
           <a id="change_ba" href="javascript:void(0)" onclick="$('#change_ba_form').submit();">change</a>
         </fieldset>
 
-        <% if current_user.nil? %>
+        <% if current_user == false %>
         <fieldset>
           <h4><%= t("email").titleize%></h4>
           <p id="orderemail" class="field">

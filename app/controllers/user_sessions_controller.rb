@@ -1,7 +1,7 @@
 class UserSessionsController < ApplicationController
 
-  ssl_required :new, :create, :zz_api_login
-  skip_filter  :verify_authenticity_token, :only => [:zz_api_login, :create]
+  ssl_required :new, :create
+  skip_filter  :verify_authenticity_token, :only => [:create]
 
 
   after_filter :associate_order, :only => [:create]
@@ -51,7 +51,7 @@ class UserSessionsController < ApplicationController
   end
 
   def destroy
-    if current_user
+    if any_current_user
       if  session[:impersonation_mode] == true
         redirect_to admin_unimpersonate_url
       else
@@ -64,75 +64,9 @@ class UserSessionsController < ApplicationController
     end
   end
 
-  # Logs a user in.
-  #
-  # After login, the user credentials will be returned as well as the
-  # system rights for that user.
-  #
-  # This is called as (POST):
-  #
-  # /zz_api/login
-  #
-  #
-  # Input:
-  # {
-  #   :email => the username or email to log in with,
-  #   :password => the password,
-  # }
-  #
-  #
-  # Returns:
-  # the credentials and user rights
-  #
-  # {
-  #   :user_id => id of this user,
-  #   :user_credentials => a string representing the user credentials, to use, set
-  #       the user_credentials cookie to this value
-  #   :username => the username for this user,
-  #   :server => the host you are connected to
-  #   :role => the system rights for this user, can be one of
-  #     the :available_roles such as:
-  #     Admin,Hero,SuperModerator,Moderator,User
-  #     The roles are shown from most access to least
-  #     So, for example, if you need Moderator rights and you are an Admin
-  #     you will be granted access.  On the other hand, if
-  #     you are a User you will not be granted access.
-  #   :available_roles => Ordered from most access to least lets you determine
-  #     the available roles and their order
-  # }
-  #
-  def zz_api_login
-    zz_api do
-      user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => false)
-      if user_session.save
-        acl = SystemRightsACL.singleton
-        role = acl.get_user_role(current_user.id)
-        if role.nil?
-          role = SystemRightsACL::USER_ROLE
-          acl.add_user(current_user, role)
-        end
-        result = {
-            :user_credentials => current_user.persistence_token,
-            :user_id =>  current_user.id,
-            :username => current_user.username,
-            :server => Server::Application.config.application_host,
-            :role => role.name,
-            :available_roles => SystemRightsACL.role_names
-        }
-      else
-        raise ZZAPIError.new(user_session.errors.full_messages, 401)
-      end
-      result
-    end
-  end
-
-  def zz_api_logout
-    zz_api do
-      current_user_session.destroy if current_user
-      nil
-    end
-  end
-
+  # NOTE, the zz_api login and logout methods are in the users_controller since
+  # we also support create there as well and it makes sense to unify them
+  # in one place.
 
   def inactive
   end

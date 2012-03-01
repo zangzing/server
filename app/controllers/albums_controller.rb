@@ -678,7 +678,7 @@ class AlbumsController < ApplicationController
 
       album_meta = {
         :user_id                        => loader.user_id,
-        :logged_in_user_id              => current_user.nil? ? nil : current_user.id,
+        :logged_in_user_id              => current_user ? current_user.id : nil,
         :public                         => loader.public,
         :my_albums                      => loader.my_album_loader.current_version_key,
         :my_albums_path                 => zz_api_my_albums_link(loader),
@@ -1099,7 +1099,7 @@ class AlbumsController < ApplicationController
   def get_albums(user, zz_api)
     # determine if we should be fetching the view based on public or private data
     user_is_me = current_user?(user)
-    private_view = user_is_me || (!current_user.nil? && current_user.support_hero?)
+    private_view = user_is_me || (current_user && current_user.support_hero?)
     public = !private_view
 
     # preload the expected cache data
@@ -1119,7 +1119,7 @@ class AlbumsController < ApplicationController
     # if any of the albums the current user likes belong to the viewed user
     # we do this by returning the url to fetch liked_albums for the session
     # user
-    if public && !current_user.nil?
+    if public && current_user
       # ok, we have a valid session user and we are viewing somebody else so pull in our liked_albums
       session_loader = Cache::Album::Manager.shared.make_loader(current_user, false)
       session_loader.pre_fetch_albums

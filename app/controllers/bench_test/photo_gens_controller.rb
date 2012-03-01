@@ -138,7 +138,7 @@ class BenchTest::PhotoGensController < BenchTest::BenchTestsController
   # generation events
   #
   def create_work data
-    if current_user.nil?
+    if current_user == false
       raise "You must be logged into a user account to run this test."
     end
     # append to album and photo dir

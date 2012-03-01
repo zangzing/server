@@ -53,19 +53,27 @@ module ZZ
 
       # Authlogic
       # returns false or the current user
+      # if we have a current user but that user
+      # is an automatic user, we act as if we have
+      # no current user, use any_current_user
+      # if you want the user even if automatic
       def current_user
         return @current_user if defined?(@current_user)
-        @current_user = current_user_session && current_user_session.user
+        @current_user = any_current_user
+        @current_user = false if @current_user && @current_user.automatic?
+        @current_user
       end
 
-      # current_user will return false if no current user so
-      # to simplify cases where we want nil we do that here
-      def current_user_or_nil
-        current_user || nil
+      # returns the current user if we have one without
+      # caring if that user is an automatic user
+      def any_current_user
+        return @any_current_user if defined?(@any_current_user)
+        @any_current_user = current_user_session && current_user_session.user
       end
 
       def current_user=(user)
         @current_user = user
+        @any_current_user = user
       end
 
       # True if a user is signed in. Left in place for backwards compatibility
@@ -81,6 +89,19 @@ module ZZ
       #  Stores the intended destination of a rerquest to take the user there after log in
       def store_location
         session[:return_to] = request.fullpath
+      end
+
+      # determine the proper join step url
+      def determine_join_url(user)
+        url = nil
+        if user.automatic?
+          if user.completed_step == 1
+            url = join_final_url
+          else
+            url = join_url
+          end
+        end
+        url
       end
 
       #
@@ -127,9 +148,9 @@ module ZZ
         return true
       end
 
-      # Filter for methods that require a log in
-      def require_user
-        unless current_user
+      # require a user of any type even partially created
+      def require_any_user
+        unless any_current_user
           msg = "Join for free or sign in to access that page."
           if zz_api_call?
             render_json_error(nil, msg, 401)
@@ -139,6 +160,39 @@ module ZZ
           else
             store_location
             redirect_to join_url :message => msg
+          end
+          return false
+        end
+        return true
+      end
+
+      # Filter for methods that require a log in
+      # requires a full user
+      def require_user
+        has_user = require_any_user
+        return false unless has_user
+
+        # ok, we have a user lets make sure full
+        if current_user.automatic?
+          join_final = false
+          if current_user.completed_step == 1
+            msg = "You must complete the final step of the join process to login"
+            join_final = true
+          else
+            msg = "Join for free or sign in to access that page."
+          end
+          if zz_api_call?
+            render_json_error(nil, msg, 401)
+          elsif request.xhr?
+            flash.now[:error] = msg
+            head :status => 401
+          else
+            store_location
+            if join_final
+              redirect_to join_final_url :message => msg
+            else
+              redirect_to join_url :message => msg
+            end
           end
           return false
         end
@@ -369,16 +423,23 @@ module ZZ
         return true
       end
 
+      # flavor of require_album_contributor_role
+      # that allows automatic logged in users as well
+      def require_any_album_contributor_role
+        require_album_contributor_role(true)
+      end
+
       #
       # To be run as a before_filter
       # Assumes @album is the album in question and current_user is the user we are evaluating
-      def require_album_contributor_role
+      def require_album_contributor_role(any = false)
+        user = any ? any_current_user : current_user
         msg = "Only album contributors can perform this operation"
-        if current_user
+        if user
           if @album.everyone_can_contribute?
             return true
           else
-            if @album.contributor?( current_user.id )
+            if @album.contributor?( user.id )
               return true
             else
               if zz_api_call?
