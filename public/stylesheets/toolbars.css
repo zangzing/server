@@ -300,6 +300,15 @@
 #activities-view-button.selected{ background-position: 0  -64px; }
 #activities-view-button.disabled{ background-position: 0 0;}
 
+#header-right-gradient {
+    position: absolute;
+    top: 1px;
+    right: 116px;
+    width: 44px;
+    height: 55px;
+    background: url("/images/embed/toolbars/bg-header-rightgradient.png") no-repeat scroll 0px 0px transparent;	
+}
+
 #help-button{
     position: absolute;
     top: 1px;
