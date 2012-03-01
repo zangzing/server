@@ -73,7 +73,7 @@ var zz = zz || {};
     }
 
     function banner_refresh(){
-    	if( !current_banner_delegate || zz.buy.is_buy_mode_active() || $('#checkout-banner .message').is(":visible") ){
+    	if( !current_banner_delegate || !current_banner_delegate.should_show_banner() || zz.buy.is_buy_mode_active() || $('#checkout-banner .message').is(":visible") ){
     		hide_banner();
     	} else {
     		show_banner();
