@@ -36,11 +36,11 @@ class LikeActivity < Activity
     if like.subject.is_a?(Photo)
       return true if like.subject.album.public?
       return true if view == ALBUM_VIEW && like.subject.album.hidden?
-      return true if current_user && like.subject.album.viewer_in_group?( current_user.id )
+      return true if current_user && like.subject.album.viewer?( current_user.id )
     elsif like.subject.is_a?(Album)
       return true if like.subject.public?
       return true if view == ALBUM_VIEW && like.subject.hidden?
-      return true if current_user && like.subject.viewer_in_group?( current_user.id )
+      return true if current_user && like.subject.viewer?( current_user.id )
     elsif like.subject.is_a?(User)
       return true
     end

@@ -42,7 +42,7 @@ zz.drawers = {
         $('#right-drawer').remove();
 
         // pull out the drawer
-        $('div#drawer').show().animate({ height: zz.drawer_height + 'px', top: '52px' }, time);
+        $('div#drawer').show().animate({ height: zz.drawer_height + 'px', top: '51px' }, time);
         $('div#drawer-content').animate({ height: (zz.drawer_height - 18) + 'px'}, time);
 
         zz.wizard.resize_scroll_body();
@@ -60,7 +60,7 @@ zz.drawers = {
 
         if (typeof(size) != 'undefined' && size < zz.drawer_height) zz.drawer_height = size;
 
-        $('div#drawer').animate({ height: zz.drawer_height + 'px', top: '52px' }, time);
+        $('div#drawer').animate({ height: zz.drawer_height + 'px', top: '51px' }, time);
         $('div#drawer-content').animate({ height: (zz.drawer_height - 18) + 'px'}, time);
 
     },

@@ -50,7 +50,7 @@ class Photo < ActiveRecord::Base
                   :updated_at, :image_content_type, :headline, :error_message, :image_bucket,
                   :orientation, :height, :suspended, :longitude, :pos, :image_path, :image_updated_at,
                   :generate_queued_at, :width, :state, :source, :deleted_at, :for_print, :original_suffix, :size_version,
-                  :crc32, :import_context
+                  :crc32, :import_context, :work_priority
 
   # this is just a placeholder used by the connectors to track some extra state
   # now that we do batch operations
@@ -63,6 +63,7 @@ class Photo < ActiveRecord::Base
 
   has_many :like_mees,      :foreign_key => :subject_id, :class_name => "Like"
   has_many :likers,         :through => :like_mees, :class_name => "User",  :source => :user
+  has_many :shares,         :as => :subject, :dependent => :destroy
 
   # when retrieving a search from the DB it will always be ordered by created date descending a.k.a Latest first
   default_scope :order => 'capture_date ASC, created_at ASC, id ASC'
@@ -80,6 +81,13 @@ class Photo < ActiveRecord::Base
 
   validates_presence_of             :album_id, :user_id, :upload_batch_id
 
+
+  # wrap the destroy in a deferred dispatch, allows us to batch cache invalidates
+  def destroy
+    DeferredCompletionManager.dispatch do
+      super
+    end
+  end
 
   # since we allow batch operations, we don't get the normal callbacks for things
   # like before_create.  So, to keep things simple we have this helper method
@@ -107,7 +115,7 @@ class Photo < ActiveRecord::Base
   # :rotate_to - new rotation
   # :for_print - will only produce print related resized photos
   #
-  # returns the new copys array - the copy still has to go through the
+  # returns the new copies array - the copy still has to go through the
   # resque jobs for copy of the s3 data and resizing steps so
   # is initially in the uploading state
   def self.copy_photos(originals)
@@ -416,6 +424,12 @@ class Photo < ActiveRecord::Base
     end
   end
 
+  # does a find to see if photo is not
+  # ready
+  def self.get_non_ready_photo(photo_id)
+    Photo.where("id = ? AND state <> 'ready'", photo_id).first
+  end
+
   # queue the upload with no checks
   def queue_upload_to_s3(options = {})
     ZZ::ZZA.new.track_transaction("photo.upload.s3.start", self.id)
@@ -523,6 +537,17 @@ class Photo < ActiveRecord::Base
     return response_id
   end
 
+  # deliver any deferred shares
+  # log any error but do not propagate
+  #
+  def deliver_shares
+    begin
+      Share.deliver_shares(self.user_id, self.id, Photo.name)
+    rescue Exception => ex
+      logger.error("Unable to deliver shares for photo #{self.id} due to: #{ex.message}")
+    end
+  end
+
   #
   # resize the original into various sizes and then
   # upload the newly sized files to s3
@@ -539,6 +564,10 @@ class Photo < ActiveRecord::Base
     was_ready = ready?
     mark_ready
     save!
+
+    # deliver any shares that might have been waiting for us to become ready
+    deliver_shares
+
     # bump count of ready photos if this one just became ready
     Album.update_photos_ready_count(self.album_id, 1) unless was_ready
     # this is a sanity check to work around a small

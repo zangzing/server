@@ -68,7 +68,7 @@ var zz = zz || {};
 		                '<ul>' +
 		                '<li><label for="user_email">Email address</label><input type="text" name="user[email]" id="user_email" value="" /></li>' +
 		                '<li><label for="user_password">Password</label><input type="password" name="user[password]" id="user_password" value="" maxlength="40" /></li>' +
-		                '<li><a class="submit-button newgreen-button" rel="nofollow"><span>Join for Free</span></a></li>' +
+		                '<li><a class="submit-button newgreen-button" rel="nofollow"><span>Join</span></a></li>' +
 		                '</ul>' +
 		                '</form>' +
 		            '</div>';
@@ -82,7 +82,7 @@ var zz = zz || {};
 		if(zz.invitation.invitername) {
 			message = "<strong>" + zz.invitation.invitername + "</strong> has invited you to ZangZing. Join now and you each get 250MB of extra space free.";
 		} else if(zz.page.displayed_user_name){
-			message = "<strong>" + zz.page.displayed_user_name + "</strong> is using ZangZing. Join for free to share your favorite photos.";
+			message = "<strong>" + zz.page.displayed_user_name + "</strong> is using ZangZing. Join for free and follow " + zz.page.displayed_user_name + ".";
 		} else {
 			message = "ZangZing is a free and easy photo sharing service.";
 		}

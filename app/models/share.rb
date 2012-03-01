@@ -2,6 +2,15 @@
 #   Copyright 2010, ZangZing LLC;  All rights reserved.  http://www.zangzing.com
 #
 class Share < ActiveRecord::Base
+  # constants for Share.share_type
+  TYPE_VIEWER_INVITE = 'viewer'
+  TYPE_CONTRIBUTOR_INVITE = 'contributor'
+
+  # constants for Share.service
+  SERVICE_EMAIL = 'email'
+  SERVICE_SOCIAL = 'social'
+
+  attr_accessor    :defer
   attr_accessible :user, :subject, :subject_url, :service, :recipients, :message, :share_type
   serialize :recipients  #the recipients field (an array) will be YAML serialized into the db
 
@@ -9,14 +18,16 @@ class Share < ActiveRecord::Base
   belongs_to :subject, :polymorphic => true  #the subject can be user,album or photo
   belongs_to :upload_batch
 
-  validates_presence_of :user_id, :subject_id, :subject_type, :recipients, :share_type
+  validates_presence_of :user_id, :subject_id, :subject_type, :recipients
 
+  validates  :share_type, :presence => true, :inclusion => { :in => [TYPE_VIEWER_INVITE, TYPE_CONTRIBUTOR_INVITE] }
   validates  :service, :presence => true, :inclusion => { :in => %w{email social} }
 
-  #if the service is email the recipients array can only contain valid email addresses
+  #if the service is email the recipients array can only contain valid email addresses, or group ids
   validates_each  :recipients, :if => :email? do |record, attr, value|
     value.each do |email|
-      record.errors.add attr, "Email address not valid: "+email unless ZZ::EmailValidator.validate( email )
+      # see if a number or a valid email, numbers mean group_ids
+      record.errors.add attr, "Email address not valid: "+email unless (Integer(email) rescue false) != false || ZZ::EmailValidator.validate( email )
     end
   end
 
@@ -36,32 +47,20 @@ class Share < ActiveRecord::Base
   after_commit :after_share_photo, :if => :photo?, :on => :create
 
 
-  # constants for Share.share_type
-  TYPE_VIEWER_INVITE = 'viewer'
-  TYPE_CONTRIBUTOR_INVITE = 'contributor'
 
-  # constants for Share.service
-  SERVICE_EMAIL = 'email'
-  SERVICE_SOCIAL = 'social'
-
-
-  # Finds all of a user's shares for a given album and
+  # Finds all of a user's shares for a given id and type and
   # delivers them. If the shares had already been delivered,
   # they wont be delivered again.
-  def self.deliver_shares( user_id, subject_id )
+  def self.deliver_shares( user_id, subject_id, subject_type )
     if subject_id.nil? || user_id.nil?
       raise Exception.new("Subject Id and User Id cannot be nil")
     end
 
-    shares = Share.find_all_by_user_id_and_subject_id(user_id, subject_id)
-    shares.each { |share|  ZZ::Async::DeliverShare.enqueue( share.id ) if share.sent_at.nil? }
-  end
-
-
-  # parses and cleans list of email addresses.
-  # returns emails and any errors
-  def self.validate_email_list( email_list )
-    return ZZ::EmailValidator.validate_email_list(email_list)
+    # fetch the shares that still need to be sent for this user_id and subject_id, and subject_type
+    shares = Share.where("user_id = ? AND subject_id = ? AND subject_type = ? AND sent_at IS NULL", user_id, subject_id, subject_type).all
+    shares.each do |share|
+      ZZ::Async::DeliverShare.enqueue( share.id )
+    end
   end
 
 
@@ -75,7 +74,8 @@ class Share < ActiveRecord::Base
     # Create Email or post
     case service
       when 'email'
-        self.recipients.each do |recipient |
+        emails = Group.flatten_emails(recipients) # flatten groups and emails into just emails
+        emails.each do |recipient|
           Guest.register( recipient, 'share' ) #add recipient to guest list for beta period
 
 
@@ -138,8 +138,14 @@ class Share < ActiveRecord::Base
   end
 
   # after_create callback for photos
+  # If the photos is in the non ready state
+  # we defer, the photo model will take
+  # care of delivering the share when it
+  # transitions to the ready state
   def after_share_photo
-    ZZ::Async::DeliverShare.enqueue( self.id )
+    photo = Photo.get_non_ready_photo(subject_id)
+    self.defer = !!photo
+    ZZ::Async::DeliverShare.enqueue( self.id ) unless self.defer
   end
 
   def email?
@@ -151,19 +157,19 @@ class Share < ActiveRecord::Base
   end
 
   def album?
-    self.subject_type == 'Album'
+    self.subject_type == Album.name
   end
 
   def user?
-    self.subject_type == 'User'
+    self.subject_type == User.name
   end
 
   def photo?
-    self.subject_type == 'Photo'
+    self.subject_type == Photo.name
   end
 
   def instant?
-    self.upload_batch_id.nil?
+    !self.defer && self.upload_batch_id.nil?
   end
 
   def viewer_invite?

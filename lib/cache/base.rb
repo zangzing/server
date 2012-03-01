@@ -45,8 +45,6 @@ module Cache
         new_db_id = @db.object_id
         logger.info("New cache db connection - old db id was: #{old_db_id} -- new db id is: #{new_db_id}")
 
-        @safe_max_size = RawDB.safe_max_size(@db, 32 * 1024)
-
         return @db
       end
 
@@ -73,17 +71,7 @@ module Cache
       # 1: tracked_id, 2: track_type
       #
       def fast_insert(rows, base_cmd, end_cmd = '')
-        RawDB.fast_insert(db, safe_max_db_size, rows, base_cmd, end_cmd)
-      end
-
-    protected
-
-      # the max size (with some slop) that you should
-      # create for a single message to the database
-      # this is used by fast_insert to know when to break
-      # the requests for very large sets of rows
-      def safe_max_db_size
-        @safe_max_size
+        RawDB.fast_insert(db, rows, base_cmd, end_cmd)
       end
 
     end

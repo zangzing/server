@@ -78,7 +78,7 @@ class Subscriptions< ActiveRecord::Base
     end
     self.save
   end
-
+  alias update_subscription :unsubscribe
 
   def wants_email?( zzemail )
     false if zzemail.nil?
@@ -120,6 +120,12 @@ class Subscriptions< ActiveRecord::Base
      else
        Subscriptions.find_or_create_by_email( recipient ).wants_email!( zzemail )
      end
+  end
+
+  # do a subscribe to the once list which isn't tracked by subscriptions but
+  # just does the MailingListSync directly
+  def subscribe_to_once
+    ZZ::Async::MailingListSync.enqueue('subscribe_user', Email::ONCE, user.id )
   end
 
   # When the marketing preferences change, update subscriptions to marketing mailing lists

@@ -59,6 +59,32 @@ module Cache
         invalidator.add_tracked_album(album_id, AlbumTypes::MY_INVITED_ALBUMS)
       end
 
+      # called on entry to the top most deferral, lets us set up any
+      # state we need.
+      def deferred_prepare(state)
+        state[:album_cache_invalidator] = DeferredInvalidator.new(self)
+      end
+
+      # we are exiting the top level deferral, so we do our actual deferred work here
+      def deferred_finish(state)
+        invalidator = state[:album_cache_invalidator]
+        invalidator.invalidate_now if invalidator  # do the real invalidation
+      end
+
+      # fetches the appropriate invalidator type
+      def make_invalidator
+        # see if nested in a deferred completion, so use thread local version
+        state = DeferredCompletionManager.state
+        if state.empty?
+          # just make a normal one since not inside DeferredCompletion
+          invalidator = Invalidator.new(self)
+        else
+          # we are inside a deferral, get the deferred invalidator
+          invalidator = state[:album_cache_invalidator]
+        end
+        invalidator
+      end
+
       def album_change_matters?(album)
         @@album_fields_filter ||= Set.new [
             "privacy",
@@ -85,7 +111,7 @@ module Cache
 
         # collect all the invalidations into the Invalidator so
         # we only have to invalidate once
-        invalidator = Invalidator.new(self, user_id)
+        invalidator = make_invalidator
 
         # invalidate public related trackers
         invalidate_my_public_albums(invalidator, user_id)
@@ -125,8 +151,8 @@ module Cache
       # We are changing the users we like so it doesn't really matter
       # which user change because the cache is now stale and must
       # be re-fetched when next requested which will retrack any items of interest
-      def user_like_modified(user_id, tracked_user_id)
-        invalidator = Invalidator.new(self, user_id)
+      def user_like_modified(user_id, tracked_user_id = nil)
+        invalidator = make_invalidator
         invalidator.add_tracked_user(user_id, AlbumTypes::LIKED_USERS_ALBUMS_PUBLIC)
         invalidator.add_tracked_user_like_membership(user_id, AlbumTypes::LIKED_USERS_ALBUMS_PUBLIC)
         invalidator.invalidate
@@ -137,8 +163,8 @@ module Cache
       # is not used because we delete all of them since the cache is now stale
       # and we expect the next visit for this cache to retrack the items
       # that user cares about
-      def album_like_modified(user_id, tracked_album_id)
-        invalidator = Invalidator.new(self, user_id)
+      def album_like_modified(user_id, tracked_album_id = nil)
+        invalidator = make_invalidator
         invalidator.add_tracked_user(user_id, AlbumTypes::LIKED_ALBUMS)
         invalidator.add_tracked_album_like_membership(user_id, AlbumTypes::LIKED_ALBUMS)
         invalidator.add_tracked_user(user_id, AlbumTypes::LIKED_ALBUMS_PUBLIC)
@@ -170,16 +196,26 @@ module Cache
         like_modified(user_id, like)
       end
 
-      def user_albums_acl_modified(user_id)
-        invalidator = Invalidator.new(self, user_id)
-        invalidator.add_tracked_user(user_id, AlbumTypes::MY_INVITED_ALBUMS)
-        invalidator.add_tracked_user_invites(user_id, AlbumTypes::MY_INVITED_ALBUMS)
+      def user_albums_acl_modified(user_ids)
+        invalidator = make_invalidator
 
-        # since we don't show anything other than an empty album list for the public view, no need to notify on change
-        #invalidator.add_tracked_user(user_id, AlbumTypes::MY_INVITED_ALBUMS_PUBLIC)
-        #invalidator.add_tracked_user_invites(user_id, AlbumTypes::MY_INVITED_ALBUMS_PUBLIC)
+        user_ids.each do |user_id|
+          invalidator.add_tracked_user(user_id, AlbumTypes::MY_INVITED_ALBUMS)
+          invalidator.add_tracked_user_invites(user_id, AlbumTypes::MY_INVITED_ALBUMS)
+
+          # since we don't show anything other than an empty album list for the public view, no need to notify on change
+          #invalidator.add_tracked_user(user_id, AlbumTypes::MY_INVITED_ALBUMS_PUBLIC)
+          #invalidator.add_tracked_user_invites(user_id, AlbumTypes::MY_INVITED_ALBUMS_PUBLIC)
+        end
 
         invalidator.invalidate
+      end
+
+      # user has been deleted so invalidate any related caches
+      def user_deleted(user_id)
+        user_albums_acl_modified([user_id])
+        user_like_modified(user_id)
+        album_like_modified(user_id)
       end
 
       # trim out old entries, called by

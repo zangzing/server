@@ -80,7 +80,7 @@ class MailingList < ActiveRecord::Base
   end
 
   #[Email::NEWS, Email::MARKETING]
-  def self.subscribe_user( categories, user_id )
+  def self.subscribe_user( categories, user_id)
      user = User.find( user_id )
      lists = MailingList.find_all_by_category( categories )
      lists.each do |list|
@@ -88,16 +88,30 @@ class MailingList < ActiveRecord::Base
      end
   end
 
-  def self.unsubscribe_user( categories, user_id )
+  def self.unsubscribe_user( categories, user_id, ignore_errors = false  )
      user = User.find( user_id )
      lists = MailingList.find_all_by_category( categories )
      lists.each do |list|
-       list.unsubscribe_user( user )
+       begin
+         list.unsubscribe_user( user )
+       rescue Exception => ex
+         raise ex unless ignore_errors
+       end
      end
   end
 
   def self.subscribe_new_user user_id
     ZZ::Async::MailingListSync.enqueue( 'subscribe_user', [Email::NEWS, Email::MARKETING, Email::ONCE], user_id )
+  end
+
+  # immediately send out request to unsubscribe this user since being deleted
+  # don't want to wait for resque job because we will be gone by then and this
+  # obviously happens only rarely in the system
+  def self.user_cleanup(user)
+    # make sure that resque worker is not filtered for this call
+    if ZZ::Async::MailingListSync.loopback_on? == false || ZZ::Async::MailingListSync.should_loopback?
+      unsubscribe_user([Email::NEWS, Email::MARKETING, Email::ONCE], user.id, true)
+    end
   end
 
   def self.update_user old_email, user_id

@@ -19,6 +19,7 @@
 #
 
 class Identity < ActiveRecord::Base
+  extend ZZActiveRecordUtils
 
   belongs_to :user
   has_many :contacts, :dependent => :destroy
@@ -37,10 +38,10 @@ class Identity < ActiveRecord::Base
     return @new_id
   end
 
+  # return as a boolean
   def credentials_valid?
-
     # we may want to validate with a call to the specific service
-    self.identity_source.to_sym == :local || self.credentials
+    (self.identity_source.to_sym == :local) || !!self.credentials   # the !! turns nil into false
   end
 
   UI_INFO = {
@@ -68,15 +69,10 @@ class Identity < ActiveRecord::Base
   def destroy_contacts
     Contact.connection.execute "DELETE FROM #{Contact.quoted_table_name} WHERE `identity_id` = #{self.id}"
   end
-  
-  # determine the max insert size to build
-  def max_insert_size
-    @@safe_max_size ||= RawDB.safe_max_size(Contact.connection)
-  end
 
   def import_contacts(contacts_array)
     db = Contact.connection
-    max_insert_size = self.max_insert_size
+
     cmd = "INSERT INTO #{Contact.quoted_table_name} (identity_id, name, address, created_at, updated_at) VALUES "
 
     # build an array of arrays that contain the data to insert
@@ -88,7 +84,7 @@ class Identity < ActiveRecord::Base
       rows << row
     end
 
-    RawDB.fast_insert(db, max_insert_size, rows, cmd)
+    RawDB.fast_insert(db, rows, cmd)
 
     return contacts_array.count
   end

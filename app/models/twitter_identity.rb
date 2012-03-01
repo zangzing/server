@@ -14,7 +14,7 @@ class TwitterIdentity < Identity
         raise InvalidToken if exception.kind_of?(Twitter::Unauthorized)
         raise HttpCallFail if exception.kind_of?(SocketError)
       end
-      raise InvalidToken unless twitter_api.client.authorized?
+      raise InvalidToken if @api.nil? || @api.client.nil? || !@api.client.authorized?
     end
     return @api
   end
