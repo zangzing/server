@@ -111,7 +111,7 @@ div#container {
 #header-join-banner {
   	position: absolute;
   	z-index: 200;
-  	top: 56px; /* 60px header - 2px header top - 1px header shadow -1px self-border*/
+  	top: 54px; /* 60px header - 2px header top - 2px header invisible shadow - 1px header image - 1px self-border*/
     left: 50%;
     width: 846px;
     height:75px;
