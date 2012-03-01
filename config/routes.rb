@@ -10,6 +10,7 @@ Server::Application.routes.draw do
   get    '/service'            => 'pages#home',          :as => :service
   get    '/signin'             => 'user_sessions#new',   :as => :signin
   get    '/join'               => 'users#join',          :as => :join
+  get    '/join_final'         => 'users#join_final',       :as => :join_final
   get    '/unsubscribe/:id'    => 'subscriptions#unsubscribe', :as => :unsubscribe
 
   get    '/invitation'  => 'invitations#show', :as => :invitation  , :requirements => {:protocol => 'https'}
@@ -416,9 +417,6 @@ Server::Application.routes.draw do
   # limit the verb to post and get to keep things simple for clients that don't support other types
   #
   scope  '/zz_api', :defaults => { :format => 'json' } do
-    post  '/login'                 => 'user_sessions#zz_api_login',    :as => :zz_api_login
-    post  '/logout'                => 'user_sessions#zz_api_logout',   :as => :zz_api_logout
-
     #albums
     get    '/users/:user_id/albums'                    => 'albums#zz_api_albums',                    :as => :zz_api_albums
     get    '/users/:user_id/my_albums'                 => 'albums#zz_api_my_albums',                 :as => :zz_api_my_albums
@@ -450,7 +448,12 @@ Server::Application.routes.draw do
     put    '/albums/:album_id/upload_fast'             => 'photos#simple_upload_fast',               :as => :zz_api_upload_photo_fast
 
     #users
+    post   '/login_or_create'                          => 'users#zz_api_login_or_create',            :as => :zz_api_create_or_login
+    post   '/login_create_finish'                      => 'users#zz_api_login_create_finish',        :as => :zz_api_login_create_finish
+    post   '/logout'                                   => 'users#zz_api_logout',                     :as => :zz_api_logout
+    post   '/users/available'                          => 'users#zz_api_available',                  :as => :zz_api_available_user
     get    '/users/:user_id/info'                      => 'users#zz_api_user_info',                  :as => :zz_api_user_info
+    get    '/users/current_user_info'                  => 'users#zz_api_current_user_info',          :as => :zz_api_current_user_info
     post   '/users/find_or_create'                     => 'users#zz_api_find_or_create',             :as => :zz_api_find_or_create_user
 
     #groups

@@ -9,11 +9,11 @@ describe "ZZ API Albums" do
 
   describe "credentials" do
     it "should fail to login" do
-      j = zz_api_post zz_api_login_path, {:email => "test1", :password => "badpassword"}, 401, true
+      j = zz_api_post zz_api_create_or_login_path, {:email => "test1", :password => "badpassword"}, 401, true
     end
 
     it "should login" do
-      login_info = zz_api_post zz_api_login_path, {:email => "test1", :password => "testtest"}, 200, true
+      login_info = zz_api_post zz_api_create_or_login_path, {:email => "test1", :password => "testtest"}, 200, true
       uid = login_info[:user_id]
       uid.should_not == nil
     end

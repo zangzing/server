@@ -19,7 +19,8 @@ describe "ZZ API Users" do
 
     it "should verify system rights" do
       username = 'test1'
-      j = zz_api_post zz_api_login_path, {:email => username, :password => 'testtest'}, 200, true
+      zz_logout
+      j = zz_api_post zz_api_create_or_login_path, {:email => username, :password => 'testtest'}, 200, true
       j[:role].should == SystemRightsACL::USER_ROLE.name
 
       role_names = SystemRightsACL.role_names
@@ -31,23 +32,48 @@ describe "ZZ API Users" do
 
       username = 'test2'
       SystemRightsACL.set_role(username, SystemRightsACL::SUPER_MODERATOR_ROLE.name)
-      j = zz_api_post zz_api_login_path, {:email => username, :password => 'testtest'}, 200, true
+      zz_logout
+      j = zz_api_post zz_api_create_or_login_path, {:email => username, :password => 'testtest'}, 200, true
       j[:role].should == SystemRightsACL::SUPER_MODERATOR_ROLE.name
+
       SystemRightsACL.set_role(username, SystemRightsACL::USER_ROLE.name)
-      j = zz_api_post zz_api_login_path, {:email => username, :password => 'testtest'}, 200, true
+      zz_logout
+      j = zz_api_post zz_api_create_or_login_path, {:email => username, :password => 'testtest'}, 200, true
       j[:role].should == SystemRightsACL::USER_ROLE.name
     end
 
     it "should fail to get user info" do
       j = zz_api_get zz_api_user_info_path(99999999), 509
-      #puts JSON.pretty_generate(j)
       j[:message].should == "Couldn't find User with ID=99999999"
     end
 
     it "should get user info" do
       j = zz_api_get zz_api_user_info_path(@user_id), 200
-      #puts JSON.pretty_generate(j)
       j[:username].should == 'test1'
+    end
+
+    it "should get current user info" do
+      j = zz_api_get zz_api_current_user_info_path, 200
+      j[:username].should == 'test1'
+    end
+
+    it "should check availability of username" do
+      j = zz_api_post zz_api_available_user_path, {:username => 'shouldnotexist', :email => nil}, 200
+      j[:username_available].should == true
+      j[:email_available].should == true
+
+      j = zz_api_post zz_api_available_user_path, {:username => 'shouldnotexist'}, 200
+      j[:username_available].should == true
+      j[:email_available].should == true
+
+      j = zz_api_post zz_api_available_user_path, {:username => @user.username, :email => @user.email}, 200
+      j[:username_available].should == true   # case where we are same user
+      j[:email_available].should == true
+
+      zz_logout
+      j = zz_api_post zz_api_available_user_path, {:username => @user.username, :email => @user.email}, 200
+      j[:username_available].should == false
+      j[:email_available].should == false
     end
 
     # return true if item matches based on symbol
@@ -147,4 +173,154 @@ describe "ZZ API Users" do
 
     end
 
+    describe "Two Phase Join" do
+
+      it "should one step create new user" do
+        zz_logout
+
+        email = "single_phase_user@bitbucket.zangzing.com"
+        password = "singlepass"
+        username = "onephasetest"
+        name = "One Phase"
+        hash = {
+            :email => email,
+            :password => password,
+            :name => name,
+            :username => username,
+
+            :create => true,
+        }
+        j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+        j[:user][:completed_step].should == nil
+        j[:user][:username].should == username
+        j[:user][:automatic].should == false
+      end
+
+      it "should create new user" do
+        resque_jobs(:except => [ZZ::Async::MailingListSync]) do
+          zz_logout
+
+          email = "two_phase_user@bitbucket.zangzing.com"
+          password = "twopass"
+          hash = {
+              :email => email,
+              :password => password,
+              :create => true,
+          }
+          j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+          j[:user][:completed_step].should == 1
+
+          # now on to phase two
+          username = "twophasetest"
+          name = "Two Phase"
+          hash = {
+              :name => name,
+              :username => username,
+              :profile_photo_url => 'http://3.zz.s3.amazonaws.com/i/656930cc-340d-460b-9254-d4846bb43b5b-t?1303190538'
+          }
+          j = zz_api_post zz_api_login_create_finish_path, hash, 200, true
+          j[:user][:username].should == username
+          user_id = j[:user][:id]
+          user = User.find(user_id)
+          user.profile_album.id.should == j[:user][:profile_album_id]
+          photo = user.profile_album.cover
+          photo.ready?.should == true
+
+          # verify that we can log in with newly created account
+          zz_logout
+          hash = {
+              :email => email,
+              :password => password,
+          }
+          j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+          j[:user][:automatic].should == false
+        end
+      end
+
+      it "should convert automatic to new user" do
+        zz_logout
+
+        # do phase one twice to first create the
+        # automatic user, and then independently
+        # continue on with it in the already automatic state
+        email = "two_phase_user@bitbucket.zangzing.com"
+        password = "twopass"
+        hash = {
+            :email => email,
+            :password => password,
+            :create => true,
+        }
+        j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+        j[:user][:completed_step].should == 1
+
+        # this should fail since we can't log in with a automatic user
+        zz_logout
+        hash[:create] = false
+        j = zz_api_post zz_api_create_or_login_path, hash, 401, true
+
+        # user already exists but should be able to continue
+        # regardless since automatic
+        zz_logout
+        hash[:create] = true  # allowed to log in when already created if in create mode
+        j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+        j[:user][:completed_step].should == 1
+        j[:user][:automatic].should == true
+
+        # now on to phase two
+        username = "twophasetest"
+        name = "Two Phase"
+        hash = {
+            :name => name,
+            :username => username,
+        }
+        j = zz_api_post zz_api_login_create_finish_path, hash, 200, true
+        j[:user][:username].should == username
+
+        # verify that we can log in with newly created account
+        zz_logout
+        hash = {
+            :email => email,
+            :password => password,
+        }
+        j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+        j[:user][:automatic].should == false
+      end
+
+      it "should not let you login when already logged in" do
+        zz_logout
+
+        email = "single_phase_user@bitbucket.zangzing.com"
+        password = "singlepass"
+        username = "onephasetest"
+        name = "One Phase"
+        hash = {
+            :email => email,
+            :password => password,
+            :name => name,
+            :username => username,
+
+            :create => true,
+        }
+        j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+        j[:user][:completed_step].should == nil
+        j[:user][:username].should == username
+        j[:user][:automatic].should == false
+
+        # this should fail since we can't log in when already logged in
+        j = zz_api_post zz_api_create_or_login_path, hash, 401, true
+      end
+
+    end
 end
+
+
+# Test account info for facebook "Test Moment" created with:
+# https://graph.facebook.com/143394669017276/accounts/test-users?installed=true&name=Test%20Moment&permissions=user_photos,user_photo_video_tags,friends_photo_video_tags,friends_photos,publish_stream,offline_access,read_friendlists,email&method=post&access_token=143394669017276|h14LUgaObyuoERoC0CFxgrWQNTs
+#
+#{
+#   "id": "100003517493921",
+#   "access_token": "AAACCaqxPOLwBADP5JnsKEivSZAI0s1IqZBRBuDFyqNWZAjvFwd1TqZBU9cGb0D5SeNYgGvk0aqDfd3O78ZA4RSm0TZCKdV6YSLgPH6Er098AZDZD",
+#   "login_url": "https://www.facebook.com/platform/test_account_login.php?user_id=100003517493921&n=n89po72P9iXwQBp",
+#   "email": "test_oqneasv_moment@tfbnw.net",
+#   "password": "837280091"
+#}
