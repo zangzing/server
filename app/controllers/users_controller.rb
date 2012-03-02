@@ -229,8 +229,8 @@ class UsersController < ApplicationController
       user = any_current_user
       user_info = user.basic_user_info_hash
       user_info[:email] = user.email
-      user_info[:has_facebook_token] = current_user.identity_for_facebook.credentials_valid?
-      user_info[:has_twitter_token] = current_user.identity_for_twitter.credentials_valid?
+      user_info[:has_facebook_token] = current_user.identity_for_facebook.has_credentials?
+      user_info[:has_twitter_token] = current_user.identity_for_twitter.has_credentials?
       user_info
     end
   end
@@ -387,7 +387,7 @@ class UsersController < ApplicationController
   #
   # As a alternative to logging in or creating an account with email
   # and password, you can instead use service and credentials.  The service
-  # currently can only be facebook, and the credentials represent the API
+  # currently can only be facebook.  The credentials represent the API
   # token that the server then uses to obtain your facebook info and log
   # you in or performs join phase one for the case where you want to create
   # an account.
@@ -396,7 +396,7 @@ class UsersController < ApplicationController
   # provide all necessary params to do so.  You need email, name, username,
   # and password, and set the create flag to true.
   #
-  # This is called as (POST):
+  # This is called as (POST - https):
   #
   # /zz_api/login_or_create
   #
@@ -414,7 +414,7 @@ class UsersController < ApplicationController
   #     the full user in one step, otherwise pass in step 2 if needed,
   #   :service => as an alternative to email and password, you can log in via a third party
   #     service such as facebook (facebook is the only service we currently support),
-  #   :api_token => the third party service credentials (API Token),
+  #   :credentials => the third party service credentials (API Token),
   #   :create => if this flag is present and true, we will assume a user that was not found should be created
   # }
   #
@@ -543,7 +543,7 @@ class UsersController < ApplicationController
   # the existing user_credentials they are using.
   #
   #
-  # This is called as (POST):
+  # This is called as (POST - https):
   #
   # /zz_api/zz_api_login_create_finish
   #

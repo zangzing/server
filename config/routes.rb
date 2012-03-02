@@ -470,11 +470,13 @@ Server::Application.routes.draw do
     post   '/shares/send'                              => 'shares#zz_api_send',                      :as => :zz_api_send_share
 
     #identities
-    get     '/identities' => 'identities#zz_api_identities'
-    get     '/identities/:service_name' => 'identities#zz_api_identity'
+    get    '/identities'                               => 'identities#zz_api_identities'
+    get    '/identities/:service_name'                 => 'identities#zz_api_identity'
+    post   '/identities/update'                        => 'identities#zz_api_update',                :as => :zz_api_update_identity
+    post   '/identities/validate'                      => 'identities#zz_api_validate_credentials',  :as => :zz_api_validate_credentials_identity
 
     # system status
-    get    '/system/status'                             => 'system#zz_api_status',                   :as => :zz_api_system_status
+    get    '/system/status'                            => 'system#zz_api_status',                    :as => :zz_api_system_status
 
   end
 
