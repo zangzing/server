@@ -79,7 +79,7 @@ var zz = zz || {};
     		show_banner();
     		if($("#right-drawer").is(":visible")){
     			if(banner_fits()){
-    				$("#right-drawer").css("top","56px");
+    				$("#right-drawer").css("top","55px");
     			} else {
     				$("#right-drawer").css("top","154px");
     			}
@@ -92,7 +92,7 @@ var zz = zz || {};
         var hide = function(){
             $("#header-join-banner").addClass("none");
             $(".join-banner-spacer").addClass("none");
-            $("#right-drawer").css("top","56px");
+            $("#right-drawer").css("top","55px");
         };
 
 
