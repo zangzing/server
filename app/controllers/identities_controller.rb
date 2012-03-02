@@ -95,7 +95,7 @@ class IdentitiesController < ApplicationController
   #   :services => [service1, service2, ...]  - array of service names to check
   # },
   #
-  # Returns the array of validation info.
+  # Returns the hash of validation info.
   #
   # {
   #   :service1 => {
