@@ -32,5 +32,13 @@ class Moderator::UploadBatchesController < Moderator::BaseController
     render :json => @batch
   end
 
+  def clean_empty_batches
+    sql = 'select upload_batches.* from upload_batches where upload_batches.state = "finished" and upload_batches.review_status != "good" and not exists (select upload_batch_id from photos where photos.upload_batch_id = upload_batches.id)'
+    upload_batches = UploadBatch.find_by_sql(sql)
+    upload_batches.each { |batch|
+      batch.update_attribute(:review_status, "good")
+    }
 
+    redirect_to moderator_upload_batches_path
+  end
 end

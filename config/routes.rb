@@ -354,6 +354,7 @@ Server::Application.routes.draw do
         get   'upload_batches/:id/report_abuse' => 'upload_batches#report', :as => :moderator_upload_batch_report
         get   'upload_batches/:id/update'       => 'upload_batches#update', :as => :moderator_upload_batch_update
         get   'upload_batches/:date/:filter'    => 'upload_batches#show',   :as => :moderator_upload_batch
+        get   'upload_batches/clean_empty_batches' => 'upload_batches#clean_empty_batches', :as => :moderator_upload_batch_clean_empty
     end
 
     scope  '/admin', :module => "admin" do
@@ -380,6 +381,7 @@ Server::Application.routes.draw do
         put   'users/:id/activate'               => 'users#activate',             :as => :admin_activate_user
         put   'users/:id/reset_password'         => 'users#reset_password',       :as => :admin_reset_password
         put   'users/:id/impersonate'            => 'users#impersonate',          :as => :admin_impersonate
+        delete 'users/:id'                       => 'users#destroy',              :as => :admin_delete_user
 
         get   'heap'                            => 'heap#index'
         get   'heap_track'                      => 'heap#track'
@@ -443,6 +445,9 @@ Server::Application.routes.draw do
     # internal, used by nginx, external upload is /zz_api/photos/:photo_id/upload
     # needs to remain a put
     put    '/photos/:id/upload_fast'                   => 'photos#upload_fast',                      :as => :zz_api_upload_photo_fast
+    # internal, used by nginx, external upload is /zz_api/albums/:album_id/upload
+    # needs to remain a put
+    put    '/albums/:album_id/upload_fast'             => 'photos#simple_upload_fast',               :as => :zz_api_upload_photo_fast
 
     #users
     get    '/users/:user_id/info'                      => 'users#zz_api_user_info',                  :as => :zz_api_user_info
@@ -458,6 +463,8 @@ Server::Application.routes.draw do
     post   '/groups/:group_id/add_members'             => 'groups#zz_api_add_members',               :as => :zz_api_add_members_group
     post   '/groups/:group_id/remove_members'          => 'groups#zz_api_remove_members',            :as => :zz_api_remove_members_group
 
+    # shares
+    post   '/shares/send'                              => 'shares#zz_api_send',                      :as => :zz_api_send_share
 
     #identities
     get     '/identities' => 'identities#zz_api_identities'

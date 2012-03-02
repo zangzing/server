@@ -72,7 +72,7 @@ class Identity < ActiveRecord::Base
 
   def import_contacts(contacts_array)
     db = Contact.connection
-    max_insert_size = self.max_insert_size
+
     cmd = "INSERT INTO #{Contact.quoted_table_name} (identity_id, name, address, created_at, updated_at) VALUES "
 
     # build an array of arrays that contain the data to insert

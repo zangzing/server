@@ -120,4 +120,10 @@ class Admin::UsersController < Admin::AdminController
    end
   end
 
+  def destroy
+    ZZ::Async::DeleteUser.enqueue(params[:id])
+    head :status => 200
+  end
+
+
 end

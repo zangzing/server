@@ -241,9 +241,10 @@ class UsersController < ApplicationController
   #        :my_group_id => the group that wraps just this user,
   #        :username => user name,
   #        :profile_photo_url => the url to the profile photo, nil if none,
+  #        :profile_album_id => the profile album id, nil if none
   #        :first_name => first_name,
   #        :last_name => last_name,
-  #        :email => email for this user (this will only be present for automatic users and in cases where you looked up the user via email)
+  #        :email => email for this user (this will only be present for automatic users and in cases where you looked up the user via email, or the user is you)
   #        :automatic => true if an automatic user (one that has not created an account)
   #        :auto_by_contact => true if automatic user and was created simply by referencing (i.e. we added automatic as result of group or permission operation)
   #                            if automatic is set and this is false it means we have a user that has actually sent a photo in on that address
@@ -254,7 +255,8 @@ class UsersController < ApplicationController
     zz_api do
       user_id = params[:user_id]
       user = User.find(user_id)
-      user_info = user.basic_user_info_hash
+      id_to_email = user == current_user ? {user_id => user.email} : nil
+      user_info = user.basic_user_info_hash(id_to_email)
     end
   end
 
