@@ -57,7 +57,7 @@
     }
 
     function initKissMetrics(){
-        window.kmq = _window.kmq || [];
+        window.kmq = window.kmq || [];
         function _kms(u){
             setTimeout(function(){
                 var s = document.createElement('script');
