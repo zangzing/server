@@ -81,7 +81,7 @@ class IdentitiesController < ApplicationController
     end
   end
 
-  # Sets the api token for a set of identities
+  # Checks for existence and validity of the credentials for multiple services.
   #
   # This is called as (POST):
   #
@@ -94,9 +94,6 @@ class IdentitiesController < ApplicationController
   # {
   #   :services => [service1, service2, ...]  - array of service names to check
   # },
-  #
-  # We validate the credentials for each identity.  If token cannot be verified we do not
-  # set the token and return false for credentials_valid.
   #
   # Returns the array of validation info.
   #
@@ -130,7 +127,7 @@ class IdentitiesController < ApplicationController
     end
   end
 
-  # Sets the api token for a given identity.
+  # Sets the credentials for a given identity.
   #
   # This is called as (POST - https):
   #
