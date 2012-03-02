@@ -96,7 +96,7 @@ module ZZ
         url = nil
         if user.automatic?
           if user.completed_step == 1
-            url = join_final_url
+            url = finish_profile_url
           else
             url = join_url
           end
@@ -174,10 +174,9 @@ module ZZ
 
         # ok, we have a user lets make sure full
         if current_user.automatic?
-          join_final = false
           if current_user.completed_step == 1
             msg = "You must complete the final step of the join process to login"
-            join_final = true
+            finish_profile = true
           else
             msg = "Join for free or sign in to access that page."
           end
@@ -188,8 +187,8 @@ module ZZ
             head :status => 401
           else
             store_location
-            if join_final
-              redirect_to join_final_url :message => msg
+            if finish_profile
+              redirect_to finish_profile_url :message => msg
             else
               redirect_to join_url :message => msg
             end

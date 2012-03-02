@@ -10,7 +10,7 @@ Server::Application.routes.draw do
   get    '/service'            => 'pages#home',          :as => :service
   get    '/signin'             => 'user_sessions#new',   :as => :signin
   get    '/join'               => 'users#join',          :as => :join
-  get    '/join_final'         => 'users#join_final',       :as => :join_final
+  get    '/finish_profile'     => 'users#finish_profile',:as => :finish_profile
   get    '/unsubscribe/:id'    => 'subscriptions#unsubscribe', :as => :unsubscribe
 
   get    '/invitation'  => 'invitations#show', :as => :invitation  , :requirements => {:protocol => 'https'}
@@ -45,7 +45,6 @@ Server::Application.routes.draw do
     get    '/users/new'                 => 'users#new',               :as => :new_user
     get    '/users/validate_email'      => 'users#validate_email',    :as => :validate_email
     get    '/users/validate_username'   => 'users#validate_username', :as => :validate_username
-    get    '/users/finish_profile'      => 'users#finish_profile',    :as => :finish_profile
     post   '/users'                     => 'users#create',            :as => :create_user, :requirements => {:protocol => 'https'}
     put    '/users/:id'                 => 'users#update',            :as => :update_user
     delete '/users/:id'                 => 'users#destroy',           :as => :delete_user

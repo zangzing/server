@@ -21,7 +21,7 @@
           <input type="password" name="user[password]" id="user_password" value="" maxlength="40" />
         </li>
         <li>
-			<input type="submit" id="submit" value="Join for Free" />
+			<input type="button" id="submit" value="Join for Free" />
         </li>
         <li>
           By joining you accept and agree to <a target="_blank" href="/terms">the terms of service</a>.
@@ -45,9 +45,16 @@
 
 	$('.join-form li label').inFieldLabels();
 
-    $('.join-form').submit(function(){
+    $('#submit').click(function(){
         zz.joinform.submit_form($(".join-form"), validator, "join.joinpage");
         return false;
+    });
+
+    $('.join-form').bind('keypress', function(e){
+        if ( e.keyCode == 13 ) {
+            zz.joinform.submit_form($(".join-form"), validator, "join.joinpage");
+            return false;
+        }
     });
 
     $('#user_email').focus();

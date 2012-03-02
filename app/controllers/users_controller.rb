@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  ssl_required :join, :join_final, :create, :edit_password, :update_password,
+  ssl_required :join, :finish_profile, :create, :edit_password, :update_password,
                :zz_api_login_or_create, :zz_api_login_create_finish
   ssl_allowed :validate_email, :validate_username, :zz_api_logout, :zz_api_available
 
@@ -19,7 +19,7 @@ class UsersController < ApplicationController
 
     # first see if an automatic user that has completed step 1
     if any_current_user && any_current_user.completed_step == 1
-      redirect_to join_final_url
+      redirect_to finish_profile_url
       return
     end
 
@@ -40,14 +40,6 @@ class UsersController < ApplicationController
       session.delete(:email)
     else
       @new_user = User.new
-    end
-  end
-
-  def join_final
-    if any_current_user && any_current_user.completed_step == 1
-      render :text => "Final join step goes here..."
-    else
-      redirect_to join_url
     end
   end
 
@@ -81,7 +73,12 @@ class UsersController < ApplicationController
   end
 
   def finish_profile
-    render :layout => 'plain'
+    if any_current_user && any_current_user.completed_step == 1
+      #render :text => "Final join step goes here..."
+      render :layout => 'plain'
+    else
+      redirect_to join_url
+    end
   end
   
   def show

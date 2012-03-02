@@ -6,6 +6,7 @@
 <h1>Welcome to ZangZing. Let's create your profile.</h1>
 
 <div class="fieldscontainer">
+<form class="finish-profile-form">
 <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
 <div class="section">
   <div class="flag-left">
@@ -48,32 +49,124 @@
   </div>
 
   <div class="clear"></div>
+</form>
 </div><!--fieldscontainer-->
 
 <div class="donecontainer">
-  <input type="submit" id="done" value="Done" />
+  <input type="button" id="done" value="Done" />
 </div>
 
 </div><!--main-->
 
 <% content_for :zz_js_document_ready do %>
-    zz.local_storage.clear();
 
-    // TODO: add second validation
-    var validator = zz.joinform.add_validation( $('.join-form') );
+    remove_toolbar_buttons();
+
+    var validator = zz.joinform.add_profile_validation( $('.join-form') );
 
     $('.content label').first().inFieldLabels();
 
-    $('#submit').click(function(){
-    zz.joinform.submit_form($(".join-form"), validator, "join.joinpage");
+    $('#done').click(function(){
+        check_form($('.finish-profile-form'));
     });
 
-    $('.join-form').bind('keypress', function(e){
-    if ( e.keyCode == 13 ) {
-    zz.joinform.submit_form($(".join-form"), validator, "join.joinpage");
-    }
+    $('.finish-profile-form').bind('keypress', function(e){
+        if ( e.keyCode == 13 ) {
+            check_form($('.finish-profile-form'));
+        }
     });
-
-    $('#user_email').focus();
 
 <%end%>
+
+
+
+
+
+<script type="text/javascript">
+function check_form(form_element){
+    var num_fields_nonempty = 0;
+
+    num_fields_nonempty =
+        (form_element.find('#user_name').val().length != 0) +
+        (form_element.find('#user_username').val().length != 0);
+
+    if(form_element.valid()){
+        submit_data(form_element);
+        ZZAt.track(zza_string+".click");
+        ZZAt.track(zza_string+".click.valid");
+    } else {
+        var num_fields_valid = 0;
+        var bit_notation = 0;
+
+        bit_notation =
+            // name and username no longer in this form
+            //1 * form_element.find('#user_name').valid() +
+            //2 * (form_element.find('#user_name').val().length != 0) +
+            //4 * form_element.find('#user_username').valid() +
+            //8 * (form_element.find('#user_username').val().length != 0) +
+                16 * form_element.find('#user_email').valid() +
+                        32 * (form_element.find('#user_email').val().length != 0) +
+                        64 * form_element.find('#user_password').valid() +
+                        128 * (form_element.find('#user_password').val().length != 0);
+
+        num_fields_valid =
+            //$('#header-join-banner #user_name').valid() +
+            //$('#header-join-banner #user_username').valid() +
+                form_element.find('#user_email').valid() +
+                        form_element.find('#user_password').valid();
+
+        ZZAt.track(zza_string+".click");
+        ZZAt.track(zza_string+".invalid", {
+            Zjoin_num_fields_nonempty: num_fields_nonempty,
+            Zjoin_num_fields_valid: num_fields_valid,
+            Zjoin_bit_fields: bit_notation
+        });
+    }
+
+} // check_form
+
+function submit_data(form_element){
+    var finish_api_url = "/zz_api/login_create_finish"; // TODO: try to keep it self-contained
+    var next_url = "/";
+
+    var name, username, hash;
+
+    name = form_element.find('#user_name').val();
+    username = form_element.find('#user_username').val();
+    hash = {name: name, username: username};
+
+    $.ajax({
+        url: finish_api_url,
+        type: 'POST',
+        data: hash,
+        success: function(data){
+            console.debug(JSON.stringify(data));
+            window.location = "/";
+        }, // success
+        error:function(jqXHR, textStatus, errorThrown){
+            var response = null;
+
+            try {
+                response = JSON.parse(jqXHR.responseText);
+                console.debug('parsing worked');
+                console.debug(JSON.stringify(response));
+                alert(response.message[0]); // TODO: change this to real message
+            } catch (e) {
+                // TODO: generic error goes here
+                console.debug('error in parsing');
+                return false;
+            }
+
+        } // error
+    });
+
+
+} // submit_data
+
+
+function remove_toolbar_buttons(){
+    $('#help-button').remove();
+    $('#header-right-gradient').remove();
+    $('#sign-in-button').remove();
+}
+</script>
