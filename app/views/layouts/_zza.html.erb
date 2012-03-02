@@ -5,7 +5,6 @@
         zz.zza_config.GOOGLE_ANALYTICS_TOKEN = '<%=ZZA_CONFIG[:GOOGLE_ANALYTICS_TOKEN]%>';
         zz.zza_config.MIXPANEL_TOKEN = '<%=ZZA_CONFIG[:MIXPANEL_TOKEN]%>';
         zz.zza_config.ZZA_ID = '<%=ZZA_CONFIG[:ZZA_ID]%>';
-        zz.zza_config.KISSMETRICS_TOKEN = '<%=ZZA_CONFIG[:KISSMETRICS_TOKEN]%>';
 <% if signed_in?  -%>
         zz.zza_config.user_id = '<%= current_user.id %>';
 <% else %>

@@ -123,11 +123,6 @@ function ZZA(id, useridentifier) {
         if (typeof(mpq) != 'undefined') {
             mpq.push(['track', e.e, p]);
         }
-
-//        if (typeof(_kmq) != 'undefined') {
-//            _kmq.push(['record', e.e, p]);
-//        }
-
     };
 
     this._getuserid = function() {

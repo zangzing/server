@@ -56,21 +56,6 @@
         });
     }
 
-//    function initKissMetrics(){
-//        window._kmq = window._kmq || [];
-//        function _kms(u){
-//            setTimeout(function(){
-//                var s = document.createElement('script');
-//                var f = document.getElementsByTagName('script')[0];
-//                s.type = 'text/javascript';
-//                s.async = true;
-//                s.src = u;
-//                f.parentNode.insertBefore(s, f);
-//            }, 1);
-//        }
-//        _kms('//i.kissmetrics.com/i.js');
-//        _kms('//doug1izaerwt3.cloudfront.net/' + zz.zza_config.KISSMETRICS_TOKEN + '.1.js');
-//    }
 
 
     function initZZA() {
@@ -125,7 +110,6 @@
     initZZA();
     initGoogle();
     initMixpanel();
-//    initKissMetrics();
 
 })();
 
