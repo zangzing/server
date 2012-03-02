@@ -1,4 +1,4 @@
-function ZZA(id, useridentifier, usemixpanel) {
+function ZZA(id, useridentifier) {
     // # 3.1.11 pb
 
     this.id = id;
@@ -10,9 +10,6 @@ function ZZA(id, useridentifier, usemixpanel) {
     else
         this.usertype = 2;
 
-    if (usemixpanel == undefined)
-        usemixpanel = false;
-    this.usemixpanel = usemixpanel;
 
     this.evts = new Array();
     this.last = null;
@@ -109,25 +106,28 @@ function ZZA(id, useridentifier, usemixpanel) {
         this.last = new Date().getTime();
 
 
-        if (this.usemixpanel) {
-            p = {};
-            if (this.usertype == 1)
-                p.Zuser = e.u;
-            else
-                p.Zvisitor = e.u;
+        p = {};
+        if (this.usertype == 1)
+            p.Zuser = e.u;
+        else
+            p.Zvisitor = e.u;
 
-            if (e.p)
-                p.Zpageuri = e.p;
+        if (e.p)
+            p.Zpageuri = e.p;
 
-            p.Zsource = this.id;
+        p.Zsource = this.id;
 
-            for (var x in e.x)
-                p[x] = e.x[x];
+        for (var x in e.x)
+            p[x] = e.x[x];
 
-            if (typeof(mpq) != 'undefined') {
-                mpq.push(['track', e.e, p]);
-            }
+        if (typeof(mpq) != 'undefined') {
+            mpq.push(['track', e.e, p]);
         }
+
+        if (typeof(kmq) != 'undefined') {
+            kmq.push(['record', e.e, p]);
+        }
+
     };
 
     this._getuserid = function() {

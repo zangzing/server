@@ -6,30 +6,32 @@
 
 (function() {
     function loadScript(src, sslSrc, callback) {
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
+        setTimeout(function(){
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
 
-        if (script.readyState) {  //IE
-            script.onreadystatechange = function() {
-                if (script.readyState == 'loaded' || script.readyState == 'complete') {
-                    script.onreadystatechange = null;
+            if (script.readyState) {  //IE
+                script.onreadystatechange = function() {
+                    if (script.readyState == 'loaded' || script.readyState == 'complete') {
+                        script.onreadystatechange = null;
+                        if (callback) {
+                            callback();
+                        }
+                    }
+                };
+            }
+            else {  //Others
+                script.onload = function() {
                     if (callback) {
                         callback();
                     }
-                }
-            };
-        }
-        else {  //Others
-            script.onload = function() {
-                if (callback) {
-                    callback();
-                }
-            };
-        }
+                };
+            }
 
-        script.src = ('https:' == document.location.protocol ? sslSrc : src);
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(script, firstScriptTag);
+            script.src = ('https:' == document.location.protocol ? sslSrc : src);
+            var firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(script, firstScriptTag);
+        }, 1);
     }
 
 
@@ -54,6 +56,22 @@
         });
     }
 
+    function initKissMetrics(){
+        window.kmq = _window.kmq || [];
+        function _kms(u){
+            setTimeout(function(){
+                var s = document.createElement('script');
+                var f = document.getElementsByTagName('script')[0];
+                s.type = 'text/javascript';
+                s.async = true;
+                s.src = u;
+                f.parentNode.insertBefore(s, f);
+            }, 1);
+        }
+        _kms('//i.kissmetrics.com/i.js');
+        _kms('//doug1izaerwt3.cloudfront.net/' + zz.zza_config.KISSMETRICS_TOKEN + '.1.js');
+    }
+
 
     function initZZA() {
 
@@ -61,7 +79,7 @@
             window._zza.close();
         });
 
-        window._zza = new ZZA(zz.zza_config.ZZA_ID, zz.zza_config.user_id, true);
+        window._zza = new ZZA(zz.zza_config.ZZA_ID, zz.zza_config.user_id);
         _zza.init();
 
 
@@ -113,6 +131,7 @@
     initZZA();
     initGoogle();
     initMixpanel();
+    initKissMetrics();
 
 })();
 
