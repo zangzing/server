@@ -105,27 +105,21 @@
         };
 
 
-        // have zza track all js errors
-//        window.onerror = function(message, url, line) {
-//            try {
-//                if (url.indexOf('http://localhost:30777') == -1 && url.indexOf('http://localhost:30778') == -1) {
-//                    ZZAt.track('js.error', {message: message, url: url, line: line});
-//                    if (typeof(console) != 'undefined') {
-//                        console.log('ZZ Javascript error: ' + message + ' on: '+url+':'+line);
-//                    }
-//
-//                    // if we are not running on production, then show error alert
-//                    // so that we see the problem
-////                    if(zz.config && zz.config.rails_env != 'photos_production'){
-////                        alert('unexpected javascript error:\n' + message + '\n' + url + '\n' + line);
-////                    }
-//                }
-//
-//            }
-//            catch (err) {
-//            }
-//            return true;
-//        };
+        if(zz.config && zz.config.rails_env == 'photos_production'){
+            window.onerror = function(message, url, line) {
+                try {
+                    if (url.indexOf('http://localhost:30777') == -1 && url.indexOf('http://localhost:30778') == -1) {
+                        ZZAt.track('js.error', {message: message, url: url, line: line});
+                        if (typeof(console) != 'undefined') {
+                            console.log('javascript error: ' + message + ' on: ' + url + ':'+line);
+                        }
+                    }
+                }
+                catch (err) {
+                }
+                return true;
+            };
+        }
     }
 
     initZZA();

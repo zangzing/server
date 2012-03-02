@@ -124,9 +124,9 @@ function ZZA(id, useridentifier) {
             mpq.push(['track', e.e, p]);
         }
 
-        if (typeof(_kmq) != 'undefined') {
-            _kmq.push(['record', e.e, p]);
-        }
+//        if (typeof(_kmq) != 'undefined') {
+//            _kmq.push(['record', e.e, p]);
+//        }
 
     };
 
