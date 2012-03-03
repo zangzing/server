@@ -301,17 +301,12 @@ class Notifier < ActionMailer::Base
 
 private
   def send_share_invite_zza_event(user, tracked_link)
+     zza = ZZ::ZZA.new
+     zza.user_type = 1
+     zza.user = user.id
+     zza.zzv_id = user.zzv_id
      zza.track_event("invitation.send")
      zza.track_event(tracked_link.send_event_name)
-  end
-
-  def zza
-    unless @zza
-      @zza = ZZ::ZZA.new
-      @zza.user_type = 1
-    end
-
-    return @zza
   end
 
 

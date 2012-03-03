@@ -43,6 +43,8 @@ function ZZA(id, useridentifier) {
             if ((l != -1) && (l + zdomain.length == location.host.length))
                 domain = zdomain; // share across all zangzing.com domains
 
+
+            // this cookie is also managed on the server in  zza_helpers.rb
             this.zzv_id = this.createUUID();
             this._createCookie('_zzv_id', this.zzv_id, domain, 10950);
         }
@@ -121,6 +123,7 @@ function ZZA(id, useridentifier) {
             p[x] = e.x[x];
 
         if (typeof(mpq) != 'undefined') {
+            mpq.push(['identify', this.zzv_id]);
             mpq.push(['track', e.e, p]);
         }
     };

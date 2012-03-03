@@ -196,11 +196,12 @@ class ApplicationController < ActionController::Base
     context = data[:user_context]
     if context.nil?
       # add in user context
-      user_id, user_type, ip = zza_user_context
+      user_id, user_type, zzv_id, ip = zza_user_context
       context = {
           :user_id => user_id,
           :user_type => user_type,
-          :user_ip => ip
+          :user_ip => ip,
+          :zzv_id => zzv_id
       }
       data[:user_context] = context
     end
