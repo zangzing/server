@@ -4,7 +4,7 @@ module ZzaHelper
   # this cookie is also set and read in zza.js
   def set_zzv_id_cookie
     if current_user
-      cookies["_zzv_id"] = { :value => current_user.zzv_id, :expires => 10.years.from_now }
+      cookies.permanent["_zzv_id"] = current_user.zzv_id
     end
   end
 
