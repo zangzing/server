@@ -308,11 +308,8 @@ class User < ActiveRecord::Base
     name = ( name.blank? ? '' : name )
     created_by_user_id = created_by_user.nil? ? nil : created_by_user.id
 
-    username = options[:username]
-    username = UUIDTools::UUID.random_create.to_s.gsub('-','').to_s if username.nil?
-
-    password = options[:password]
-    password = UUIDTools::UUID.random_create.to_s if password.nil?
+    username = options[:username] || UUIDTools::UUID.random_create.to_s.gsub('-','').to_s
+    password = options[:password] || UUIDTools::UUID.random_create.to_s
 
     with_session = options[:with_session]
     completed_step = options[:completed_step]
