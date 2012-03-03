@@ -81,7 +81,7 @@ class Album < ActiveRecord::Base
 
     # if id starts with the default album name, then we need to check if the album name
     # is still the default or if it has changed
-    if album_id.to_s.starts_with?(Album::DEFAULT_NAME.parameterize) && album_id.to_s.include?('--')
+    if album_id.to_s.starts_with?(Album::DEFAULT_NAME.parameterize)
 
       # need to strip off the FriendlyId slug version/sequence number
       # which comes after the "--" and then compare
