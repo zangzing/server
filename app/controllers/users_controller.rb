@@ -459,7 +459,7 @@ class UsersController < ApplicationController
       user = nil
       just_created = false
       create_user = !!params[:create]
-      user_session = UserSession.new(:email => email, :password => password, :remember_me => false)
+      user_session = UserSession.new(:email => email, :password => password)
       if user_session.save
         user = user_session.user
         if user.automatic? && create_user == false
