@@ -50,10 +50,10 @@ class Notifier < ActionMailer::Base
 
 
 
-  def album_liked( user_id, album_id, recipient_user_id, template_id = nil )
+  def album_liked( user_id, album_id,  template_id = nil )
     @user      = User.find( user_id )
     @album     = Album.find( album_id )
-    @recipient = User.find(recipient_user_id)
+    @recipient = @album.user
 
     @invite_friends_url = invite_friends_url
     @join_now_url = join_url
