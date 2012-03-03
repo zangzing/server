@@ -273,6 +273,7 @@ class User < ActiveRecord::Base
     # she has now decided to join, remove automatic flag and reset password.
     if auto_by_contact?
       self.cohort = User.cohort_current # if they are auto due to simply being created because someone referenced that email address then the real cohort is now
+      self.created_at = DateTime.now      # make it look like just created this user
       self.auto_by_contact = false       # a full user now
     end
     self.automatic = false
