@@ -24,3 +24,5 @@ logs/*.log
 spec/support/db_init/*.seedbackup
 .project
 .settings/*
+sub_migrates/cache_builder/db/schema.rb
+

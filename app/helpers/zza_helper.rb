@@ -1,4 +1,4 @@
-module PrettyUrlHelper
+module ZzaHelper
 
   # sets a cookie that is used to track unique users in zza and mixpanel.
   # this cookie is also set and read in zza.js

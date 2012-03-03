@@ -109,7 +109,7 @@ class MailingList < ActiveRecord::Base
   # obviously happens only rarely in the system
   def self.user_cleanup(user)
     # make sure that resque worker is not filtered for this call
-    if MailingListSync.loopback_on? == false || MailingListSync.should_loopback?
+    if ZZ::Async::MailingListSync.loopback_on? == false || ZZ::Async::MailingListSync.should_loopback?
       unsubscribe_user([Email::NEWS, Email::MARKETING, Email::ONCE], user.id, true)
     end
   end
