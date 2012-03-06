@@ -15,8 +15,15 @@
   <div class="right">
       <div class="title">Add your profile photo</div>
       <div class="content">
-        <img src="">
+
+        <div class="simple-uploader-button-wrapper">
+            <a id="simple-uploader-button" class="black-button"><span>Simple Uploader</span></a>
+            <div id="simple-uploader-flash-wrapper"></div>
+        </div>
+
         Pick photo.
+        <%=(@user ? @user.profile_album_id: 'nil')%>
+        <img src="<%=(@user ? @user.profile_photo_url: 'nil')%>">
       </div>
   </div>
 </div>
@@ -29,7 +36,7 @@
         <div class="title">Tell us your name</div>
         <div class="content">
           <label for="user_name" >First &amp; Last Name</label>
-          <input type="text" name="user[name]" id="user_name" value="<%=(@new_user ? @new_user.name : '')%>" />
+          <input type="text" name="user[name]" id="user_name" value="" />
 
         </div>
     </div>
@@ -43,7 +50,7 @@
         <div class="title">Pick your username</div>
         <div class="content">
           <label for="user_username">zangzing.com/</label>
-          <input type="text" name="user[username]" id="user_username" value="<%=(@new_user ? @new_user.username: '')%>" />
+          <input type="text" name="user[username]" id="user_username" value="" />
         </div>
     </div>
   </div>
@@ -62,7 +69,7 @@
 
     remove_toolbar_buttons();
 
-    var validator = zz.joinform.add_profile_validation( $('.join-form') );
+    var validator = add_profile_validation( $('.finish-profile-form') );
 
     $('.content label').first().inFieldLabels();
 
@@ -75,6 +82,8 @@
             check_form($('.finish-profile-form'));
         }
     });
+
+    setup_upload();
 
 <%end%>
 
@@ -91,32 +100,25 @@ function check_form(form_element){
         (form_element.find('#user_username').val().length != 0);
 
     if(form_element.valid()){
-        submit_data(form_element);
-        ZZAt.track(zza_string+".click");
-        ZZAt.track(zza_string+".click.valid");
+        //submit_data(form_element);
+        ZZAt.track("join.finishprofile.click");
+        ZZAt.track("join.finishprofile.click.valid");
     } else {
         var num_fields_valid = 0;
         var bit_notation = 0;
 
         bit_notation =
-            // name and username no longer in this form
-            //1 * form_element.find('#user_name').valid() +
-            //2 * (form_element.find('#user_name').val().length != 0) +
-            //4 * form_element.find('#user_username').valid() +
-            //8 * (form_element.find('#user_username').val().length != 0) +
-                16 * form_element.find('#user_email').valid() +
-                        32 * (form_element.find('#user_email').val().length != 0) +
-                        64 * form_element.find('#user_password').valid() +
-                        128 * (form_element.find('#user_password').val().length != 0);
+            1 * form_element.find('#user_name').valid() +
+            2 * (form_element.find('#user_name').val().length != 0) +
+            4 * form_element.find('#user_username').valid() +
+            8 * (form_element.find('#user_username').val().length != 0);
 
         num_fields_valid =
-            //$('#header-join-banner #user_name').valid() +
-            //$('#header-join-banner #user_username').valid() +
-                form_element.find('#user_email').valid() +
-                        form_element.find('#user_password').valid();
+            form_element.find('#user_name').valid() +
+            form_element.find('#user_username').valid();
 
-        ZZAt.track(zza_string+".click");
-        ZZAt.track(zza_string+".invalid", {
+        ZZAt.track("join.finishprofile.click");
+        ZZAt.track("join.finishprofile.invalid", {
             Zjoin_num_fields_nonempty: num_fields_nonempty,
             Zjoin_num_fields_valid: num_fields_valid,
             Zjoin_bit_fields: bit_notation
@@ -168,5 +170,68 @@ function remove_toolbar_buttons(){
     $('#help-button').remove();
     $('#header-right-gradient').remove();
     $('#sign-in-button').remove();
+    $("#user-info").remove();
 }
+
+function setup_upload(){
+
+    $('#simple-uploader-button').click(function() {
+        alert('The simple uploader requries the Flash.\n Please download and install from http://get.adobe.com/flashplayer.');
+    });
+
+    zz.simple_uploader.instance($('#simple-uploader-flash-wrapper'), <%=(@user ? @user.profile_album_id: 'nil')%>, function(photos_uploaded) {
+        var on_finished = function() {
+
+        }
+
+//        if (photos_uploaded > 0) {
+//            var dialog = self.show_processing_photos_dialog();
+//            setTimeout(function() {
+//                on_finished();
+//                dialog.close();
+//            }, 5000);
+//        }
+//        else {
+//            on_finished();
+//        }
+
+    });
+
+
+}
+
+
+
+// takes a jquery element
+function add_profile_validation(element) {
+    zz.joinform.add_regex_validator();
+
+    return element.validate( {
+        rules : {
+            'user[name]' : {
+                required : true,
+                minlength : 1
+            },
+            'user[username]' : {
+                required : true,
+                minlength : 1,
+                maxlength : 25,
+                regex : "(^[a-zA-Z0-9]+$|^[a-zA-Z0-9]+:.{8}$)",
+                remote : zz.routes.path_prefix + '/users/validate_username' // can add async true here to force validation on slow connection
+            }
+        },
+        messages : {
+            'user[name]' : {
+                required : 'Please enter your name.',
+                minlength : 'Please enter your name.'
+            },
+            'user[username]' : {
+                required : 'Please enter a username.',
+                regex : 'Only letters and numbers.',
+                remote : 'This username is already taken.'
+            }
+        }
+    });
+}
+
 </script>

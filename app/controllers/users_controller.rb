@@ -75,6 +75,7 @@ class UsersController < ApplicationController
   def finish_profile
     if any_current_user && any_current_user.completed_step == 1
       #render :text => "Final join step goes here..."
+      @user = any_current_user
       render :layout => 'plain'
     else
       redirect_to join_url

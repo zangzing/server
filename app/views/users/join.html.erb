@@ -63,6 +63,9 @@
 <%end%>
 
 <% content_for :page_javascript do %>
+
+<%= include_javascripts :shared %>
+
 <script type="text/javascript">
 // Crazy Egg
 setTimeout(function(){var a=document.createElement("script");
