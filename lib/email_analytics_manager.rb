@@ -17,7 +17,7 @@ class EmailAnalyticsManager
 
       xdata = {
         :message_type => message_type,
-        :total_emails => addresses.length,
+        :total_emails => emails.length,
         :unique_emails => unique_emails.length,
         :unique_non_reg_emails => unique_non_reg_email_count,
         :errors  => errors.length
