@@ -52,7 +52,7 @@ module ZZ
       end
 
       # Authlogic
-      # returns false or the current user
+      # returns nil or the current user
       # if we have a current user but that user
       # is an automatic user, we act as if we have
       # no current user, use any_current_user
@@ -60,7 +60,7 @@ module ZZ
       def current_user
         return @current_user if defined?(@current_user)
         @current_user = any_current_user
-        @current_user = false if @current_user && @current_user.automatic?
+        @current_user = nil if @current_user && @current_user.automatic?
         @current_user
       end
 
@@ -68,6 +68,10 @@ module ZZ
       # caring if that user is an automatic user
       def any_current_user
         return @any_current_user if defined?(@any_current_user)
+        if defined?(@current_user)   # also if we have current user (oauth sets current internally but not any_current)
+          @any_current_user = @current_user
+          return @any_current_user
+        end
         @any_current_user = current_user_session && current_user_session.user
       end
 

@@ -442,6 +442,7 @@ class UsersController < ApplicationController
   #     the available roles and their order
   #   :client_side_zza_events => ['event1', ...] an array of client side zza event strings that should
   #     be sent to zza by the client
+  #   :zzv_id => token used to user identifier for tracking via mixpanel,
   #   :user => user info as returned in user_info call
   # }
   def zz_api_login_or_create
@@ -582,6 +583,7 @@ class UsersController < ApplicationController
   #     the available roles and their order
   #   :client_side_zza_events => ['event1', ...] an array of client side zza event strings that should
   #     be recorded by the client
+  #   :zzv_id => token used to user identifier for tracking via mixpanel,
   #   :user => user info as returned in user_info call
   # }
   def zz_api_login_create_finish
@@ -686,6 +688,7 @@ class UsersController < ApplicationController
         :role => role.name,
         :available_roles => SystemRightsACL.role_names,
         :client_side_zza_events => zza_client_events,
+        :zzv_id => "placeholder until merge with Jeremy",
         :user => user_hash
     }
   end

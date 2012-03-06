@@ -191,7 +191,7 @@ class PhotosController < ApplicationController
   #   photo, see hashed_photo
   # }
   def simple_upload_fast
-    if zz_api_call? == false && current_user == false
+    if zz_api_call? == false && current_user.nil?
       # because we are called via flash we don't get the user_credentials cookie set
       # and instead it gets passed as part of the posted data so we manually extract
       # it and then set it up as current_user
