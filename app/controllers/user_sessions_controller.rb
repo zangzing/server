@@ -58,6 +58,7 @@ class UserSessionsController < ApplicationController
       else
         current_user_session.destroy
         reset_session
+        delete_zzv_id_cookie
         redirect_back_or_default root_url
       end
     else

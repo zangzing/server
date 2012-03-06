@@ -13,4 +13,9 @@ module ZzaHelper
   def get_zzv_id_cookie
      cookies["_zzv_id"]
   end
+
+  def delete_zzv_id_cookie
+     cookies.delete "_zzv_id"
+  end
+
 end
