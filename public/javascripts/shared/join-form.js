@@ -1,3 +1,12 @@
+/**
+
+ Use: Shared join page logic across homepage, blog, invitations, join page, and joinbanner.
+ Author: Bowen Li
+
+ Copyright 2012, ZangZing LLC. All rights reserved.
+
+ **/
+
 var zz = zz || {};
 
 
