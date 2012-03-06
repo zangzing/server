@@ -150,7 +150,9 @@ class User < ActiveRecord::Base
       # also destroy any photos this user
       # created that are in other peoples albums
       photos = Photo.find_all_by_user_id(user_id)
-      Photo.destroy(photos)
+      photos.each do |photo|
+        photo.destroy
+      end
 
       # invalidate all cache references to this user
       Cache::Album::Manager.shared.user_deleted(user_id)
@@ -275,8 +277,9 @@ class User < ActiveRecord::Base
     # The user is an automatic user because she had contributed photos after being invited by email
     # she has now decided to join, remove automatic flag and reset password.
     if auto_by_contact?
-      self.cohort = User.cohort_current # if they are auto due to simply being created because someone referenced that email address then the real cohort is now
-      self.auto_by_contact = false       # a full user now
+      self.cohort = User.cohort_current   # if they are auto due to simply being created because someone referenced that email address then the real cohort is now
+      self.created_at = DateTime.now      # make it look like just created this user
+      self.auto_by_contact = false        # a full user now
     end
     self.automatic = false
     self.name      = name
@@ -305,11 +308,8 @@ class User < ActiveRecord::Base
     name = ( name.blank? ? '' : name )
     created_by_user_id = created_by_user.nil? ? nil : created_by_user.id
 
-    username = options[:username]
-    username = UUIDTools::UUID.random_create.to_s.gsub('-','').to_s if username.nil?
-
-    password = options[:password]
-    password = UUIDTools::UUID.random_create.to_s if password.nil?
+    username = options[:username] || UUIDTools::UUID.random_create.to_s.gsub('-','').to_s
+    password = options[:password] || UUIDTools::UUID.random_create.to_s
 
     with_session = options[:with_session]
     completed_step = options[:completed_step]
@@ -368,9 +368,9 @@ class User < ActiveRecord::Base
   end
 
   def has_valid_identity?( service_name )
-    id = self.identities.find_by_identity_source( service_name.to_s )
-    if id && id.credentials_valid?  # Return true if there is an id and its credentials are valid
-      return id
+    identity = self.identities.find_by_identity_source( service_name )
+    if identity && identity.has_credentials?  # Return true if there is an id and its credentials are valid
+      return identity
     else
       return false
     end

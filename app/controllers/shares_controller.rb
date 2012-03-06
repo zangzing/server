@@ -14,8 +14,8 @@ class SharesController < ApplicationController
 
   def newpost
     @share = Share.new()
-    @twitter  = ( current_user.identity_for_twitter.credentials_valid? ? "1" :"0" )
-    @facebook = ( current_user.identity_for_facebook.credentials_valid? ? "1" :"0" )
+    @twitter  = ( current_user.identity_for_twitter.has_credentials? ? "1" :"0" )
+    @facebook = ( current_user.identity_for_facebook.has_credentials? ? "1" :"0" )
   end
 
   def newemail
@@ -359,7 +359,7 @@ private
   # add the social type we are sending to
   def add_social(socials, social_type)
     identity = current_user.send("identity_for_#{social_type}".to_sym)
-    raise ArgumentError.new("#{social_type} identity is not valid") unless identity.credentials_valid?
+    raise ArgumentError.new("#{social_type} identity is not valid") unless identity.has_credentials?
     socials << social_type
   end
 

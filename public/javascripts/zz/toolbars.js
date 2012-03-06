@@ -322,7 +322,7 @@ zz.toolbars = {
 
         //Bind Each Menu Item
         $('#acct-get-started-btn').click(function() {
-            window.open('/about/getting-started','GettingStarted','width=1000,height=1000,scrollbars=1');
+            window.open('/about/getting-started','GettingStarted');
             ZZAt.track('acctmenu.getstarted.click');
         });
 
@@ -339,7 +339,7 @@ zz.toolbars = {
             ZZAt.track('acctmenu.settings.click');
         });
         $('#acct-blog-btn').click(function() {
-            window.open('/blog','ZangZing','width=1100,height=1000,scrollbars=1');
+            window.open('/blog','ZangZing');
             ZZAt.track('acctmenu.blog.click');
         });
         $('#acct-signout-btn').click(function() {

@@ -102,8 +102,8 @@ class LikesController < ApplicationController
       #  @subject_id   = params[:subject_id]
       #  @subject_type = params[:subject_type]
       #  @message = Like.default_like_post_message(@subject_id, @subject_type )
-      #  @is_facebook_linked = current_user.identity_for_facebook.credentials_valid?
-      #  @is_twitter_linked  = current_user.identity_for_twitter.credentials_valid?
+      #  @is_facebook_linked = current_user.identity_for_facebook.has_credentials?
+      #  @is_twitter_linked  = current_user.identity_for_twitter.has_credentials?
       #  render '_social_dialog.html.erb', :layout => false and return
       #end
     end

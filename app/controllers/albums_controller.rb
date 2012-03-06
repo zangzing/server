@@ -329,8 +329,8 @@ class AlbumsController < ApplicationController
     zz_api do
       hash = {
           :user => {
-            :has_facebook_token => current_user.identity_for_facebook.credentials_valid?,
-            :has_twitter_token => current_user.identity_for_twitter.credentials_valid?
+            :has_facebook_token => current_user.identity_for_facebook.has_credentials?,
+            :has_twitter_token => current_user.identity_for_twitter.has_credentials?
           },
           :album => @album.as_hash,
           :group => get_flat_sharing_members,   #TODO change web client to use group form and get rid of this
