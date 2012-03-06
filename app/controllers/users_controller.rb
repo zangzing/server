@@ -456,6 +456,15 @@ class UsersController < ApplicationController
       username = params[:username]
       tracking_token = params[:tracking_token] || current_tracking_token
 
+      service = params[:service]
+      credentials = params[:credentials]
+      if service
+        raise ZZAPIError.new("Facebook is the only allowed service for login") unless ['facebook'].include?(service)
+        raise ZZAPIError.new("You must specify credentials if logging in with a service") unless credentials
+        graph = HyperGraph.new(credentials)
+        fb_info = graph.get('/me')
+      end
+
       # first try to login
       user = nil
       just_created = false

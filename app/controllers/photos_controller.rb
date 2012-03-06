@@ -2,7 +2,7 @@ require "zz_env_helpers"
 
 
 class PhotosController < ApplicationController
-  ssl_allowed :agent_create, :agent_index
+  ssl_allowed :agent_create, :agent_index, :simple_upload_fast
   skip_before_filter :verify_authenticity_token,  :only =>   [ :agent_index, :agent_create, :upload_fast, :simple_upload_fast]
 
   # Used by the agent to create photos duh?
@@ -187,6 +187,7 @@ class PhotosController < ApplicationController
   # When called via the api form we return the photo.  Will be nil
   # if no error with a status of 200, if we encounter an error, standard error response.
   #
+  # for zz_api flavor we return the photo
   # {
   #   photo, see hashed_photo
   # }
