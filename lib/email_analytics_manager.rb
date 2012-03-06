@@ -27,7 +27,7 @@ class EmailAnalyticsManager
       ZZ::ZZA.new.track_event('share.email.stats', xdata, 1, sent_by_user.id)
 
     rescue Exception => ex
-      logger.info small_back_trace(ex)
+      Rails.logger.error small_back_trace(ex)
     end
   end
 end
