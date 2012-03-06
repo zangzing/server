@@ -91,6 +91,13 @@
 
 
 
+
+
+<% content_for :page_javascript do %>
+
+<%= include_javascripts :shared %>
+
+
 <script type="text/javascript">
 function check_form(form_element){
     var num_fields_nonempty = 0;
@@ -195,7 +202,11 @@ function setup_upload(){
 //            on_finished();
 //        }
 
-    });
+    },
+            '6990f289c6d933fd7410f298ac3330e95ba5c26956d4a5df0ea0ea4758111f273ddd4de2454c1b85ae14b67a391c89f2f83a29a82625f98fdf983a2647d37dcb'
+
+
+    );
 
 
 }
@@ -235,3 +246,5 @@ function add_profile_validation(element) {
 }
 
 </script>
+
+<% end %>
