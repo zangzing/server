@@ -46,15 +46,30 @@ class Like < ActiveRecord::Base
       LikeCounter.increase( like.subject_id, like.subject_type )
       Cache::Album::Manager.shared.like_added(user_id, like)
       case subject_type
-        when USER,  'user'  then ZZ::Async::Email.enqueue( :user_liked,  user_id, subject_id )
-        when ALBUM, 'album' then ZZ::Async::Email.enqueue( :album_liked, user_id, subject_id )
+        when USER,  'user'  then
+          ZZ::Async::Email.enqueue( :user_liked,  user_id, subject_id )
+
+        when ALBUM, 'album' then
+          album = Album.find(subject_id)
+          notify_user_ids = album.viewers(false)
+          notify_user_ids.reject!{ |id| id == user_id } # don't notify the user who does the like
+
+          notify_user_ids.each do |notify_user_id|
+              ZZ::Async::Email.enqueue( :album_liked, user_id, album.id, notify_user_id )
+          end
+
         when PHOTO, 'photo' then
           photo = Photo.find_by_id( subject_id )
-          ZZ::Async::Email.enqueue( :photo_liked, user_id, photo.id, photo.user.id ) unless user_id == photo.user.id
-          if( photo.user.id != photo.album.user.id )
-            # if the contributor is different than the album owner, then also notify the album owner.
-            ZZ::Async::Email.enqueue( :photo_liked, user_id, photo.id, photo.album.user.id  ) unless user_id == photo.album.user.id
+
+          notify_user_ids = photo.album.viewers(false)
+          notify_user_ids << photo.user_id
+          notify_user_ids.reject!{ |id| id == user_id } # don't notify the user who does the like
+          notify_user_ids.uniq!
+
+          notify_user_ids.each do |notify_user_id|
+            ZZ::Async::Email.enqueue( :photo_liked, user_id, photo.id, notify_user_id )
           end
+
       end
       return like
     rescue  ActiveRecord::RecordNotUnique
