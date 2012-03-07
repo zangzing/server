@@ -9,6 +9,7 @@ class TrackedLink < ActiveRecord::Base
   TYPE_INVITATION = 'invitation'
   TYPE_PHOTO_SHARE = 'photo-share'
   TYPE_ALBUM_SHARE = 'album-share'
+  TYPE_CONTRIBUTOR_INVITE = 'contributor-invite'
 
 
   SHARED_TO_EMAIL = 'email'
@@ -91,6 +92,7 @@ class TrackedLink < ActiveRecord::Base
   #  - invitation.email.click
   #  - invitation.photo-share.click
   #  - invitation.album-share.click
+  #  - invitation.contributor-invite.click
   def click_event_name
       if self.shared_to == TrackedLink::SHARED_TO_EMAIL && self.link_type != TrackedLink::TYPE_INVITATION
         return "invitation.#{self.link_type}.click"
@@ -103,6 +105,7 @@ class TrackedLink < ActiveRecord::Base
   #  - invitation.email.join
   #  - invitation.photo-share.join
   #  - invitation.album-share.join
+  #  - invitation.contributor-invite.click
   def join_event_name
     if self.shared_to == TrackedLink::SHARED_TO_EMAIL && self.link_type != TrackedLink::TYPE_INVITATION
       return "invitation.#{self.link_type}.join"
