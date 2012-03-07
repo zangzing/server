@@ -18,6 +18,7 @@ class TrackedLink < ActiveRecord::Base
   SHARED_TO_COPY_PASTE = 'copy_paste'
 
 
+
   @@test_token = nil
 
   def self.create_tracked_link(user, url, type, shared_to, shared_to_address=nil)
@@ -27,6 +28,11 @@ class TrackedLink < ActiveRecord::Base
     tracked_link.shared_to = shared_to
     tracked_link.shared_to_address = shared_to_address || shared_to
     tracked_link.url = url
+
+    if shared_to_address
+      tracked_link.zzv_id = ZzvIdManager.generate_zzv_id_for_email(shared_to_address)
+    end
+
     for i in (1..10)
       begin
         tracked_link.tracking_token = generate_token
@@ -121,8 +127,16 @@ class TrackedLink < ActiveRecord::Base
     else
       return "invitation.#{self.shared_to}.send"
     end
-
   end
+
+  def sent_to_event_name
+    if self.shared_to == TrackedLink::SHARED_TO_EMAIL && self.link_type != TrackedLink::TYPE_INVITATION
+      return "invitation.#{self.link_type}.sent_to"
+    else
+      return "invitation.#{self.shared_to}.sent_to"
+    end
+  end
+
 
 
 end

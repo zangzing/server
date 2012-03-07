@@ -270,12 +270,12 @@ class Notifier < ActionMailer::Base
   end
 
   def request_contributor( user_id, album_id,  message,template_id = nil )
-      @user      = User.find( user_id )
-      @album     = Album.find( album_id )
-      @recipient = @album.user
-      @message   = message
+    @user      = User.find( user_id )
+    @album     = Album.find( album_id )
+    @recipient = @album.user
+    @message   = message
 
-      create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
+    create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
 
@@ -328,14 +328,26 @@ class Notifier < ActionMailer::Base
 
 
 
-private
+  private
   def send_share_invite_zza_event(user, tracked_link)
-     zza = ZZ::ZZA.new
-     zza.user_type = 1
-     zza.user = user.id
-     zza.zzv_id = user.zzv_id
-     zza.track_event("invitation.send")
-     zza.track_event(tracked_link.send_event_name)
+
+    # events tied to user sending the email
+    zza = ZZ::ZZA.new
+    zza.user_type = 1
+    zza.user = user.id
+    zza.zzv_id = user.zzv_id
+    zza.track_event("invitation.send")
+    zza.track_event(tracked_link.send_event_name)
+
+    # events tied to user receiving email
+    # since this is an 'invite' we can assume that recipient
+    # is not a user (yet)
+    zza = ZZ::ZZA.new
+    zza.user_type = 2
+    zza.user = tracked_link.zzv_id
+    zza.zzv_id = tracked_link.zzv_id
+    zza.track_event("invitation.sent_to")
+    zza.track_event(tracked_link.sent_to_event_name)
   end
 
 

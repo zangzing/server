@@ -17,6 +17,10 @@ module TrackedLinkHelper
       TrackedLink.handle_visit(tracking_token, request.referrer)
       session[:tracking_token] = tracking_token
 
+      if !current_user
+        set_zzv_id_cookie(tracked_link.zzv_id)
+      end
+
       send_zza_event_from_client("invitation.click")
       send_zza_event_from_client(tracked_link.click_event_name)
 

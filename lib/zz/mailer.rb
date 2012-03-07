@@ -51,6 +51,15 @@ module ZZ
         @unsubscribe_url   = unsubscribe_url(  @unsubscribe_token = Subscriptions.unsubscribe_token( recipient ) )
         @unsubscribe_email = Mail::Address.new( "#{@unsubscribe_token}@unsubscribe.#{Server::Application.config.album_email_host}" ).address
         sendgrid_headers.merge!( @template.sendgrid_category )
+
+        # add zzv_id to sendgrid header so that we can receive in open, click, etc callbacks and forward on to mixpoanel
+        if recipient.is_a?(User)
+          sendgrid_headers[:zzv_id] = recipient.zzv_id
+          sendgrid_headers[:user_id] = recipient.id
+        else
+          sendgrid_headers[:zzv_id] = ZzvIdManager.generate_zzv_id_for_email(recipient)
+        end
+
         headers['X-SMTPAPI'] = sendgrid_headers.to_json      #set sendgrid API headers
         headers['X-ZZSubscription-Id'] = @unsubscribe_token
         headers['List-Unsubscribe'] = "<mailto:#{@unsubscribe_email}>,<#{@unsubscribe_url}>,"
