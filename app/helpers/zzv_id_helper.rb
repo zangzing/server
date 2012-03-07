@@ -1,4 +1,4 @@
-module ZzaHelper
+module ZzvIdHelper
 
   # sets a cookie that is used to track unique users in zza and mixpanel.
   # this cookie is also set and read in zza.js
@@ -24,6 +24,8 @@ module ZzaHelper
   # this handles existing user sessions
   # we want to upgrade them to use correct zzv_id
   def check_zzv_id_cookie
-    set_zzv_id_cookie
+    if current_user && get_zzv_id_cookie != current_user.zzv_id
+      set_zzv_id_cookie
+    end
   end
 end

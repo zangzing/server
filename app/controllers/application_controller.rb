@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
   include BuyHelper
   include Spree::CurrentOrder
   include TrackedLinkHelper
-  include ZzaHelper
+  include ZzvIdHelper
 
   helper :all # include all helpers, all the time
 
