@@ -27,11 +27,11 @@ class ApplicationController < ActionController::Base
 
   helper_method :user_pretty_url, :album_pretty_url, :photo_pretty_url,
                 :back_to_home_page_url, :back_to_home_page_caption, :current_order,
-                :check_link_tracking_token
+                :check_link_tracking_token, :check_zzv_id_cookie
 
   before_filter :check_referrer_and_reset_last_home_page, :check_link_tracking_token
 
-  after_filter :flash_to_headers
+  after_filter :flash_to_headers, :check_zzv_id_cookie
 
   around_filter :deferred_wrapper
 

@@ -18,4 +18,9 @@ module ZzaHelper
      cookies.delete "_zzv_id"
   end
 
+  # this handles existing user sessions
+  # we want to upgrade them to use correct zzv_id
+  def check_zzv_id_cookie
+    set_zzv_id_cookie
+  end
 end
