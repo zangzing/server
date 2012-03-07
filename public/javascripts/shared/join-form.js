@@ -92,7 +92,7 @@ var zz = zz || {};
     } // submit_form
 
     function submit_data(form_element){
-        var login_url = "/zz_api/login_or_create"; // TODO: try to keep it self-contained
+        var login_url = "https://"+ document.location.host +"/zz_api/login_or_create"; // TODO: try to keep it self-contained
         var finish_profile_url = "/finish_profile";
 
         var email, password, email_pw_hash;
@@ -116,7 +116,7 @@ var zz = zz || {};
                     response = JSON.parse(jqXHR.responseText);
                     console.debug('parsing worked');
                     console.debug(JSON.stringify(response));
-                    alert(response.message[0]); // TODO: change this to real message
+                    alert(response.message); // TODO: change this to real message
                 } catch (e) {
                     // TODO: generic error goes here
                     console.debug('error in parsing');
