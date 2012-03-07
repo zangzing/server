@@ -22,12 +22,13 @@ class ApplicationController < ActionController::Base
   include BuyHelper
   include Spree::CurrentOrder
   include TrackedLinkHelper
+  include ZzaHelper
 
   helper :all # include all helpers, all the time
 
   helper_method :user_pretty_url, :album_pretty_url, :photo_pretty_url,
                 :back_to_home_page_url, :back_to_home_page_caption, :current_order,
-                :check_link_tracking_token, :check_zzv_id_cookie
+                :check_link_tracking_token
 
   before_filter :check_referrer_and_reset_last_home_page, :check_link_tracking_token
 
