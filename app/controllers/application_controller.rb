@@ -30,9 +30,9 @@ class ApplicationController < ActionController::Base
                 :back_to_home_page_url, :back_to_home_page_caption, :current_order,
                 :check_link_tracking_token
 
-  before_filter :check_referrer_and_reset_last_home_page, :check_link_tracking_token
+  before_filter :check_referrer_and_reset_last_home_page, :check_link_tracking_token, :check_zzv_id_cookie
 
-  after_filter :flash_to_headers, :check_zzv_id_cookie
+  after_filter :flash_to_headers
 
   around_filter :deferred_wrapper
 
