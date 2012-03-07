@@ -54,11 +54,17 @@ module ZZ
 
         # add zzv_id to sendgrid header so that we can receive in open,
         # click, etc callbacks and forward on to mixpoanel
-        if recipient.is_a?(User) && !recipient.automatic?
-          sendgrid_headers[:unique_args] = {
-              :zzv_id => recipient.zzv_id,
-              :user_id => recipient.id
-          }
+        if recipient.is_a?(User)
+          if !recipient.automatic?
+            sendgrid_headers[:unique_args] = {
+                :zzv_id => recipient.zzv_id,
+                :user_id => recipient.id
+            }
+          else
+            sendgrid_headers[:unique_args] = {
+                :zzv_id => ZzvIdManager.generate_zzv_id_for_email(recipient.email)
+            }
+          end
         else
           sendgrid_headers[:unique_args] = {
               :zzv_id => ZzvIdManager.generate_zzv_id_for_email(recipient)
