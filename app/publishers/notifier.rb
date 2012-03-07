@@ -198,7 +198,7 @@ class Notifier < ActionMailer::Base
 
     @invite_friends_url = invite_friends_url
     @join_now_url = join_url
-    @recipient_is_user = @recipient.is_a?(User)
+    @recipient_is_user = @recipient.is_a?(User) && !@recipient.automatic?
 
     create_message(  __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
