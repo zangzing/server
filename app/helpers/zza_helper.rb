@@ -18,10 +18,7 @@ module ZzaHelper
   end
 
   def delete_zzv_id_cookie
-    cookies.permanent["_zzv_id"] = {
-        :value => nil,
-        :domain => "zangzing.com",
-    }
+     cookies.delete ("_zzv_id", :domain => "zangzing.com")
   end
 
   # this handles existing user sessions
