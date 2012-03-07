@@ -201,7 +201,7 @@ zz.simple_uploader = {
 
 
                 // Debug Settings
-                debug: true,
+                debug: false,
                 debug_handler: function(message) {
                     zz.logger.debug(message);
                 }

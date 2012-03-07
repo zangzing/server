@@ -184,3 +184,21 @@ html #users-finish_profile{
     -webkit-box-shadow:inset 0 2px 3px #026404;
     -moz-box-shadow:inset 0 2px 2px #318e2c;
 }
+
+.simple-uploader-button-wrapper {
+    display:inline;
+}
+
+#simple-uploader-button {
+    width: 100px
+}
+
+#simple-uploader-flash-wrapper{
+    margin-top:-30px;
+    width:100px;
+}
+
+#profile-photo {
+    width: 60px;
+    height: 60px;
+}

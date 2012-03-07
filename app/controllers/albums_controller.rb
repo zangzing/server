@@ -3,6 +3,7 @@
 #
 
 class AlbumsController < ApplicationController
+  ssl_allowed :set_latest_cover
   # NOTE: this controller has been converted to use the new return unless filter style
   # of calling explicitly in each controller method.
   #
@@ -1088,6 +1089,13 @@ class AlbumsController < ApplicationController
     redirect_to album_pretty_url( @album ) and return
   end
 
+  # set latest photo as cover
+  def set_latest_cover
+    return unless require_any_user && require_album #&& require_album_admin_role #TODO: need to fix this, user is blank here
+
+    @album.cover = @album.photos.last
+    render :json => {:id => @album.cover.id, :t_url => @album.cover.thumb_url }, :status => 200, :layout => false and return
+  end
 
   private
 
@@ -1217,4 +1225,5 @@ class AlbumsController < ApplicationController
 
     members
   end
+
 end

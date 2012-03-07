@@ -90,9 +90,10 @@ Server::Application.routes.draw do
     get    '/albums/:album_id/close_batch'         => 'albums#close_batch',         :as => :close_batch
     put    '/albums/:album_id'                     => 'albums#update',              :as => :update_album
     delete '/albums/:album_id'                     => 'albums#destroy',             :as => :delete_album
-    post   'albums/:album_id/request_access'       => 'albums#request_access',      :as => :request_album_access
+    post   '/albums/:album_id/request_access'      => 'albums#request_access',      :as => :request_album_access
     get    '/albums/:album_id/add_photos'          => 'albums#add_photos',          :as => :album_add_photos
     get    '/albums/:album_id/wizard/:step'        => 'albums#wizard',              :as => :album_wizard
+    post   '/albums/:album_id/set_latest_cover'    => 'albums#set_latest_cover',  :as => :set_latest_cover
 
     #shares
     get    '/albums/:album_id/shares'             => 'shares#index',            :as => :album_shares

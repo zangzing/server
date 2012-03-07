@@ -15,15 +15,13 @@
   <div class="right">
       <div class="title">Add your profile photo</div>
       <div class="content">
-
-        <div class="simple-uploader-button-wrapper">
-            <a id="simple-uploader-button" class="black-button"><span>Simple Uploader</span></a>
+        <img src="<%= @user.profile_photo_url %>" id="profile-photo">
+        <span class="simple-uploader-button-wrapper">
+            <a id="simple-uploader-button" class="black-button"><span>Upload</span></a>
             <div id="simple-uploader-flash-wrapper"></div>
-        </div>
+        </span>
 
-        Pick photo.
-        <%=(@user ? @user.profile_album_id: 'nil')%>
-        <img src="<%=(@user ? @user.profile_photo_url: 'nil')%>">
+
       </div>
   </div>
 </div>
@@ -97,8 +95,16 @@
 
 <%= include_javascripts :shared %>
 
-
 <script type="text/javascript">
+zz.config = zz.config || {};
+zz.config.win_download_url       = '<%= ZangZingConfig.config[:agent_download_url_win] %>';
+zz.config.mac_download_url       = '<%= ZangZingConfig.config[:agent_download_url_mac] %>';
+zz.config.agent_port             = '<%= ZangZingConfig.config[:agent_port] %>';
+zz.config.rails_asset_id         = '<%= ENV["RAILS_ASSET_ID"] %>';
+zz.config.rails_asset_host       = '<%= ActionController::Base.asset_host %>';
+zz.config.facebook_app_id        = '<%=FACEBOOK_API_KEYS[:app_id]%>';
+zz.config.rails_env              = '<%= ENV["RAILS_ENV"] %>';
+
 function check_form(form_element){
     var num_fields_nonempty = 0;
 
@@ -107,7 +113,7 @@ function check_form(form_element){
         (form_element.find('#user_username').val().length != 0);
 
     if(form_element.valid()){
-        //submit_data(form_element);
+        submit_data(form_element);
         ZZAt.track("join.finishprofile.click");
         ZZAt.track("join.finishprofile.click.valid");
     } else {
@@ -159,7 +165,7 @@ function submit_data(form_element){
                 response = JSON.parse(jqXHR.responseText);
                 console.debug('parsing worked');
                 console.debug(JSON.stringify(response));
-                alert(response.message[0]); // TODO: change this to real message
+                alert(response.message); // TODO: change this to real message
             } catch (e) {
                 // TODO: generic error goes here
                 console.debug('error in parsing');
@@ -182,35 +188,47 @@ function remove_toolbar_buttons(){
 
 function setup_upload(){
 
+    var aid = <%=(@user ? @user.profile_album_id: 'nil')%>;
+
     $('#simple-uploader-button').click(function() {
         alert('The simple uploader requries the Flash.\n Please download and install from http://get.adobe.com/flashplayer.');
     });
 
-    zz.simple_uploader.instance($('#simple-uploader-flash-wrapper'), <%=(@user ? @user.profile_album_id: 'nil')%>, function(photos_uploaded) {
+    zz.simple_uploader.instance($('#simple-uploader-flash-wrapper'), aid, function(photos_uploaded) {
         var on_finished = function() {
-
+            zz.routes.call_set_latest_photo_as_cover(aid, function(data){
+                var t_url = data.t_url;
+                $("#profile-photo").attr('src', t_url);
+                console.debug(data);
+            });
         }
 
-//        if (photos_uploaded > 0) {
-//            var dialog = self.show_processing_photos_dialog();
-//            setTimeout(function() {
-//                on_finished();
-//                dialog.close();
-//            }, 5000);
-//        }
-//        else {
-//            on_finished();
-//        }
+        if (photos_uploaded > 0) {
+            console.debug("photosadded: " + photos_uploaded);
+            var dialog = show_processing_photos_dialog();
+            setTimeout(function() {
+                on_finished();
+                dialog.close();
+            }, 5000);
+        }
+        else {
+            on_finished();
+        }
 
     },
-            '6990f289c6d933fd7410f298ac3330e95ba5c26956d4a5df0ea0ea4758111f273ddd4de2454c1b85ae14b67a391c89f2f83a29a82625f98fdf983a2647d37dcb'
-
-
+    $.cookie('user_credentials')
     );
 
 
 }
 
+function show_processing_photos_dialog() {
+    var template = '<span class="processing-photos-dialog-content"><img src="{{src}}">Processing photos...</span>'.replace('{{src}}', zz.routes.image_url('/images/loading.gif'));
+
+    var dialog = zz.dialog.show_dialog(template, { width: 300, height: 100, modal: true, autoOpen: true, cancelButton: false });
+    return dialog;
+
+}
 
 
 // takes a jquery element
