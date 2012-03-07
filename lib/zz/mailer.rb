@@ -52,8 +52,10 @@ module ZZ
         @unsubscribe_email = Mail::Address.new( "#{@unsubscribe_token}@unsubscribe.#{Server::Application.config.album_email_host}" ).address
         sendgrid_headers.merge!( @template.sendgrid_category )
 
-        # add zzv_id to sendgrid header so that we can receive in open,
-        # click, etc callbacks and forward on to mixpoanel
+        # add zzv_id to sendgrid header so that we can receive in
+        # open, click, etc callbacks and forward on to mixpoanel
+        # the params set here are collected again the the
+        # sendgrid_controller#events action
         if recipient.is_a?(User)
           if !recipient.automatic?
             sendgrid_headers[:unique_args] = {
@@ -61,6 +63,7 @@ module ZZ
                 :user_id => recipient.id
             }
           else
+            # don't set user_id in this case because not a real user yet
             sendgrid_headers[:unique_args] = {
                 :zzv_id => ZzvIdManager.generate_zzv_id_for_email(recipient.email)
             }
