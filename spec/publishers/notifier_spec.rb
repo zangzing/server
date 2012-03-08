@@ -27,7 +27,7 @@ describe Notifier do
     end
 
     it 'album_liked' do
-      lambda{ Notifier.album_liked( @sender.id, @album.id ) }.should_not raise_error
+      lambda{ Notifier.album_liked( @sender.id, @album.id, @recipient.id ) }.should_not raise_error
     end
 
     it 'photo_liked' do
