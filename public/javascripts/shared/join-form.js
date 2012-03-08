@@ -92,8 +92,9 @@ var zz = zz || {};
     } // submit_form
 
     function submit_data(form_element){
-        var login_url = "https://"+ document.location.host +"/zz_api/login_or_create"; // TODO: try to keep it self-contained
+        var login_url = "https://"+ document.location.host +"/zz_api/login_or_create";
         var finish_profile_url = "/finish_profile";
+        var join_url = "/join";
 
         var email, password, email_pw_hash;
 
@@ -101,32 +102,65 @@ var zz = zz || {};
         password = form_element.find('#user_password').val();
         email_pw_hash = {email: email, password: password, create: true};
 
-        $.ajax({
-            url: login_url,
-            type: 'POST',
-            data: email_pw_hash,
-            success: function(data){
-                console.debug(JSON.stringify(data));
-                window.location = finish_profile_url;
-            }, // success
-            error:function(jqXHR, textStatus, errorThrown){
-                var response = null;
+        // Current page is https
+        // Call API directly
+        if (location.protocol === 'https:'){
+            $.ajax({
+                url: login_url,
+                type: 'POST',
+                data: email_pw_hash,
+                success: function(data){
+                    console.debug(JSON.stringify(data));
+                    window.location = finish_profile_url;
+                }, // success
+                error:function(jqXHR, textStatus, errorThrown){
+                    var response = null;
 
-                try {
-                    response = JSON.parse(jqXHR.responseText);
-                    console.debug('parsing worked');
-                    console.debug(JSON.stringify(response));
-                    alert(response.message); // TODO: change this to real message
-                } catch (e) {
-                    // TODO: generic error goes here
-                    console.debug('error in parsing');
-                    return false;
+                    try {
+                        response = JSON.parse(jqXHR.responseText);
+                        console.debug('parsing worked');
+                        console.debug(JSON.stringify(response));
+                        alert(response.message); // TODO: change this to real message
+                    } catch (e) {
+                        // TODO: generic error goes here
+                        console.debug('error in parsing');
+                        return false;
+                    }
+
+                } // error
+            });
+        }
+
+        // Current page is not https
+        // use JSONP
+        else {
+            $.jsonp({
+                url: login_url,
+                callback: "_jsonp_callback",
+                callbackParameter: "_jsonp_callback",
+                cache: false,
+                pageCache: false,
+                data: email_pw_hash,
+                success: function(response) {
+                    console.debug(response);
+
+                    if(response._jsonp_error){
+                        var err = response._jsonp_error;
+                        alert(err.message);
+                    } else if (response.user_credentials != null) {
+                        console.debug("success");
+                        window.r = response;
+                        window.location = finish_profile_url;
+                    } else { // Some unexpected error. Fallback to join page
+                        window.location = join_url;
+                    }
+                },
+                error: function() { // Should never get here unless we timeout.
+                    console.debug(response);
+                    alert("Couldn't log you in.\nPlease check your email/password and try again.");
                 }
-
-            } // error
-        });
-
-
+            });
+        }
     }
 
 })();
