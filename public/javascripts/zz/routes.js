@@ -329,6 +329,7 @@ var zz = zz || {};
         call_set_latest_photo_as_cover: function(album_id, success, error){
             $.ajax({ type: 'POST',
                 url: zz.routes.path_prefix + '/albums/' + album_id + '/set_latest_cover',
+                data: {album_id: album_id},
                 error: function(data) {
                     if (!_.isUndefined(error)) {
                         error(data);
