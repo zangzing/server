@@ -310,6 +310,100 @@ describe "ZZ API Users" do
         j = zz_api_post zz_api_create_or_login_path, hash, 401, true
       end
 
+      it "should log you in with credentials" do
+        zz_logout
+
+        email = "test1@bitbucket.zangzing.com"
+        password = "singlepass"
+        username = "credentials1"
+        credentials = "AAACCaqxPOLwBADP5JnsKEivSZAI0s1IqZBRBuDFyqNWZAjvFwd1TqZBU9cGb0D5SeNYgGvk0aqDfd3O78ZA4RSm0TZCKdV6YSLgPH6Er098AZDZD"
+        name = "One Phase"
+        hash = {
+            :email => email,
+            :password => password,
+            :name => name,
+            :username => username,
+            :credentials => credentials,
+            :service => 'facebook',
+            :create => true,
+        }
+        j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+        j[:user][:completed_step].should == nil
+        j[:user][:username].should == username
+        j[:user][:automatic].should == false
+        new_user_id = j[:user][:id]
+
+        zz_logout
+        hash = {
+            :credentials => credentials,
+            :service => 'facebook',
+        }
+        j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+        j[:user][:id].should == new_user_id
+        j[:user][:completed_step].should == nil
+        j[:user][:username].should == username
+        j[:user][:automatic].should == false
+
+        # now create another account
+        zz_logout
+        email2 = "test2@bitbucket.zangzing.com"
+        password = "singlepass"
+        username2 = "credentials2"
+        credentials = "AAACCaqxPOLwBADP5JnsKEivSZAI0s1IqZBRBuDFyqNWZAjvFwd1TqZBU9cGb0D5SeNYgGvk0aqDfd3O78ZA4RSm0TZCKdV6YSLgPH6Er098AZDZD"
+        name = "One Phase"
+        hash = {
+            :email => email2,
+            :password => password,
+            :name => name,
+            :username => username2,
+            :credentials => credentials,
+            :service => 'facebook',
+            :create => true,
+        }
+        j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+        j[:user][:username].should == username2
+        j[:user][:automatic].should == false
+
+        zz_logout
+        # login with just credentials
+        hash = {
+            :credentials => credentials,
+            :service => 'facebook',
+        }
+        j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+        j[:user][:username].should == username2
+
+        # now switch to first users info which will re-associate credentials
+        zz_logout
+        hash = {
+            :email => email,
+            :password => password,
+            :credentials => credentials,
+            :service => 'facebook',
+        }
+        j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+        j[:user][:username].should == username
+
+        # and verify that we get user 1 when we log in with credentials now
+        zz_logout
+        hash = {
+            :credentials => credentials,
+            :service => 'facebook',
+        }
+        j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+        j[:user][:username].should == username
+
+        # finally verify that we can still log in user 2 without creds
+        zz_logout
+        hash = {
+            :email => email2,
+            :password => password,
+        }
+        j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+        j[:user][:username].should == username2
+
+      end
+
     end
 end
 

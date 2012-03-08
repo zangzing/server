@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   ssl_required :join, :finish_profile, :create, :edit_password, :update_password,
                :zz_api_login_or_create, :zz_api_login_create_finish
-  ssl_allowed :validate_email, :validate_username, :zz_api_logout, :zz_api_available
+  ssl_allowed :validate_email, :validate_username
 
   skip_before_filter :verify_authenticity_token, :only=>[:create]
 
@@ -458,20 +458,27 @@ class UsersController < ApplicationController
       username = params[:username]
       tracking_token = params[:tracking_token] || current_tracking_token
 
+      # no user yet
+      cred_user = nil
+
       service = params[:service]
       credentials = params[:credentials]
       if service
         raise ZZAPIError.new("Facebook is the only allowed service for login") unless ['facebook'].include?(service)
         raise ZZAPIError.new("You must specify credentials if logging in with a service") unless credentials
-        graph = HyperGraph.new(credentials)
-        fb_info = graph.get('/me')
+        cred_user, identity, service_user_id = find_user_from_facebook_identity(credentials)
       end
 
       # first try to login
-      user = nil
       just_created = false
       create_user = !!params[:create]
-      user_session = UserSession.new(:email => email, :password => password)
+      if password || cred_user.nil?
+        user_session = UserSession.new(:email => email, :password => password)
+      elsif cred_user
+        user_session = UserSession.new(cred_user)
+      else
+        raise ZZAPIError.new("You cannot log in without valid credentials or username/password", 401)
+      end
       if user_session.save
         user = user_session.user
         if user.automatic? && create_user == false
@@ -493,11 +500,9 @@ class UsersController < ApplicationController
             :password => password,
         }
         success = create_user_shared(user_info, params[:follow_user_id], tracking_token)
+        failed_create(user) unless success # raises an exception always
         user = @new_user
         just_created = true
-        if !success
-          failed_create(user) # raises an exception always
-        end
       end
 
       if user.nil? && email.index('@')
@@ -527,6 +532,11 @@ class UsersController < ApplicationController
         user.password  = password
         user.password_confirmation = password
         user.save!
+      end
+
+      # if they passed in credentials update our identity info
+      if credentials
+        update_facebook_identity(user, credentials, service_user_id)
       end
 
       profile_album_id = user.profile_album_id   # has the side effect of creating the profile album if doesn't already exist
@@ -884,5 +894,52 @@ class UsersController < ApplicationController
     return false
   end
 
+  # finds the facebook identity for the given credentials
+  # returns
+  # user, identity, service_user_id
+  # raises exception if we can't get the data we need from the credentials
+  def find_user_from_facebook_identity(credentials)
+    user = nil
+    graph = HyperGraph.new(credentials)
+    me = FacebookIdentity.get_me(graph)
+    raise ZZAPIError.new("Your facebook credentials are not valid") unless me
+    service_user_id = me[:id]
+    raise ZZAPIError.new("Your facebook credentials are not enabled to return user id") unless service_user_id
+
+    # see if we already have a user tied to this set of credentials
+    identity = FacebookIdentity.find_by_service_user_id(service_user_id)
+    if identity.nil?
+      # don't have one by id so see if we have a match by credentials, take the most recent
+      identity = FacebookIdentity.where(:credentials => credentials).order("updated_at desc").first
+    end
+
+    # if we have an identity, dig up the associated user
+    # so we we can log in to that account without password
+    if identity
+      user = identity.user
+      user = nil if user.automatic? # can't log in an automatic user with credentials
+    end
+
+    return user, identity, service_user_id
+  end
+
+  # update the info for this users identity for facebook login
+  def update_facebook_identity(user, credentials, service_user_id)
+    identity = user.identity_for_facebook
+    return if identity.credentials == credentials && identity.service_user_id == service_user_id
+    identity.credentials = credentials
+    identity.service_user_id = service_user_id
+    while true
+      begin
+        identity.save!
+        break
+      rescue ActiveRecord::RecordNotUnique => ex
+        # somebody else has this so reset the other record and try again
+        other_identity = FacebookIdentity.find_by_service_user_id(service_user_id)
+        other_identity.service_user_id = nil
+        other_identity.save!
+      end
+    end
+  end
 
 end

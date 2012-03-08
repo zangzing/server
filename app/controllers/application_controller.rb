@@ -314,12 +314,19 @@ class ApplicationController < ActionController::Base
   def zz_api_core(filter, skip_render, block)
     return unless require_zz_api # anything using these api wrappers enforces require_zz_api
     begin
+      jsonp_callback = params[:_jsonp_callback]
       result = block.call
       if skip_render == false
-        if result.nil?
-          head :status => 200
+        if jsonp_callback
+          # have to wrap to make browser happy
+          result_str = result.nil? ? '' : JSON.fast_generate(result)
+          render :text => "#{jsonp_callback}(#{result_str})", :content_type => 'application/x-javascript'
         else
-          render :json => JSON.fast_generate(result)
+          if result.nil?
+            head :status => 200
+          else
+            render :json => JSON.fast_generate(result)
+          end
         end
       end
     rescue Exception => ex
