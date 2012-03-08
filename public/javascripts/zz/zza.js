@@ -123,7 +123,10 @@ function ZZA(id, useridentifier) {
             p[x] = e.x[x];
 
         if (typeof(mpq) != 'undefined') {
-            mpq.push(['identify', this.zzv_id]);
+            // hack: for some reason i couild not get mpq.identify to work
+            //       but this seems to do the trick
+            p.distinct_id = this.zzv_id;
+
             mpq.push(['track', e.e, p]);
         }
     };
