@@ -342,7 +342,7 @@ class Notifier < ActionMailer::Base
     # events tied to user receiving email
     # since this is an 'invite' we can assume that recipient
     # is not a user (yet)
-    Rails.logger.info(tracked_link.zzv_id)
+    Rails.logger.info("zzv_id: #{tracked_link.zzv_id}")
 
     zza = ZZ::ZZA.new
     zza.user_type = 2
