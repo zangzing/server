@@ -28,7 +28,7 @@ class AsyncResponse
     # exception can be passed as nil, in which
     # case you must supply message and code
     # message can be either a string, array of strings or a hash
-    def build_error_json(exception, message = nil, code = nil)
+    def build_error(exception, message = nil, code = nil)
       info = {
         :exception => exception.nil? ? false : true,
         :exception_name => exception.nil? ? nil : exception.class.name,
@@ -39,9 +39,14 @@ class AsyncResponse
         end,
         :message => message || exception.message
       }
+    end
+
+    # returns the error data as json
+    def build_error_json(exception, message = nil, code = nil)
+      info = build_error(exception, message, code)
       JSON.fast_generate(info)
     end
-    
+
     def store_error(response_id, exception)
       error_json = build_error_json(exception)
       Rails.logger.info("AsyncResponse Exception: #{exception.class.name} - #{exception.message}\n#{exception.backtrace}")

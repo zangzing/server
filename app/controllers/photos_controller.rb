@@ -2,7 +2,7 @@ require "zz_env_helpers"
 
 
 class PhotosController < ApplicationController
-  ssl_allowed :agent_create, :agent_index, :simple_upload_fast
+  ssl_allowed :agent_create, :agent_index, :simple_upload_fast, :agent_create, :upload_fast
   skip_before_filter :verify_authenticity_token,  :only =>   [ :agent_index, :agent_create, :upload_fast, :simple_upload_fast]
 
   # Used by the agent to create photos duh?

@@ -117,8 +117,17 @@ module ZZ
 
       # standard json response error
       def render_json_error(ex, message = nil, code = nil)
-        error_json = AsyncResponse.build_error_json(ex, message, code)
-        render :status => 509, :json => error_json
+        error_info = AsyncResponse.build_error(ex, message, code)
+        jsonp_callback = params[:_jsonp_callback]
+        if jsonp_callback
+          # always return as if it was ok but store results as _jsonp_error => {...}
+          wrapped_error = { :_jsonp_error => error_info }
+          error_json = JSON.fast_generate(wrapped_error)
+          render :text => "#{jsonp_callback}(#{error_json})", :content_type => 'application/x-javascript'
+        else
+          error_json = JSON.fast_generate(error_info)
+          render :status => 509, :json => error_json
+        end
       end
 
       # checks to see if we were called via the zz_api, impacts

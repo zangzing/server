@@ -20,6 +20,15 @@ class FacebookIdentity < Identity
     return @graph
   end
 
+  def self.get_me(graph)
+    me = nil
+    begin
+      me = graph.get('/me')
+    rescue Exception => ex
+    end
+    me
+  end
+
   # verify the credentials by calling facebook
   def verify_credentials
     return false unless has_credentials? # make sure we actually have an api token set
