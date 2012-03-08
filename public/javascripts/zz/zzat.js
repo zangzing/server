@@ -63,6 +63,7 @@
         window.mpq.push(['register', 'referrer', document.referrer]);
         $(document).ready(function() {
             loadScript('http://api.mixpanel.com/site_media/js/api/mixpanel.js', 'https://api.mixpanel.com/site_media/js/api/mixpanel.js', function() {
+                mpq.metrics.set_config({debug: true});
             });
         });
     }
