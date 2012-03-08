@@ -161,7 +161,6 @@ class UsersController < ApplicationController
     return unless require_nothing
 
     zz_api do
-      raise "choke"
       result = {}
       result[:email_available] = email_available?(params[:email])
       result[:username_available] = username_available?(params[:username])
