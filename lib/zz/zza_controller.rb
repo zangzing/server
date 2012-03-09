@@ -29,7 +29,7 @@ module ZZ
           user_type = 1
           zzv_id = current_user.zzv_id
         else
-          user_id = request.cookies['_zzv_id']
+          user_id = cookies['_zzv_id']
           user_type = 2
           zzv_id = user_id
         end
