@@ -27,18 +27,20 @@ module ZZ
         if current_user
           user_id = current_user.id
           user_type = 1
+          zzv_id = current_user.zzv_id
         else
-          user_id = request.cookies['_zzv_id']
+          user_id = cookies['_zzv_id']
           user_type = 2
+          zzv_id = user_id
         end
-        [user_id, user_type, request.remote_ip]
+        [user_id, user_type, zzv_id, request.remote_ip]
       end
 
       # Return a correctly initialized reference to zza tracking service
       def zza
         return @zza if @zza
         @zza = ZZ::ZZA.new
-        @zza.user, @zza.user_type = zza_user_context
+        @zza.user, @zza.user_type, @zza.zzv_id = zza_user_context
         @zza
       end
     end

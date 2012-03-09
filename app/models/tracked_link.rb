@@ -9,12 +9,14 @@ class TrackedLink < ActiveRecord::Base
   TYPE_INVITATION = 'invitation'
   TYPE_PHOTO_SHARE = 'photo-share'
   TYPE_ALBUM_SHARE = 'album-share'
+  TYPE_CONTRIBUTOR_INVITE = 'contributor-invite'
 
 
   SHARED_TO_EMAIL = 'email'
   SHARED_TO_FACEBOOK = 'facebook'
   SHARED_TO_TWITTER = 'twitter'
   SHARED_TO_COPY_PASTE = 'copy_paste'
+
 
 
   @@test_token = nil
@@ -26,6 +28,11 @@ class TrackedLink < ActiveRecord::Base
     tracked_link.shared_to = shared_to
     tracked_link.shared_to_address = shared_to_address || shared_to
     tracked_link.url = url
+
+    if shared_to_address
+      tracked_link.zzv_id = ZzvIdManager.generate_zzv_id_for_email(shared_to_address)
+    end
+
     for i in (1..10)
       begin
         tracked_link.tracking_token = generate_token
@@ -91,6 +98,7 @@ class TrackedLink < ActiveRecord::Base
   #  - invitation.email.click
   #  - invitation.photo-share.click
   #  - invitation.album-share.click
+  #  - invitation.contributor-invite.click
   def click_event_name
       if self.shared_to == TrackedLink::SHARED_TO_EMAIL && self.link_type != TrackedLink::TYPE_INVITATION
         return "invitation.#{self.link_type}.click"
@@ -103,6 +111,7 @@ class TrackedLink < ActiveRecord::Base
   #  - invitation.email.join
   #  - invitation.photo-share.join
   #  - invitation.album-share.join
+  #  - invitation.contributor-invite.click
   def join_event_name
     if self.shared_to == TrackedLink::SHARED_TO_EMAIL && self.link_type != TrackedLink::TYPE_INVITATION
       return "invitation.#{self.link_type}.join"
@@ -118,8 +127,16 @@ class TrackedLink < ActiveRecord::Base
     else
       return "invitation.#{self.shared_to}.send"
     end
-
   end
+
+  def sent_to_event_name
+    if self.shared_to == TrackedLink::SHARED_TO_EMAIL && self.link_type != TrackedLink::TYPE_INVITATION
+      return "invitation.#{self.link_type}.sent_to"
+    else
+      return "invitation.#{self.shared_to}.sent_to"
+    end
+  end
+
 
 
 end
