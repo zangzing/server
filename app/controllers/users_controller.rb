@@ -152,7 +152,7 @@ class UsersController < ApplicationController
           @guest.status = 'Inactive'
           @guest.save
         end
-        zza.track_event'user.join')
+        zza.track_event('user.join')
         redirect_to inactive_url and return
       end
     end
