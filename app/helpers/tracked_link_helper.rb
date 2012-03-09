@@ -21,8 +21,8 @@ module TrackedLinkHelper
         set_zzv_id_cookie(tracked_link.zzv_id)
       end
 
-      send_zza_event_from_client("invitation.click")
-      send_zza_event_from_client(tracked_link.click_event_name)
+      zza.track_event("invitation.click")
+      zza.track_event(tracked_link.click_event_name)
 
       redirect_to tracked_link.url
 

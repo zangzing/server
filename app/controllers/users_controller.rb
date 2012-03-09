@@ -120,7 +120,7 @@ class UsersController < ApplicationController
         flash[:success] = "Welcome to ZangZing!"
         @new_user.deliver_welcome!
         add_javascript_action('show_welcome_dialog') unless( session[:return_to] )
-        send_zza_event_from_client('user.join')
+        zza.track_event('user.join')
         redirect_back_or_default user_pretty_url( @new_user )
 
         # process tracking token if there was one
@@ -133,8 +133,8 @@ class UsersController < ApplicationController
 
         # send zza events
         if invitation
-          send_zza_event_from_client('invitation.join')
-          send_zza_event_from_client(invitation.tracked_link.join_event_name)
+          zza.track_event('invitation.join')
+          zza.track_event(invitation.tracked_link.join_event_name)
         end
 
 
@@ -152,7 +152,7 @@ class UsersController < ApplicationController
           @guest.status = 'Inactive'
           @guest.save
         end
-        send_zza_event_from_client('user.join')
+        zza.track_event'user.join')
         redirect_to inactive_url and return
       end
     end
