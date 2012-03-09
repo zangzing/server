@@ -50,7 +50,7 @@ class Invitation < ActiveRecord::Base
     from_user = invitation.user
     to_address = invitation.tracked_link.shared_to_address
 
-    ZZ::Async::Email.enqueue(:invite_to_join, from_user.id, to_address, invitation_url, invitation)
+    ZZ::Async::Email.enqueue(:invite_to_join, from_user.id, to_address, invitation_url)
    end
 
   def self.find_or_create_invitation_for_email(from_user, to_address, url = get_invitation_url, link_type = TrackedLink::TYPE_INVITATION)
