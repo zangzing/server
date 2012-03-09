@@ -396,6 +396,35 @@ class UsersController < ApplicationController
   # provide all necessary params to do so.  You need email, name, username,
   # and password, and set the create flag to true.
   #
+  #
+  #  Service Credential handling:
+  #
+  #  For credential login:
+  #
+  #  When you login you can do so via your service credentials. If the account has been
+  #  previously linked we detect the match and associated you with the user that has the matching
+  #  credentials. We also associate the remote services user id with our user id in case a user
+  #  deletes the credentials. In this case we detect the remote_user_id -> user_id and then
+  #  associate the credentials with that user.
+  #
+  #  If there is no existing link between the server credentials or service user id you must
+  #  create an association. That can be done at login time by supplying the service credentials
+  #  along with username/email and password. Assuming the email and password are correct you will
+  #  be logged in as the user tied to that email. At the same time we also associate the
+  #  credentials and service user id to that user. Any subsequent logins can be done with just
+  #  the credentials.
+  #
+  #  For credential join:
+  #
+  #  When joining, you can provide the service credentials and optionally one or more of the
+  #  values for email, username, name, password. Any arguments passed in will override those
+  #  fetched from the service credentials. So, for instance, if you do not provide email we will
+  #  use the email provided by the remote service. If we have collisions such as the email or
+  #  username already existing an error will be returned and the call will fail. On success the
+  #  credentials will automatically be associated with the new account. The general approach will
+  #  probably be for the client UI to fetch the data from the remove service and present those to
+  #  the user as defaults to give them the opportunity to change them
+  #
   # This is called as (POST - https):
   #
   # /zz_api/login_or_create
@@ -464,7 +493,9 @@ class UsersController < ApplicationController
       if service
         raise ZZAPIError.new("Facebook is the only allowed service for login") unless ['facebook'].include?(service)
         raise ZZAPIError.new("You must specify credentials if logging in with a service") unless credentials
-        cred_user, identity, service_user_id = find_user_from_facebook_identity(credentials)
+        service_info = find_user_from_facebook_identity(credentials)
+        cred_user = service_info[:user]
+        service_user_id = service_info[:service_user_id]
       end
 
       # first try to login
@@ -489,18 +520,28 @@ class UsersController < ApplicationController
       end
 
       may_create = (!user.nil? && user.automatic?) || user.nil?
-      if may_create && name && username
-        # auto or nil user and they passed everything needed to create
-        user_info = {
-            :name => name,
-            :email => email,
-            :username => username,
-            :password => password,
-        }
-        success = create_user_shared(user_info, params[:follow_user_id], tracking_token)
-        failed_create(user) unless success # raises an exception always
-        user = @new_user
-        just_created = true
+      if may_create
+        if service_info
+          # if we have credentials, pick up anything not already
+          # passed in from the credentials
+          email ||= service_info[:email]
+          name ||= service_info[:name]
+          username ||= service_info[:username] || User.generate_username
+          password ||= User.generate_password
+        end
+        if name && username && email
+          # auto or nil user and they passed everything needed to create
+          user_info = {
+              :name => name,
+              :email => email,
+              :username => username,
+              :password => password,
+          }
+          success = create_user_shared(user_info, params[:follow_user_id], tracking_token)
+          user = @new_user
+          failed_create(user) unless success # raises an exception always
+          just_created = true
+        end
       end
 
       if user.nil? && email.index('@')
@@ -687,7 +728,8 @@ class UsersController < ApplicationController
 
 
   # called when we failed to create a user
-  def failed_create(user)
+  def failed_create(user, message = nil)
+    raise ZZAPIError.new(message, 401) if message
     raise ZZAPIError.new("Unable to create user", 401) if user.nil?
     raise ZZAPIError.new(user.errors.full_messages, 401) if user.errors.length > 0
     raise ZZAPIError.new("Unable to create user", 401)
@@ -894,7 +936,14 @@ class UsersController < ApplicationController
 
   # finds the facebook identity for the given credentials
   # returns
-  # user, identity, service_user_id
+  # {
+  #   :user
+  #   :identity
+  #   :service_user_id
+  #   :email
+  #   :username
+  #   :name
+  # }
   # raises exception if we can't get the data we need from the credentials
   def find_user_from_facebook_identity(credentials)
     user = nil
@@ -918,7 +967,14 @@ class UsersController < ApplicationController
       user = nil if user.automatic? # can't log in an automatic user with credentials
     end
 
-    return user, identity, service_user_id
+    result = {
+        :user => user,
+        :identity => identity,
+        :service_user_id => service_user_id,
+        :email => me[:email],
+        :username => me[:username],
+        :name => me[:name]
+    }
   end
 
   # update the info for this users identity for facebook login

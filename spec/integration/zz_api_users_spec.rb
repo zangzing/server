@@ -404,6 +404,62 @@ describe "ZZ API Users" do
 
       end
 
+      it "should create user from credentials" do
+        zz_logout
+
+        credentials = "AAACCaqxPOLwBADP5JnsKEivSZAI0s1IqZBRBuDFyqNWZAjvFwd1TqZBU9cGb0D5SeNYgGvk0aqDfd3O78ZA4RSm0TZCKdV6YSLgPH6Er098AZDZD"
+        hash = {
+            :credentials => credentials,
+            :service => 'facebook',
+            :create => true,
+        }
+        j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+        j[:user][:completed_step].should == nil
+        j[:user][:first_name].should == "Test"
+        j[:user][:last_name].should == "Moment"
+        j[:user][:automatic].should == false
+        new_user_id = j[:user][:id]
+
+        # now make sure we can get info about ourselves
+        j = zz_api_get zz_api_current_user_info_path, 200
+        j[:id].should == new_user_id
+
+        # make sure we can log in now
+        zz_logout
+        hash = {
+            :credentials => credentials,
+            :service => 'facebook',
+        }
+        j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+        j[:user][:id].should == new_user_id
+
+        # try to create again, should act just like a login
+        zz_logout
+        hash = {
+            :credentials => credentials,
+            :service => 'facebook',
+            :create => true,
+        }
+        j = zz_api_post zz_api_create_or_login_path, hash, 200, true
+        j[:user][:id].should == new_user_id
+
+        # now clear the credential info from the identity
+        user = User.find(new_user_id)
+        identity = user.identity_for_facebook
+        identity.service_user_id = nil
+        identity.credentials = nil
+        identity.save!
+
+        # create, this time, should fail
+        zz_logout
+        hash = {
+            :credentials => credentials,
+            :service => 'facebook',
+            :create => true,
+        }
+        j = zz_api_post zz_api_create_or_login_path, hash, 401, true
+      end
+
     end
 end
 
