@@ -1,3 +1,5 @@
+<% content_for :page_title do %>Finish Profile<% end %>
+
 <%= render :partial => 'layouts/top_nav'  %>
 
 
@@ -15,7 +17,8 @@
   <div class="right">
       <div class="title">Add your profile photo</div>
       <div class="content">
-        <img src="<%= @user.profile_photo_url %>" id="profile-photo">
+        <div class="picture-container"><div class="mask"><img src="<%= @user.profile_photo_url %>" id="profile-photo"></div><img class="bottom-shadow" src="/images/photo/bottom-full.png"/></div>
+
         <span class="simple-uploader-button-wrapper">
             <a id="simple-uploader-button" class="black-button"><span>Upload</span></a>
             <div id="simple-uploader-flash-wrapper"></div>
@@ -80,6 +83,8 @@
             check_form($('.finish-profile-form'));
         }
     });
+
+    load_profile_photo("<%= @user.profile_photo_url %>");
 
     setup_upload();
 
@@ -191,14 +196,13 @@ function setup_upload(){
     var aid = <%=(@user ? @user.profile_album_id: 'nil')%>;
 
     $('#simple-uploader-button').click(function() {
-        alert('The simple uploader requries the Flash.\n Please download and install from http://get.adobe.com/flashplayer.');
+        alert('The uploader requries the Flash.\n Please download and install from http://get.adobe.com/flashplayer.');
     });
 
     zz.simple_uploader.instance($('#simple-uploader-flash-wrapper'), aid, function(photos_uploaded) {
         var on_finished = function() {
             zz.routes.call_set_latest_photo_as_cover(aid, function(data){
-                var t_url = data.t_url;
-                $("#profile-photo").attr('src', t_url);
+                load_profile_photo(data.t_url);
                 console.debug(data);
             });
         }
@@ -260,6 +264,16 @@ function add_profile_validation(element) {
                 remote : 'This username is already taken.'
             }
         }
+    });
+}
+
+function load_profile_photo(url){
+
+    $("#profile-photo").attr('src', url);
+
+    zz.image_utils.pre_load_image(url, function(image) {
+        var css = zz.image_utils.scale_center_and_crop(image, {width: 48, height: 48});
+        $("#profile-photo").css(css);
     });
 }
 

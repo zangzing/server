@@ -8,8 +8,6 @@ Copyright 2012, ZangZing LLC. All rights reserved.
 
 **/
 
-/* TODO: resize widnow small why no scrollbar? */
-
 html #users-finish_profile{
     overflow: auto;
 }
@@ -23,12 +21,9 @@ html #users-finish_profile{
 
 #users-finish_profile .main {
     width: 860px;
-    margin: 160px auto 0;
-    border: 1px solid #999;
-}
-
-#users-finish_profile .main  {
+    margin: 160px auto;
     padding: 40px;
+    border: 1px solid #999;
 }
 
 #users-finish_profile .main h1 {
@@ -96,7 +91,7 @@ html #users-finish_profile{
 
 #users-finish_profile .main .right  label {
     position: absolute;
-    top: 5px;
+    top: 20px;
     left: 6px;
     color: #999;
     font-size: 14px;
@@ -105,6 +100,7 @@ html #users-finish_profile{
 /* TODO: alignment in Safari */
 
 #users-finish_profile .main .right  input {
+    margin-top: 15px;
     padding: 6px 6px;
     width: 180px;
     height: 14px;
@@ -185,20 +181,56 @@ html #users-finish_profile{
     -moz-box-shadow:inset 0 2px 2px #318e2c;
 }
 
-.simple-uploader-button-wrapper {
-    display:inline;
+#users-finish_profile .simple-uploader-button-wrapper {
+    position: absolute;
+    top: 15px;
+    left: 75px;
 }
 
-#simple-uploader-button {
-    width: 100px
+#users-finish_profile #simple-uploader-button {
+    width: 75px;
 }
 
-#simple-uploader-flash-wrapper{
+#users-finish_profile #simple-uploader-flash-wrapper{
     margin-top:-30px;
-    width:100px;
+    width:75px;
 }
 
-#profile-photo {
-    width: 60px;
-    height: 60px;
+#users-finish_profile #profile-photo {
+    width: 48px;
+    height: 48px;
+}
+
+
+#users-finish_profile .picture-container {
+    box-shadow: 0px 0px 3px #aaa;
+    -webkit-box-shadow: 0px 0px 3px #aaa;
+    -moz-box-shadow: 0px 0px 3px #aaa;
+    height: 48px;
+    width: 48px;
+    position: relative;
+}
+
+#users-finish_profile .picture-container .mask {
+    overflow:hidden;
+    height: 48px;
+    width: 48px;
+    border: 2px solid white;
+}
+
+#users-finish_profile div img#profile-photo {
+    position:relative;
+
+}
+
+#users-finish_profile div img.bottom-shadow{
+    height:5px;
+    width: 52px;
+    position:absolute;
+    bottom: -9px;
+    left:0px;
+}
+
+#users-finish_profile #user-info {
+    display: none;
 }
