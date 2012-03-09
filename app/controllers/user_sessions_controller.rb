@@ -39,6 +39,7 @@ class UserSessionsController < ApplicationController
     if @user_session.save
       prevent_session_fixation
       @user_session.user.reset_perishable_token! #reset the perishable token
+      set_zzv_id_cookie(@user_session.user.zzv_id)
       redirect_back_or_default user_url( @user_session.record )
     else
       if params[:store_signin]
@@ -57,6 +58,7 @@ class UserSessionsController < ApplicationController
       else
         current_user_session.destroy
         reset_session
+        delete_zzv_id_cookie
         redirect_back_or_default root_url
       end
     else
@@ -105,16 +107,17 @@ class UserSessionsController < ApplicationController
     zz_api do
       user_session = UserSession.new(:email => params[:email], :password => params[:password], :remember_me => false)
       if user_session.save
+        user = user_session.user
         acl = SystemRightsACL.singleton
-        role = acl.get_user_role(current_user.id)
+        role = acl.get_user_role(user.id)
         if role.nil?
           role = SystemRightsACL::USER_ROLE
-          acl.add_user(current_user, role)
+          acl.add_user(user, role)
         end
         result = {
-            :user_credentials => current_user.persistence_token,
-            :user_id =>  current_user.id,
-            :username => current_user.username,
+            :user_credentials => user.persistence_token,
+            :user_id =>  user.id,
+            :username => user.username,
             :server => Server::Application.config.application_host,
             :role => role.name,
             :available_roles => SystemRightsACL.role_names

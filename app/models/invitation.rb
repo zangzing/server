@@ -61,7 +61,7 @@ class Invitation < ActiveRecord::Base
     # if there is no invitation, or if the invitation was completed
     # under a different email address, then go ahead and create new invitation
     if (!invitation || (invitation.status == Invitation::STATUS_COMPLETE && invitation.invited_user && invitation.invited_user.email != to_address))
-      tracked_link = TrackedLink.create_tracked_link(from_user, url, link_type, TrackedLink::SHARED_TO_EMAIL, shared_to_address=to_address)
+      tracked_link = TrackedLink.create_tracked_link(from_user, url, link_type, TrackedLink::SHARED_TO_EMAIL, to_address)
       invitation = Invitation.new
       invitation.tracked_link = tracked_link
       invitation.user = from_user

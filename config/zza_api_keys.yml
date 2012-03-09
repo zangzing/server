@@ -8,7 +8,7 @@ perftest:
   :ZZA_ID: dev.photos/web
   :MIXPANEL_TOKEN: 17540e499e4c7032071b48abcbfeb742
   :GOOGLE_ANALYTICS_TOKEN: UA-18597985-4
-    
+
 test:
   :ZZA_ID: dev.photos/web
   :MIXPANEL_TOKEN: 17540e499e4c7032071b48abcbfeb742

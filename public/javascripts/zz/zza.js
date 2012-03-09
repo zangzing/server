@@ -1,4 +1,4 @@
-function ZZA(id, useridentifier, usemixpanel) {
+function ZZA(id, useridentifier) {
     // # 3.1.11 pb
 
     this.id = id;
@@ -10,9 +10,6 @@ function ZZA(id, useridentifier, usemixpanel) {
     else
         this.usertype = 2;
 
-    if (usemixpanel == undefined)
-        usemixpanel = false;
-    this.usemixpanel = usemixpanel;
 
     this.evts = new Array();
     this.last = null;
@@ -46,6 +43,8 @@ function ZZA(id, useridentifier, usemixpanel) {
             if ((l != -1) && (l + zdomain.length == location.host.length))
                 domain = zdomain; // share across all zangzing.com domains
 
+
+            // this cookie is also managed on the server in  zza_helpers.rb
             this.zzv_id = this.createUUID();
             this._createCookie('_zzv_id', this.zzv_id, domain, 10950);
         }
@@ -109,24 +108,26 @@ function ZZA(id, useridentifier, usemixpanel) {
         this.last = new Date().getTime();
 
 
-        if (this.usemixpanel) {
-            p = {};
-            if (this.usertype == 1)
-                p.Zuser = e.u;
-            else
-                p.Zvisitor = e.u;
+        p = {};
+        if (this.usertype == 1)
+            p.Zuser = e.u;
+        else
+            p.Zvisitor = e.u;
 
-            if (e.p)
-                p.Zpageuri = e.p;
+        if (e.p)
+            p.Zpageuri = e.p;
 
-            p.Zsource = this.id;
+        p.Zsource = this.id;
 
-            for (var x in e.x)
-                p[x] = e.x[x];
+        for (var x in e.x)
+            p[x] = e.x[x];
 
-            if (typeof(mpq) != 'undefined') {
-                mpq.push(['track', e.e, p]);
-            }
+        if (typeof(mpq) != 'undefined') {
+            // hack: for some reason i couild not get mpq.identify to work
+            //       but this seems to do the trick
+            p.distinct_id = this.zzv_id;
+
+            mpq.push(['track', e.e, p]);
         }
     };
 
