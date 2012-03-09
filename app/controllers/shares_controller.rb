@@ -47,6 +47,16 @@ class SharesController < ApplicationController
       # create share otherwise return error info
       zza.track_event("#{share_event}.share.email")
       emails, errors, addresses, group_ids = Group.filter_groups_and_emails(current_user.id, params[:recipients])
+
+
+      # log to zza for share analytics
+      if @subject.is_a?(Album)
+        EmailAnalyticsManager.log_share_message_sent(current_user, :album_shared, emails, errors)
+      else
+        EmailAnalyticsManager.log_share_message_sent(current_user, :photo_shared, emails, errors)
+      end
+
+
       # ok, if we have things that aren't valid emails or group names
       # report it to the user
       if errors.length > 0

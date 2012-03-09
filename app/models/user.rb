@@ -318,6 +318,7 @@ class User < ActiveRecord::Base
 
     username = options[:username] || generate_username
     password = options[:password] || generate_password
+    zzv_id = options[:zzv_id]
 
     with_session = options[:with_session]
     completed_step = options[:completed_step]
@@ -329,6 +330,7 @@ class User < ActiveRecord::Base
                          :created_by_user_id => created_by_user_id,
                          :auto_by_contact => auto_by_contact,
                          :completed_step => completed_step,
+                         :zzv_id => zzv_id,
                          :username => username,
                          :password => password)
     user.reset_perishable_token

@@ -198,7 +198,7 @@ class Notifier < ActionMailer::Base
 
     @invite_friends_url = invite_friends_url
     @join_now_url = join_url
-    @recipient_is_user = @recipient.is_a?(User)
+    @recipient_is_user = @recipient.is_a?(User) && !@recipient.automatic?
 
     create_message(  __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
@@ -227,7 +227,7 @@ class Notifier < ActionMailer::Base
 
       invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_PHOTO_SHARE)
       @join_now_url = invitation.tracked_link.long_tracked_url
-      @album_pretty_url = TrackedLink.create_tracked_link(@user, @album_pretty_url, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
+      @album_pretty_url = TrackedLink.create_tracked_link(@user, @album_pretty_url, TrackedLink::TYPE_CONTRIBUTOR_INVITE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
       @album_pretty_url_show_add_photos_dialog = TrackedLink.create_tracked_link(@user, @album_pretty_url_show_add_photos_dialog, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
       @invite_friends_url = nil
 
@@ -270,12 +270,12 @@ class Notifier < ActionMailer::Base
   end
 
   def request_contributor( user_id, album_id,  message,template_id = nil )
-      @user      = User.find( user_id )
-      @album     = Album.find( album_id )
-      @recipient = @album.user
-      @message   = message
+    @user      = User.find( user_id )
+    @album     = Album.find( album_id )
+    @recipient = @album.user
+    @message   = message
 
-      create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
+    create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
 
@@ -328,19 +328,26 @@ class Notifier < ActionMailer::Base
 
 
 
-private
+  private
   def send_share_invite_zza_event(user, tracked_link)
-     zza.track_event("invitation.send")
-     zza.track_event(tracked_link.send_event_name)
-  end
 
-  def zza
-    unless @zza
-      @zza = ZZ::ZZA.new
-      @zza.user_type = 1
-    end
+    # events tied to user sending the email
+    zza = ZZ::ZZA.new
+    zza.user_type = 1
+    zza.user = user.id
+    zza.zzv_id = user.zzv_id
+    zza.track_event("invitation.send")
+    zza.track_event(tracked_link.send_event_name)
 
-    return @zza
+    # events tied to user receiving email
+    # since this is an 'invite' we can assume that recipient
+    # is not a user (yet)
+    zza = ZZ::ZZA.new
+    zza.user_type = 2
+    zza.user = tracked_link.zzv_id
+    zza.zzv_id = tracked_link.zzv_id
+    zza.track_event("invitation.sent_to")
+    zza.track_event(tracked_link.sent_to_event_name)
   end
 
 

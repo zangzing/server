@@ -469,8 +469,6 @@ class UsersController < ApplicationController
   #     you are a User you will not be granted access.
   #   :available_roles => Ordered from most access to least lets you determine
   #     the available roles and their order
-  #   :client_side_zza_events => ['event1', ...] an array of client side zza event strings that should
-  #     be sent to zza by the client
   #   :zzv_id => token used to user identifier for tracking via mixpanel,
   #   :user => user info as returned in user_info call
   # }
@@ -553,7 +551,8 @@ class UsersController < ApplicationController
           options = {
               :password => password,
               :completed_step => 1,
-              :with_session => true
+              :with_session => true,
+              :zzv_id => get_zzv_id_cookie,
           }
           user = User.create_automatic(email, name, true, nil, options)
           just_created = true
@@ -641,8 +640,6 @@ class UsersController < ApplicationController
   #     you are a User you will not be granted access.
   #   :available_roles => Ordered from most access to least lets you determine
   #     the available roles and their order
-  #   :client_side_zza_events => ['event1', ...] an array of client side zza event strings that should
-  #     be recorded by the client
   #   :zzv_id => token used to user identifier for tracking via mixpanel,
   #   :user => user info as returned in user_info call
   # }
@@ -748,8 +745,7 @@ class UsersController < ApplicationController
         :server => Server::Application.config.application_host,
         :role => role.name,
         :available_roles => SystemRightsACL.role_names,
-        :client_side_zza_events => zza_client_events,
-        :zzv_id => "placeholder until merge with Jeremy",
+        :zzv_id => user.zzv_id,
         :user => user_hash
     }
   end
@@ -853,6 +849,10 @@ class UsersController < ApplicationController
     @new_user.reset_perishable_token
     @new_user.reset_single_access_token
 
+    # SET _ZZV_ID COOKIE THAT IS USED TO TRACK
+    # USERS IN MIXPANEL AND ZZA
+    @new_user.zzv_id = get_zzv_id_cookie
+
     # SIGNUP CONTROL
     # new users are active by default
     if SystemSetting[:signup_control]
@@ -898,7 +898,7 @@ class UsersController < ApplicationController
         end
 
         @new_user.deliver_welcome!
-        send_zza_event_from_client('user.join')
+        zza.track_event('user.join')
 
         # process tracking token if there was one
         if tracking_token
@@ -910,8 +910,8 @@ class UsersController < ApplicationController
 
         # send zza events
         if invitation
-          send_zza_event_from_client('invitation.join')
-          send_zza_event_from_client(invitation.tracked_link.join_event_name)
+          zza.track_event('invitation.join')
+          zza.track_event(invitation.tracked_link.join_event_name)
         end
 
         return true
@@ -927,7 +927,7 @@ class UsersController < ApplicationController
           @guest.status = 'Inactive'
           @guest.save
         end
-        send_zza_event_from_client('user.join')
+        zza.track_event('user.join')
         return true
       end
     end

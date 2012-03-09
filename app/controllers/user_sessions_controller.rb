@@ -39,6 +39,7 @@ class UserSessionsController < ApplicationController
     if @user_session.save
       prevent_session_fixation
       @user_session.user.reset_perishable_token! #reset the perishable token
+      set_zzv_id_cookie(@user_session.user.zzv_id)
       redirect_back_or_default user_url( @user_session.record )
     else
       if params[:store_signin]
@@ -57,6 +58,7 @@ class UserSessionsController < ApplicationController
       else
         current_user_session.destroy
         reset_session
+        delete_zzv_id_cookie
         redirect_back_or_default root_url
       end
     else

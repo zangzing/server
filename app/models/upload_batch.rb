@@ -356,6 +356,7 @@ state <> 'finished' AND (
     @zza = ZZ::ZZA.new
     @zza.user = self.album.user.id
     @zza.user_type = 1
+    @zza.zzv_id = self.album.user.zzv_id
     @zza
   end
 
