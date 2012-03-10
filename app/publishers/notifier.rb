@@ -168,7 +168,7 @@ class Notifier < ActionMailer::Base
     if !rcp_user || rcp_user.automatic?
       @recipient_is_user = false
 
-      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_PHOTO_SHARE)
+      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_ALBUM_SHARE)
       @join_now_url = invitation.tracked_link.long_tracked_url
       @album_pretty_url = TrackedLink.create_tracked_link(@user, @album_pretty_url, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
       @invite_friends_url = nil
@@ -225,10 +225,10 @@ class Notifier < ActionMailer::Base
     if !rcp_user || rcp_user.automatic?
       @recipient_is_user = false
 
-      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_PHOTO_SHARE)
+      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_CONTRIBUTOR_INVITE)
       @join_now_url = invitation.tracked_link.long_tracked_url
       @album_pretty_url = TrackedLink.create_tracked_link(@user, @album_pretty_url, TrackedLink::TYPE_CONTRIBUTOR_INVITE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
-      @album_pretty_url_show_add_photos_dialog = TrackedLink.create_tracked_link(@user, @album_pretty_url_show_add_photos_dialog, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
+      @album_pretty_url_show_add_photos_dialog = TrackedLink.create_tracked_link(@user, @album_pretty_url_show_add_photos_dialog, TrackedLink::TYPE_CONTRIBUTOR_INVITE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
       @invite_friends_url = nil
 
       send_share_invite_zza_event(@user, invitation.tracked_link)
@@ -310,10 +310,13 @@ class Notifier < ActionMailer::Base
   end
 
 
-  def invite_to_join(from_user_id, to_email_address, invite_url, template_id = nil)
+  def invite_to_join(from_user_id, to_email_address, invite_url, invitation_id, template_id = nil)
     @user = User.find_by_id(from_user_id)
     @recipient = to_email_address
     @invite_url = invite_url
+    invitation = Invitation.find(invitation_id)
+    send_share_invite_zza_event(@user, invitation.tracked_link)
+
     create_message( __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
 
