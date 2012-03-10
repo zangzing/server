@@ -2,7 +2,7 @@ module ZZ
   module Async
 
     class DelayedUtils < Base
-      @queue = :io_bound
+      @queue = Priorities.queue_name('io', Priorities.cleanup)
 
       # only add ourselves one time
       if @retry_criteria_checks.length == 0

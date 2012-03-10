@@ -2,7 +2,7 @@ module ZZ
   module Async
       
     class ConnectorWorker < Base
-      @queue = :io_bound_high
+      @queue = Priorities.queue_name('io', Priorities.connector_worker)
 
       # Add on any extra handling that your class
       # needs - generally most classes of errors

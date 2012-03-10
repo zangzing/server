@@ -2,7 +2,7 @@ module ZZ
   module Async
 
     class TestS3 < Base
-      @queue = :test_queue
+      @queue = Priorities.queue_name('io', Priorities.test)
 
       # only add ourselves one time
       if @retry_criteria_checks.length == 0

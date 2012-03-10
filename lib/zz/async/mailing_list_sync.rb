@@ -2,7 +2,7 @@ module ZZ
   module Async
 
     class MailingListSync < Base
-        @queue = :io_bound
+        @queue = Priorities.queue_name('io', Priorities.mailing_list_sync)
 
         # only add ourselves one time
         if @retry_criteria_checks.length == 0

@@ -2,7 +2,7 @@ module ZZ
   module Async
 
     class Facebook < Base
-        @queue = :io_bound
+        @queue = Priorities.queue_name('io', Priorities.facebook)
 
         # only add ourselves one time
         if @retry_criteria_checks.length == 0
