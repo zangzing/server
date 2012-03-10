@@ -310,10 +310,12 @@ class Notifier < ActionMailer::Base
   end
 
 
-  def invite_to_join(from_user_id, to_email_address, invite_url, template_id = nil)
+  def invite_to_join(from_user_id, to_email_address, invite_url, invitation, template_id = nil)
     @user = User.find_by_id(from_user_id)
     @recipient = to_email_address
     @invite_url = invite_url
+
+    send_share_invite_zza_event(@user, invitation)
 
     create_message( __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
