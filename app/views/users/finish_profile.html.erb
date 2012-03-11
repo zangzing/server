@@ -24,6 +24,7 @@
             <div id="simple-uploader-flash-wrapper"></div>
         </span>
 
+        <div class="progress-block none"></div>
 
       </div>
   </div>
@@ -191,41 +192,6 @@ function remove_toolbar_buttons(){
     $("#user-info").remove();
 }
 
-function setup_upload(){
-
-    var aid = <%=(@user ? @user.profile_album_id: 'nil')%>;
-
-    $('#simple-uploader-button').click(function() {
-        alert('The uploader requries the Flash.\n Please download and install from http://get.adobe.com/flashplayer.');
-    });
-
-    zz.simple_uploader.instance($('#simple-uploader-flash-wrapper'), aid, function(photos_uploaded) {
-        var on_finished = function() {
-            zz.routes.call_set_latest_photo_as_cover(aid, function(data){
-                load_profile_photo(data.t_url);
-                console.debug(data);
-            });
-        }
-
-        if (photos_uploaded > 0) {
-            console.debug("photosadded: " + photos_uploaded);
-            var dialog = show_processing_photos_dialog();
-            setTimeout(function() {
-                on_finished();
-                dialog.close();
-            }, 5000);
-        }
-        else {
-            on_finished();
-        }
-
-    },
-    $.cookie('user_credentials')
-    );
-
-
-}
-
 function show_processing_photos_dialog() {
     var template = '<span class="processing-photos-dialog-content"><img src="{{src}}">Processing photos...</span>'.replace('{{src}}', zz.routes.image_url('/images/loading.gif'));
 
@@ -268,13 +234,138 @@ function add_profile_validation(element) {
 }
 
 function load_profile_photo(url){
-
     $("#profile-photo").attr('src', url);
-
     zz.image_utils.pre_load_image(url, function(image) {
         var css = zz.image_utils.scale_center_and_crop(image, {width: 48, height: 48});
         $("#profile-photo").css(css);
     });
+}
+
+
+
+
+
+//*************************************************************************************************************************************/
+
+$('#simple-uploader-button').click(function() {
+    alert('The uploader requries the Flash.\nPlease download and install from http://get.adobe.com/flashplayer.');
+});
+
+var template =
+    $('<div id="simpleuploader-dialog">' +
+    '<div class="simpleuploader-container">' +
+    '<div class="simpleuploader">' +
+    '<div class="queue"></div>' +
+    '</div>' +
+    '</div>' +
+    '</div>');
+
+var queued_file_template =
+        $('<div class="queued-file">' +
+                '<div class="status"></div>' +
+                '<div class="name"></div>' +
+                '<div class="progress-container"><div class="progress-bar"></div></div>' +
+                '<div class="cancel-button"></div>' +
+                '</div>');
+
+
+function setup_upload(){
+    var aid = <%=(@user ? @user.profile_album_id: 'nil')%>;
+
+    call($('#simple-uploader-flash-wrapper'), aid, function(photos_uploaded) {
+                var on_finished = function() {
+                    zz.routes.call_set_latest_photo_as_cover(aid, function(data){
+                        load_profile_photo(data.t_url);
+                        console.debug(data);
+                        $(".progress-block").addClass("none");
+
+                        $(".swfupload").remove();
+                        setup_upload();
+                    });
+                };
+
+                if (photos_uploaded > 0) {
+//                    var dialog = show_processing_photos_dialog();
+
+                    setTimeout(function() {
+                        on_finished();
+//                        dialog.close();
+                    }, 3000);
+                }
+                else {
+                    on_finished();
+                }
+
+            },
+            $.cookie('user_credentials')
+    );
+} // setup_upload
+
+function call(wrapper_element, album_id, on_done, user_credentials) {
+    wrapper_element.html('<div id="replace-with-swfupload"></div>');
+
+    var upload_started = false;
+    var queue_element = template.find('.queue');
+
+    var uploader = new SWFUpload({
+        // Backend Settings
+        upload_url: '/service/albums/' + album_id + '/upload',
+        post_params: {'user_credentials': user_credentials},
+
+// File Upload Settings
+        file_size_limit: '102400',    // 100MB
+        file_types: '*.jpg;*.jpeg;*.png;*.gif;*.tiff;*.JPG;*.JPEG;*.PNG;*.GIF;*.TIFF',
+        file_types_description: 'Image Files',
+        file_upload_limit: '0',
+        file_queue_limit: '0',
+        button_action: SWFUpload.BUTTON_ACTION.SELECT_FILE,
+
+
+// Button Settings
+        button_width: 80,
+        button_height: 30,
+        button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
+        button_cursor: SWFUpload.CURSOR.HAND,
+        button_placeholder_id: "replace-with-swfupload",
+
+// Flash Settings
+        flash_url: '/static/swf/swfupload.swf',
+
+        file_queued_handler: function(file) {
+            start_file_upload_ui();
+            uploader.startUpload();
+        },
+
+        upload_success_handler: function(file, serverData) {
+            on_done(1);
+        }
+
+    }); // new SWFUpload
+}
+
+
+/***************************/
+
+// TODO: include linux here
+function getPhotoSource(){
+    if (navigator.appVersion.indexOf('Mac') != -1) {
+        return'simple.osx';
+    }
+
+    return 'simple.win';
+}
+
+function start_file_upload_ui(){
+    //self.queue_element = template.find('.queue');
+
+    // Show blocker
+    $(".progress-block").removeClass("none");
+
+    var progui = '<span class="processing-photos-dialog-content"><img src="{{src}}">Processing photos...</span>'.replace('{{src}}', zz.routes.image_url('/images/loading.gif'));
+
+    // Insert progress meter
+    $(".progress-block").html(progui);
+
 }
 
 </script>
