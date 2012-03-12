@@ -29,7 +29,7 @@ module ZZ
       end
 
       def self.single_photo
-        80
+        70
       end
 
       def self.iphone_single
@@ -50,6 +50,10 @@ module ZZ
 
       def self.like
         60
+      end
+
+      def self.default_priority
+        50
       end
 
       def self.mailer
@@ -115,14 +119,14 @@ module ZZ
       # map to a local queue - we only have a small set so
       # pick appropriate one based on priority
       def self.local_queue_name(type, priority)
-        priority ||= 50  # if priority not passed default to middle priority
+        priority ||= default_priority  # if priority not passed user default
 
         if priority >= 90
           priority = 100
         else
           priority = 50
         end
-        "#{type}_#{Server::Application.config.deploy_environment.this_host_name}_#{priority}".to_sym
+        "#{type}_local_#{Server::Application.config.deploy_environment.this_host_name}_#{priority}".to_sym
       end
     end
 

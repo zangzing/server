@@ -2,8 +2,7 @@ module ZZ
   module Async
 
     class GeneralImport < Base
-      @queue = :io_bound
-      
+
       # only add ourselves one time
       if @retry_criteria_checks.length == 0
         # plug ourselves into the retry framework
@@ -12,8 +11,12 @@ module ZZ
         end
       end
 
+      def self.queue_name(options)
+        queue = Priorities.queue_name('io', options[:priority])
+      end
+
       def self.enqueue( photo_id, source_url, options = {} )
-        super( photo_id, source_url, options )
+        enqueue_on_queue(queue_name(options), photo_id, source_url, options)
       end
       
       def self.perform( photo_id, source_url, options = {} )
@@ -27,6 +30,7 @@ module ZZ
         direct_image_url = source_url
         SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
           photo = Photo.find(photo_id)
+          photo.work_priority ||= options[:priority]
           if photo.assigned? || photo.error?
 
             # some connectors (eg dropbox) have expensive
@@ -77,7 +81,7 @@ module ZZ
           photo.update_attributes(:error_message => msg) unless photo.nil?
         else
           unless photo.nil?
-            photo.update_attributes(:state => 'error', :error_message => msg )
+            photo.update_attributes(:state => 'error_final', :error_message => msg )
             z = ZZ::ZZA.new
             z.track_event("photo.import.error", {:photo_id => photo_id, :message => msg, :source => photo.source, :source_url => source_url}, 1, photo.user_id)
           end
