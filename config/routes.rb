@@ -446,6 +446,7 @@ Server::Application.routes.draw do
     # internal, used by nginx, external upload is /zz_api/albums/:album_id/upload
     # needs to remain a put
     put    '/albums/:album_id/upload_fast'             => 'photos#simple_upload_fast',               :as => :zz_api_upload_photo_fast
+    match  '/photos/state'                             => 'photos#zz_api_state',                     :as => :zz_api_state_photos
 
     #users
     match  '/login_or_create'                          => 'users#zz_api_login_or_create',            :as => :zz_api_create_or_login
