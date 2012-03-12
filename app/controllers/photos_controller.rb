@@ -241,7 +241,7 @@ class PhotosController < ApplicationController
   #   photo, see hashed_photo
   # }
   def simple_upload_fast
-    if zz_api_call? == false && current_user.nil?
+    if current_user.nil?
       # because we are called via flash we don't get the user_credentials cookie set
       # and instead it gets passed as part of the posted data so we manually extract
       # it and then set it up as current_user
@@ -263,8 +263,9 @@ class PhotosController < ApplicationController
         Photo.hash_one_photo(photo) # return the photo just created
       end
     else
-      do_simple_upload(user, @album)
-      render :text=>'', :status=>200
+      photo = do_simple_upload(user, @album)
+      json_str = JSON.fast_generate(Photo.hash_one_photo(photo)) # return the photo just created
+      render :json => json_str
     end
   end
 
