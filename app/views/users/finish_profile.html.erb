@@ -101,6 +101,7 @@
 <%= include_javascripts :shared %>
 
 <script type="text/javascript">
+var zz = zz || {};
 zz.config = zz.config || {};
 zz.config.win_download_url       = '<%= ZangZingConfig.config[:agent_download_url_win] %>';
 zz.config.mac_download_url       = '<%= ZangZingConfig.config[:agent_download_url_mac] %>';
@@ -250,39 +251,30 @@ $('#simple-uploader-button').click(function() {
 
 
 function setup_upload(){
-    var aid = <%=(@user ? @user.profile_album_id: 'nil')%>;
+    var album_id = <%=(@user ? @user.profile_album_id: 'nil')%>;
+    var wrapper_element = $('#simple-uploader-flash-wrapper');
 
-    call($('#simple-uploader-flash-wrapper'), aid, function(photos_uploaded) {
-                var on_finished = function() {
-                    zz.routes.call_set_latest_photo_as_cover(aid, function(data){
-                        load_profile_photo(data.t_url);
-                        console.debug(data);
-                        hide_processing_ui();
+    var on_done = function(serverData) {
+        change_processing_text("Processing photo...");
 
-                        $(".swfupload").remove();
-                        setup_upload();
-                    });
-                };
+        var response = null;
+        try {
+            response = JSON.parse(serverData);
+            poll_photo(album_id, response.id);
+            console.debug(JSON.stringify(response));
+        } catch (e) {
+            console.debug('error in parsing');
+            // Couldn't parse server response. Default to waiting 5 seconds
+            setTimeout(function() {
+                photo_ready(album_id, reponse.id);
+            }, 5000);
+        }
+    };
 
-                if (photos_uploaded > 0) {
-                    change_processing_text("Processing photo...");
-                    setTimeout(function() {
-                        on_finished();
-                    }, 5000);
-                }
-                else {
-                    on_finished();
-                }
-
-            },
-            $.cookie('user_credentials')
-    );
-} // setup_upload
-
-function call(wrapper_element, album_id, on_done, user_credentials) {
-    wrapper_element.html('<div id="replace-with-swfupload"></div>');
-
+    var user_credentials = $.cookie('user_credentials');
     var upload_started = false;
+
+    wrapper_element.html('<div id="replace-with-swfupload"></div>');
 
     var uploader = new SWFUpload({
         // Backend Settings
@@ -314,12 +306,14 @@ function call(wrapper_element, album_id, on_done, user_credentials) {
         },
 
         upload_success_handler: function(file, serverData) {
-            on_done(1);
+            on_done(serverData);
         },
 
         upload_error_handler: function(file, errorCode, message) {
             console.debug('error: ' + errorCode + ' ' + message);
             console.debug(file);
+            uploader.cancelUpload(file.id, false);
+            show_upload_error();
         }
 
     }); // new SWFUpload
@@ -355,6 +349,109 @@ function hide_processing_ui(){
 function change_processing_text(text){
     $(".processing-container span").html(text);
 }
+
+function show_upload_error(error_string){
+    var message = "There was an error adding your photo. Please try again.";
+    hide_processing_ui();
+    $(".swfupload").remove();
+    setup_upload();
+    if(error_string){
+        message += "\n"+error_string;
+    }
+    alert(message);
+}
+
+function poll_photo(album_id, photo_id){
+    zz.finish_profile_photo_poll.call(
+        '/zz_api/photos/state',
+        'POST',
+        {photo_ids: [photo_id]},
+
+        //Continue
+        function(data, status, jqXHR) {
+            return data[photo_id].state != "ready";
+        },
+
+        //Success
+        function(data, status, jqXHR) {
+            photo_ready(album_id, photo_id);
+        },
+        //Failure
+        function(data, status, jqXHR) {
+            photo_ready(album_id, photo_id);
+        }
+    );
+}
+
+
+// Not using photo_id
+function photo_ready(album_id, photo_id){
+    zz.routes.call_set_latest_photo_as_cover(album_id, function(data){
+        load_profile_photo(data.t_url);
+        console.debug(data);
+        hide_processing_ui();
+
+        $(".swfupload").remove();
+        setup_upload();
+    });
+}
+
+
+
+
+
+
+
+
+zz.finish_profile_photo_poll = {
+    MAX_CALLS: 35,
+    DELAY: 1000,
+
+    call: function(url, method, data, continue_callback, success_callback, failure_callback) {
+        var self = this;
+        var makeCall, success;
+        var calls = 0;
+
+        success = function(data, status, jqXHR) {
+            if (continue_callback(data, status, jqXHR)) {
+                webdriver.enter_async();  //allows webdriver to wait for ajax polling to complete
+                setTimeout(function() {
+                    webdriver.leave_async();
+                    makeCall();
+                }, self.DELAY);
+            }
+            else {
+                success_callback(data, status, jqXHR);
+            }
+        };
+
+        makeCall = function() {
+            calls++;
+
+            if (calls > self.MAX_CALLS) {
+                failure_callback('maxtries');
+            }
+            else {
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: data,
+                    success: success,
+                    error: function(request, error, errorThrown) {
+                        zz.logger.debug(error);
+                        failure_callback(request, error, errorThrown);
+                    }
+                });
+            }
+        };
+
+        makeCall();
+    }
+};
+
+
+
+
 
 </script>
 
