@@ -66,7 +66,12 @@ class ApplicationController < ActionController::Base
 
 
   def send_zza_event_from_client (event)
+    zza_client_events << event
     add_javascript_action('send_zza_event_from_client', {:event => event})
+  end
+
+  def zza_client_events
+    @zza_client_events ||= []
   end
 
   # Determine if we want session support.  If we
@@ -130,7 +135,8 @@ class ApplicationController < ActionController::Base
   def album_not_found_redirect_to_owners_homepage(user_id)
     flash[:notice] = "Sorry, we could not find the album that you were looking for."
     add_javascript_action( 'show_message_dialog',  {:message => flash[:notice]})
-    redirect_to user_url(user_id), :status => 301
+    # don't think we want a 301 here - will prevent a future album from working:  redirect_to user_url(user_id), :status => 301
+    redirect_to user_url(user_id)
   end
 
   def user_not_found_redirect_to_homepage_or_potd
@@ -139,7 +145,8 @@ class ApplicationController < ActionController::Base
     if current_user
       redirect_to user_url(current_user)
     else
-      redirect_to potd_path, :status => 301
+      # don't think we want a 301 here - will prevent a future user from working:  redirect_to potd_path, :status => 301
+      redirect_to potd_path
     end
   end
 
@@ -309,12 +316,19 @@ class ApplicationController < ActionController::Base
   def zz_api_core(filter, skip_render, block)
     return unless require_zz_api # anything using these api wrappers enforces require_zz_api
     begin
+      jsonp_callback = params[:_jsonp_callback]
       result = block.call
       if skip_render == false
-        if result.nil?
-          head :status => 200
+        if jsonp_callback
+          # have to wrap to make browser happy
+          result_str = result.nil? ? '' : JSON.fast_generate(result)
+          render :text => "#{jsonp_callback}(#{result_str})", :content_type => 'application/x-javascript'
         else
-          render :json => JSON.fast_generate(result)
+          if result.nil?
+            head :status => 200
+          else
+            render :json => JSON.fast_generate(result)
+          end
         end
       end
     rescue Exception => ex

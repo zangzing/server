@@ -4,8 +4,13 @@ class PagesController < ApplicationController
 
   def home
      @title = "Home"
-     if current_user
-       redirect_to user_url( current_user.username )
+     if any_current_user
+       joining_url = determine_join_url(any_current_user)
+       if joining_url
+         redirect_to joining_url
+       else
+         redirect_to user_url( any_current_user.username )
+       end
      else
        redirect_to join_url
      end
