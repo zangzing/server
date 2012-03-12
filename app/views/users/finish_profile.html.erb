@@ -247,22 +247,6 @@ $('#simple-uploader-button').click(function() {
     alert('The uploader requries the Flash.\nPlease download and install from http://get.adobe.com/flashplayer.');
 });
 
-var template =
-    $('<div id="simpleuploader-dialog">' +
-    '<div class="simpleuploader-container">' +
-    '<div class="simpleuploader">' +
-    '<div class="queue"></div>' +
-    '</div>' +
-    '</div>' +
-    '</div>');
-
-var queued_file_template =
-        $('<div class="queued-file">' +
-                '<div class="status"></div>' +
-                '<div class="name"></div>' +
-                '<div class="progress-container"><div class="progress-bar"></div></div>' +
-                '<div class="cancel-button"></div>' +
-                '</div>');
 
 
 function setup_upload(){
@@ -299,14 +283,13 @@ function call(wrapper_element, album_id, on_done, user_credentials) {
     wrapper_element.html('<div id="replace-with-swfupload"></div>');
 
     var upload_started = false;
-    var queue_element = template.find('.queue');
 
     var uploader = new SWFUpload({
         // Backend Settings
-        upload_url: '/service/albums/' + album_id + '/upload',
+        upload_url: '/zz_api/albums/' + album_id + '/upload',
         post_params: {'user_credentials': user_credentials},
 
-// File Upload Settings
+        // File Upload Settings
         file_size_limit: '102400',    // 100MB
         file_types: '*.jpg;*.jpeg;*.png;*.gif;*.tiff;*.JPG;*.JPEG;*.PNG;*.GIF;*.TIFF',
         file_types_description: 'Image Files',
@@ -315,14 +298,14 @@ function call(wrapper_element, album_id, on_done, user_credentials) {
         button_action: SWFUpload.BUTTON_ACTION.SELECT_FILE,
 
 
-// Button Settings
+        // Button Settings
         button_width: 83,
         button_height: 30,
         button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
         button_cursor: SWFUpload.CURSOR.HAND,
         button_placeholder_id: "replace-with-swfupload",
 
-// Flash Settings
+        // Flash Settings
         flash_url: '/static/swf/swfupload.swf',
 
         file_queued_handler: function(file) {
@@ -332,21 +315,26 @@ function call(wrapper_element, album_id, on_done, user_credentials) {
 
         upload_success_handler: function(file, serverData) {
             on_done(1);
+        },
+
+        upload_error_handler: function(file, errorCode, message) {
+            console.debug('error: ' + errorCode + ' ' + message);
+            console.debug(file);
         }
 
     }); // new SWFUpload
 }
 
 
-/***************************/
 
-// TODO: include linux here
 function getPhotoSource(){
     if (navigator.appVersion.indexOf('Mac') != -1) {
         return'simple.osx';
+    } else if ( navigator.platform.indexOf('Linux') != -1) {
+        return 'simple.linux';
+    } else {
+        return 'simple.win';
     }
-
-    return 'simple.win';
 }
 
 
