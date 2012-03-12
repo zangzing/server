@@ -7,7 +7,6 @@
 
 <div class="fieldscontainer">
 <form class="finish-profile-form">
-<input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
 <div class="section">
   <div class="flag-left">
     <div class="flag">1</div>
@@ -17,13 +16,11 @@
       <div class="content">
         <div class="picture-container"><div class="mask"><img src="<%= @user.profile_photo_url %>" id="profile-photo"></div><img class="bottom-shadow" src="/images/photo/bottom-full.png"/></div>
 
-        <span class="simple-uploader-button-wrapper">
+        <div class="simple-uploader-button-wrapper">
             <a id="simple-uploader-button" class="black-button"><span>Upload</span></a>
             <div id="simple-uploader-flash-wrapper"></div>
-        </span>
-
+        </div>
         <div class="progress-block none"></div>
-
       </div>
   </div>
 </div>
@@ -54,7 +51,7 @@
         </div>
     </div>
   </div>
-
+  <input type="hidden" name="follow_user_id" id="follow_user_id" value="<%=(@follow_user_id ? @follow_user_id : '') %>"/>
   <div class="clear"></div>
 </form>
 </div><!--fieldscontainer-->
@@ -67,45 +64,26 @@
 </div>
 
 <% content_for :zz_js_document_ready do %>
-
     remove_toolbar_buttons();
 
     var validator = add_profile_validation( $('.finish-profile-form') );
 
     $('.content label').first().inFieldLabels();
 
-    $('#done').click(function(){
-        check_form($('.finish-profile-form'));
-    });
-
-    $('.finish-profile-form').bind('keypress', function(e){
-        if ( e.keyCode == 13 ) {
-            check_form($('.finish-profile-form'));
-        }
-    });
+    bind_done();
 
     load_profile_photo("<%= @user.profile_photo_url %>");
 
     setup_upload();
-
 <%end%>
 
 
-
-
-
-
-
 <% content_for :page_javascript do %>
-
 <%= include_javascripts :shared %>
 
 <script type="text/javascript">
 var zz = zz || {};
 zz.config = zz.config || {};
-zz.config.win_download_url       = '<%= ZangZingConfig.config[:agent_download_url_win] %>';
-zz.config.mac_download_url       = '<%= ZangZingConfig.config[:agent_download_url_mac] %>';
-zz.config.agent_port             = '<%= ZangZingConfig.config[:agent_port] %>';
 zz.config.rails_asset_id         = '<%= ENV["RAILS_ASSET_ID"] %>';
 zz.config.rails_asset_host       = '<%= ActionController::Base.asset_host %>';
 zz.config.facebook_app_id        = '<%=FACEBOOK_API_KEYS[:app_id]%>';
@@ -143,45 +121,37 @@ function check_form(form_element){
             Zjoin_bit_fields: bit_notation
         });
     }
-
 } // check_form
 
 function submit_data(form_element){
-    var finish_api_url = "/zz_api/login_create_finish"; // TODO: try to keep it self-contained
-    var next_url = "/";
-
-    var name, username, hash;
+    var finish_api_url = "/zz_api/login_create_finish";
+    var name, username, follow_user_id, hash;
 
     name = form_element.find('#user_name').val();
     username = form_element.find('#user_username').val();
-    hash = {name: name, username: username};
+    follow_user_id = form_element.find('#follow_user_id').val();
+    hash = {name: name, username: username, follow_user_id: follow_user_id};
 
     $.ajax({
         url: finish_api_url,
         type: 'POST',
         data: hash,
         success: function(data){
-            console.debug(JSON.stringify(data));
-            window.location = "/";
+            window.location = "/service/users/after_join";
         }, // success
         error:function(jqXHR, textStatus, errorThrown){
             var response = null;
 
             try {
                 response = JSON.parse(jqXHR.responseText);
-                console.debug('parsing worked');
-                console.debug(JSON.stringify(response));
-                alert(response.message); // TODO: change this to real message
+                alert(response.message);
             } catch (e) {
-                // TODO: generic error goes here
-                console.debug('error in parsing');
+                alert("There was an error submitting your info. Please try again.");
                 return false;
             }
 
         } // error
     });
-
-
 } // submit_data
 
 
@@ -189,14 +159,23 @@ function remove_toolbar_buttons(){
     $("#user-info").remove(); // css overriden by js
 }
 
-function show_processing_photos_dialog() {
-    var template = '<span class="processing-photos-dialog-content"><img src="{{src}}">Processing photos...</span>'.replace('{{src}}', zz.routes.image_url('/images/loading.gif'));
 
-    var dialog = zz.dialog.show_dialog(template, { width: 300, height: 100, modal: true, autoOpen: true, cancelButton: false });
-    return dialog;
+function bind_done(){
+    $('#done').click(function(){
+        check_form($('.finish-profile-form'));
+    });
 
+    $('.finish-profile-form').bind('keypress', function(e){
+        if ( e.keyCode == 13 ) {
+            check_form($('.finish-profile-form'));
+        }
+    });
 }
 
+function unbind_done(){
+    $('#done').unbind();
+    $('.finish-profile-form').unbind();
+}
 
 // takes a jquery element
 function add_profile_validation(element) {
@@ -238,21 +217,15 @@ function load_profile_photo(url){
     });
 }
 
-
-
-
-
-//*************************************************************************************************************************************/
-
 $('#simple-uploader-button').click(function() {
     alert('The uploader requries the Flash.\nPlease download and install from http://get.adobe.com/flashplayer.');
 });
 
-
-
 function setup_upload(){
     var album_id = <%=(@user ? @user.profile_album_id: 'nil')%>;
-    var wrapper_element = $('#simple-uploader-flash-wrapper');
+    var user_credentials = $.cookie('user_credentials');
+
+    $('#simple-uploader-flash-wrapper').html('<div id="replace-with-swfupload"></div>');
 
     var on_done = function(serverData) {
         change_processing_text("Processing photo...");
@@ -261,25 +234,18 @@ function setup_upload(){
         try {
             response = JSON.parse(serverData);
             poll_photo(album_id, response.id);
-            console.debug(JSON.stringify(response));
         } catch (e) {
-            console.debug('error in parsing');
             // Couldn't parse server response. Default to waiting 5 seconds
             setTimeout(function() {
-                photo_ready(album_id, reponse.id);
+                photo_ready(album_id, 0);
             }, 5000);
         }
     };
 
-    var user_credentials = $.cookie('user_credentials');
-    var upload_started = false;
-
-    wrapper_element.html('<div id="replace-with-swfupload"></div>');
-
     var uploader = new SWFUpload({
         // Backend Settings
         upload_url: '/zz_api/albums/' + album_id + '/upload',
-        post_params: {'user_credentials': user_credentials},
+        post_params: {'user_credentials': user_credentials, 'priority': 90},
 
         // File Upload Settings
         file_size_limit: '102400',    // 100MB
@@ -291,7 +257,7 @@ function setup_upload(){
 
 
         // Button Settings
-        button_width: 83,
+        button_width: 75,
         button_height: 30,
         button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
         button_cursor: SWFUpload.CURSOR.HAND,
@@ -301,19 +267,21 @@ function setup_upload(){
         flash_url: '/static/swf/swfupload.swf',
 
         file_queued_handler: function(file) {
+            unbind_done();
             show_processing_ui();
             uploader.startUpload();
         },
 
         upload_success_handler: function(file, serverData) {
             on_done(serverData);
+            bind_done();
+            ZZAt.track('join.finishprofile.profilephoto.uploaded');
         },
 
         upload_error_handler: function(file, errorCode, message) {
-            console.debug('error: ' + errorCode + ' ' + message);
-            console.debug(file);
             uploader.cancelUpload(file.id, false);
             show_upload_error();
+            ZZAt.track('join.finishprofile.profilephoto.error', {errorCode: errorCode, errorMessage: message});
         }
 
     }); // new SWFUpload
@@ -322,7 +290,7 @@ function setup_upload(){
 
 
 function getPhotoSource(){
-    if (navigator.appVersion.indexOf('Mac') != -1) {
+    if (navigator.platform.indexOf('Mac') != -1) {
         return'simple.osx';
     } else if ( navigator.platform.indexOf('Linux') != -1) {
         return 'simple.linux';
@@ -385,23 +353,15 @@ function poll_photo(album_id, photo_id){
 
 
 // Not using photo_id
+// If parsing failed photo_id is set to 0
 function photo_ready(album_id, photo_id){
     zz.routes.call_set_latest_photo_as_cover(album_id, function(data){
         load_profile_photo(data.t_url);
-        console.debug(data);
         hide_processing_ui();
-
         $(".swfupload").remove();
         setup_upload();
     });
 }
-
-
-
-
-
-
-
 
 zz.finish_profile_photo_poll = {
     MAX_CALLS: 35,
@@ -422,6 +382,7 @@ zz.finish_profile_photo_poll = {
             }
             else {
                 success_callback(data, status, jqXHR);
+                ZZAt.track('join.finishprofile.profilephoto.batchtime', {seconds: calls});
             }
         };
 
@@ -430,6 +391,7 @@ zz.finish_profile_photo_poll = {
 
             if (calls > self.MAX_CALLS) {
                 failure_callback('maxtries');
+                ZZAt.track('join.finishprofile.profilephoto.batchtimeout');
             }
             else {
                 $.ajax({
@@ -448,10 +410,6 @@ zz.finish_profile_photo_poll = {
         makeCall();
     }
 };
-
-
-
-
 
 </script>
 

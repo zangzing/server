@@ -49,6 +49,7 @@ Server::Application.routes.draw do
     put    '/users/:id'                 => 'users#update',            :as => :update_user
     delete '/users/:id'                 => 'users#destroy',           :as => :delete_user
     match  '/users/:id/update_password' => 'users#update_password',   :as => :update_user_password, :requirements => {:protocol => 'https'}
+    get    '/users/after_join'          => 'users#after_join',        :as => :after_join
 
 
 

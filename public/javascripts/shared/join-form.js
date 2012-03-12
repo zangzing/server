@@ -102,6 +102,10 @@ var zz = zz || {};
         password = form_element.find('#user_password').val();
         email_pw_hash = {email: email, password: password, create: true};
 
+        if(form_element.find('#follow_user_id').val()){
+            finish_profile_url += '?follow_user_id='+form_element.find('#follow_user_id').val();
+        }
+
         // Current page is https
         // Call API directly
         if (location.protocol === 'https:'){

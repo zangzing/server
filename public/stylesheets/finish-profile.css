@@ -116,7 +116,7 @@ html #users-finish_profile{
 
 #users-finish_profile .main .right  label {
     position: absolute;
-    top: 20px;
+    top: 22px;
     left: 6px;
     color: #999;
     font-size: 14px;
@@ -214,7 +214,7 @@ html #users-finish_profile{
 }
 
 #users-finish_profile #simple-uploader-button {
-    width: 75px;
+    width: 67px;
 }
 
 #users-finish_profile #simple-uploader-flash-wrapper{
@@ -246,7 +246,6 @@ html #users-finish_profile{
 
 #users-finish_profile div img#profile-photo {
     position:relative;
-
 }
 
 #users-finish_profile div img.bottom-shadow{
