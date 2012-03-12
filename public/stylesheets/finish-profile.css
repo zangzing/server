@@ -8,24 +8,47 @@ Copyright 2012, ZangZing LLC. All rights reserved.
 
 **/
 
-html #users-finish_profile{
-    overflow: auto;
-}
-
 .clear {clear:both;}
 .none {display:none;}
+
+#users-finish_profile #help-button,
+#users-finish_profile #header-right-gradient,
+#users-finish_profile #sign-in-button,
+#users-finish_profile #user-info
+{
+    display: none;
+    z-index: -999;
+}
+
+html #users-finish_profile{
+    overflow: hidden;
+}
 
 #users-finish_profile {
     text-align: left;
     color: #333;
 }
 
+#users-finish_profile #article {
+    bottom: 0;
+    overflow: auto;
+
+}
+
 #users-finish_profile .main {
     width: 860px;
-    margin: 160px auto;
+    height: 280px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -180px 0 0 -470px;
     padding: 40px;
-    border: 1px solid #999;
+    border: 1px solid #ccc;
     background-color: #fff;
+
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
 }
 
 #users-finish_profile .main h1 {
@@ -105,7 +128,7 @@ html #users-finish_profile{
     margin-top: 15px;
     padding: 6px 6px;
     width: 180px;
-    height: 14px;
+    height: 16px;
     font-size: 14px;
 
     box-shadow: #ddd 0px -1px 0px;
@@ -115,10 +138,9 @@ html #users-finish_profile{
 
 
 #users-finish_profile .main .right label.error {
-    top:41px;
-    left:50%;
-    width: 136px;
-    margin:0 0 0 -78px;
+    top:48px;
+    left:0;
+    width: 172px;
     padding:8px 10px;
     color: #333;
     font-size:14px;
@@ -142,13 +164,15 @@ html #users-finish_profile{
 }
 
 #users-finish_profile .main #done {
-    width: 155px;
+    width: 135px;
     height: 36px;
     float:right;
 
     padding: 6px 9px;
 
     font-size: 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
     color: #fff;
 
     text-shadow: 0 0 0 transparent, 0px 1px 1px #000;
@@ -208,8 +232,8 @@ html #users-finish_profile{
     box-shadow: 0px 0px 3px #aaa;
     -webkit-box-shadow: 0px 0px 3px #aaa;
     -moz-box-shadow: 0px 0px 3px #aaa;
-    height: 48px;
-    width: 48px;
+    height: 52px;
+    width: 52px;
     position: relative;
 }
 
@@ -229,7 +253,7 @@ html #users-finish_profile{
     height:5px;
     width: 52px;
     position:absolute;
-    bottom: -9px;
+    bottom: -5px;
     left:0px;
 }
 
@@ -243,15 +267,21 @@ html #users-finish_profile{
 #users-finish_profile .progress-block {
     z-index: 300;
     position: absolute;
-    top: -2px;
-    left: -2px;
+    top: -3px;
+    left: -3px;
     width: 200px;
     height: 70px;
     background-color: #fff;
 }
 
-
-#users-finish_profile #simpleuploader-dialog {
-    border: 1px solid red;
-    background-color: #e0ffff;
+#users-finish_profile .progress-block .processing-container span {
+    font-size: 16px;
+    line-height: 8px;
+    display: inline-block;
 }
+
+#users-finish_profile .progress-block .processing-container img {
+   vertical-align: middle;
+}
+
+

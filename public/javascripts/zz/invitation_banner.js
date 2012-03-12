@@ -29,8 +29,11 @@ var zz = zz || {};
                     '<div class="message ">' +
                         '<span class="bold">Want extra free space?</span> Invite friends and you each get 250MB of extra space free.' +
                     '</div>' +
-                    '<a class="gray-button no-thanks-button"><span>No Thanks</span></a>' +
-                    '<a class="green-button invite-button"><span>Invite Friends</span></a>' +
+                    '<div class="buttons">' +
+                        '<a class="green-button invite-button"><span>Invite Friends</span></a>' +
+            '<a class="no-thanks-button"><span>No Thanks</span></a>' +
+
+            '</div>' +
                '</div>';
 
         var element = $(html);

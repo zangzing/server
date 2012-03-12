@@ -1,18 +1,16 @@
 <% content_for :page_title do %>Finish Profile<% end %>
 
 <%= render :partial => 'layouts/top_nav'  %>
-
-
+<div id="article">
 <div class="main">
-
 <h1>Welcome to ZangZing. Let's create your profile.</h1>
 
 <div class="fieldscontainer">
 <form class="finish-profile-form">
 <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
 <div class="section">
+  <div class="flag">1</div>
   <div class="flag-left">
-    <div class="flag">1</div>
   </div>
   <div class="right">
       <div class="title">Add your profile photo</div>
@@ -66,6 +64,7 @@
 </div>
 
 </div><!--main-->
+</div>
 
 <% content_for :zz_js_document_ready do %>
 
@@ -186,10 +185,7 @@ function submit_data(form_element){
 
 
 function remove_toolbar_buttons(){
-    $('#help-button').remove();
-    $('#header-right-gradient').remove();
-    $('#sign-in-button').remove();
-    $("#user-info").remove();
+    $("#user-info").remove(); // css overriden by js
 }
 
 function show_processing_photos_dialog() {
@@ -277,7 +273,7 @@ function setup_upload(){
                     zz.routes.call_set_latest_photo_as_cover(aid, function(data){
                         load_profile_photo(data.t_url);
                         console.debug(data);
-                        $(".progress-block").addClass("none");
+                        hide_processing_ui();
 
                         $(".swfupload").remove();
                         setup_upload();
@@ -285,12 +281,10 @@ function setup_upload(){
                 };
 
                 if (photos_uploaded > 0) {
-//                    var dialog = show_processing_photos_dialog();
-
+                    change_processing_text("Processing photo...");
                     setTimeout(function() {
                         on_finished();
-//                        dialog.close();
-                    }, 3000);
+                    }, 5000);
                 }
                 else {
                     on_finished();
@@ -322,7 +316,7 @@ function call(wrapper_element, album_id, on_done, user_credentials) {
 
 
 // Button Settings
-        button_width: 80,
+        button_width: 83,
         button_height: 30,
         button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
         button_cursor: SWFUpload.CURSOR.HAND,
@@ -332,7 +326,7 @@ function call(wrapper_element, album_id, on_done, user_credentials) {
         flash_url: '/static/swf/swfupload.swf',
 
         file_queued_handler: function(file) {
-            start_file_upload_ui();
+            show_processing_ui();
             uploader.startUpload();
         },
 
@@ -355,17 +349,23 @@ function getPhotoSource(){
     return 'simple.win';
 }
 
-function start_file_upload_ui(){
-    //self.queue_element = template.find('.queue');
 
-    // Show blocker
+function show_processing_ui(){
+    var progui = '<div class="processing-container"><img src="{{src}}"><span>Adding photo...</span></div>'.replace('{{src}}', zz.routes.image_url('/images/loading.gif'));
+
+    // Show block
     $(".progress-block").removeClass("none");
-
-    var progui = '<span class="processing-photos-dialog-content"><img src="{{src}}">Processing photos...</span>'.replace('{{src}}', zz.routes.image_url('/images/loading.gif'));
 
     // Insert progress meter
     $(".progress-block").html(progui);
+}
 
+function hide_processing_ui(){
+    $(".progress-block").addClass("none");
+}
+
+function change_processing_text(text){
+    $(".processing-container span").html(text);
 }
 
 </script>

@@ -1,30 +1,9 @@
-.invitation-banner{
-    position:absolute;
-    left:0px;
-    top:0px;
-    right:0px;
-    bottom:0px;
-}
-
-.invitation-banner .invite-button{
-    position: absolute;
-    width:100px;
-    right:10px;
-}
-
-
-
 .invitation-banner .message {
-    position: absolute;
-    top: 8px;
-    left: 27px;
-    right:0px;
+    margin: 8px auto;
     font-size: 16px;
     font-weight: 200;
-    line-height: 23px;
     color: #0A0A0A;
     text-align: center;
-
 }
 
 .invitation-banner .message .bold{
@@ -32,17 +11,15 @@
 }
 
 
-.invitation-banner .invite-button{
-    position: absolute;
+.invitation-banner .buttons{
+    width:230px;
+    margin: 0 auto;
+}
+.invitation-banner .gray-button, .invitation-banner .green-button {
     width: 100px;
-    right: 310px;
-    bottom: 9px;
+    display: inline-block;
 }
 
-.invitation-banner .no-thanks-button{
-    position: absolute;
-    width: 100px;
-    left: 310px;
-    bottom: 9px;
+.invitation-banner .green-button {
+    margin-right: 10px;
 }
-
