@@ -52,6 +52,55 @@ class PhotosController < ApplicationController
     render :json => json_str
   end
 
+  # Gets the state of multiple photos
+  #
+  # This is called as (POST):
+  #
+  # /zz_api/photos/state
+  #
+  # Does not require a logged in user.
+  #
+  # Pass a hash with a key of photo_ids pointing
+  # to an array of one or more photos to check.
+  #
+  # Input:
+  #
+  # {
+  #   :photo_ids => [
+  #     photo_id_1,
+  #     ...
+  #   ]
+  # }
+  #
+  # Returns a hash of photo state, only returns info
+  # about photos that were found.  Result keys are
+  # photo_ids.  When a photo is ready to be viewed it
+  # will be in the ready state.  If the state is error the photo
+  # can technically still make it to the ready state due to retries.
+  # TODO: we need to add a final_error state that indicates the photo
+  # will not become ready.
+  #
+  # {
+  #   :photo_id_1 => {
+  #     :state => completion status of photo (assigned, uploading, loaded,
+  #                 ready, error)
+  #   }
+  #   ...
+  # }
+  def zz_api_state
+    return unless require_nothing
+
+    zz_api do
+      photo_ids = params[:photo_ids]
+      photos = Photo.select('id, state').where(:id => photo_ids).all
+      result = {}
+      photos.each do |photo|
+        result[photo.id] = { :state => photo.state }
+      end
+      result
+    end
+  end
+
   # The batch photo creation process for the zz_api.
   # This is very similar to how the agent operates where
   # we first create placeholder photos and then

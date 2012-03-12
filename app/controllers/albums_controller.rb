@@ -500,6 +500,14 @@ class AlbumsController < ApplicationController
     zz_api do
       emails, email_errors, addresses = ZZ::EmailValidator.validate_email_list(params[:emails])
 
+      # log to zza for analytics
+      if params[:permission] == AlbumACL::CONTRIBUTOR_ROLE.name
+        EmailAnalyticsManager.log_share_message_sent(current_user, :contributor_added, emails, email_errors)
+      else
+        EmailAnalyticsManager.log_share_message_sent(current_user, :album_shared, emails, email_errors)
+      end
+
+
       # grab any group ids and get the allowed ones
       group_ids = params[:group_ids]
       if group_ids

@@ -43,7 +43,7 @@ class InvitationsController < ApplicationController
   def send_to_email
     return unless require_user
 
-    emails, errors = ZZ::EmailValidator.validate_email_list(params[:emails])
+    emails, errors, addresses = ZZ::EmailValidator.validate_email_list(params[:emails])
 
     already_joined_emails = []
 
@@ -55,6 +55,8 @@ class InvitationsController < ApplicationController
         Invitation.send_invitation(current_user, email)
       end
     end
+
+    EmailAnalyticsManager.log_share_message_sent(current_user, :invite_to_join, addresses, errors)
 
     render :json=>JSON.fast_generate({:already_joined => already_joined_emails})
   end

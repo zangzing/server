@@ -22,6 +22,7 @@ class ApplicationController < ActionController::Base
   include BuyHelper
   include Spree::CurrentOrder
   include TrackedLinkHelper
+  include ZzvIdHelper
 
   helper :all # include all helpers, all the time
 
@@ -29,7 +30,7 @@ class ApplicationController < ActionController::Base
                 :back_to_home_page_url, :back_to_home_page_caption, :current_order,
                 :check_link_tracking_token
 
-  before_filter :check_referrer_and_reset_last_home_page, :check_link_tracking_token
+  before_filter :check_referrer_and_reset_last_home_page, :check_link_tracking_token, :check_zzv_id_cookie
 
   after_filter :flash_to_headers
 
@@ -203,11 +204,12 @@ class ApplicationController < ActionController::Base
     context = data[:user_context]
     if context.nil?
       # add in user context
-      user_id, user_type, ip = zza_user_context
+      user_id, user_type, zzv_id, ip = zza_user_context
       context = {
           :user_id => user_id,
           :user_type => user_type,
-          :user_ip => ip
+          :user_ip => ip,
+          :zzv_id => zzv_id
       }
       data[:user_context] = context
     end

@@ -145,6 +145,27 @@ class SendgridController < ApplicationController
     event    =  params['event']
     email    =  params['email']
     category =  params['category']
+
+
+    # these are passed via the send grid headers
+    # and allow us to track the actual mixpanel user who opened
+    # and clicked on email links
+    zzv_id   =  params['zzv_id']
+    user_id  =  params['user_id']
+
+    zza = ZZ::ZZA.new
+    if user_id
+      zza.user_type = 1
+      zza.user = user_id
+      zza.zzv_id = zzv_id
+    else
+      zza.user_type = 2
+      zza.user = zzv_id
+      zza.zzv_id = zzv_id
+    end
+
+
+
     case event
       when 'processed'
         zza.track_event("#{category}.#{event}", {:email => email })
