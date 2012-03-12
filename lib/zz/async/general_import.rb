@@ -12,7 +12,7 @@ module ZZ
       end
 
       def self.queue_name(options)
-        queue = Priorities.queue_name('io', options[:priority])
+        queue = Priorities.io_queue_name(options[:priority])
       end
 
       def self.enqueue( photo_id, source_url, options = {} )

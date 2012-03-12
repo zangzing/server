@@ -2,7 +2,7 @@ module ZZ
   module Async
 
     class StreamingAlbumUpdate < Base
-      @queue = Priorities.queue_name('io', Priorities.streaming_album_update)
+      @queue = Priorities.io_queue_name(Priorities.streaming_album_update)
 
         # only add ourselves one time
         if @retry_criteria_checks.length == 0

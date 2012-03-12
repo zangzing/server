@@ -5,7 +5,7 @@ module ZZ
     # test class that gets copy of original Base state
     # and adds extra it's own exceptions
     class TestBaseOriginal < Base
-        @queue = Priorities.queue_name('io', Priorities.default_priority)
+        @queue = Priorities.io_queue_name(Priorities.default_priority)
 
         # first get rid of the named exception name
         self.dont_retry_filter.delete(RuntimeError.name)
@@ -15,7 +15,7 @@ module ZZ
 
     # test class to verify class inheritable accessors working as expected
     class TestBase < Base
-        @queue = Priorities.queue_name('io', Priorities.default_priority)
+        @queue = Priorities.io_queue_name(Priorities.default_priority)
 
         self.dont_retry_filter["RuntimeError"] = /Test/i
     end

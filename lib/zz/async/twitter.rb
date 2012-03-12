@@ -2,7 +2,7 @@ module ZZ
   module Async
 
     class Twitter < Base
-        @queue = Priorities.queue_name('io', Priorities.twitter)
+        @queue = Priorities.io_queue_name(Priorities.twitter)
 
         # only add ourselves one time
         if @retry_criteria_checks.length == 0

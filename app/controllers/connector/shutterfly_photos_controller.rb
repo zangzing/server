@@ -35,6 +35,7 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
             :album_id => params[:album_id],
             :user_id=>identity.user.id,
             :upload_batch_id => current_batch.id,
+            :work_priority => ZZ::Async::Priorities.import_single_photo,
             :capture_date => photo_info[:capturetime].nil? ? nil : Time.at(photo_info[:capturetime].to_i/1000),
             :source_guid => make_source_guid(photo_info),
             :source_thumb_url => get_photo_url(params[:photo_id],  :thumb),
@@ -43,7 +44,7 @@ class Connector::ShutterflyPhotosController < Connector::ShutterflyController
 
     )
 
-    ZZ::Async::GeneralImport.enqueue( photo.id, photo_url )
+    queue_single_photo( photo, photo_url )
     json = Photo.to_json_lite(photo)
     return json
   end

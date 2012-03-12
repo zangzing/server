@@ -2,7 +2,6 @@ module ZZ
   module Async
 
     class S3Upload < Base
-        # this queue is meant to be processed only by local resque worker hence the appended host name of ourselves
 
         # only add ourselves one time
         if @retry_criteria_checks.length == 0
@@ -27,8 +26,9 @@ module ZZ
 #          @backoff_strategy ||= [12.seconds, 1.minute, 5.minutes, 30.minutes, 2.hours, 8.hours, 24.hours]
 #        end
 
+        # this queue is meant to be processed only by local resque worker hence the appended host name of ourselves
         def self.queue_name(options)
-          queue = Priorities.local_queue_name('io', options[:priority])
+          queue = Priorities.io_local_queue_name(options[:priority])
         end
 
         def self.enqueue( photo_id, options = {} )

@@ -33,6 +33,7 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
               :album_id => params[:album_id],
               :user_id => identity.user.id,
               :upload_batch_id => current_batch.id,
+              :work_priority => params[:priority] || ZZ::Async::Priorities.import_single_album,
               :capture_date => (DateTime.parse(p[:lastupdated]) rescue nil),
               :source_guid => make_source_guid(p),
               :source_thumb_url => '/service/proxy?url=' + p[:smallurl],
@@ -58,7 +59,7 @@ class Connector::SmugmugFoldersController < Connector::SmugmugController
     album_list.each do |sm_album|
       zz_album = create_album(identity, sm_album[:title], params[:privacy])
       zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
-      fire_async('import_album', params.merge(:album_id => zz_album.id, :sm_album_id =>"#{sm_album[:id]}_#{sm_album[:key]}"))
+      fire_async_import_all('import_album', params.merge(:album_id => zz_album.id, :sm_album_id =>"#{sm_album[:id]}_#{sm_album[:key]}"))
     end
 
     identity.last_import_all = Time.now

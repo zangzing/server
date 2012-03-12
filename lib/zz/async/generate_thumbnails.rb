@@ -11,7 +11,7 @@ module ZZ
         end
 
         def self.queue_name(options)
-          queue = Priorities.queue_name('cpu', options[:priority])
+          queue = Priorities.cpu_queue_name(options[:priority])
         end
 
         # async edit operation

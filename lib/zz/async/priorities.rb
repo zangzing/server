@@ -65,6 +65,10 @@ module ZZ
         50
       end
 
+      def self.import_single_photo
+        50
+      end
+
       def self.deliver_share
         50
       end
@@ -85,7 +89,7 @@ module ZZ
         50
       end
 
-      def self.single_album_import
+      def self.import_single_album
         40
       end
 
@@ -112,21 +116,32 @@ module ZZ
       # given a priority level and a queue type return the name of the
       # queue to use
       def self.queue_name(type, priority)
-        priority ||= 50  # if priority not passed default to middle priority
+        priority ||= default_priority  # if priority not passed use default
         "#{type}_#{priority}".to_sym
       end
 
+      def self.io_queue_name(priority)
+        queue_name('io', priority)
+      end
+
+      def self.cpu_queue_name(priority)
+        queue_name('cpu', priority)
+      end
+
+
       # map to a local queue - we only have a small set so
       # pick appropriate one based on priority
-      def self.local_queue_name(type, priority)
-        priority ||= default_priority  # if priority not passed user default
+      def self.io_local_queue_name(priority)
+        priority ||= default_priority  # if priority not passed use default
 
         if priority >= 90
           priority = 100
-        else
+        elsif priority >=50
           priority = 50
+        else
+          priority = 30
         end
-        "#{type}_local_#{Server::Application.config.deploy_environment.this_host_name}_#{priority}".to_sym
+        "#io_local_#{Server::Application.config.deploy_environment.this_host_name}_#{priority}".to_sym
       end
     end
 

@@ -2,7 +2,7 @@ module ZZ
   module Async
 
     class DelayedUtils < Base
-      @queue = Priorities.queue_name('io', Priorities.cleanup)
+      @queue = Priorities.io_queue_name(Priorities.cleanup)
 
       # only add ourselves one time
       if @retry_criteria_checks.length == 0

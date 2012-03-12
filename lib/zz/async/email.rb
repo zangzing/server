@@ -12,15 +12,15 @@ module ZZ
         end
 
         def self.enqueue_high( method, *args)
-          enqueue_on_queue( Priorities.queue_name('io', Priorities.mailer_high), method, *args )
+          enqueue_on_queue( Priorities.io_queue_name(Priorities.mailer_high), method, *args )
         end
 
         def self.enqueue( method, *args)
-          enqueue_on_queue( Priorities.queue_name('io', Priorities.mailer), method, *args)
+          enqueue_on_queue( Priorities.io_queue_name(Priorities.mailer), method, *args)
         end
 
         def self.enqueue_low( method, *args)
-          enqueue_on_queue( Priorities.queue_name('io', Priorities.mailer_low), method, *args )
+          enqueue_on_queue( Priorities.io_queue_name(Priorities.mailer_low), method, *args )
         end
 
         def self.perform( method, *args )

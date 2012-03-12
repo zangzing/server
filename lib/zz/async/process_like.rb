@@ -2,7 +2,7 @@ module ZZ
   module Async
 
     class ProcessLike < Base
-        @queue = Priorities.queue_name('io', Priorities.like)
+        @queue = Priorities.io_queue_name(Priorities.like)
 
         # only add ourselves one time
         if @retry_criteria_checks.length == 0

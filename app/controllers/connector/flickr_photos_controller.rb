@@ -43,6 +43,7 @@ class Connector::FlickrPhotosController < Connector::FlickrController
               :user_id => identity.user.id,
               :album_id => params[:album_id],
               :upload_batch_id => current_batch.id,
+              :work_priority => ZZ::Async::Priorities.import_single_photo,
               :capture_date => (DateTime.parse(info.dates.taken) rescue nil),
               :caption => info.title,
               :source_guid => make_source_guid(sizes),
@@ -52,7 +53,7 @@ class Connector::FlickrPhotosController < Connector::FlickrController
 
     )
 
-    ZZ::Async::GeneralImport.enqueue( photo.id, photo_url )
+    queue_single_photo( photo, photo_url )
     Photo.to_json_lite(photo)
   end
 

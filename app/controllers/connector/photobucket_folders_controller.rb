@@ -56,6 +56,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
               :caption => photo_data[:title] || photo_data[:name],
               :album_id => params[:album_id],
               :user_id => identity.user.id,
+              :work_priority => params[:priority] || ZZ::Async::Priorities.import_single_album,
               :upload_batch_id => current_batch.id,
               :capture_date => (Time.at(photo_data[:uploaddate].to_i) rescue nil),
               :source_guid => make_source_guid(photo_data[:url]),
@@ -84,6 +85,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
             :album_id => params[:album_id],
             :user_id => identity.user.id,
             :upload_batch_id => current_batch.id,
+            :work_priority => ZZ::Async::Priorities.import_single_photo,
             :capture_date => (Time.at(photo_data[:uploaddate].to_i) rescue nil),
             :source_guid => make_source_guid(photo_data[:url]),
             :source_thumb_url => photo_data[:thumb],
@@ -91,7 +93,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
             :source => 'photobucket'
 
     )
-    ZZ::Async::GeneralImport.enqueue( photo.id, photo_data[:url] )
+    queue_single_photo( photo, photo_data[:url] )
     
     Photo.to_json_lite(photo)
   end
@@ -121,7 +123,7 @@ class Connector::PhotobucketFoldersController < Connector::PhotobucketController
     album_list.each do |pb_album_path|
       zz_album = create_album(identity, CGI::unescape(pb_album_path), params[:privacy])
       zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
-      fire_async('import_dir_photos', params.merge(:album_id => zz_album.id, :album_path => pb_album_path))
+      fire_async_import_all('import_dir_photos', params.merge(:album_id => zz_album.id, :album_path => pb_album_path))
     end
 
     identity.last_import_all = Time.now
