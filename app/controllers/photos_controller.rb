@@ -72,7 +72,7 @@ class PhotosController < ApplicationController
   #   ]
   # }
   #
-  # Returns a hash of photo status, only returns info
+  # Returns a hash of photo state, only returns info
   # about photos that were found.  Result keys are
   # photo_ids.  When a photo is ready to be viewed it
   # will be in the ready state.  If the state is error the photo
@@ -82,7 +82,7 @@ class PhotosController < ApplicationController
   #
   # {
   #   :photo_id_1 => {
-  #     :status => completion status of photo (assigned, uploading, loaded,
+  #     :state => completion status of photo (assigned, uploading, loaded,
   #                 ready, error)
   #   }
   #   ...
