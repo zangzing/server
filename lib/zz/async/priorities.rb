@@ -117,7 +117,7 @@ module ZZ
       # queue to use
       def self.queue_name(type, priority)
         priority ||= default_priority  # if priority not passed use default
-        "#{type}_#{priority}".to_sym
+        "#{type}_#{priority_format(priority)}".to_sym
       end
 
       def self.io_queue_name(priority)
@@ -128,6 +128,11 @@ module ZZ
         queue_name('cpu', priority)
       end
 
+      # return priority as formatted string
+      # with leading 0's
+      def self.priority_format(priority)
+        "%03d" % priority
+      end
 
       # map to a local queue - we only have a small set so
       # pick appropriate one based on priority
@@ -141,7 +146,7 @@ module ZZ
         else
           priority = 30
         end
-        "#io_local_#{Server::Application.config.deploy_environment.this_host_name}_#{priority}".to_sym
+        "#io_local_#{Server::Application.config.deploy_environment.this_host_name}_#{priority_format(priority)}".to_sym
       end
     end
 

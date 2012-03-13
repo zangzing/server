@@ -58,10 +58,6 @@ module ZZ
             photo.upload_source(options)
           rescue Exception => ex
             Rails.logger.debug("Upload to S3 Failed: " + ex)
-            if self.should_retry(ex) == false
-               # not going to be retrying, so safe to remove temp file
-               photo.remove_source
-            end
             raise ex
           end
         end
@@ -72,9 +68,10 @@ module ZZ
           photo = Photo.find(photo_id)
           msg = 'Upload S3: ' + e.message
           if will_retry
-            photo.update_attributes(:state => 'error', :error_message => msg)
+            photo.update_attributes(:error_message => msg)
           else
-            photo.update_attributes(:state => 'error_final', :error_message => msg )
+            photo.remove_source
+            photo.update_attributes(:state => 'error', :error_message => msg )
           end
         end
 
