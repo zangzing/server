@@ -11,7 +11,7 @@
 .joinpage .message, .joinpage .afterform {
 	margin: 0.8em auto;
 	font-size: 24px;
-	text-shadow: #FFF 1px 1px; /* TODO: */
+	text-shadow: #FFF 1px 1px;
 	color: #444;
 }
 
@@ -94,7 +94,7 @@
 
 .joinpage #submit {
 	width: 350px;
-	height: 36px;
+	height: 40px;
 
 	font-size: 16px;
     font-family: Arial, Helvetica, sans-serif;
@@ -102,7 +102,7 @@
 	color: #fff;
 	
 	text-shadow: 0 0 0 transparent, 0px 1px 1px #000;
-	background:#318e2c url('/images/btn-green-38.png') repeat-x 0 0px; /* TODO: */
+	background:#318e2c url('/images/btn-green-38.png') repeat-x 0 0;
 	border: 1px solid #318e2c;
 	border-radius:5px;
 	-moz-border-radius:5px;

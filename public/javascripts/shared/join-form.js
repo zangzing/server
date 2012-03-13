@@ -114,20 +114,15 @@ var zz = zz || {};
                 type: 'POST',
                 data: email_pw_hash,
                 success: function(data){
-                    console.debug(JSON.stringify(data));
                     window.location = finish_profile_url;
                 }, // success
                 error:function(jqXHR, textStatus, errorThrown){
                     var response = null;
-
                     try {
                         response = JSON.parse(jqXHR.responseText);
-                        console.debug('parsing worked');
-                        console.debug(JSON.stringify(response));
-                        alert(response.message); // TODO: change this to real message
+                        alert(response.message);
                     } catch (e) {
-                        // TODO: generic error goes here
-                        console.debug('error in parsing');
+                        alert("There was an error submitting your info. Please try again.");
                         return false;
                     }
 
@@ -146,13 +141,10 @@ var zz = zz || {};
                 pageCache: false,
                 data: email_pw_hash,
                 success: function(response) {
-                    console.debug(response);
-
                     if(response._jsonp_error){
                         var err = response._jsonp_error;
                         alert(err.message);
                     } else if (response.user_credentials != null) {
-                        console.debug("success");
                         window.r = response;
                         window.location = finish_profile_url;
                     } else { // Some unexpected error. Fallback to join page
@@ -160,7 +152,6 @@ var zz = zz || {};
                     }
                 },
                 error: function() { // Should never get here unless we timeout.
-                    console.debug(response);
                     alert("Couldn't log you in.\nPlease check your email/password and try again.");
                 }
             });

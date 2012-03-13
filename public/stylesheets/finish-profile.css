@@ -122,8 +122,6 @@ html #users-finish_profile{
     font-size: 14px;
 }
 
-/* TODO: alignment in Safari */
-
 #users-finish_profile .main .right  input {
     margin-top: 15px;
     padding: 6px 6px;
@@ -176,7 +174,7 @@ html #users-finish_profile{
     color: #fff;
 
     text-shadow: 0 0 0 transparent, 0px 1px 1px #000;
-    background:#318e2c url('/images/btn-green-38.png') repeat-x 0 0px; /* TODO: */
+    background:#318e2c url('/images/btn-green-38.png') repeat-x 0 0;
     border: 1px solid #318e2c;
     border-radius:5px;
     -moz-border-radius:5px;
