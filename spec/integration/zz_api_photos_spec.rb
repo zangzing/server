@@ -52,6 +52,22 @@ describe "ZZ API Photos" do
       end
     end
 
+    it "should verify state of photos" do
+      album = Factory.create(:album, :user => @user)
+      photos = []
+      photos << Factory.create(:photo, :user => @user, :album => album, :caption => "C")
+      photos << Factory.create(:photo, :user => @user, :album => album, :caption => "B")
+      photo_ids = photos.map {|photo| photo.id}
+
+      ret_photos = zz_api_post zz_api_state_photos_path(album.id), { :photo_ids => photo_ids }, 200
+      photo_ids.each do |photo_id|
+        key = photo_id.to_s.to_sym  # they come back as symbols
+        state = ret_photos[key]
+        state.should_not == nil
+        state[:state].should == 'assigned'
+      end
+    end
+
     describe "sort photos" do
 
       def verify_order(photos, ordered_ids)

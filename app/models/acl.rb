@@ -78,8 +78,8 @@ class ACL < ActiveRecord::Base
   # returns an array of
   # [[user_id, role], ...]
   def self.users_with_role(resource_id, type, first = 0, last = 10000)
-    sql = "SELECT gm.user_id, MIN(a.role) FROM acls a, group_members gm WHERE gm.group_id = a.group_id AND
-                (a.role >= #{q(first)} AND a.role <= #{q(last)}) AND a.type = #{q(type)} AND a.resource_id = #{q(resource_id)} group by gm.user_id"
+    sql = "SELECT gm.user_id, MIN(a.role) as the_role FROM acls a, group_members gm WHERE gm.group_id = a.group_id AND
+                a.type = #{q(type)} AND a.resource_id = #{q(resource_id)} group by gm.user_id having (the_role >= #{q(first)} AND the_role <= #{q(last)})"
     RawDB.as_rows(RawDB.execute(connection, sql))
   end
 
@@ -98,8 +98,8 @@ class ACL < ActiveRecord::Base
   # returned as
   # [[resource_id, role]...]
   def self.acls_for_user(user_id, type, first = 0, last = 10000)
-    sql = "SELECT a.resource_id, MIN(a.role) FROM acls a, group_members gm WHERE gm.group_id = a.group_id AND
-                (a.role >= #{q(first)} AND a.role <= #{q(last)}) AND a.type = #{q(type)} AND gm.user_id = #{q(user_id)} group by a.resource_id"
+    sql = "SELECT a.resource_id, MIN(a.role) as the_role FROM acls a, group_members gm WHERE gm.group_id = a.group_id AND
+                a.type = #{q(type)} AND gm.user_id = #{q(user_id)} group by a.resource_id having (the_role >= #{q(first)} AND the_role <= #{q(last)})"
     RawDB.as_rows(RawDB.execute(connection, sql))
   end
 
@@ -109,9 +109,10 @@ class ACL < ActiveRecord::Base
   # [[user_id, type, resource_id, role]...]
   def self.all_acls_for_users_in_resources(user_ids, resource_ids, first = 0, last = 10000)
     return [] if user_ids.empty? || resource_ids.empty?
-    sql = "SELECT gm.user_id, a.type, a.resource_id, MIN(a.role) FROM acls a, group_members gm WHERE gm.group_id = a.group_id AND
-                (a.role >= #{q(first)} AND a.role <= #{q(last)}) AND gm.user_id IN #{RawDB.build_in_clause(connection, user_ids)} AND
-                a.resource_id IN #{RawDB.build_in_clause(connection, resource_ids)} group by gm.user_id, a.type, a.resource_id"
+    sql = "SELECT gm.user_id, a.type, a.resource_id, MIN(a.role) as the_role FROM acls a, group_members gm WHERE gm.group_id = a.group_id AND
+                gm.user_id IN #{RawDB.build_in_clause(connection, user_ids)} AND
+                a.resource_id IN #{RawDB.build_in_clause(connection, resource_ids)} group by gm.user_id, a.type, a.resource_id
+                having (the_role >= #{q(first)} AND the_role <= #{q(last)})"
     RawDB.as_rows(RawDB.execute(connection, sql))
   end
 

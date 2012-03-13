@@ -2,7 +2,7 @@ require "zz_env_helpers"
 
 
 class PhotosController < ApplicationController
-  ssl_allowed :agent_create, :agent_index
+  ssl_allowed :agent_create, :agent_index, :simple_upload_fast, :agent_create, :upload_fast
   skip_before_filter :verify_authenticity_token,  :only =>   [ :agent_index, :agent_create, :upload_fast, :simple_upload_fast]
 
   # Used by the agent to create photos duh?
@@ -50,6 +50,55 @@ class PhotosController < ApplicationController
 
     json_str = Photo.to_json_lite(photos)
     render :json => json_str
+  end
+
+  # Gets the state of multiple photos
+  #
+  # This is called as (POST):
+  #
+  # /zz_api/photos/state
+  #
+  # Does not require a logged in user.
+  #
+  # Pass a hash with a key of photo_ids pointing
+  # to an array of one or more photos to check.
+  #
+  # Input:
+  #
+  # {
+  #   :photo_ids => [
+  #     photo_id_1,
+  #     ...
+  #   ]
+  # }
+  #
+  # Returns a hash of photo state, only returns info
+  # about photos that were found.  Result keys are
+  # photo_ids.  When a photo is ready to be viewed it
+  # will be in the ready state.  If the state is error the photo
+  # can technically still make it to the ready state due to retries.
+  # TODO: we need to add a final_error state that indicates the photo
+  # will not become ready.
+  #
+  # {
+  #   :photo_id_1 => {
+  #     :state => completion status of photo (assigned, uploading, loaded,
+  #                 ready, error)
+  #   }
+  #   ...
+  # }
+  def zz_api_state
+    return unless require_nothing
+
+    zz_api do
+      photo_ids = params[:photo_ids]
+      photos = Photo.select('id, state').where(:id => photo_ids).all
+      result = {}
+      photos.each do |photo|
+        result[photo.id] = { :state => photo.state }
+      end
+      result
+    end
   end
 
   # The batch photo creation process for the zz_api.
@@ -187,23 +236,26 @@ class PhotosController < ApplicationController
   # When called via the api form we return the photo.  Will be nil
   # if no error with a status of 200, if we encounter an error, standard error response.
   #
+  # for zz_api flavor we return the photo
   # {
   #   photo, see hashed_photo
   # }
   def simple_upload_fast
-    if zz_api_call? == false && current_user_or_nil.nil?
+    if any_current_user.nil?
       # because we are called via flash we don't get the user_credentials cookie set
       # and instead it gets passed as part of the posted data so we manually extract
       # it and then set it up as current_user
       persistence_token = params[:user_credentials].split('::')[0]
       user = User.find_all_by_persistence_token(persistence_token)
       user = user[0] if user
-      self.current_user = user
+      self.current_user = user  # set the current user manually since not in cookie
     else
-      user = current_user
+      user = any_current_user
     end
 
-    return unless require_user && require_album(true) && require_album_contributor_role
+    # Let in logged in automatic users as well as normal users.  This is so
+    # we can create profile photos before converting to a full user
+    return unless require_any_user && require_album(true) && require_album_contributor_role(true)
 
     if zz_api_call?
       zz_api do
@@ -211,8 +263,9 @@ class PhotosController < ApplicationController
         Photo.hash_one_photo(photo) # return the photo just created
       end
     else
-      do_simple_upload(user, @album)
-      render :text=>'', :status=>200
+      photo = do_simple_upload(user, @album)
+      json_str = JSON.fast_generate(Photo.hash_one_photo(photo)) # return the photo just created
+      render :json => json_str
     end
   end
 
