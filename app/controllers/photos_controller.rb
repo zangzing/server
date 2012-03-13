@@ -255,7 +255,7 @@ class PhotosController < ApplicationController
 
     # Let in logged in automatic users as well as normal users.  This is so
     # we can create profile photos before converting to a full user
-    return unless require_any_user && require_album(true) && require_any_album_contributor_role
+    return unless require_any_user && require_album(true) && require_album_contributor_role(true)
 
     if zz_api_call?
       zz_api do

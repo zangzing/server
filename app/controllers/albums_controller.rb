@@ -211,7 +211,7 @@ class AlbumsController < ApplicationController
   # See zz_api_album_info for return values
   #
   def zz_api_update
-    return unless require_user && require_album && require_album_admin_role
+    return unless require_any_user && require_album && require_any_album_admin_role
     zz_api do
       begin
         fields = filter_params(params, [:name, :privacy, :cover_photo_id, :who_can_upload, :who_can_download,

@@ -54,30 +54,33 @@ module ZZ
       # Authlogic
       # returns nil or the current user
       # if we have a current user but that user
-      # is an automatic user, we act as if we have
-      # no current user, use any_current_user
-      # if you want the user even if automatic
-      def current_user
-        return @current_user if defined?(@current_user)
-        @current_user = any_current_user
-        @current_user = nil if @current_user && @current_user.automatic?
-        @current_user
+      # is an automatic user we will return
+      # nil by default.  If you have the
+      # allow_automatic flag set to true
+      # we will return the user even if automatic
+      def current_user(allow_automatic = false)
+        return filtered_user(@current_user, allow_automatic) if defined?(@current_user)
+        @current_user = current_user_session && current_user_session.user
+        filtered_user(@current_user, allow_automatic)
+      end
+
+      def filtered_user(user, allow_automatic)
+        return nil if user.nil?
+        if user.automatic?
+          return allow_automatic ? user : nil
+        else
+          return user
+        end
       end
 
       # returns the current user if we have one without
       # caring if that user is an automatic user
       def any_current_user
-        return @any_current_user if defined?(@any_current_user)
-        if defined?(@current_user)   # also if we have current user (oauth sets current internally but not any_current)
-          @any_current_user = @current_user
-          return @any_current_user
-        end
-        @any_current_user = current_user_session && current_user_session.user
+        current_user(true)
       end
 
       def current_user=(user)
         @current_user = user
-        @any_current_user = user
       end
 
       # True if a user is signed in. Left in place for backwards compatibility
@@ -379,9 +382,15 @@ module ZZ
         return true
       end
 
+      # Wrapper that allows automatic users also
+      def require_any_album_admin_role
+        require_album_admin_role(true)
+      end
+
       # Assumes @album is the album in question and current_user is the user we are evaluating
-      def require_album_admin_role
-        unless  @album.admin?( current_user.id )
+      def require_album_admin_role(allow_automatic = false)
+        user = current_user(allow_automatic)
+        unless  @album.admin?( user.id )
           msg = "Only Album admins can perform this operation"
           if zz_api_call?
             render_json_error(nil, msg, 401)
@@ -399,15 +408,21 @@ module ZZ
         return true
       end
 
+      # Wrapper that allows automatic users also
+      def require_any_album_viewer_role
+        require_album_viewer_role(true)
+      end
+
       #
       # To be run as a before_filter
       # Assumes @album is the album in question and current_user is the user we are evaluating
       # User has viewer role if ( Album private and logged in and has viewer role ) OR
       # ( Album not private )
-      def require_album_viewer_role
+      def require_album_viewer_role(allow_automatic = false)
         if @album.private?
+          user = current_user(allow_automatic)
           msg = "You have asked to see an Invite Only album. Join or sign in so we know who you are."
-          unless current_user
+          unless user
             if zz_api_call?
               render_json_error(nil, msg, 401)
             elsif request.xhr?
@@ -420,7 +435,7 @@ module ZZ
             end
             return false
           end
-          unless @album.can_view_or_not_private?( current_user.id ) || current_user.moderator?
+          unless @album.can_view_or_not_private?( user.id ) || user.moderator?
             if zz_api_call?
               render_json_error(nil, msg, 401)
             elsif request.xhr?
@@ -445,8 +460,8 @@ module ZZ
       #
       # To be run as a before_filter
       # Assumes @album is the album in question and current_user is the user we are evaluating
-      def require_album_contributor_role(any = false)
-        user = any ? any_current_user : current_user
+      def require_album_contributor_role(allow_automatic = false)
+        user = current_user(allow_automatic)
         msg = "Only album contributors can perform this operation"
         if user
           if @album.everyone_can_contribute?
