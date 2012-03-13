@@ -141,7 +141,6 @@ function submit_data(form_element){
         }, // success
         error:function(jqXHR, textStatus, errorThrown){
             var response = null;
-
             try {
                 response = JSON.parse(jqXHR.responseText);
                 alert(response.message);
@@ -233,6 +232,7 @@ function setup_upload(){
         var response = null;
         try {
             response = JSON.parse(serverData);
+            console.debug(JSON.stringify(response));
             poll_photo(album_id, response.id);
         } catch (e) {
             // Couldn't parse server response. Default to waiting 5 seconds
@@ -287,19 +287,6 @@ function setup_upload(){
     }); // new SWFUpload
 }
 
-
-
-function getPhotoSource(){
-    if (navigator.platform.indexOf('Mac') != -1) {
-        return'simple.osx';
-    } else if ( navigator.platform.indexOf('Linux') != -1) {
-        return 'simple.linux';
-    } else {
-        return 'simple.win';
-    }
-}
-
-
 function show_processing_ui(){
     var progui = '<div class="processing-container"><img src="{{src}}"><span>Adding photo...</span></div>'.replace('{{src}}', zz.routes.image_url('/images/loading.gif'));
 
@@ -352,16 +339,68 @@ function poll_photo(album_id, photo_id){
 }
 
 
-// Not using photo_id
-// If parsing failed photo_id is set to 0
+
 function photo_ready(album_id, photo_id){
-    zz.routes.call_set_latest_photo_as_cover(album_id, function(data){
-        load_profile_photo(data.t_url);
-        hide_processing_ui();
-        $(".swfupload").remove();
-        setup_upload();
+    // Couldn't parse response from server
+    if(photo_id==null || photo_id==0){
+        // TODO:
+    }
+    console.debug('photo ready called');
+
+    $.ajax({ type: 'POST',
+        url: '/zz_api/albums/' + album_id + '/update',
+        data: { cover_photo_id: photo_id },
+        success: function(data, status, jqXHR) {
+            console.debug('set album success');
+            photo_load_and_set();
+        },
+        error:function(jqXHR, textStatus, errorThrown){
+            var response = null;
+            try {
+                response = JSON.parse(jqXHR.responseText);
+                alert(response.message);
+            } catch (e) {
+                alert("There was an error adding your photo. Please try again.");
+                return false;
+            }
+        } // error
     });
+
+
 }
+
+function photo_load_and_set(){
+
+    $.ajax({ type: 'GET',
+        url: '/zz_api/users/current_user_info',
+        data: {},
+        async: false,
+        success: function(data, status, jqXHR) {
+            console.debug(data);
+            var photo_url = data.profile_photo_url;
+            console.debug(photo_url);
+            load_profile_photo(photo_url);
+            hide_processing_ui();
+            $(".swfupload").remove();
+            setup_upload();
+        },
+        error:function(jqXHR, textStatus, errorThrown){
+            var response = null;
+            try {
+                response = JSON.parse(jqXHR.responseText);
+                alert(response.message);
+            } catch (e) {
+                alert("There was an error adding your photo. Please try again.");
+                return false;
+            }
+        } // error
+    });
+
+
+}
+
+
+
 
 zz.finish_profile_photo_poll = {
     MAX_CALLS: 35,

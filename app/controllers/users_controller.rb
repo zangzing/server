@@ -255,8 +255,8 @@ class UsersController < ApplicationController
       user = any_current_user
       user_info = user.basic_user_info_hash
       user_info[:email] = user.email
-      user_info[:has_facebook_token] = current_user.identity_for_facebook.has_credentials?
-      user_info[:has_twitter_token] = current_user.identity_for_twitter.has_credentials?
+      user_info[:has_facebook_token] = user.identity_for_facebook.has_credentials?
+      user_info[:has_twitter_token] = user.identity_for_twitter.has_credentials?
       user_info
     end
   end

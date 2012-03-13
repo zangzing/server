@@ -324,25 +324,7 @@ var zz = zz || {};
 
         call_rotate_photo_right: function(photo_id, success, failure) {
             call_rotate_photo(photo_id, 'right', success, failure);
-        },
-
-        call_set_latest_photo_as_cover: function(album_id, success, error){
-            $.ajax({ type: 'POST',
-                url: zz.routes.path_prefix + '/albums/' + album_id + '/set_latest_cover',
-                data: {album_id: album_id},
-                error: function(data) {
-                    if (!_.isUndefined(error)) {
-                        error(data);
-                    }
-                },
-                success: function(data) {
-                    if (!_.isUndefined(success)) {
-                        success(data);
-                    }
-                }
-            });
         }
-
     };
 
 
