@@ -5,13 +5,12 @@ zz.simple_uploader = {
     //creates simple uploader button by injecting invisible flash
     //button movie into the 'wrapper_element'. 'on_done' callback
     //accepts number of photos uploaded
-    instance: function(wrapper_element, album_id, on_done, user_credentials) {
+    instance: function(wrapper_element, album_id, on_done) {
 
         wrapper_element.html('<div id="replace-with-swfupload"></div>').zz_simpleuploader({
             button_placeholder_id: 'replace-with-swfupload',
             album_id: album_id,
-            on_done: on_done,
-            user_credentials: user_credentials
+            on_done: on_done
         });
     }
 };
@@ -23,8 +22,7 @@ zz.simple_uploader = {
             album_id: null,
             on_done: function(uploads_completed) {
             },
-            button_placeholder_id: null,
-            user_credentials: null
+            button_placeholder_id: null
         },
 
         _create: function() {
@@ -108,8 +106,7 @@ zz.simple_uploader = {
             self.uploader = new SWFUpload({
                 // Backend Settings
                 upload_url: '/service/albums/' + self.options.album_id + '/upload',
-                //post_params: {'source' : photo_source},
-                post_params: {'source' : photo_source, 'user_credentials': self.options.user_credentials},
+                post_params: {'source' : photo_source},
 
                 // File Upload Settings
                 file_size_limit: '102400',    // 100MB
@@ -130,7 +127,6 @@ zz.simple_uploader = {
                     if (!upload_started) {
                         open_progress_dialog();
                         self.uploader.startUpload();
-                        console.debug(self.uploader);
                         upload_started = true;
                     }
 
@@ -151,7 +147,7 @@ zz.simple_uploader = {
                 },
 
                 file_queue_error_handler: function(file, errorCode, message) {
-                    console.debug("error: " + errorCode + " : " + message);
+
                 },
 
                 file_dialog_complete_handler: function(numFilesSelected, numFilesQueued) {
