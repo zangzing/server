@@ -232,7 +232,7 @@ function setup_upload(){
         var response = null;
         try {
             response = JSON.parse(serverData);
-            console.debug(JSON.stringify(response));
+            //console.debug(JSON.stringify(response));
             poll_photo(album_id, response.id);
         } catch (e) {
             // Couldn't parse server response. Default to waiting 5 seconds
@@ -345,13 +345,13 @@ function photo_ready(album_id, photo_id){
     if(photo_id==null || photo_id==0){
         // TODO:
     }
-    console.debug('photo ready called');
+    //console.debug('photo ready called');
 
     $.ajax({ type: 'POST',
         url: '/zz_api/albums/' + album_id + '/update',
         data: { cover_photo_id: photo_id },
         success: function(data, status, jqXHR) {
-            console.debug('set album success');
+        //    console.debug('set album success');
             photo_load_and_set();
         },
         error:function(jqXHR, textStatus, errorThrown){
@@ -376,9 +376,9 @@ function photo_load_and_set(){
         data: {},
         async: false,
         success: function(data, status, jqXHR) {
-            console.debug(data);
+            //console.debug(data);
             var photo_url = data.profile_photo_url;
-            console.debug(photo_url);
+            //console.debug(photo_url);
             load_profile_photo(photo_url);
             hide_processing_ui();
             $(".swfupload").remove();
