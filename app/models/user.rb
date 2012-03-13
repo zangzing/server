@@ -11,7 +11,8 @@ class User < ActiveRecord::Base
   attr_accessor    :old_password, :reset_password, :change_matters, :needs_after_full_user_convert
   attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :password_confirmation,
                    :old_password, :automatic, :profile_photo_id, :subscriptions_attributes, :completed_step,
-                   :ship_address_id, :bill_address_id, :creditcard_id, :auto_by_contact, :created_by_user_id
+                   :ship_address_id, :bill_address_id, :creditcard_id, :auto_by_contact, :created_by_user_id,
+                   :zzv_id
 
   has_many :albums      # we have a manual dependency to delete albums on destroy since nested rails callbacks don't seem to be triggered
 

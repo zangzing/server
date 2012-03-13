@@ -154,7 +154,7 @@ module ZZ
         else
           priority = 20
         end
-        "#io_local_#{Server::Application.config.deploy_environment.this_host_name}_#{priority_format(priority)}".to_sym
+        "io_local_#{Server::Application.config.deploy_environment.this_host_name}_#{priority_format(priority)}".to_sym
       end
     end
 
