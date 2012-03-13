@@ -20,7 +20,7 @@ class PhotosController < ApplicationController
       file_size_map     = params[:size]
       capture_date_map  = params[:capture_date]
       source_map        = params[:source]
-      priority_map      = params[:priority] || {}    # optional initial rotation leave null to use rotation in file
+      priority_map      = params[:priority] || {}    # priorities to process photos at
       rotate_to_map     = params[:rotate_to] || {}   # optional initial rotation leave null to use rotation in file
 
       # transform the params into the api form
