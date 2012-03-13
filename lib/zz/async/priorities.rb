@@ -40,6 +40,10 @@ module ZZ
         70
       end
 
+      def self.import_single_photo
+        60
+      end
+
       def self.facebook
         60
       end
@@ -62,10 +66,6 @@ module ZZ
 
       # batch of web ui uploaded photos
       def self.web_batch
-        50
-      end
-
-      def self.import_single_photo
         50
       end
 
@@ -141,10 +141,18 @@ module ZZ
 
         if priority >= 90
           priority = 100
-        elsif priority >=50
+        elsif priority >= 70
+          priority = 70
+        elsif priority >= 60
+          priority = 60
+        elsif priority >= 50
           priority = 50
-        else
+        elsif priority >= 40
+          priority = 40
+        elsif priority >= 30
           priority = 30
+        else
+          priority = 20
         end
         "#io_local_#{Server::Application.config.deploy_environment.this_host_name}_#{priority_format(priority)}".to_sym
       end

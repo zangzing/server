@@ -657,7 +657,7 @@ start_time = Time.now
       rotate_to         = create_photo[:rotate_to]    # optional initial rotation leave null to use rotation in file
       crop_to           = create_photo[:crop_to]      # optional initial cropping
       crop_json = crop_to ? JSON.fast_generate(crop_to) : nil
-      if photos_count == 1
+      if photo_count == 1
         priority = create_photo[:priority] || (zz_api_iphone? ? ZZ::Async::Priorities.iphone_single : ZZ::Async::Priorities.single_photo)
       else
         priority = create_photo[:priority] || (zz_api_iphone? ? ZZ::Async::Priorities.iphone_batch : ZZ::Async::Priorities.web_batch)
