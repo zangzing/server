@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta http-equiv="Content-Language" content="en"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="copyright" content="Copyright <%= Time.now.year %>, ZangZing, LLC. All Rights Reserved." />
+    <meta name="DC.title" content="ZangZing" />
+    <meta name="title" content="ZangZing" />
+    <meta name="description" content="Group Photo Sharing" />
+    <%= yield :meta_tags %>
+
+    <link rel="shortcut icon" href="/favicon.ico"/>
+    <link rel="canonical" href="<%= yield :canonical_url %>" />
+    <title><%= yield :page_title %> | Photo Sharing - ZangZing</title>
+
+    <% unless compatible_browser? %>
+    <script type="text/javascript">
+        document.location.href = "/upgrade.html?upgrade_url=<%=upgrade_site_for_browser%>";
+    </script>
+    <% end %>
+
+    <%= include_javascripts :css %>
+    <%= include_stylesheets :common %>
+
+<% if Rails.env.development? && browser.ie? %>
+    <script type="text/javascript" src="https://getfirebug.com/firebug-lite.js"></script>
+<% end %>
+
+
+<%  # Add in template based style tags by defining this in the template -%>
+    <%= yield :page_stylesheet %>
+
+<%   # Add in template based scripts that need to be in the head by defining this in the template -%>
+    <%= yield :page_head %>
+
+    <%= render :partial => 'layouts/zza'  %>
+  </head>
+
+<%
+    # setup system message banner
+    show_system_message_class = ''
+    system_message = ''
+    if (SystemSetting[:system_message_enabled] && !cookies['hide_system_message_banner'])
+      show_system_message_class = 'show-system-message-banner'
+      system_message = SystemSetting[:system_message_text]
+    end
+
+    # setup impersonation banner and color
+    if signed_in? && session[:impersonation_mode] == true
+        show_system_message_class = 'show-system-message-banner'
+        system_message = "WARNING: Impersonating #{ current_user.name} (#{current_user.username}). Please logout."
+        impersonation_body_class = "impersonation"
+    else
+        impersonation_body_class = ""
+    end
+%>
+
+
+
+    <body id="<%= controller.controller_name + '-' + controller.action_name %>" class="<%= controller.controller_name %> <%= show_system_message_class %> <%= impersonation_body_class %> ">
+
+    <div id='system-message-banner'>
+        <span id="banner-text"><%=system_message%></span>
+        <div id="close-button"></div>
+    </div>
+
+    <div id='page-wrapper'>
+    <%= yield :layout %>
+    </div>
+
+    <%= include_javascripts :jquery %>
+    <%= include_javascripts :lib %>
+    <%= include_javascripts :zz %>
+    <%= include_javascripts :zz_oauthmanager %>
+
+    <script type="text/javascript">
+    $(document).ready(function(){
+        <%= perform_javascript_actions %>
+        <%= yield :zz_js_document_ready%>
+    });
+    </script>
+
+    <%   # Pull in generated javascript for the page -%>
+    <%= yield :page_javascript %>
+
+  </body>
+</html>

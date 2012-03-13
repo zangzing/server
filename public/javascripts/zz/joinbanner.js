@@ -41,17 +41,15 @@ var zz = zz || {};
     	element.find('form input').focus(function (object) { $(object.target).css("border", "1px solid orange"); });
     	element.find('form input').focusout(function (object) { $(object.target).css("border", "1px solid #666"); });
     	
-    	element.find('.join-form').first().attr("action", 'https://'+document.domain+zz.routes.users.create_user_url());
-	
     	validator = zz.joinform.add_validation( element.find('.join-form') );
     	
     	element.find('.join-form .submit-button').click(function(){
-    		submit_form(validator);
+            zz.joinform.submit_form($('#header-join-banner .join-form'), validator, "join.toolbarbanner");
         });
 
         element.find('.join-form').bind('keypress', function(e){
             if ( e.keyCode == 13 ) {
-            	submit_form(validator);
+                zz.joinform.submit_form($('#header-join-banner .join-form'), validator, "join.toolbarbanner");
             }
         });
 
@@ -65,11 +63,9 @@ var zz = zz || {};
 		    html = '<div class="picture"><div class="container"><div class="mask"><img src="'+ join_picture() +'" class="profile-photo"/></div><img class="bottom-shadow" src="/images/photo/bottom-full.png"/></div></div>' +
 		    		'<div class="header">'+join_message()+'</div>' +    
 		            '<div class="feature">' +
-		                '<form method="post" class="join-form" enctype="multipart/form-data" action="foo">' +
+		                '<form class="join-form" enctype="multipart/form-data">' +
 		                '<input type="hidden" name="follow_user_id" id="follow_user_id" value="'+ zz.page.displayed_user_id +'" />' + 
 		                '<ul>' +
-		                '<li><label for="user_name">First &amp; Last Name</label><input type="text" name="user[name]" id="user_name" value="" /></li>' +
-		                '<li><label for="user_username">Username</label><input type="text" name="user[username]" id="user_username" value="" /></li>' +
 		                '<li><label for="user_email">Email address</label><input type="text" name="user[email]" id="user_email" value="" /></li>' +
 		                '<li><label for="user_password">Password</label><input type="password" name="user[password]" id="user_password" value="" maxlength="40" /></li>' +
 		                '<li><a class="submit-button newgreen-button" rel="nofollow"><span>Join</span></a></li>' +
@@ -80,10 +76,6 @@ var zz = zz || {};
     	
     }
     
-
-    function empty_message_html(){
-    	return '<label for="user_name" generated="true" class="error">Please enter your info and click join.</label>';
-    }
 
 	function join_message(){
 		var message;
@@ -119,59 +111,6 @@ var zz = zz || {};
 
     
 
-    function submit_form(validator){
-    	// todo: should use 'element' variable rather than global selectors here...
 
-
-        var num_fields_nonempty = 0;
-		num_fields_nonempty =
-			($('#header-join-banner #user_name').val().length != 0) +
-			($('#header-join-banner #user_username').val().length != 0) +
-			($('#header-join-banner #user_email').val().length != 0) +
-			($('#header-join-banner #user_password').val().length != 0);
-		
-    	if(num_fields_nonempty == 0){
-    		validator.resetForm();
-    		$(".join-form ul li").first().append(empty_message_html());
-    		$('#header-join-banner #user_name').addClass("error");
-    		
-    		ZZAt.track("join.toolbarbanner.click");
-    		ZZAt.track("join.toolbarbanner.invalid", {
-				Zjoin_num_fields_nonempty: 0,
-				Zjoin_num_fields_valid: 0,
-				Zjoin_bit_fields: 0
-			});
-    	} else if($('#header-join-banner .join-form').valid()){
-        	$('#header-join-banner .join-form').submit();
-    		ZZAt.track("join.toolbarbanner.click");
-    		ZZAt.track("join.toolbarbanner.click.valid");
-    	} else {
-    		var num_fields_valid = 0;
-    		var bit_notation = 0;
-
-    		bit_notation = 
-    			1 * $('#header-join-banner #user_name').valid() +
-    			2 * ($('#header-join-banner #user_name').val().length != 0) + 
-    			4 * $('#header-join-banner #user_username').valid() +
-    			8 * ($('#header-join-banner #user_username').val().length != 0) + 		
-    			16 * $('#header-join-banner #user_email').valid() +
-    			32 * ($('#header-join-banner #user_email').val().length != 0) + 		
-    			64 * $('#header-join-banner #user_password').valid() +
-    			128 * ($('#header-join-banner #user_password').val().length != 0);			
-
-    		num_fields_valid = 
-    			$('#header-join-banner #user_name').valid() + 
-    			$('#header-join-banner #user_username').valid() + 
-    			$('#header-join-banner #user_email').valid() + 
-    			$('#header-join-banner #user_password').valid();
-    		
-    			ZZAt.track("join.toolbarbanner.click");
-    			ZZAt.track("join.toolbarbanner.invalid", {
-    				Zjoin_num_fields_nonempty: num_fields_nonempty,
-    				Zjoin_num_fields_valid: num_fields_valid,
-    				Zjoin_bit_fields: bit_notation
-    			});
-    	}
-    }
     
 }());

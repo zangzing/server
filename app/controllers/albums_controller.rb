@@ -3,6 +3,7 @@
 #
 
 class AlbumsController < ApplicationController
+  ssl_allowed :set_latest_cover
   # NOTE: this controller has been converted to use the new return unless filter style
   # of calling explicitly in each controller method.
   #
@@ -211,7 +212,7 @@ class AlbumsController < ApplicationController
   # See zz_api_album_info for return values
   #
   def zz_api_update
-    return unless require_user && require_album && require_album_admin_role
+    return unless require_any_user && require_album && require_any_album_admin_role
     zz_api do
       begin
         fields = filter_params(params, [:name, :privacy, :cover_photo_id, :who_can_upload, :who_can_download,
@@ -1096,6 +1097,13 @@ class AlbumsController < ApplicationController
     redirect_to album_pretty_url( @album ) and return
   end
 
+  # set latest photo as cover
+  def set_latest_cover
+    return unless require_any_user && require_album #&& require_album_admin_role #TODO: need to fix this, user is blank here
+
+    @album.cover = @album.photos.last
+    render :json => {:id => @album.cover.id, :t_url => @album.cover.thumb_url }, :status => 200, :layout => false and return
+  end
 
   private
 
@@ -1225,4 +1233,5 @@ class AlbumsController < ApplicationController
 
     members
   end
+
 end

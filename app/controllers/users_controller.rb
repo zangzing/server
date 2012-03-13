@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  ssl_required :join, :join_final, :create, :edit_password, :update_password,
+  ssl_required :join, :finish_profile, :create, :edit_password, :update_password,
                :zz_api_login_or_create, :zz_api_login_create_finish
   ssl_allowed :validate_email, :validate_username
 
@@ -19,7 +19,7 @@ class UsersController < ApplicationController
 
     # first see if an automatic user that has completed step 1
     if any_current_user && any_current_user.completed_step == 1
-      redirect_to join_final_url
+      redirect_to finish_profile_url
       return
     end
 
@@ -40,14 +40,6 @@ class UsersController < ApplicationController
       session.delete(:email)
     else
       @new_user = User.new
-    end
-  end
-
-  def join_final
-    if any_current_user && any_current_user.completed_step == 1
-      render :text => "Final join step goes here..."
-    else
-      redirect_to join_url
     end
   end
 
@@ -78,6 +70,40 @@ class UsersController < ApplicationController
     end
 
     render :action => :join, :layout => false
+  end
+
+  def finish_profile
+    # URL Cleaning cycle
+    if params[:follow_user_id]
+      session[:follow_user_id] = params[:follow_user_id]
+      redirect_to finish_profile_url and return
+    end
+
+    if any_current_user && any_current_user.completed_step == 1
+      @user = any_current_user
+      if session[:follow_user_id]
+        @follow_user_id = session[:follow_user_id]
+      end
+      render :layout => 'plain'
+    else
+      redirect_to join_url
+    end
+  end
+
+  # Arrive here after all join steps completed
+  # Use as the gate for where to go next
+  def after_join
+    if session[:follow_user_id]
+      session.delete(:follow_user_id)
+    end
+
+    if current_user
+      add_javascript_action('show_welcome_dialog') unless( session[:return_to] )
+      redirect_back_or_default user_pretty_url( current_user )
+      return
+    end
+
+    redirect_to join_url
   end
 
   def show
@@ -229,8 +255,10 @@ class UsersController < ApplicationController
       user = any_current_user
       user_info = user.basic_user_info_hash
       user_info[:email] = user.email
-      user_info[:has_facebook_token] = current_user.identity_for_facebook.has_credentials?
-      user_info[:has_twitter_token] = current_user.identity_for_twitter.has_credentials?
+      user_info[:profile_photo_url] = user.profile_photo_url(false)  # do not want default url if nil, want nil in that case
+      user_info[:profile_album_id] = user.profile_album_id
+      user_info[:has_facebook_token] = user.identity_for_facebook.has_credentials?
+      user_info[:has_twitter_token] = user.identity_for_twitter.has_credentials?
       user_info
     end
   end
@@ -511,6 +539,9 @@ class UsersController < ApplicationController
         if user.automatic? && create_user == false
           raise ZZAPIError.new("You cannot log in with an account that is still joining", 401)
         end
+        prevent_session_fixation
+        user.reset_perishable_token! #reset the perishable token
+        set_zzv_id_cookie(user.zzv_id)
         # ok, we are logged in
       elsif create_user == false
         # raise an error if we couldn't log in and not allowed to create
@@ -686,7 +717,11 @@ class UsersController < ApplicationController
   #
   def zz_api_logout
     zz_api do
-      current_user_session.destroy if any_current_user
+      if any_current_user
+        current_user_session.destroy
+        reset_session
+        delete_zzv_id_cookie
+      end
       nil
     end
   end
