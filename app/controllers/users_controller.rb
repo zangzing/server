@@ -537,6 +537,9 @@ class UsersController < ApplicationController
         if user.automatic? && create_user == false
           raise ZZAPIError.new("You cannot log in with an account that is still joining", 401)
         end
+        prevent_session_fixation
+        user.reset_perishable_token! #reset the perishable token
+        set_zzv_id_cookie(user.zzv_id)
         # ok, we are logged in
       elsif create_user == false
         # raise an error if we couldn't log in and not allowed to create
@@ -712,7 +715,11 @@ class UsersController < ApplicationController
   #
   def zz_api_logout
     zz_api do
-      current_user_session.destroy if any_current_user
+      if any_current_user
+        current_user_session.destroy
+        reset_session
+        delete_zzv_id_cookie
+      end
       nil
     end
   end
