@@ -255,6 +255,8 @@ class UsersController < ApplicationController
       user = any_current_user
       user_info = user.basic_user_info_hash
       user_info[:email] = user.email
+      user_info[:profile_photo_url] = user.profile_photo_url(false)  # do not want default url if nil, want nil in that case
+      user_info[:profile_album_id] = user.profile_album_id
       user_info[:has_facebook_token] = user.identity_for_facebook.has_credentials?
       user_info[:has_twitter_token] = user.identity_for_twitter.has_credentials?
       user_info
