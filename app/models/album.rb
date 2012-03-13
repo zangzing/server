@@ -306,43 +306,6 @@ class Album < ActiveRecord::Base
     self.save
   end
 
-  # get an instance of the attached image helper class
-  def attached_picon
-    @attached_picon ||= PiconAttachedImage.new(self, "picon")
-  end
-
-
-  # make and update the picon
-  def update_picon
-      # make the picon in the local file system
-      file = ZZ::Picon.make( self )
-
-      self.picon_content_type = "image/png"
-      self.picon_file_size = File.size(file.path)
-      attached_picon.upload(file)
-
-      # delete the file right now rather than waiting for GC
-      file.delete() rescue nil
-
-      self.save
-  end
-
-  #TODO: Make a pass later and clean up all related code to the generation of picons
-  # for now just turn off the queueing
-  def queue_update_picon
-  #   ZZ::Async::UpdatePicon.enqueue( self.id )
-  end
-
-
-  def picon_url
-    if self.picon_path != nil
-      # file comes from s3
-      self.picon_path
-    else
-      # use local file
-      "/images/folders/blank.jpg"
-    end
-  end
 
   # acl for this album
   def acl

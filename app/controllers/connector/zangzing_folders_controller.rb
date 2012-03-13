@@ -26,6 +26,7 @@ class Connector::ZangzingFoldersController < Connector::ZangzingController
                 :album_id => params[:album_id],
                 :user_id => p.user_id,
                 :upload_batch_id => current_batch.id,                
+                :work_priority => ZZ::Async::Priorities.import_single_album,
                 :capture_date => p.capture_date,
                 :source_guid => p.source_guid,
                 :source_thumb_url => p.thumb_url,
@@ -40,9 +41,9 @@ class Connector::ZangzingFoldersController < Connector::ZangzingController
 
     end
 
-    Connector::ConnectorController.bulk_insert(photos)
+    json_str = Connector::ConnectorController.bulk_insert(photos)
 
-    render :json => Photo.to_json_lite(photos)
+    render :json => json_str
 
   end
 

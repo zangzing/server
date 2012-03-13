@@ -844,9 +844,10 @@ class UsersController < ApplicationController
             :source_guid => Photo.generate_source_guid(url),
             :source_thumb_url => url,
             :source_screen_url => url,
-            :source => 'user_join'
+            :source => 'user_join',
+            :work_priority => ZZ::Async::Priorities.profile_photo
     )
-    ZZ::Async::GeneralImport.enqueue(photo.id,  url)
+    ZZ::Async::GeneralImport.enqueue(photo.id,  url, { :priority => photo.work_priority })
     user.profile_photo_id = photo.id
     current_batch.close_immediate
   end

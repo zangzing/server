@@ -57,6 +57,7 @@ class Connector::DropboxFoldersController < Connector::DropboxController
               :album_id => params[:album_id],
               :user_id => identity.user.id,
               :upload_batch_id => current_batch.id,
+              :work_priority => params[:priority] || ZZ::Async::Priorities.import_single_album,
               :capture_date => (Time.parse(entry.modified) rescue nil),
               :source_guid => make_source_guid(entry.path),
               :source_thumb_url => dropbox_image_path(:root => 'thumbnails', :path => entry.path, :size => 'm'),
@@ -70,13 +71,10 @@ class Connector::DropboxFoldersController < Connector::DropboxController
     # bulk insert
     Photo.batch_insert(photos)
     # must send after all saved
-    photos.each do |photo|
-      ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url, 
+    bulk_insert(photos,
         :headers_making_method => 'Connector::DropboxUrlsController.get_file_auth_headers',
         :url_making_method => 'Connector::DropboxUrlsController.get_file_unsigned_url'
-      )
-    end
-    Photo.to_json_lite(photos)
+    )
   end
 
   def self.import_all_folders(api, params)
@@ -100,7 +98,7 @@ class Connector::DropboxFoldersController < Connector::DropboxController
       if photos_count > 0
         zz_album = create_album(identity, File.split(current_folder).last, params[:privacy])
         zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
-        fire_async('import_whole_folder', params.merge(:path => current_folder, :album_id => zz_album.id))
+        fire_async_import_all('import_whole_folder', params.merge(:path => current_folder, :album_id => zz_album.id))
       end
     end
     identity.update_attribute(:last_import_all, Time.now)
@@ -120,6 +118,7 @@ class Connector::DropboxFoldersController < Connector::DropboxController
               :album_id => params[:album_id],
               :user_id => identity.user.id,
               :upload_batch_id => current_batch.id,
+              :work_priority => ZZ::Async::Priorities.import_single_photo,
               :capture_date => (Time.parse(photo_data.modified) rescue nil),
               :source_guid => make_source_guid(photo_data.path),
               :source_thumb_url => dropbox_image_path(:root => 'thumbnails', :path => photo_data.path, :size => 'm'),
@@ -128,7 +127,7 @@ class Connector::DropboxFoldersController < Connector::DropboxController
     ).tap do |p|
       p.temp_url = photo_url
     end
-    ZZ::Async::GeneralImport.enqueue( photo.id, photo_data.path,
+    queue_single_photo( photo.id, photo_data.path,
       :headers_making_method => 'Connector::DropboxUrlsController.get_file_auth_headers',
       :url_making_method => 'Connector::DropboxUrlsController.get_file_unsigned_url'
     )

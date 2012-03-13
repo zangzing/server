@@ -147,6 +147,11 @@ module ZZ
         @zz_api_session_less = zz_api_call? && request.headers[ZZ_API_HEADER] == ZZ_API_IPHONE_CLIENT
       end
 
+      # did it come from the iphone
+      def zz_api_iphone?
+        request.headers[ZZ_API_HEADER] == ZZ_API_IPHONE_CLIENT
+      end
+
       # just used as a placeholder in code to make it clear
       # that the proper requires have been coded
       def require_nothing

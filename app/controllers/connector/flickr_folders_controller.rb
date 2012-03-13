@@ -78,6 +78,7 @@ class Connector::FlickrFoldersController < Connector::FlickrController
                   :user_id => identity.user.id,
                   :album_id => params[:album_id],
                   :upload_batch_id => current_batch.id,
+                  :work_priority => params[:priority] || ZZ::Async::Priorities.import_single_album,
                   :capture_date => (DateTime.parse(p.datetaken) rescue nil),
                   :caption => p.title,
                   :source_guid => make_source_guid(p),
@@ -103,7 +104,7 @@ class Connector::FlickrFoldersController < Connector::FlickrController
     folders_response.each do |fl_album|
       zz_album = create_album(identity, fl_album.title, params[:privacy])
       zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
-      fire_async('import_album', params.merge(:album_id => zz_album.id, :set_id => fl_album.id))
+      fire_async_import_all('import_album', params.merge(:album_id => zz_album.id, :set_id => fl_album.id))
     end
 
     identity.last_import_all = Time.now

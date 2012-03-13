@@ -141,6 +141,7 @@ module ZZ
       # called from the subclass. The idea is that this should be the only place to call
       # Resque enqueue
       def self.enqueue( *args )
+        Rails.logger.info "**** PLACING ON QUEUE: #{@queue}, for #{self.name} ****"
         if should_loopback?
           self.do_loopback(*args)
         else
@@ -150,6 +151,7 @@ module ZZ
 
       # lets you enqueue on on a named queue
       def self.enqueue_on_queue(queue, *args)
+        Rails.logger.info "**** PLACING ON QUEUE: #{queue}, for #{self.name} ****"
         if should_loopback?
           self.do_loopback(*args)
         else
@@ -158,6 +160,7 @@ module ZZ
       end
 
       def self.enqueue_in(secs_from_now, queue, *args)
+        Rails.logger.info "**** PLACING ON QUEUE: #{queue}, for #{self.name} ****"
         if should_loopback?
           # delay not supported in loopback mode
           self.do_loopback(*args)

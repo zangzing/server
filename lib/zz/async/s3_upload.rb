@@ -2,8 +2,6 @@ module ZZ
   module Async
 
     class S3Upload < Base
-        # this queue is meant to be processed only by local resque worker hence the appended host name of ourselves
-        @queue = ("io_local_" + Server::Application.config.deploy_environment.this_host_name).to_sym
 
         # only add ourselves one time
         if @retry_criteria_checks.length == 0
@@ -28,29 +26,23 @@ module ZZ
 #          @backoff_strategy ||= [12.seconds, 1.minute, 5.minutes, 30.minutes, 2.hours, 8.hours, 24.hours]
 #        end
 
+        # this queue is meant to be processed only by local resque worker hence the appended host name of ourselves
+        def self.queue_name(options)
+          queue = Priorities.io_local_queue_name(options[:priority])
+        end
+
         def self.enqueue( photo_id, options = {} )
-          super( photo_id, options )
-        end 
+          enqueue_on_queue(queue_name(options), photo_id, options)
+        end
           
         def self.perform( photo_id, options = {} )
           options.recursively_symbolize_keys!
           SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
             photo = Photo.find(photo_id)
+            photo.work_priority = options[:priority]
             self.upload_to_s3(photo, options)
           end
         end
-
-        def self.on_failure_notify_photo(e, photo_id, options )
-          begin
-            SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
-              photo = Photo.find(photo_id)
-              photo.update_attributes(:state => 'error', :error_message => 'Upload S3: ' + e.message)
-            end
-          rescue Exception => ex
-            # eat any exception in the error handler
-          end
-        end
-
 
         #
         # Upload the original image to S3 from our local temp file
@@ -66,13 +58,23 @@ module ZZ
             photo.upload_source(options)
           rescue Exception => ex
             Rails.logger.debug("Upload to S3 Failed: " + ex)
-            if self.should_retry(ex) == false
-               # not going to be retrying, so safe to remove temp file
-               photo.remove_source
-            end
             raise ex
           end
         end
+
+        # called on failure, will_retry tells us if we are going to
+        # be trying again
+        def self.handle_failure(e, will_retry, photo_id, options)
+          photo = Photo.find(photo_id)
+          msg = 'Upload S3: ' + e.message
+          if will_retry
+            photo.update_attributes(:error_message => msg)
+          else
+            photo.remove_source
+            photo.update_attributes(:state => 'error', :error_message => msg )
+          end
+        end
+
     end
   end
 end
