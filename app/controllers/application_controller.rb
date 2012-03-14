@@ -88,6 +88,22 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # when using the api sessionless we don't need
+  # to worry about csrf since calls are all made
+  # directly via client code not html
+  # when not sessionless, excpect the usual
+  # csrf parm or header to be set
+  def protect_against_forgery?
+    return false if zz_api_session_less?
+    allow_forgery_protection
+  end
+
+  # unverified request so log it
+  def handle_unverified_request
+    Rails.logger.error "Resetting session due to CSRF violation"
+    reset_session
+  end
+
   #
   #  these helpers and filters are used to manage the 'all albums' back button
   def store_last_home_page(user_id)

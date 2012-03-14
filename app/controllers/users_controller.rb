@@ -3,7 +3,7 @@ class UsersController < ApplicationController
                :zz_api_login_or_create, :zz_api_login_create_finish
   ssl_allowed :validate_email, :validate_username
 
-  skip_before_filter :verify_authenticity_token, :only=>[:create]
+  skip_before_filter :verify_authenticity_token, :only=>[:zz_api_login_or_create]
 
   def join
     # URL Cleaning cycle
@@ -529,6 +529,7 @@ class UsersController < ApplicationController
       # first try to login
       just_created = false
       create_user = !!params[:create]
+      clear_buy_mode_cookie
       if password || cred_user.nil?
         user_session = UserSession.new(:email => email, :password => password)
       elsif cred_user
@@ -541,7 +542,7 @@ class UsersController < ApplicationController
         if user.automatic? && create_user == false
           raise ZZAPIError.new("You cannot log in with an account that is still joining", 401)
         end
-        prevent_session_fixation
+#        prevent_session_fixation
         user.reset_perishable_token! #reset the perishable token
         set_zzv_id_cookie(user.zzv_id)
         # ok, we are logged in
