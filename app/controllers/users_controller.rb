@@ -44,7 +44,6 @@ class UsersController < ApplicationController
   end
 
 
-
   def create
     begin
       # fix params for login_or_create_shared
@@ -60,21 +59,12 @@ class UsersController < ApplicationController
       redirect_to finish_profile_url :follow_user_id => params[:follow_user_id]
 
     rescue ZZAPIError => ex
-      if ex.is_a? Array
-        message = ex.first
-      else
-        message = ex
-      end
+      message = ex.result.is_a?(Array) ? ex.result.first : ex.message
       redirect_to join_url :message => message
+    rescue Exception => ex
+      redirect_to join_url :message => ex.message
     end
-
-  rescue Exception => ex
-    redirect_to join_url :message => ex.message
   end
-
-
-  end
-
 
   # NOTE, put common logic in create_user_shared but do NOT put
   # web specific logic there, put the specific web logic here.
