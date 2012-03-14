@@ -38,7 +38,7 @@ class Connector::ZangzingPhotosController < Connector::ZangzingController
               :crop_json => source_photo.crop_json
     )
 
-    queue_single_photo( photo, source_photo.original_url )
+    Connector::ConnectorController.queue_single_photo( photo, source_photo.original_url )
     render :json => Photo.to_json_lite(photo)
   end
 
