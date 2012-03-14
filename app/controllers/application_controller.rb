@@ -91,8 +91,8 @@ class ApplicationController < ActionController::Base
   # when using the api sessionless we don't need
   # to worry about csrf since calls are all made
   # directly via client code not html
-  # when not sessionless, excpect the usual
-  # csrf parm or header to be set
+  # when not sessionless, expect the usual
+  # csrf param or header to be set
   def protect_against_forgery?
     return false if zz_api_session_less?
     allow_forgery_protection
