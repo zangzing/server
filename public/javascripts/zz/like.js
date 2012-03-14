@@ -85,7 +85,7 @@ zz.like = {
                 if (xhr.status == 401) {
                 	var msg = "Join for free or sign in to Like.";
                 	if(subject_type == 'user'){
-                		msg = "Join for free or sign in to Follow someone.";
+                		msg = "Join for free or sign in to Follow"+ zz.page.displayed_user_name +".";
                 	}
                     var returnUrl = 'https://' + document.location.hostname + zz.routes.path_prefix + '/' + subject_type + 's/' + subject_id + '/like';
                     zz.routes.users.goto_join_screen(returnUrl, msg);
