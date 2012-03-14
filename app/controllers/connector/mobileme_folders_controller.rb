@@ -55,6 +55,7 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
               :caption => photo_data.title,
               :album_id => params[:album_id],
               :user_id => identity.user.id,
+              :work_priority => params[:priority] || ZZ::Async::Priorities.import_single_album,
               :upload_batch_id => current_batch.id,
               :capture_date => (DateTime.parse(photo_data.photoDate) rescue nil),
               :source_guid => make_source_guid(photo_data),
@@ -82,7 +83,7 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
       album_id = album.path.match(/\d+$/)[0]
       zz_album = create_album(identity, album.title, params[:privacy])
       zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
-      fire_async('import_dir_photos', params.merge(:mm_album_id => album_id, :album_id => zz_album.id))
+      fire_async_import_all('import_dir_photos', params.merge(:mm_album_id => album_id, :album_id => zz_album.id))
     end
     identity.update_attribute(:last_import_all, Time.now)
     JSON.fast_generate(zz_albums)
@@ -101,6 +102,7 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
             :album_id => params[:album_id],
             :user_id => identity.user.id,
             :upload_batch_id => current_batch.id,
+            :work_priority => ZZ::Async::Priorities.import_single_photo,
             :capture_date => (DateTime.parse(photo_data.photoDate) rescue nil),
             :source_guid => make_source_guid(photo_data),
             :source_thumb_url => password_protected?(album_contents) ? PWD_PROTECTED_STATIC_ICON : get_photo_url(photo_data, :thumb),
@@ -108,7 +110,7 @@ class Connector::MobilemeFoldersController < Connector::MobilemeController
             :source => 'mobileme'
     )
 
-    ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(photo_data, :full, password_protected?(album_contents)), {:headers_making_method => 'Connector::MobilemeController.get_fresh_headers', :url_making_method => 'Connector::MobilemeController.get_downloadable_photo_url'})
+    queue_single_photo( photo, get_photo_url(photo_data, :full, password_protected?(album_contents)), {:headers_making_method => 'Connector::MobilemeController.get_fresh_headers', :url_making_method => 'Connector::MobilemeController.get_downloadable_photo_url'})
 
     Photo.to_json_lite(photo)
   end

@@ -73,14 +73,41 @@ class UsersController < ApplicationController
   end
 
   def finish_profile
+    # URL Cleaning cycle
+    #if params[:follow_user_id]
+    #  session[:follow_user_id] = params[:follow_user_id]
+    #  redirect_to finish_profile_url and return
+    #end
+
     if any_current_user && any_current_user.completed_step == 1
       @user = any_current_user
+      #if session[:follow_user_id]
+      #  @follow_user_id = session[:follow_user_id]
+      #end
+      rd = session[:return_to]
       render :layout => 'plain'
     else
       redirect_to join_url
     end
   end
-  
+
+  # Arrive here after all join steps completed
+  # Use as the gate for where to go next
+  def after_join
+    #if session[:follow_user_id]
+    #  session.delete(:follow_user_id)
+    #end
+    rd = session[:return_to]
+
+    if current_user
+      add_javascript_action('show_welcome_dialog') unless( session[:return_to] )
+      redirect_back_or_default user_pretty_url( current_user )
+      return
+    end
+
+    redirect_to join_url
+  end
+
   def show
     @user = User.find(params[:id])
     redirect_to user_pretty_url(@user )
@@ -230,8 +257,10 @@ class UsersController < ApplicationController
       user = any_current_user
       user_info = user.basic_user_info_hash
       user_info[:email] = user.email
-      user_info[:has_facebook_token] = current_user.identity_for_facebook.has_credentials?
-      user_info[:has_twitter_token] = current_user.identity_for_twitter.has_credentials?
+      user_info[:profile_photo_url] = user.profile_photo_url(false)  # do not want default url if nil, want nil in that case
+      user_info[:profile_album_id] = user.profile_album_id
+      user_info[:has_facebook_token] = user.identity_for_facebook.has_credentials?
+      user_info[:has_twitter_token] = user.identity_for_twitter.has_credentials?
       user_info
     end
   end
@@ -397,6 +426,35 @@ class UsersController < ApplicationController
   # provide all necessary params to do so.  You need email, name, username,
   # and password, and set the create flag to true.
   #
+  #
+  #  Service Credential handling:
+  #
+  #  For credential login:
+  #
+  #  When you login you can do so via your service credentials. If the account has been
+  #  previously linked we detect the match and associated you with the user that has the matching
+  #  credentials. We also associate the remote services user id with our user id in case a user
+  #  deletes the credentials. In this case we detect the remote_user_id -> user_id and then
+  #  associate the credentials with that user.
+  #
+  #  If there is no existing link between the server credentials or service user id you must
+  #  create an association. That can be done at login time by supplying the service credentials
+  #  along with username/email and password. Assuming the email and password are correct you will
+  #  be logged in as the user tied to that email. At the same time we also associate the
+  #  credentials and service user id to that user. Any subsequent logins can be done with just
+  #  the credentials.
+  #
+  #  For credential join:
+  #
+  #  When joining, you can provide the service credentials and optionally one or more of the
+  #  values for email, username, name, password. Any arguments passed in will override those
+  #  fetched from the service credentials. So, for instance, if you do not provide email we will
+  #  use the email provided by the remote service. If we have collisions such as the email or
+  #  username already existing an error will be returned and the call will fail. On success the
+  #  credentials will automatically be associated with the new account. The general approach will
+  #  probably be for the client UI to fetch the data from the remove service and present those to
+  #  the user as defaults to give them the opportunity to change them
+  #
   # This is called as (POST - https):
   #
   # /zz_api/login_or_create
@@ -441,8 +499,6 @@ class UsersController < ApplicationController
   #     you are a User you will not be granted access.
   #   :available_roles => Ordered from most access to least lets you determine
   #     the available roles and their order
-  #   :client_side_zza_events => ['event1', ...] an array of client side zza event strings that should
-  #     be sent to zza by the client
   #   :zzv_id => token used to user identifier for tracking via mixpanel,
   #   :user => user info as returned in user_info call
   # }
@@ -465,7 +521,9 @@ class UsersController < ApplicationController
       if service
         raise ZZAPIError.new("Facebook is the only allowed service for login") unless ['facebook'].include?(service)
         raise ZZAPIError.new("You must specify credentials if logging in with a service") unless credentials
-        cred_user, identity, service_user_id = find_user_from_facebook_identity(credentials)
+        service_info = find_user_from_facebook_identity(credentials)
+        cred_user = service_info[:user]
+        service_user_id = service_info[:service_user_id]
       end
 
       # first try to login
@@ -483,6 +541,9 @@ class UsersController < ApplicationController
         if user.automatic? && create_user == false
           raise ZZAPIError.new("You cannot log in with an account that is still joining", 401)
         end
+        prevent_session_fixation
+        user.reset_perishable_token! #reset the perishable token
+        set_zzv_id_cookie(user.zzv_id)
         # ok, we are logged in
       elsif create_user == false
         # raise an error if we couldn't log in and not allowed to create
@@ -490,18 +551,28 @@ class UsersController < ApplicationController
       end
 
       may_create = (!user.nil? && user.automatic?) || user.nil?
-      if may_create && name && username
-        # auto or nil user and they passed everything needed to create
-        user_info = {
-            :name => name,
-            :email => email,
-            :username => username,
-            :password => password,
-        }
-        success = create_user_shared(user_info, params[:follow_user_id], tracking_token)
-        failed_create(user) unless success # raises an exception always
-        user = @new_user
-        just_created = true
+      if may_create
+        if service_info
+          # if we have credentials, pick up anything not already
+          # passed in from the credentials
+          email ||= service_info[:email]
+          name ||= service_info[:name]
+          username ||= service_info[:username] || User.generate_username
+          password ||= User.generate_password
+        end
+        if name && username && email
+          # auto or nil user and they passed everything needed to create
+          user_info = {
+              :name => name,
+              :email => email,
+              :username => username,
+              :password => password,
+          }
+          success = create_user_shared(user_info, params[:follow_user_id], tracking_token)
+          user = @new_user
+          failed_create(user) unless success # raises an exception always
+          just_created = true
+        end
       end
 
       if user.nil? && email.index('@')
@@ -513,7 +584,8 @@ class UsersController < ApplicationController
           options = {
               :password => password,
               :completed_step => 1,
-              :with_session => true
+              :with_session => true,
+              :zzv_id => get_zzv_id_cookie,
           }
           user = User.create_automatic(email, name, true, nil, options)
           just_created = true
@@ -601,8 +673,6 @@ class UsersController < ApplicationController
   #     you are a User you will not be granted access.
   #   :available_roles => Ordered from most access to least lets you determine
   #     the available roles and their order
-  #   :client_side_zza_events => ['event1', ...] an array of client side zza event strings that should
-  #     be recorded by the client
   #   :zzv_id => token used to user identifier for tracking via mixpanel,
   #   :user => user info as returned in user_info call
   # }
@@ -649,7 +719,11 @@ class UsersController < ApplicationController
   #
   def zz_api_logout
     zz_api do
-      current_user_session.destroy if any_current_user
+      if any_current_user
+        current_user_session.destroy
+        reset_session
+        delete_zzv_id_cookie
+      end
       nil
     end
   end
@@ -688,7 +762,8 @@ class UsersController < ApplicationController
 
 
   # called when we failed to create a user
-  def failed_create(user)
+  def failed_create(user, message = nil)
+    raise ZZAPIError.new(message, 401) if message
     raise ZZAPIError.new("Unable to create user", 401) if user.nil?
     raise ZZAPIError.new(user.errors.full_messages, 401) if user.errors.length > 0
     raise ZZAPIError.new("Unable to create user", 401)
@@ -707,8 +782,7 @@ class UsersController < ApplicationController
         :server => Server::Application.config.application_host,
         :role => role.name,
         :available_roles => SystemRightsACL.role_names,
-        :client_side_zza_events => zza_client_events,
-        :zzv_id => "placeholder until merge with Jeremy",
+        :zzv_id => user.zzv_id,
         :user => user_hash
     }
   end
@@ -772,9 +846,10 @@ class UsersController < ApplicationController
             :source_guid => Photo.generate_source_guid(url),
             :source_thumb_url => url,
             :source_screen_url => url,
-            :source => 'user_join'
+            :source => 'user_join',
+            :work_priority => ZZ::Async::Priorities.profile_photo
     )
-    ZZ::Async::GeneralImport.enqueue(photo.id,  url)
+    ZZ::Async::GeneralImport.enqueue(photo.id,  url, { :priority => photo.work_priority })
     user.profile_photo_id = photo.id
     current_batch.close_immediate
   end
@@ -811,6 +886,10 @@ class UsersController < ApplicationController
     end
     @new_user.reset_perishable_token
     @new_user.reset_single_access_token
+
+    # SET _ZZV_ID COOKIE THAT IS USED TO TRACK
+    # USERS IN MIXPANEL AND ZZA
+    @new_user.zzv_id = get_zzv_id_cookie
 
     # SIGNUP CONTROL
     # new users are active by default
@@ -857,7 +936,7 @@ class UsersController < ApplicationController
         end
 
         @new_user.deliver_welcome!
-        send_zza_event_from_client('user.join')
+        zza.track_event('user.join')
 
         # process tracking token if there was one
         if tracking_token
@@ -869,8 +948,8 @@ class UsersController < ApplicationController
 
         # send zza events
         if invitation
-          send_zza_event_from_client('invitation.join')
-          send_zza_event_from_client(invitation.tracked_link.join_event_name)
+          zza.track_event('invitation.join')
+          zza.track_event(invitation.tracked_link.join_event_name)
         end
 
         return true
@@ -886,7 +965,7 @@ class UsersController < ApplicationController
           @guest.status = 'Inactive'
           @guest.save
         end
-        send_zza_event_from_client('user.join')
+        zza.track_event('user.join')
         return true
       end
     end
@@ -895,7 +974,14 @@ class UsersController < ApplicationController
 
   # finds the facebook identity for the given credentials
   # returns
-  # user, identity, service_user_id
+  # {
+  #   :user
+  #   :identity
+  #   :service_user_id
+  #   :email
+  #   :username
+  #   :name
+  # }
   # raises exception if we can't get the data we need from the credentials
   def find_user_from_facebook_identity(credentials)
     user = nil
@@ -919,7 +1005,14 @@ class UsersController < ApplicationController
       user = nil if user.automatic? # can't log in an automatic user with credentials
     end
 
-    return user, identity, service_user_id
+    result = {
+        :user => user,
+        :identity => identity,
+        :service_user_id => service_user_id,
+        :email => me[:email],
+        :username => me[:username],
+        :name => me[:name]
+    }
   end
 
   # update the info for this users identity for facebook login

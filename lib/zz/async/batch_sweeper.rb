@@ -24,7 +24,7 @@ module ZZ
     # that we use to sweep the batch upload table
     # and make sure any stale jobs get closed out
     class BatchSweeper < Base
-        @queue = :io_bound
+        @queue = Priorities.io_queue_name(Priorities.batch_sweep)
 
         # for all of the _ok? calls below, we have
         # a minimum interval between runs to avoid

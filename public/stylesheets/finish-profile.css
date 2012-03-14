@@ -116,13 +116,11 @@ html #users-finish_profile{
 
 #users-finish_profile .main .right  label {
     position: absolute;
-    top: 20px;
+    top: 22px;
     left: 6px;
     color: #999;
     font-size: 14px;
 }
-
-/* TODO: alignment in Safari */
 
 #users-finish_profile .main .right  input {
     margin-top: 15px;
@@ -140,7 +138,6 @@ html #users-finish_profile{
 #users-finish_profile .main .right label.error {
     top:48px;
     left:0;
-    width: 172px;
     padding:8px 10px;
     color: #333;
     font-size:14px;
@@ -176,7 +173,7 @@ html #users-finish_profile{
     color: #fff;
 
     text-shadow: 0 0 0 transparent, 0px 1px 1px #000;
-    background:#318e2c url('/images/btn-green-38.png') repeat-x 0 0px; /* TODO: */
+    background:#318e2c url('/images/btn-green-38.png') repeat-x 0 0;
     border: 1px solid #318e2c;
     border-radius:5px;
     -moz-border-radius:5px;
@@ -214,7 +211,7 @@ html #users-finish_profile{
 }
 
 #users-finish_profile #simple-uploader-button {
-    width: 75px;
+    width: 67px;
 }
 
 #users-finish_profile #simple-uploader-flash-wrapper{
@@ -246,7 +243,6 @@ html #users-finish_profile{
 
 #users-finish_profile div img#profile-photo {
     position:relative;
-
 }
 
 #users-finish_profile div img.bottom-shadow{
@@ -261,23 +257,26 @@ html #users-finish_profile{
     display: none;
 }
 
-
-/***1**********************************************/
-
 #users-finish_profile .progress-block {
     z-index: 300;
     position: absolute;
-    top: -3px;
+    top: -4px;
     left: -3px;
     width: 200px;
     height: 70px;
     background-color: #fff;
 }
 
+#users-finish_profile .progress-block .processing-container {
+    margin-top: 15px;
+    padding-top: 2px;
+}
+
 #users-finish_profile .progress-block .processing-container span {
     font-size: 16px;
-    line-height: 8px;
+    line-height: 35px;
     display: inline-block;
+    vertical-align: middle;
 }
 
 #users-finish_profile .progress-block .processing-container img {

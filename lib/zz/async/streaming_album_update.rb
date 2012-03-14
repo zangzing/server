@@ -2,7 +2,7 @@ module ZZ
   module Async
 
     class StreamingAlbumUpdate < Base
-      @queue = :io_bound
+      @queue = Priorities.io_queue_name(Priorities.streaming_album_update)
 
         # only add ourselves one time
         if @retry_criteria_checks.length == 0

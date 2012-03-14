@@ -80,9 +80,9 @@ var zz = zz || {};
 	function join_message(){
 		var message;
 		if(zz.invitation.invitername) {
-			message = "<strong>" + zz.invitation.invitername + "</strong> has invited you to ZangZing. Join now and you each get 250MB of extra space free.";
+			message = "<strong>" + zz.invitation.invitername.substring(0, 15) + "</strong> has invited you to ZangZing. Join now and you each get 250MB of extra space free.";
 		} else if(zz.page.displayed_user_name){
-			message = "<strong>" + zz.page.displayed_user_name + "</strong> is using ZangZing. Join for free and follow " + zz.page.displayed_user_name + ".";
+			message = "<strong>" + zz.page.displayed_user_name.substring(0, 15) + "</strong> is using ZangZing. Join for free and follow " + zz.page.displayed_user_name.substring(0, 15) + ".";
 		} else {
 			message = "ZangZing is a free and easy photo sharing service.";
 		}

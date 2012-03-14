@@ -31,6 +31,7 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
               :album_id => params[:album_id],
               :user_id=>identity.user.id,
               :upload_batch_id => current_batch.id,
+              :work_priority => params[:priority] || ZZ::Async::Priorities.import_single_album,
               :capture_date => p[:capturetime].nil? ? nil : Time.at(p[:capturetime].to_i/1000),
               :source_guid => make_source_guid(p),
               :source_thumb_url => get_photo_url(p[:id],  :thumb),
@@ -54,7 +55,7 @@ class Connector::ShutterflyFoldersController < Connector::ShutterflyController
       zz_album = create_album(identity, sf_album[:title], params[:privacy])
       sf_album_id = /albumid\/([0-9a-z]+)/.match(sf_album[:id])[1]
       zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
-      fire_async('import_folder', params.merge(:album_id => zz_album.id, :sf_album_id => sf_album_id))
+      fire_async_import_all('import_folder', params.merge(:album_id => zz_album.id, :sf_album_id => sf_album_id))
     end
 
     identity.last_import_all = Time.now

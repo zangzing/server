@@ -10,16 +10,16 @@
     font-weight: 600;
 }
 
-
 .invitation-banner .buttons{
     width:230px;
     margin: 0 auto;
 }
+
 .invitation-banner .gray-button, .invitation-banner .green-button {
     width: 100px;
     display: inline-block;
 }
 
-.invitation-banner .green-button {
+.invitation-banner .gray-button {
     margin-right: 10px;
 }

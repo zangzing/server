@@ -212,7 +212,7 @@ class AlbumsController < ApplicationController
   # See zz_api_album_info for return values
   #
   def zz_api_update
-    return unless require_user && require_album && require_album_admin_role
+    return unless require_any_user && require_album && require_any_album_admin_role
     zz_api do
       begin
         fields = filter_params(params, [:name, :privacy, :cover_photo_id, :who_can_upload, :who_can_download,
@@ -499,6 +499,14 @@ class AlbumsController < ApplicationController
 
     zz_api do
       emails, email_errors, addresses = ZZ::EmailValidator.validate_email_list(params[:emails])
+
+      # log to zza for analytics
+      if params[:permission] == AlbumACL::CONTRIBUTOR_ROLE.name
+        EmailAnalyticsManager.log_share_message_sent(current_user, :contributor_added, emails, email_errors)
+      else
+        EmailAnalyticsManager.log_share_message_sent(current_user, :album_shared, emails, email_errors)
+      end
+
 
       # grab any group ids and get the allowed ones
       group_ids = params[:group_ids]

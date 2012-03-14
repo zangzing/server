@@ -142,7 +142,7 @@
         zz.invitation = zz.invitation || {};
         <% if current_tracking_token
         	trackedlink = TrackedLink.find_by_tracking_token(current_tracking_token)
-        	if trackedlink %>
+        	if trackedlink && trackedlink.user %>
         		zz.invitation.invitername = '<%= trackedlink.user.name %>';
         		zz.invitation.inviterprofileurl = '<%= trackedlink.user.profile_photo_url %>';
         	<% end -%>

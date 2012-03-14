@@ -2,8 +2,6 @@ module ZZ
   module Async
       
     class ConnectorWorker < Base
-      @queue = :io_bound_high
-
       # Add on any extra handling that your class
       # needs - generally most classes of errors
       # can be handled in the base class but you
@@ -22,8 +20,13 @@ module ZZ
         end
       end
 
+      def self.queue_name(options)
+        priority = options[:priority] || Priorities.connector_worker
+        queue = Priorities.io_queue_name(priority)
+      end
+
       def self.enqueue(response_id, identity_id, klass_name, method_name, params )
-        super(response_id, identity_id, klass_name, method_name, params )
+        enqueue_on_queue(queue_name(params), response_id, identity_id, klass_name, method_name, params )
       end
 
       def self.perform(response_id, identity_id, klass_name, method_name, params )

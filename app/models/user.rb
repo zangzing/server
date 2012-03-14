@@ -11,7 +11,8 @@ class User < ActiveRecord::Base
   attr_accessor    :old_password, :reset_password, :change_matters, :needs_after_full_user_convert
   attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :password_confirmation,
                    :old_password, :automatic, :profile_photo_id, :subscriptions_attributes, :completed_step,
-                   :ship_address_id, :bill_address_id, :creditcard_id, :auto_by_contact, :created_by_user_id
+                   :ship_address_id, :bill_address_id, :creditcard_id, :auto_by_contact, :created_by_user_id,
+                   :zzv_id
 
   has_many :albums      # we have a manual dependency to delete albums on destroy since nested rails callbacks don't seem to be triggered
 
@@ -304,12 +305,21 @@ class User < ActiveRecord::Base
     MailingList.subscribe_new_user(id) unless automatic?
   end
 
+  def self.generate_username
+    UUIDTools::UUID.random_create.to_s.gsub('-','').to_s
+  end
+
+  def self.generate_password
+    UUIDTools::UUID.random_create.to_s
+  end
+
   def self.create_automatic(email, name = '', auto_by_contact = false, created_by_user = nil, options = {})
     name = ( name.blank? ? '' : name )
     created_by_user_id = created_by_user.nil? ? nil : created_by_user.id
 
-    username = options[:username] || UUIDTools::UUID.random_create.to_s.gsub('-','').to_s
-    password = options[:password] || UUIDTools::UUID.random_create.to_s
+    username = options[:username] || generate_username
+    password = options[:password] || generate_password
+    zzv_id = options[:zzv_id]
 
     with_session = options[:with_session]
     completed_step = options[:completed_step]
@@ -321,6 +331,7 @@ class User < ActiveRecord::Base
                          :created_by_user_id => created_by_user_id,
                          :auto_by_contact => auto_by_contact,
                          :completed_step => completed_step,
+                         :zzv_id => zzv_id,
                          :username => username,
                          :password => password)
     user.reset_perishable_token
