@@ -512,7 +512,7 @@ module ZZ
       # @photo is the photo to be acted upon
       # current_user is the user we are evaluating
       def require_photo_owner_or_album_admin_role
-        unless  @photo.user.id == current_user.id || @photo.album.admin?( current_user.id )
+        unless @photo.user_id == current_user.id || @photo.album.admin?( current_user.id )
           msg = "Only Photo Owners or Album Admins can perform this operation"
           if zz_api_call?
             render_json_error(nil, msg, 401)
