@@ -74,17 +74,17 @@ class UsersController < ApplicationController
 
   def finish_profile
     # URL Cleaning cycle
-    #if params[:follow_user_id]
-    #  session[:follow_user_id] = params[:follow_user_id]
-    #  redirect_to finish_profile_url and return
-    #end
+    # This follow is from the join banner, not the user taking an action.
+    if params[:follow_user_id]
+      session[:follow_user_id] = params[:follow_user_id]
+      redirect_to finish_profile_url and return
+    end
 
     if any_current_user && any_current_user.completed_step == 1
       @user = any_current_user
-      #if session[:follow_user_id]
-      #  @follow_user_id = session[:follow_user_id]
-      #end
-      rd = session[:return_to]
+      if session[:follow_user_id]
+        @follow_user_id = session[:follow_user_id]
+      end
       render :layout => 'plain'
     else
       redirect_to join_url
@@ -94,10 +94,9 @@ class UsersController < ApplicationController
   # Arrive here after all join steps completed
   # Use as the gate for where to go next
   def after_join
-    #if session[:follow_user_id]
-    #  session.delete(:follow_user_id)
-    #end
-    rd = session[:return_to]
+    if session[:follow_user_id]
+      session.delete(:follow_user_id)
+    end
 
     if current_user
       add_javascript_action('show_welcome_dialog') unless( session[:return_to] )

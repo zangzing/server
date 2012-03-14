@@ -57,7 +57,7 @@
 </div><!--fieldscontainer-->
 
 <div class="donecontainer">
-  <input type="button" id="done" value="Done" />
+  <input type="button" id="done" class="ready" value="Done">
 </div>
 
 </div><!--main-->
@@ -132,6 +132,8 @@ function submit_data(form_element){
     follow_user_id = form_element.find('#follow_user_id').val();
     hash = {name: name, username: username, follow_user_id: follow_user_id};
 
+    unbind_done();
+
     $.ajax({
         url: finish_api_url,
         type: 'POST',
@@ -140,6 +142,7 @@ function submit_data(form_element){
             window.location = "/service/users/after_join";
         }, // success
         error:function(jqXHR, textStatus, errorThrown){
+            bind_done();
             var response = null;
             try {
                 response = JSON.parse(jqXHR.responseText);
@@ -169,11 +172,13 @@ function bind_done(){
             check_form($('.finish-profile-form'));
         }
     });
+    $("#done").addClass("ready");
 }
 
 function unbind_done(){
     $('#done').unbind();
     $('.finish-profile-form').unbind();
+    $("#done").removeClass("ready");
 }
 
 // takes a jquery element
