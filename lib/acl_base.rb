@@ -275,7 +275,7 @@ class ACLBase
   # returns a list of group_ids that match a specific role
   #
   # as in has_permission? the matching is done based on priority
-  # so a user that is an admin would match that of viewer but
+  # so a group that is an admin would match that of viewer but
   # not the other way around.
   #
   # if the exact flag is set then we only return matches for that

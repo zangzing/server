@@ -65,6 +65,11 @@ class InvitationsController < ApplicationController
   def show
     return unless require_no_user
 
+    # first see if an automatic user that has completed step 1
+    if any_current_user && any_current_user.completed_step == 1
+      redirect_to finish_profile_url
+      return
+    end
 
     tracked_link = TrackedLink.find_by_tracking_token(current_tracking_token)
     if tracked_link

@@ -3,7 +3,7 @@ module ZZ
 
     # remove S3 files
     class S3Cleanup < Base
-        @queue = :io_bound_low
+        @queue = Priorities.io_queue_name(Priorities.cleanup)
 
         # only add ourselves one time
         if @retry_criteria_checks.length == 0

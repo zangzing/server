@@ -32,6 +32,7 @@ class Connector::InstagramPhotosController < Connector::InstagramController
             :album_id => params[:album_id],
             :user_id => identity.user.id,
             :upload_batch_id => current_batch.id,
+            :work_priority => ZZ::Async::Priorities.import_single_photo,
             :capture_date => (Time.at(photo_data[:created_time].to_i) rescue nil),
             :source_guid => make_source_guid(photo_data),
             :source_thumb_url => photo_data[:images][:thumbnail][:url],
@@ -40,7 +41,7 @@ class Connector::InstagramPhotosController < Connector::InstagramController
 
     )
 
-    ZZ::Async::GeneralImport.enqueue( photo.id, photo_data[:images][:standard_resolution][:url] )
+    queue_single_photo( photo, photo_data[:images][:standard_resolution][:url] )
     Photo.to_json_lite(photo)
   end
   

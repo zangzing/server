@@ -38,6 +38,7 @@ class Connector::PicasaPhotosController < Connector::PicasaController
                 :album_id => params[:album_id],
                 :user_id => identity.user.id,
                 :upload_batch_id => current_batch.id,
+                :work_priority => ZZ::Async::Priorities.import_single_photo,
                 :capture_date => (Time.at(entry.at_xpath('gp:timestamp', NS).text.to_i/1000) rescue nil),
                 :source_guid => make_source_guid(entry.at_xpath('m:group', NS)),
                 :source_thumb_url => get_photo_url(entry.at_xpath('m:group', NS), :thumb),
@@ -45,7 +46,7 @@ class Connector::PicasaPhotosController < Connector::PicasaController
                 :source => 'picasaweb'
         )
 
-        ZZ::Async::GeneralImport.enqueue(photo.id,  photo_url)
+        queue_single_photo(photo,  photo_url)
         break
       end
     end

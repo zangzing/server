@@ -59,6 +59,7 @@ class Connector::KodakFoldersController < Connector::KodakController
               :user_id=>identity.user.id,
               :album_id => params[:album_id],
               :upload_batch_id => current_batch.id,
+              :work_priority => params[:priority] || ZZ::Async::Priorities.import_single_album,
               :caption => p['caption'],
               :source_guid => make_source_guid(p),
               :source_thumb_url => p[PHOTO_SIZES[:thumb]],
@@ -72,11 +73,7 @@ class Connector::KodakFoldersController < Connector::KodakController
     # bulk insert
     Photo.batch_insert(photos)
     # must send after all saved
-    photos.each do |photo|
-      ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url, :headers => api.compose_request_header )
-    end
-
-    Photo.to_json_lite(photos)
+    bulk_insert(photos, :headers => api.compose_request_header)
   end
 
   def self.import_all_albums(api, params)
@@ -91,7 +88,7 @@ class Connector::KodakFoldersController < Connector::KodakController
       regular_albums.each do |k_album|
         zz_album = create_album(identity, k_album['name'], params[:privacy])
         zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
-        fire_async('import_album', params.merge(:album_id => zz_album.id, :kodak_album_id => k_album['id']))
+        fire_async_import_all('import_album', params.merge(:album_id => zz_album.id, :kodak_album_id => k_album['id']))
       end
     end
     album_list = call_with_error_adapter do
@@ -102,7 +99,7 @@ class Connector::KodakFoldersController < Connector::KodakController
       group_albums.each do |k_album|
         zz_album = create_album(identity, k_album['Album']['name'], params[:privacy])
         zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
-        fire_async('import_album', params.merge(:album_id => zz_album.id, :kodak_album_id => k_album['Album']['id'], :group_id => k_album['Group']['id']))
+        fire_async_import_all('import_album', params.merge(:album_id => zz_album.id, :kodak_album_id => k_album['Album']['id'], :group_id => k_album['Group']['id']))
       end
     end
 

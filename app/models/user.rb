@@ -10,8 +10,9 @@ require 'zzapi_error'
 class User < ActiveRecord::Base
   attr_accessor    :old_password, :reset_password, :change_matters, :needs_after_full_user_convert
   attr_accessible  :email, :name, :first_name, :last_name, :username,  :password, :password_confirmation,
-                   :old_password, :automatic, :profile_photo_id, :subscriptions_attributes,
-                   :ship_address_id, :bill_address_id, :creditcard_id, :auto_by_contact, :created_by_user_id
+                   :old_password, :automatic, :profile_photo_id, :subscriptions_attributes, :completed_step,
+                   :ship_address_id, :bill_address_id, :creditcard_id, :auto_by_contact, :created_by_user_id,
+                   :zzv_id
 
   has_many :albums      # we have a manual dependency to delete albums on destroy since nested rails callbacks don't seem to be triggered
 
@@ -150,7 +151,9 @@ class User < ActiveRecord::Base
       # also destroy any photos this user
       # created that are in other peoples albums
       photos = Photo.find_all_by_user_id(user_id)
-      Photo.destroy(photos)
+      photos.each do |photo|
+        photo.destroy
+      end
 
       # invalidate all cache references to this user
       Cache::Album::Manager.shared.user_deleted(user_id)
@@ -244,13 +247,16 @@ class User < ActiveRecord::Base
     return cohort_from_date(DateTime.now())
   end
 
+  def create_profile_album
+    p = ProfileAlbum.new()
+    p.make_private
+    self.profile_album = p
+  end
 
   def set_dependents
-    # build a profile album only when not auto_by_contact?
-    if auto_by_contact? == false
-      p = ProfileAlbum.new()
-      p.make_private
-      self.profile_album = p
+    # build a profile album only when not automatic
+    if automatic? == false
+      create_profile_album
     end
 
     # build user preferences
@@ -272,16 +278,19 @@ class User < ActiveRecord::Base
     # The user is an automatic user because she had contributed photos after being invited by email
     # she has now decided to join, remove automatic flag and reset password.
     if auto_by_contact?
-      self.cohort = User.cohort_current # if they are auto due to simply being created because someone referenced that email address then the real cohort is now
+      self.cohort = User.cohort_current   # if they are auto due to simply being created because someone referenced that email address then the real cohort is now
       self.created_at = DateTime.now      # make it look like just created this user
-      self.auto_by_contact = false       # a full user now
+      self.auto_by_contact = false        # a full user now
     end
     self.automatic = false
     self.name      = name
     self.username  = username
-    self.reset_password = true
-    self.password  = password
-    self.password_confirmation = password
+    self.completed_step = nil
+    if password
+      self.reset_password = true
+      self.password  = password
+      self.password_confirmation = password
+    end
 
     # add in the profile album now
     create_profile_album if profile_album.nil?
@@ -296,25 +305,47 @@ class User < ActiveRecord::Base
     MailingList.subscribe_new_user(id) unless automatic?
   end
 
-  def self.create_automatic(email, name = '', auto_by_contact = false, created_by_user = nil)
+  def self.generate_username
+    UUIDTools::UUID.random_create.to_s.gsub('-','').to_s
+  end
+
+  def self.generate_password
+    UUIDTools::UUID.random_create.to_s
+  end
+
+  def self.create_automatic(email, name = '', auto_by_contact = false, created_by_user = nil, options = {})
     name = ( name.blank? ? '' : name )
     created_by_user_id = created_by_user.nil? ? nil : created_by_user.id
+
+    username = options[:username] || generate_username
+    password = options[:password] || generate_password
+    zzv_id = options[:zzv_id]
+
+    with_session = options[:with_session]
+    completed_step = options[:completed_step]
+
     # create an automatic user with a random password
     user = User.new(  :automatic => true,
                          :email => email,
                          :name => name,
                          :created_by_user_id => created_by_user_id,
                          :auto_by_contact => auto_by_contact,
-                         :username => UUIDTools::UUID.random_create.to_s.gsub('-','').to_s,
-                         :password => UUIDTools::UUID.random_create.to_s)
+                         :completed_step => completed_step,
+                         :zzv_id => zzv_id,
+                         :username => username,
+                         :password => password)
     user.reset_perishable_token
-    user.save_without_session_maintenance
+    if with_session
+      user.save
+    else
+      user.save_without_session_maintenance
+    end
     if user.id.nil?
       # unable to create
       joined_msg = user.errors.full_messages.join(", ")
       msg = "Unable to create automatic user for name: #{name}, email: #{email} due to #{joined_msg}"
       logger.error(msg)
-      raise ActiveRecord::RecordInvalid.new(user)
+      raise ZZAPIError.new(user.errors.full_messages)
     end
     user
   end
@@ -333,7 +364,7 @@ class User < ActiveRecord::Base
       begin
         #user not found, create an automatic user with a random password
         user = create_automatic(email, name, auto_by_contact)
-      rescue ActiveRecord::RecordInvalid => ex
+      rescue Exception => ex
         user = nil
       end
     end
@@ -348,9 +379,9 @@ class User < ActiveRecord::Base
   end
 
   def has_valid_identity?( service_name )
-    id = self.identities.find_by_identity_source( service_name.to_s )
-    if id && id.credentials_valid?  # Return true if there is an id and its credentials are valid
-      return id
+    identity = self.identities.find_by_identity_source( service_name )
+    if identity && identity.has_credentials?  # Return true if there is an id and its credentials are valid
+      return identity
     else
       return false
     end
@@ -483,9 +514,7 @@ class User < ActiveRecord::Base
   end
 
   def profile_photo_id=(id)
-    if profile_album.nil?
-      make_profile_album
-    end
+    create_profile_album if profile_album.nil?
 
     if id && id.is_a?(String) && id.length <= 0
       profile_album.profile_photo_id=nil
@@ -541,7 +570,7 @@ class User < ActiveRecord::Base
   # if present will be used to supplement the email
   # address which is normally not returned
   def basic_user_info_hash(user_id_to_email = nil)
-    # fetch profile photo, if automatic won't have one so don't waste overhead trying to fetch
+    # fetch profile photo, if automatic won't normally have one so don't waste overhead trying to fetch
     if automatic?
       profile_url = nil
       profile_album_id = nil
@@ -560,6 +589,7 @@ class User < ActiveRecord::Base
       :automatic => automatic?,
       :auto_by_contact => auto_by_contact?,
       :created_by_user_id => created_by_user_id,
+      :completed_step => completed_step,
     }
     # see if email should be included in returned data
     add_email = automatic? ? email : nil

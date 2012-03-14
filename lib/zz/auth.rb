@@ -52,16 +52,31 @@ module ZZ
       end
 
       # Authlogic
-      # returns false or the current user
-      def current_user
-        return @current_user if defined?(@current_user)
+      # returns nil or the current user
+      # if we have a current user but that user
+      # is an automatic user we will return
+      # nil by default.  If you have the
+      # allow_automatic flag set to true
+      # we will return the user even if automatic
+      def current_user(allow_automatic = false)
+        return filtered_user(@current_user, allow_automatic) if defined?(@current_user)
         @current_user = current_user_session && current_user_session.user
+        filtered_user(@current_user, allow_automatic)
       end
 
-      # current_user will return false if no current user so
-      # to simplify cases where we want nil we do that here
-      def current_user_or_nil
-        current_user || nil
+      def filtered_user(user, allow_automatic)
+        return nil if user.nil?
+        if user.automatic?
+          return allow_automatic ? user : nil
+        else
+          return user
+        end
+      end
+
+      # returns the current user if we have one without
+      # caring if that user is an automatic user
+      def any_current_user
+        current_user(true)
       end
 
       def current_user=(user)
@@ -83,6 +98,19 @@ module ZZ
         session[:return_to] = request.fullpath
       end
 
+      # determine the proper join step url
+      def determine_join_url(user)
+        url = nil
+        if user.automatic?
+          if user.completed_step == 1
+            url = finish_profile_url
+          else
+            url = join_url
+          end
+        end
+        url
+      end
+
       #
       # Redirects the user to the desired location after log in. If no stored location then to the default location
       def redirect_back_or_default(default)
@@ -92,8 +120,17 @@ module ZZ
 
       # standard json response error
       def render_json_error(ex, message = nil, code = nil)
-        error_json = AsyncResponse.build_error_json(ex, message, code)
-        render :status => 509, :json => error_json
+        error_info = AsyncResponse.build_error(ex, message, code)
+        jsonp_callback = params[:_jsonp_callback]
+        if jsonp_callback
+          # always return as if it was ok but store results as _jsonp_error => {...}
+          wrapped_error = { :_jsonp_error => error_info }
+          error_json = JSON.fast_generate(wrapped_error)
+          render :text => "#{jsonp_callback}(#{error_json})", :content_type => 'application/x-javascript'
+        else
+          error_json = JSON.fast_generate(error_info)
+          render :status => 509, :json => error_json
+        end
       end
 
       # checks to see if we were called via the zz_api, impacts
@@ -108,6 +145,11 @@ module ZZ
       def zz_api_session_less?
         return @zz_api_session_less if defined?(@zz_api_session_less)
         @zz_api_session_less = zz_api_call? && request.headers[ZZ_API_HEADER] == ZZ_API_IPHONE_CLIENT
+      end
+
+      # did it come from the iphone
+      def zz_api_iphone?
+        request.headers[ZZ_API_HEADER] == ZZ_API_IPHONE_CLIENT
       end
 
       # just used as a placeholder in code to make it clear
@@ -127,9 +169,9 @@ module ZZ
         return true
       end
 
-      # Filter for methods that require a log in
-      def require_user
-        unless current_user
+      # require a user of any type even partially created
+      def require_any_user
+        unless any_current_user
           msg = "Join for free or sign in to access that page."
           if zz_api_call?
             render_json_error(nil, msg, 401)
@@ -139,6 +181,38 @@ module ZZ
           else
             store_location
             redirect_to join_url :message => msg
+          end
+          return false
+        end
+        return true
+      end
+
+      # Filter for methods that require a log in
+      # requires a full user
+      def require_user
+        has_user = require_any_user
+        return false unless has_user
+
+        # ok, we have a user lets make sure full
+        if current_user.automatic?
+          if current_user.completed_step == 1
+            msg = "You must complete the final step of the join process to login"
+            finish_profile = true
+          else
+            msg = "Join for free or sign in to access that page."
+          end
+          if zz_api_call?
+            render_json_error(nil, msg, 401)
+          elsif request.xhr?
+            flash.now[:error] = msg
+            head :status => 401
+          else
+            store_location
+            if finish_profile
+              redirect_to finish_profile_url :message => msg
+            else
+              redirect_to join_url :message => msg
+            end
           end
           return false
         end
@@ -312,9 +386,15 @@ module ZZ
         return true
       end
 
+      # Wrapper that allows automatic users also
+      def require_any_album_admin_role
+        require_album_admin_role(true)
+      end
+
       # Assumes @album is the album in question and current_user is the user we are evaluating
-      def require_album_admin_role
-        unless  @album.admin?( current_user.id )
+      def require_album_admin_role(allow_automatic = false)
+        user = current_user(allow_automatic)
+        unless  @album.admin?( user.id )
           msg = "Only Album admins can perform this operation"
           if zz_api_call?
             render_json_error(nil, msg, 401)
@@ -332,15 +412,21 @@ module ZZ
         return true
       end
 
+      # Wrapper that allows automatic users also
+      def require_any_album_viewer_role
+        require_album_viewer_role(true)
+      end
+
       #
       # To be run as a before_filter
       # Assumes @album is the album in question and current_user is the user we are evaluating
       # User has viewer role if ( Album private and logged in and has viewer role ) OR
       # ( Album not private )
-      def require_album_viewer_role
+      def require_album_viewer_role(allow_automatic = false)
         if @album.private?
+          user = current_user(allow_automatic)
           msg = "You have asked to see an Invite Only album. Join or sign in so we know who you are."
-          unless current_user
+          unless user
             if zz_api_call?
               render_json_error(nil, msg, 401)
             elsif request.xhr?
@@ -353,7 +439,7 @@ module ZZ
             end
             return false
           end
-          unless @album.can_view_or_not_private?( current_user.id ) || current_user.moderator?
+          unless @album.can_view_or_not_private?( user.id ) || user.moderator?
             if zz_api_call?
               render_json_error(nil, msg, 401)
             elsif request.xhr?
@@ -369,16 +455,23 @@ module ZZ
         return true
       end
 
+      # flavor of require_album_contributor_role
+      # that allows automatic logged in users as well
+      def require_any_album_contributor_role
+        require_album_contributor_role(true)
+      end
+
       #
       # To be run as a before_filter
       # Assumes @album is the album in question and current_user is the user we are evaluating
-      def require_album_contributor_role
+      def require_album_contributor_role(allow_automatic = false)
+        user = current_user(allow_automatic)
         msg = "Only album contributors can perform this operation"
-        if current_user
+        if user
           if @album.everyone_can_contribute?
             return true
           else
-            if @album.contributor?( current_user.id )
+            if @album.contributor?( user.id )
               return true
             else
               if zz_api_call?
@@ -439,7 +532,7 @@ module ZZ
       # @photo is the photo to be acted upon
       # current_user is the user we are evaluating
       def require_photo_owner_or_album_admin_role
-        unless  @photo.user.id == current_user.id || @photo.album.admin?( current_user.id )
+        unless @photo.user_id == current_user.id || @photo.album.admin?( current_user.id )
           msg = "Only Photo Owners or Album Admins can perform this operation"
           if zz_api_call?
             render_json_error(nil, msg, 401)

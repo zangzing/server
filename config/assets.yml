@@ -80,6 +80,9 @@ javascripts:
   store_admin_excanvas:
     - public/javascripts/store/admin/jqPlot/excanvas.js
 
+  shared:
+    - public/javascripts/shared/*.js
+
 stylesheets:
   common:
     - public/stylesheets/main.css

@@ -141,10 +141,10 @@ class Like < ActiveRecord::Base
       user = User.find(user_id)
       message = Like.default_like_post_message( self.subject_id, self.subject_type ) unless message
 
-      if ( tweet || ( !user.preferences.asktopost_likes && user.preferences.tweet_likes ) ) && user.identity_for_twitter.credentials_valid?
+      if ( tweet || ( !user.preferences.asktopost_likes && user.preferences.tweet_likes ) ) && user.identity_for_twitter.has_credentials?
           user.identity_for_twitter.post_like( self, message )
       end
-      if  (facebook || ( !user.preferences.asktopost_likes && user.preferences.facebook_likes )) && user.identity_for_facebook.credentials_valid?
+      if  (facebook || ( !user.preferences.asktopost_likes && user.preferences.facebook_likes )) && user.identity_for_facebook.has_credentials?
          user.identity_for_facebook.post_like( self, message)
       end
     rescue ActiveRecord::RecordNotFound
