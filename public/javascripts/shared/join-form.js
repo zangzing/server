@@ -92,70 +92,80 @@ var zz = zz || {};
     } // submit_form
 
     function submit_data(form_element){
-        var login_url = "https://"+ document.location.host +"/zz_api/login_or_create";
-        var finish_profile_url = "/finish_profile";
-        var join_url = "/join";
+        var login_url = "https://"+ document.location.host +"/service/users";
 
-        var email, password, email_pw_hash;
+        // todo: need to handle the follow_user_id stuff
 
-        email = form_element.find('#user_email').val();
-        password = form_element.find('#user_password').val();
-        email_pw_hash = {email: email, password: password, create: true};
-
-        if(form_element.find('#follow_user_id').val()){
-            finish_profile_url += '?follow_user_id='+form_element.find('#follow_user_id').val();
-        }
-
-        // Current page is https
-        // Call API directly
-        if (location.protocol === 'https:'){
-            $.ajax({
-                url: login_url,
-                type: 'POST',
-                data: email_pw_hash,
-                success: function(data){
-                    window.location = finish_profile_url;
-                }, // success
-                error:function(jqXHR, textStatus, errorThrown){
-                    var response = null;
-                    try {
-                        response = JSON.parse(jqXHR.responseText);
-                        alert(response.message);
-                    } catch (e) {
-                        alert("There was an error submitting your info. Please try again.");
-                        return false;
-                    }
-
-                } // error
-            });
-        }
-
-        // Current page is not https
-        // use JSONP
-        else {
-            $.jsonp({
-                url: login_url,
-                callback: "_jsonp_callback",
-                callbackParameter: "_jsonp_callback",
-                cache: false,
-                pageCache: false,
-                data: email_pw_hash,
-                success: function(response) {
-                    if(response._jsonp_error){
-                        var err = response._jsonp_error;
-                        alert(err.message);
-                    } else if (response.user_credentials != null) {
-                        window.r = response;
-                        window.location = finish_profile_url;
-                    } else { // Some unexpected error. Fallback to join page
-                        window.location = join_url;
-                    }
-                },
-                error: function() { // Should never get here unless we timeout.
-                    alert("Couldn't log you in.\nPlease check your email/password and try again.");
-                }
-            });
-        }
+        $(form_element).attr('action', login_url);
+        $(form_element).attr('method', "POST");
+        $(form_element).submit();
     }
+
+//    function submit_data(form_element){
+//        var login_url = "https://"+ document.location.host +"/zz_api/login_or_create";
+//        var finish_profile_url = "/finish_profile";
+//        var join_url = "/join";
+//
+//        var email, password, email_pw_hash;
+//
+//        email = form_element.find('#user_email').val();
+//        password = form_element.find('#user_password').val();
+//        email_pw_hash = {email: email, password: password, create: true};
+//
+//        if(form_element.find('#follow_user_id').val()){
+//            finish_profile_url += '?follow_user_id='+form_element.find('#follow_user_id').val();
+//        }
+//
+//        // Current page is https
+//        // Call API directly
+//        if (location.protocol === 'https:'){
+//            $.ajax({
+//                url: login_url,
+//                type: 'POST',
+//                data: email_pw_hash,
+//                success: function(data){
+//                    window.location = finish_profile_url;
+//                }, // success
+//                error:function(jqXHR, textStatus, errorThrown){
+//                    var response = null;
+//                    try {
+//                        response = JSON.parse(jqXHR.responseText);
+//                        alert(response.message);
+//                    } catch (e) {
+//                        alert("There was an error submitting your info. Please try again.");
+//                        return false;
+//                    }
+//
+//                } // error
+//            });
+//        }
+//
+//        // Current page is not https
+//        // use JSONP
+//        else {
+//            $.jsonp({
+//                url: login_url,
+//                callback: "_jsonp_callback",
+//                callbackParameter: "_jsonp_callback",
+//                cache: false,
+//                pageCache: false,
+//                data: email_pw_hash,
+//                success: function(response) {
+//                    if(response._jsonp_error){
+//                        var err = response._jsonp_error;
+//                        alert(err.message);
+//                    } else if (response.user_credentials != null) {
+//                        window.r = response;
+//                        window.location = finish_profile_url;
+//                    } else { // Some unexpected error. Fallback to join page
+//                        window.location = join_url;
+//                    }
+//                },
+//                error: function() { // Should never get here unless we timeout.
+//                    alert("Couldn't log you in.\nPlease check your email/password and try again.");
+//                }
+//            });
+//        }
+//    }
 
 })();

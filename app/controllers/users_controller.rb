@@ -43,34 +43,57 @@ class UsersController < ApplicationController
     end
   end
 
+
+
+  def create
+    begin
+      # fix params for login_or_create_shared
+      email = params[:user][:email]
+      password = params[:user][:password]
+
+      params[:email] = email
+      params[:password] = password
+      params[:create] = true
+
+      results = login_or_create_shared
+
+      redirect_to finish_profile_url
+
+    rescue ZZAPIError => ex
+      # todo: not sure what to do here
+      raise ex
+    end
+  end
+
+
   # NOTE, put common logic in create_user_shared but do NOT put
   # web specific logic there, put the specific web logic here.
-  def create
-    if current_user
-        flash[:notice] = "You are currently logged in as #{current_user.username}. Please log out before creating a new account."
-         add_javascript_action( 'show_message_dialog',  {:message => flash[:notice]})
-         redirect_back_or_default user_pretty_url(current_user)
-        return
-    end
-
-    user_info = params[:user]
-
-    success = create_user_shared(user_info, params[:follow_user_id], current_tracking_token)
-
-    if success
-      if @new_user.active
-        flash[:success] = "Welcome to ZangZing!"
-        add_javascript_action('show_welcome_dialog') unless( session[:return_to] )
-        redirect_back_or_default user_pretty_url( @new_user )
-        return
-      else
-        redirect_to inactive_url
-        return
-      end
-    end
-
-    render :action => :join, :layout => false
-  end
+  #def create
+  #  if current_user
+  #      flash[:notice] = "You are currently logged in as #{current_user.username}. Please log out before creating a new account."
+  #       add_javascript_action( 'show_message_dialog',  {:message => flash[:notice]})
+  #       redirect_back_or_default user_pretty_url(current_user)
+  #      return
+  #  end
+  #
+  #  user_info = params[:user]
+  #
+  #  success = create_user_shared(user_info, params[:follow_user_id], current_tracking_token)
+  #
+  #  if success
+  #    if @new_user.active
+  #      flash[:success] = "Welcome to ZangZing!"
+  #      add_javascript_action('show_welcome_dialog') unless( session[:return_to] )
+  #      redirect_back_or_default user_pretty_url( @new_user )
+  #      return
+  #    else
+  #      redirect_to inactive_url
+  #      return
+  #    end
+  #  end
+  #
+  #  render :action => :join, :layout => false
+  #end
 
   def finish_profile
     # URL Cleaning cycle
@@ -504,120 +527,8 @@ class UsersController < ApplicationController
     return unless require_no_user
 
     zz_api do
-      # see if we already have a full account that matches this email or username
-      email = params[:email]
-      password = params[:password]
-      name = params[:name]
-      username = params[:username]
-      tracking_token = params[:tracking_token] || current_tracking_token
-
-      # no user yet
-      cred_user = nil
-
-      service = params[:service]
-      credentials = params[:credentials]
-      if service
-        raise ZZAPIError.new("Facebook is the only allowed service for login") unless ['facebook'].include?(service)
-        raise ZZAPIError.new("You must specify credentials if logging in with a service") unless credentials
-        service_info = find_user_from_facebook_identity(credentials)
-        cred_user = service_info[:user]
-        service_user_id = service_info[:service_user_id]
-      end
-
-      # first try to login
-      just_created = false
-      create_user = !!params[:create]
-      if password || cred_user.nil?
-        user_session = UserSession.new(:email => email, :password => password)
-      elsif cred_user
-        user_session = UserSession.new(cred_user)
-      else
-        raise ZZAPIError.new("You cannot log in without valid credentials or username/password", 401)
-      end
-      if user_session.save
-        user = user_session.user
-        if user.automatic? && create_user == false
-          raise ZZAPIError.new("You cannot log in with an account that is still joining", 401)
-        end
-        prevent_session_fixation
-        user.reset_perishable_token! #reset the perishable token
-        set_zzv_id_cookie(user.zzv_id)
-        # ok, we are logged in
-      elsif create_user == false
-        # raise an error if we couldn't log in and not allowed to create
-        raise ZZAPIError.new(user_session.errors.full_messages, 401)
-      end
-
-      may_create = (!user.nil? && user.automatic?) || user.nil?
-      if may_create
-        if service_info
-          # if we have credentials, pick up anything not already
-          # passed in from the credentials
-          email ||= service_info[:email]
-          name ||= service_info[:name]
-          username ||= service_info[:username] || User.generate_username
-          password ||= User.generate_password
-        end
-        if name && username && email
-          # auto or nil user and they passed everything needed to create
-          user_info = {
-              :name => name,
-              :email => email,
-              :username => username,
-              :password => password,
-          }
-          success = create_user_shared(user_info, params[:follow_user_id], tracking_token)
-          user = @new_user
-          failed_create(user) unless success # raises an exception always
-          just_created = true
-        end
-      end
-
-      if user.nil? && email.index('@')
-        # not logged in, lets try to create an automatic user
-        user = User.find_by_email(email)
-        if user.nil?
-          # make a new one since nobody has this email
-          name = ''
-          options = {
-              :password => password,
-              :completed_step => 1,
-              :with_session => true,
-              :zzv_id => get_zzv_id_cookie,
-          }
-          user = User.create_automatic(email, name, true, nil, options)
-          just_created = true
-        elsif user.automatic? == false
-          user = nil  # found a real user but password was bad since we are here
-        end
-      end
-      raise ZZAPIError.new(user_session.errors.full_messages, 401) if user.nil?
-
-      # for an automatic user that already existed, always reset password and completed_step
-      if user.automatic? && just_created == false
-        # update the user info
-        user.completed_step = 1
-        user.reset_password = true
-        user.password  = password
-        user.password_confirmation = password
-        user.save!
-      end
-
-      # if they passed in credentials update our identity info
-      if credentials
-        update_facebook_identity(user, credentials, service_user_id)
-      end
-
-      profile_album_id = user.profile_album_id   # has the side effect of creating the profile album if doesn't already exist
-      user_credentials = user.persistence_token
-      result = prepare_user_result(user, user_credentials)
-      user_hash = result[:user]
-      # hand set the profile_album_id since this is an automatic user
-      # that normally does not get a profile album but here we create
-      # one so fix up the hash
-      user_hash[:profile_album_id] = profile_album_id
-      result
-    end
+      login_or_create_shared
+     end
   end
 
 
@@ -851,6 +762,129 @@ class UsersController < ApplicationController
     user.profile_photo_id = photo.id
     current_batch.close_immediate
   end
+
+  # see documentation for zz_api_login_or_create for expected
+  # input and output
+
+  def login_or_create_shared
+
+
+      # see if we already have a full account that matches this email or username
+      email = params[:email]
+      password = params[:password]
+      name = params[:name]
+      username = params[:username]
+      tracking_token = params[:tracking_token] || current_tracking_token
+
+      # no user yet
+      cred_user = nil
+
+      service = params[:service]
+      credentials = params[:credentials]
+      if service
+        raise ZZAPIError.new("Facebook is the only allowed service for login") unless ['facebook'].include?(service)
+        raise ZZAPIError.new("You must specify credentials if logging in with a service") unless credentials
+        service_info = find_user_from_facebook_identity(credentials)
+        cred_user = service_info[:user]
+        service_user_id = service_info[:service_user_id]
+      end
+
+      # first try to login
+      just_created = false
+      create_user = !!params[:create]
+      if password || cred_user.nil?
+        user_session = UserSession.new(:email => email, :password => password)
+      elsif cred_user
+        user_session = UserSession.new(cred_user)
+      else
+        raise ZZAPIError.new("You cannot log in without valid credentials or username/password", 401)
+      end
+      if user_session.save
+        user = user_session.user
+        if user.automatic? && create_user == false
+          raise ZZAPIError.new("You cannot log in with an account that is still joining", 401)
+        end
+        prevent_session_fixation
+        user.reset_perishable_token! #reset the perishable token
+        set_zzv_id_cookie(user.zzv_id)
+        # ok, we are logged in
+      elsif create_user == false
+        # raise an error if we couldn't log in and not allowed to create
+        raise ZZAPIError.new(user_session.errors.full_messages, 401)
+      end
+
+      may_create = (!user.nil? && user.automatic?) || user.nil?
+      if may_create
+        if service_info
+          # if we have credentials, pick up anything not already
+          # passed in from the credentials
+          email ||= service_info[:email]
+          name ||= service_info[:name]
+          username ||= service_info[:username] || User.generate_username
+          password ||= User.generate_password
+        end
+        if name && username && email
+          # auto or nil user and they passed everything needed to create
+          user_info = {
+              :name => name,
+              :email => email,
+              :username => username,
+              :password => password,
+          }
+          success = create_user_shared(user_info, params[:follow_user_id], tracking_token)
+          user = @new_user
+          failed_create(user) unless success # raises an exception always
+          just_created = true
+        end
+      end
+
+      if user.nil? && email.index('@')
+        # not logged in, lets try to create an automatic user
+        user = User.find_by_email(email)
+        if user.nil?
+          # make a new one since nobody has this email
+          name = ''
+          options = {
+              :password => password,
+              :completed_step => 1,
+              :with_session => true,
+              :zzv_id => get_zzv_id_cookie,
+          }
+          user = User.create_automatic(email, name, true, nil, options)
+          just_created = true
+        elsif user.automatic? == false
+          user = nil  # found a real user but password was bad since we are here
+        end
+      end
+      raise ZZAPIError.new(user_session.errors.full_messages, 401) if user.nil?
+
+      # for an automatic user that already existed, always reset password and completed_step
+      if user.automatic? && just_created == false
+        # update the user info
+        user.completed_step = 1
+        user.reset_password = true
+        user.password  = password
+        user.password_confirmation = password
+        user.save!
+      end
+
+      # if they passed in credentials update our identity info
+      if credentials
+        update_facebook_identity(user, credentials, service_user_id)
+      end
+
+      profile_album_id = user.profile_album_id   # has the side effect of creating the profile album if doesn't already exist
+      user_credentials = user.persistence_token
+      result = prepare_user_result(user, user_credentials)
+      user_hash = result[:user]
+      # hand set the profile_album_id since this is an automatic user
+      # that normally does not get a profile album but here we create
+      # one so fix up the hash
+      user_hash[:profile_album_id] = profile_album_id
+      result
+  end
+
+
 
   # common create user code shared between
   # web and zz_api, do not place any web ui
