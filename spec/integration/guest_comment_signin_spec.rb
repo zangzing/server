@@ -44,8 +44,22 @@ describe 'commenting as guest' do
     get_via_redirect "#{join_path}?return_to=#{CGI::escape(finish_create_photo_comment_path(photo))}"
 
 
-    # signin and follow redirect back to photo single pic vuew
-    post_via_redirect create_user_path, 'user[email]' => "test@test.zangzing.com", 'user[username]' => "testuser", 'user[password]' => "password", 'user[name]' => "Test User"
+    # post join page (1st step)
+    post_via_redirect create_user_path 'user[email]' => Faker::Internet.email, 'user[password]' => 'password'
+    response.status.should be 200
+    response.should have_selector('#users-finish_profile')
+
+    # post finish profile page (2nd step)
+    post_via_redirect zz_api_login_create_finish_path 'name' => Faker::Name.name, 'username' => 'username'
+    response.status.should be 200
+
+
+    get_via_redirect after_join_path
+    response.status.should be 200
+
+
+
+
 
 
     # verify that comment has been added to database

@@ -433,6 +433,7 @@ class Photo < ActiveRecord::Base
   # queue the upload with no checks
   def queue_upload_to_s3(options = {})
     ZZ::ZZA.new.track_transaction("photo.upload.s3.start", self.id)
+    options[:priority] = self.work_priority
     ZZ::Async::S3Upload.enqueue( self.id, options )
     logger.debug("queued for upload")
   end
@@ -635,7 +636,7 @@ class Photo < ActiveRecord::Base
         save!(false)  # no auto cleanup on error
 
         Rails.logger.debug("Upload of original file to S3 finished - queueing resize stage.")
-        ZZ::Async::GenerateThumbnails.enqueue(self.id, queued_at.to_i)
+        ZZ::Async::GenerateThumbnails.enqueue(self.id, queued_at.to_i, { :priority => self.work_priority })
         # clean up temp file since it has been uploaded with no errors
         remove_source
       else

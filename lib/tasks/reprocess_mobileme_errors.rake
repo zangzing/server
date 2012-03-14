@@ -24,7 +24,7 @@ begin
       #  photo.state = 'assigned'
       #  photo.save!
       #
-      #  ZZ::Async::GeneralImport.enqueue(photo.id, url)
+      #  ZZ::Async::GeneralImport.enqueue(photo.id, url, { :priority => photo.work_priority })
       #
       #end
       #

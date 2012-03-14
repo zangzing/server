@@ -10,7 +10,7 @@ Server::Application.routes.draw do
   get    '/service'            => 'pages#home',          :as => :service
   get    '/signin'             => 'user_sessions#new',   :as => :signin
   get    '/join'               => 'users#join',          :as => :join
-  get    '/join_final'         => 'users#join_final',       :as => :join_final
+  get    '/finish_profile'     => 'users#finish_profile',:as => :finish_profile
   get    '/unsubscribe/:id'    => 'subscriptions#unsubscribe', :as => :unsubscribe
 
   get    '/invitation'  => 'invitations#show', :as => :invitation  , :requirements => {:protocol => 'https'}
@@ -49,6 +49,7 @@ Server::Application.routes.draw do
     put    '/users/:id'                 => 'users#update',            :as => :update_user
     delete '/users/:id'                 => 'users#destroy',           :as => :delete_user
     match  '/users/:id/update_password' => 'users#update_password',   :as => :update_user_password, :requirements => {:protocol => 'https'}
+    get    '/users/after_join'          => 'users#after_join',        :as => :after_join
 
 
 
@@ -90,9 +91,10 @@ Server::Application.routes.draw do
     get    '/albums/:album_id/close_batch'         => 'albums#close_batch',         :as => :close_batch
     put    '/albums/:album_id'                     => 'albums#update',              :as => :update_album
     delete '/albums/:album_id'                     => 'albums#destroy',             :as => :delete_album
-    post   'albums/:album_id/request_access'       => 'albums#request_access',      :as => :request_album_access
+    post   '/albums/:album_id/request_access'      => 'albums#request_access',      :as => :request_album_access
     get    '/albums/:album_id/add_photos'          => 'albums#add_photos',          :as => :album_add_photos
     get    '/albums/:album_id/wizard/:step'        => 'albums#wizard',              :as => :album_wizard
+    post   '/albums/:album_id/set_latest_cover'    => 'albums#set_latest_cover',  :as => :set_latest_cover
 
     #shares
     get    '/albums/:album_id/shares'             => 'shares#index',            :as => :album_shares

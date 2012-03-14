@@ -46,6 +46,7 @@ class Connector::InstagramFoldersController < Connector::InstagramController
             :album_id => params[:album_id],
             :user_id => identity.user.id,
             :upload_batch_id => current_batch.id,
+            :work_priority => params[:priority] || ZZ::Async::Priorities.import_single_album,
             :capture_date => (Time.at(p[:created_time].to_i) rescue nil),
             :source_guid => make_source_guid(p),
             :source_thumb_url => p[:images][:thumbnail][:url],
@@ -65,7 +66,7 @@ class Connector::InstagramFoldersController < Connector::InstagramController
   def self.import_all_albums(api_client, params)
     identity = params[:identity]
     zz_album = create_album(identity, 'My Instagram Photostream', params[:privacy])
-    fire_async('import_album',  params.merge(:album_id => zz_album.id, :target => 'my-photos'))
+    fire_async_import_all('import_album',  params.merge(:album_id => zz_album.id, :target => 'my-photos'))
 
     identity.last_import_all = Time.now
     identity.save

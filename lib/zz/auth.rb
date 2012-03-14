@@ -103,7 +103,7 @@ module ZZ
         url = nil
         if user.automatic?
           if user.completed_step == 1
-            url = join_final_url
+            url = finish_profile_url
           else
             url = join_url
           end
@@ -145,6 +145,11 @@ module ZZ
       def zz_api_session_less?
         return @zz_api_session_less if defined?(@zz_api_session_less)
         @zz_api_session_less = zz_api_call? && request.headers[ZZ_API_HEADER] == ZZ_API_IPHONE_CLIENT
+      end
+
+      # did it come from the iphone
+      def zz_api_iphone?
+        request.headers[ZZ_API_HEADER] == ZZ_API_IPHONE_CLIENT
       end
 
       # just used as a placeholder in code to make it clear
@@ -190,10 +195,9 @@ module ZZ
 
         # ok, we have a user lets make sure full
         if current_user.automatic?
-          join_final = false
           if current_user.completed_step == 1
             msg = "You must complete the final step of the join process to login"
-            join_final = true
+            finish_profile = true
           else
             msg = "Join for free or sign in to access that page."
           end
@@ -204,8 +208,8 @@ module ZZ
             head :status => 401
           else
             store_location
-            if join_final
-              redirect_to join_final_url :message => msg
+            if finish_profile
+              redirect_to finish_profile_url :message => msg
             else
               redirect_to join_url :message => msg
             end
@@ -528,7 +532,7 @@ module ZZ
       # @photo is the photo to be acted upon
       # current_user is the user we are evaluating
       def require_photo_owner_or_album_admin_role
-        unless  @photo.user.id == current_user.id || @photo.album.admin?( current_user.id )
+        unless @photo.user_id == current_user.id || @photo.album.admin?( current_user.id )
           msg = "Only Photo Owners or Album Admins can perform this operation"
           if zz_api_call?
             render_json_error(nil, msg, 401)

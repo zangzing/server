@@ -47,6 +47,11 @@ class Connector::ConnectorController < ApplicationController
     ZZ::Async::ConnectorWorker.enqueue(response_id, params[:identity].id, self.name, class_method, all_params)
   end
 
+  # wrapper invoked to do async import all, we set
+  # the priority to import_all
+  def self.fire_async_import_all(class_method, params)
+    fire_async(class_method, params.merge(:priority => ZZ::Async::Priorities.import_all))
+  end
 
 
   def http_timeout
@@ -74,6 +79,11 @@ class Connector::ConnectorController < ApplicationController
     JSON.fast_generate(rows)
   end
 
+  def self.queue_single_photo(photo, photo_url, options = {})
+    options[:priority] ||= photo.work_priority || ZZ::Async::Priorities.import_single_photo
+    ZZ::Async::GeneralImport.enqueue(photo.id,  photo_url, options)
+  end
+
   class << self
     include Server::Application.routes.url_helpers
 
@@ -87,7 +97,9 @@ class Connector::ConnectorController < ApplicationController
 
       # must send after all saved
       photos.each do |photo|
-        ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url, options )
+        photo_options = options.dup
+        photo_options[:priority] ||= photo.work_priority || ZZ::Async::Priorities.import_single_album
+        ZZ::Async::GeneralImport.enqueue( photo.id, photo.temp_url, photo_options )
       end
 
       Photo.to_json_lite(photos)

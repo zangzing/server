@@ -325,7 +325,6 @@ var zz = zz || {};
         call_rotate_photo_right: function(photo_id, success, failure) {
             call_rotate_photo(photo_id, 'right', success, failure);
         }
-
     };
 
 

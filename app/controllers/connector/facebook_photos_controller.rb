@@ -38,6 +38,7 @@ class Connector::FacebookPhotosController < Connector::FacebookController
             :user_id=>identity.user.id,
             :album_id => params[:album_id],
             :upload_batch_id => current_batch.id,
+            :work_priority => ZZ::Async::Priorities.import_single_photo,
             :caption => info[:name] || '',
             :capture_date => info[:created_time],
             :source_guid => make_source_guid(info),
@@ -46,7 +47,7 @@ class Connector::FacebookPhotosController < Connector::FacebookController
             :source => 'facebook'
     )
 
-    ZZ::Async::GeneralImport.enqueue( photo.id, get_photo_url(info, :full) )
+    queue_single_photo( photo, get_photo_url(info, :full) )
     Photo.to_json_lite(photo)
   end
 

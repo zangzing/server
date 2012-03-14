@@ -41,14 +41,6 @@
       <input style="visibility:hidden" type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
       <ul>
         <li>
-          <label for="user_name" style="opacity: 1; ">First &amp; Last Name</label>
-          <input type="text" name="user[name]" id="user_name" value="" />
-        </li>
-        <li>
-          <label for="user_username">Username</label>
-          <input type="text" name="user[username]" id="user_username" value="" />
-        </li>
-        <li>
           <label for="user_email">Email address</label>
           <input type="text" name="user[email]" id="user_email" value="" />
         </li>
@@ -137,6 +129,7 @@
 <%= include_javascripts :lib %>
 <%= include_javascripts :zz %>
 <%= include_javascripts :zz_oauthmanager %>
+<%= include_javascripts :shared %>
 
 <script type="text/javascript">
     $(document).ready(function(){
@@ -148,20 +141,18 @@
 
         $('.invitation-page .join-form label').inFieldLabels();
 
-        zz.joinform.add_validation($('.invitation-page .join-form'));
+        var validator = zz.joinform.add_validation($('.invitation-page .join-form'));
 
 
         $('.invitation-page .submit-button').click(function(){
-            $('.invitation-page .join-form').submit();
-            ZZAt.track('invitation.page.join-button.click');
-
+            zz.joinform.submit_form($('.invitation-page .join-form'), validator, "invitation.page.join-button");
+            return false;
         });
 
 
         $('.invitation-page .join-form').bind('keypress', function(e){
             if ( e.keyCode == 13 ) {
-                $(".invitation-page .join-form").submit();
-                ZZAt.track('invitation.page.join-button.click');
+                zz.joinform.submit_form($('.invitation-page .join-form'), validator, "invitation.page.join-button");
             }
         });
 
