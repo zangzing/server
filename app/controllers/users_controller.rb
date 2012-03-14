@@ -3,7 +3,7 @@ class UsersController < ApplicationController
                :zz_api_login_or_create, :zz_api_login_create_finish
   ssl_allowed :validate_email, :validate_username
 
-  skip_before_filter :verify_authenticity_token, :only=>[:create]
+  skip_before_filter :verify_authenticity_token, :only=>[:zz_api_login_or_create]
 
   def join
     # URL Cleaning cycle
@@ -529,6 +529,7 @@ class UsersController < ApplicationController
       # first try to login
       just_created = false
       create_user = !!params[:create]
+      clear_buy_mode_cookie
       if password || cred_user.nil?
         user_session = UserSession.new(:email => email, :password => password)
       elsif cred_user
