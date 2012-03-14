@@ -83,7 +83,7 @@ var zz = zz || {};
 		if(zz.invitation.invitername) {
 			name = zz.invitation.invitername.split(" ",1);
 			name = name[0].substring(0,10);
-			message = "<strong>" +  + "</strong> has invited you to ZangZing. Join now and you each get 250MB of extra space free.";
+			message = "<strong>" + name + "</strong> has invited you. Join now and you each get 250MB of extra space free.";
 		} else if(zz.page.displayed_user_name){
 			name = zz.page.displayed_user_name.split(" ",1);
 			name = name[0].substring(0,10);
