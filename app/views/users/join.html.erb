@@ -21,7 +21,7 @@
           <input type="password" name="user[password]" id="user_password" value="" maxlength="40" />
         </li>
         <li>
-			<input type="button" id="submit" value="Join for Free" />
+			<input type="button" id="signup" value="Join for Free" />
         </li>
         <li>
           By joining you accept and agree to <a target="_blank" href="/terms">the terms of service</a>.
@@ -29,23 +29,21 @@
       </ul>
     </form>
    </div>
-
 	<div class="afterform">
 		Not Sure? <a href="/">Learn More</a>
 	</div>
-	
 </div>
 
 <% content_for :zz_js_document_ready do %>
 	zz.toolbars.hide_bottom_toolbar();
 
     zz.local_storage.clear();
-	
+
     var validator = zz.joinform.add_validation( $('.join-form') );
 
 	$('.join-form li label').inFieldLabels();
 
-    $('#submit').click(function(){
+    $('#signup').click(function(){
         zz.joinform.submit_form($(".join-form"), validator, "join.joinpage");
         return false;
     });

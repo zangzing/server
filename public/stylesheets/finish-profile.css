@@ -288,3 +288,7 @@ html #users-finish_profile{
 #users-finish_profile .progress-block .processing-container img {
    vertical-align: middle;
 }
+
+#users-finish_profile #header #home-button {
+    cursor: auto;
+}

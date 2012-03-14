@@ -75,6 +75,8 @@
     load_profile_photo("<%= @user.profile_photo_url %>");
 
     setup_upload();
+
+    ZZAt.track('join.finishprofile.visit');
 <%end%>
 
 
@@ -147,8 +149,10 @@ function submit_data(form_element){
             try {
                 response = JSON.parse(jqXHR.responseText);
                 alert(response.message);
+                ZZAt.track('join.finishprofile.click.api', {error: response.message});
             } catch (e) {
                 alert("There was an error submitting your info. Please try again.");
+                ZZAt.track('join.finishprofile.click.api', {error: "api error"});
                 return false;
             }
 
@@ -274,6 +278,7 @@ function setup_upload(){
             unbind_done();
             show_processing_ui();
             uploader.startUpload();
+            ZZAt.track('join.finishprofile.profilephoto.uploadstart');
         },
 
         upload_success_handler: function(file, serverData) {
@@ -398,7 +403,7 @@ function photo_load_and_set(){
 
 
 zz.finish_profile_photo_poll = {
-    MAX_CALLS: 35,
+    MAX_CALLS: 30,
     DELAY: 1000,
 
     call: function(url, method, data, continue_callback, success_callback, failure_callback) {

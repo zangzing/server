@@ -92,7 +92,7 @@
 	text-align: left;
 }
 
-.joinpage #submit {
+.joinpage #signup {
 	width: 350px;
 	height: 40px;
 
@@ -117,7 +117,7 @@
 
 
 /* green hover */
-.joinpage #submit:hover {
+.joinpage #signup:hover {
 	background-position: 0 -50px;
 	border-color: #026404;
 	box-shadow:inset 0 1px 0 #7ab478;
@@ -127,7 +127,7 @@
 
 /* green active */
 
-.jonipage #submit:active {
+.jonipage #signup:active {
 	box-shadow:inset 0 2px 2px #318e2c;
 	-webkit-box-shadow:inset 0 2px 3px #026404;
 	-moz-box-shadow:inset 0 2px 2px #318e2c;
