@@ -232,7 +232,6 @@ function setup_upload(){
         var response = null;
         try {
             response = JSON.parse(serverData);
-            //console.debug(JSON.stringify(response));
             poll_photo(album_id, response.id);
         } catch (e) {
             // Couldn't parse server response. Default to waiting 5 seconds
@@ -248,7 +247,7 @@ function setup_upload(){
         post_params: {'user_credentials': user_credentials, 'priority': 100},
 
         // File Upload Settings
-        file_size_limit: '102400',    // 100MB
+        file_size_limit: '40960',    // 40MB
         file_types: '*.jpg;*.jpeg;*.png;*.gif;*.tiff;*.JPG;*.JPEG;*.PNG;*.GIF;*.TIFF',
         file_types_description: 'Image Files',
         file_upload_limit: '0',
@@ -343,42 +342,35 @@ function poll_photo(album_id, photo_id){
 function photo_ready(album_id, photo_id){
     // Couldn't parse response from server
     if(photo_id==null || photo_id==0){
-        // TODO:
+        show_upload_error();
     }
-    //console.debug('photo ready called');
 
     $.ajax({ type: 'POST',
         url: '/zz_api/albums/' + album_id + '/update',
         data: { cover_photo_id: photo_id },
         success: function(data, status, jqXHR) {
-        //    console.debug('set album success');
             photo_load_and_set();
         },
         error:function(jqXHR, textStatus, errorThrown){
             var response = null;
             try {
                 response = JSON.parse(jqXHR.responseText);
-                alert(response.message);
+                show_upload_error(response.message);
             } catch (e) {
-                alert("There was an error adding your photo. Please try again.");
+                show_upload_error();
                 return false;
             }
         } // error
     });
-
-
 }
 
 function photo_load_and_set(){
-
     $.ajax({ type: 'GET',
         url: '/zz_api/users/current_user_info',
         data: {},
         async: false,
         success: function(data, status, jqXHR) {
-            //console.debug(data);
             var photo_url = data.profile_photo_url;
-            //console.debug(photo_url);
             load_profile_photo(photo_url);
             hide_processing_ui();
             $(".swfupload").remove();
@@ -388,15 +380,13 @@ function photo_load_and_set(){
             var response = null;
             try {
                 response = JSON.parse(jqXHR.responseText);
-                alert(response.message);
+                show_upload_error(response.message);
             } catch (e) {
-                alert("There was an error adding your photo. Please try again.");
+                show_upload_error();
                 return false;
             }
         } // error
     });
-
-
 }
 
 

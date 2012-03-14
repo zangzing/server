@@ -3,7 +3,7 @@ class UsersController < ApplicationController
                :zz_api_login_or_create, :zz_api_login_create_finish
   ssl_allowed :validate_email, :validate_username
 
-  skip_before_filter :verify_authenticity_token, :only=>[:create]
+  skip_before_filter :verify_authenticity_token, :only=>[:zz_api_login_or_create]
 
   def join
     # URL Cleaning cycle
@@ -97,16 +97,17 @@ class UsersController < ApplicationController
 
   def finish_profile
     # URL Cleaning cycle
-    if params[:follow_user_id]
-      session[:follow_user_id] = params[:follow_user_id]
-      redirect_to finish_profile_url and return
-    end
+    #if params[:follow_user_id]
+    #  session[:follow_user_id] = params[:follow_user_id]
+    #  redirect_to finish_profile_url and return
+    #end
 
     if any_current_user && any_current_user.completed_step == 1
       @user = any_current_user
-      if session[:follow_user_id]
-        @follow_user_id = session[:follow_user_id]
-      end
+      #if session[:follow_user_id]
+      #  @follow_user_id = session[:follow_user_id]
+      #end
+      rd = session[:return_to]
       render :layout => 'plain'
     else
       redirect_to join_url
@@ -116,9 +117,10 @@ class UsersController < ApplicationController
   # Arrive here after all join steps completed
   # Use as the gate for where to go next
   def after_join
-    if session[:follow_user_id]
-      session.delete(:follow_user_id)
-    end
+    #if session[:follow_user_id]
+    #  session.delete(:follow_user_id)
+    #end
+    rd = session[:return_to]
 
     if current_user
       add_javascript_action('show_welcome_dialog') unless( session[:return_to] )
@@ -767,8 +769,6 @@ class UsersController < ApplicationController
   # input and output
 
   def login_or_create_shared
-
-
       # see if we already have a full account that matches this email or username
       email = params[:email]
       password = params[:password]
@@ -792,6 +792,7 @@ class UsersController < ApplicationController
       # first try to login
       just_created = false
       create_user = !!params[:create]
+      clear_buy_mode_cookie
       if password || cred_user.nil?
         user_session = UserSession.new(:email => email, :password => password)
       elsif cred_user
@@ -882,6 +883,7 @@ class UsersController < ApplicationController
       # one so fix up the hash
       user_hash[:profile_album_id] = profile_album_id
       result
+    end
   end
 
 

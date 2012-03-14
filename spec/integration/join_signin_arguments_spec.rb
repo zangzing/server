@@ -52,8 +52,6 @@ describe 'return_to and email parameters for signin and join urls' do
     return_to = photo_pretty_url( photo )
 
     visit join_pretty_url( return_to, nil )
-    fill_in 'user[name]', :with     => Faker::Name.name
-    fill_in 'user[username]', :with => Faker::Name.first_name.downcase
     fill_in 'user[email]', :with    => Faker::Internet.email
     fill_in 'user[password]', :with => 'password'
     submit_form 'form'
@@ -79,8 +77,6 @@ describe 'return_to and email parameters for signin and join urls' do
 
   it 'welcome dialog js directive should be present after join  if no return_to' do
     visit join_pretty_url( nil, nil )
-    fill_in 'user[name]', :with     => Faker::Name.name
-    fill_in 'user[username]', :with => Faker::Name.first_name.downcase
     fill_in 'user[email]', :with    => Faker::Internet.email
     fill_in 'user[password]', :with => 'password'
     submit_form 'form'
