@@ -51,14 +51,46 @@ describe 'return_to and email parameters for signin and join urls' do
     photo = Factory.create(:photo)
     return_to = photo_pretty_url( photo )
 
-    visit join_pretty_url( return_to, nil )
-    fill_in 'user[name]', :with     => Faker::Name.name
-    fill_in 'user[username]', :with => Faker::Name.first_name.downcase
-    fill_in 'user[email]', :with    => Faker::Internet.email
-    fill_in 'user[password]', :with => 'password'
-    submit_form 'form'
+    # visit join page
+    get_via_redirect join_pretty_url(return_to)
+    response.status.should be 200
+    response.should have_selector('.join-form')
+
+    # post join page (1st step)
+    post_via_redirect create_user_path 'user[email]' => Faker::Internet.email, 'user[password]' => 'password'
+    response.status.should be 200
+    response.should have_selector('#users-finish_profile')
+
+    # post finish profile page (2nd step)
+    post_via_redirect zz_api_login_create_finish_path 'name' => Faker::Name.name, 'username' => 'username'
+    response.status.should be 200
+
+    # make sure we got redirected to the photos page
+    get_via_redirect after_join_path
     response.status.should be 200
     response.should have_selector('body#photos-index')
+
+  end
+
+  it 'welcome dialog js directive should be present after join  if no return_to' do
+    # visit join page
+    get_via_redirect join_pretty_url
+    response.status.should be 200
+    response.should have_selector('.join-form')
+
+    # post join page (1st step)
+    post_via_redirect create_user_path 'user[email]' => Faker::Internet.email, 'user[password]' => 'password'
+    response.status.should be 200
+    response.should have_selector('#users-finish_profile')
+
+    # post finish profile page (2nd step)
+    post_via_redirect zz_api_login_create_finish_path 'name' => Faker::Name.name, 'username' => 'username'
+    response.status.should be 200
+
+    get_via_redirect after_join_path
+    response.status.should be 200
+    response.should contain("zz.welcome.show_welcome_dialog();")
+
   end
 
   it 'join_url should redirect to return_to if logged in' do
@@ -77,14 +109,5 @@ describe 'return_to and email parameters for signin and join urls' do
     response.should have_selector('body#photos-index')
   end
 
-  it 'welcome dialog js directive should be present after join  if no return_to' do
-    visit join_pretty_url( nil, nil )
-    fill_in 'user[name]', :with     => Faker::Name.name
-    fill_in 'user[username]', :with => Faker::Name.first_name.downcase
-    fill_in 'user[email]', :with    => Faker::Internet.email
-    fill_in 'user[password]', :with => 'password'
-    submit_form 'form'
-    response.status.should be 200
-    response.should contain("zz.welcome.show_welcome_dialog();")
-  end
+
 end

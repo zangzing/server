@@ -101,7 +101,6 @@ module Cache
         user_id = self.user.id
         use_compression = Loader.compressed
         version_tracker.each do |item|
-          did_compress = use_compression
           album_type = item[0]
           albums = item[1]
           ver = item[2]
@@ -109,14 +108,17 @@ module Cache
 
           json = JSON.fast_generate(albums)
 
+          # assume did not compress if we fail on compression step
+          did_compress = false
+
           begin
             # compress the content once before caching: save memory and save nginx from compressing every response
             json = checked_gzip_compress(json, 'homepage.cache.corruption', "Key: #{key}, UserId: #{user_id}") if use_compression
+            did_compress = use_compression
             CacheWrapper.write(key, json, :expires_in => Manager::CACHE_MAX_INACTIVITY)
             cache_man.logger.info "Caching #{key}"
           rescue Exception => ex
             # log the message but continue
-            did_compress = false
             cache_man.logger.error "Failed to cache: #{key} due to #{ex.message}"
           end
 

@@ -35,6 +35,7 @@ class Connector::SmugmugPhotosController < Connector::SmugmugController
             :user_id => identity.user.id,
             :upload_batch_id => current_batch.id,
             :capture_date => (DateTime.parse(photo_info[:lastupdated]) rescue nil),
+            :work_priority => ZZ::Async::Priorities.import_single_photo,
             :source_guid => make_source_guid(photo_info),
             :source_thumb_url => '/service/proxy?url=' + photo_info[:smallurl],
             :source_screen_url => '/service/proxy?url=' + photo_info[:x3largeurl],
@@ -42,7 +43,7 @@ class Connector::SmugmugPhotosController < Connector::SmugmugController
 
 
     )
-    ZZ::Async::GeneralImport.enqueue( photo.id,  photo_info[:originalurl] )
+    queue_single_photo( photo,  photo_info[:originalurl] )
     Photo.to_json_lite(photo)
   end
 

@@ -2,8 +2,8 @@ module ZZ
   module Async
     
     class DeliverShare < Base
-      @queue = :io_bound
-      
+      @queue = Priorities.io_queue_name(Priorities.deliver_share)
+
       # only add ourselves one time
       if @retry_criteria_checks.length == 0
         # plug ourselves into the retry framework

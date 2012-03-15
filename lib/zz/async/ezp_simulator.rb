@@ -2,7 +2,7 @@ module ZZ
   module Async
 
     class EZPSimulator < Base
-      @queue = :io_bound
+      @queue = Priorities.io_queue_name(Priorities.ezp_simulator)
 
       # only add ourselves one time
       if @retry_criteria_checks.length == 0

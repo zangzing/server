@@ -76,11 +76,15 @@ end
 # for web stuff also
 # returns user_id
 def zz_login(username, password)
+  zz_logout
   body = zz_api_body({ :email => username, :password => password })
-  path = build_full_path(zz_api_login_path, true)
+  path = build_full_path(zz_api_create_or_login_path, true)
   post path, body, zz_api_headers
   response.status.should eql(200)
   login_info = JSON.parse(response.body).recursively_symbolize_keys!
   user_id = login_info[:user_id]
 end
 
+def zz_logout
+  zz_api_post zz_api_logout_path, nil, 200
+end

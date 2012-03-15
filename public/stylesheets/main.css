@@ -7,7 +7,6 @@ html{}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend
 .none { display:none; }
 
 html {
-    overflow: hidden;
     height:100%;
 }
 
@@ -21,6 +20,7 @@ body {
     font-size: 12px;
     color: #0a0a0a;
     text-align: center;
+    overflow: hidden;
 }
 
 body.impersonation {
@@ -113,9 +113,9 @@ div#container {
   	z-index: 200;
   	top: 54px; /* 60px header - 2px header top - 2px header invisible shadow - 1px header image - 1px self-border*/
     left: 50%;
-    width: 846px;
+    width: 700px;
     height:75px;
-    margin-left: -423px;
+    margin-left: -350px;
     text-align:left;
     
     background-color: #fff8de;
@@ -143,8 +143,8 @@ div#container {
 	box-shadow: 0px 0px 3px #aaa;
     -webkit-box-shadow: 0px 0px 3px #aaa;
     -moz-box-shadow: 0px 0px 3px #aaa;
-    height: 48px;
-    width: 48px;
+    height: 52px;
+    width: 52px;
     margin: 7px;
     position: relative;
 }
@@ -164,7 +164,7 @@ div#container {
     height:5px;
     width: 52px;
 	position:absolute;
-	bottom: -9px;
+	bottom: -5px;
 	left:0px;
 }
 
@@ -415,7 +415,7 @@ div#headline {
     overflow-y:auto;
     overflow-x:hidden;
     position: absolute;
-    top:57px;
+    top:55px;
     left:0px;
     bottom:60px;
     right:0px;

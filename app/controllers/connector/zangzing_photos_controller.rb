@@ -28,6 +28,7 @@ class Connector::ZangzingPhotosController < Connector::ZangzingController
               :album_id => params[:album_id],
               :user_id => source_photo.user_id,
               :upload_batch_id => current_batch.id,
+              :work_priority => ZZ::Async::Priorities.import_single_photo,
               :capture_date => source_photo.capture_date,
               :source_guid => source_photo.source_guid,
               :source_thumb_url => source_photo.thumb_url,
@@ -37,7 +38,7 @@ class Connector::ZangzingPhotosController < Connector::ZangzingController
               :crop_json => source_photo.crop_json
     )
 
-    ZZ::Async::GeneralImport.enqueue( photo.id, source_photo.original_url )
+    Connector::ConnectorController.queue_single_photo( photo, source_photo.original_url )
     render :json => Photo.to_json_lite(photo)
   end
 
