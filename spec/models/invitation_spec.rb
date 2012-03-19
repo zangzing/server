@@ -104,7 +104,7 @@ describe Invitation do
     it "should create inviataion when sharing a photo with non-zangzing user" do
       resque_jobs(resque_filter) do
         from_user = Factory.create(:user)
-        photo = Factory.create(:photo, :user => from_user)
+        photo = Factory.create(:photo, :user => from_user, :state => 'ready')
 
 
         share = Share.new(:user => from_user,
@@ -125,7 +125,7 @@ describe Invitation do
     it "should not create inviataion when sharing a photo with zangzing user" do
       resque_jobs(resque_filter) do
         from_user = Factory.create(:user)
-        photo = Factory.create(:photo, :user => from_user)
+        photo = Factory.create(:photo, :user => from_user, :state => 'ready')
 
         to_user = Factory.create(:user)
 

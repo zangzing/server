@@ -39,9 +39,20 @@ class Identity < ActiveRecord::Base
   end
 
   # return as a boolean
-  def credentials_valid?
-    # we may want to validate with a call to the specific service
+  def has_credentials?
+    # verify_credentials is used when you want to see if they are actually verified
     (self.identity_source.to_sym == :local) || !!self.credentials   # the !! turns nil into false
+  end
+
+  # If specific service supports it, do an active verification
+  # now, otherwise just tells us that credentials have been set.
+  # returns true if verified, false otherwise
+  #
+  # Note, this call is potentially high overhead so only issue
+  # when you truly need to verify with the service that the credentials
+  # are indeed valid.
+  def verify_credentials
+    has_credentials?  # by default if not overridden just checks to see if set
   end
 
   UI_INFO = {
@@ -62,6 +73,13 @@ class Identity < ActiveRecord::Base
     :mslive => {:name => 'Hotmail', :icon => ''}
   }
 
+  # check to see if the service name passed is
+  # valid
+  def self.is_valid_service_name?(name)
+    info = UI_INFO[name.to_sym]
+    !!info
+  end
+
   def name
     UI_INFO[self.identity_source.to_sym][:name]
   end
@@ -72,7 +90,7 @@ class Identity < ActiveRecord::Base
 
   def import_contacts(contacts_array)
     db = Contact.connection
-    max_insert_size = self.max_insert_size
+
     cmd = "INSERT INTO #{Contact.quoted_table_name} (identity_id, name, address, created_at, updated_at) VALUES "
 
     # build an array of arrays that contain the data to insert

@@ -51,22 +51,32 @@ module ZZSslRequirement
       (self.class.read_inheritable_attribute(:ssl_required_actions) || []).include?(action_name.to_sym)
     end
 
+    # we allow the registered methods plus all zz_api calls
     def ssl_allowed?
-      (self.class.read_inheritable_attribute(:ssl_allowed_actions) || []).include?(action_name.to_sym)
+      (self.class.read_inheritable_attribute(:ssl_allowed_actions) || []).include?(action_name.to_sym) ||
+          request.path.index("/zz_api/") == 0
     end
 
   private
     def ensure_proper_protocol
-      return true if ssl_allowed?
-
-      if ssl_required? && !request.ssl?
-        redirect_to "https://" + request.host + (request.respond_to?(:fullpath) ? request.fullpath : request.request_uri)
-        flash.keep
-        return false
-      elsif request.ssl? && !ssl_required?
-        redirect_to "http://" + request.host + (request.respond_to?(:fullpath) ? request.fullpath : request.request_uri)
-        flash.keep
-        return false
+      if request.ssl?
+        # it's ssl make sure its allowed or required, otherwise redirect
+        if ssl_allowed? || ssl_required?
+          return true
+        else
+          redirect_to "http://" + request.host + (request.respond_to?(:fullpath) ? request.fullpath : request.request_uri)
+          flash.keep
+          return false
+        end
+      else
+        # non ssl, so if ssl is required redirect
+        if ssl_required?
+          redirect_to "https://" + request.host + (request.respond_to?(:fullpath) ? request.fullpath : request.request_uri)
+          flash.keep
+          return false
+        else
+          return true
+        end
       end
     end
 end

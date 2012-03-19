@@ -211,7 +211,7 @@ class AlbumsController < ApplicationController
   # See zz_api_album_info for return values
   #
   def zz_api_update
-    return unless require_user && require_album && require_album_admin_role
+    return unless require_any_user && require_album && require_any_album_admin_role
     zz_api do
       begin
         fields = filter_params(params, [:name, :privacy, :cover_photo_id, :who_can_upload, :who_can_download,
@@ -329,8 +329,8 @@ class AlbumsController < ApplicationController
     zz_api do
       hash = {
           :user => {
-            :has_facebook_token => current_user.identity_for_facebook.credentials_valid?,
-            :has_twitter_token => current_user.identity_for_twitter.credentials_valid?
+            :has_facebook_token => current_user.identity_for_facebook.has_credentials?,
+            :has_twitter_token => current_user.identity_for_twitter.has_credentials?
           },
           :album => @album.as_hash,
           :group => get_flat_sharing_members,   #TODO change web client to use group form and get rid of this
@@ -498,6 +498,14 @@ class AlbumsController < ApplicationController
 
     zz_api do
       emails, email_errors, addresses = ZZ::EmailValidator.validate_email_list(params[:emails])
+
+      # log to zza for analytics
+      if params[:permission] == AlbumACL::CONTRIBUTOR_ROLE.name
+        EmailAnalyticsManager.log_share_message_sent(current_user, :contributor_added, emails, email_errors)
+      else
+        EmailAnalyticsManager.log_share_message_sent(current_user, :album_shared, emails, email_errors)
+      end
+
 
       # grab any group ids and get the allowed ones
       group_ids = params[:group_ids]
@@ -678,7 +686,7 @@ class AlbumsController < ApplicationController
 
       album_meta = {
         :user_id                        => loader.user_id,
-        :logged_in_user_id              => current_user.nil? ? nil : current_user.id,
+        :logged_in_user_id              => current_user ? current_user.id : nil,
         :public                         => loader.public,
         :my_albums                      => loader.my_album_loader.current_version_key,
         :my_albums_path                 => zz_api_my_albums_link(loader),
@@ -1099,7 +1107,7 @@ class AlbumsController < ApplicationController
   def get_albums(user, zz_api)
     # determine if we should be fetching the view based on public or private data
     user_is_me = current_user?(user)
-    private_view = user_is_me || (!current_user.nil? && current_user.support_hero?)
+    private_view = user_is_me || (current_user && current_user.support_hero?)
     public = !private_view
 
     # preload the expected cache data
@@ -1119,7 +1127,7 @@ class AlbumsController < ApplicationController
     # if any of the albums the current user likes belong to the viewed user
     # we do this by returning the url to fetch liked_albums for the session
     # user
-    if public && !current_user.nil?
+    if public && current_user
       # ok, we have a valid session user and we are viewing somebody else so pull in our liked_albums
       session_loader = Cache::Album::Manager.shared.make_loader(current_user, false)
       session_loader.pre_fetch_albums

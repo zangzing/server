@@ -49,20 +49,34 @@ class Group < ActiveRecord::Base
   # returns
   # emails, errors, addresses, group_ids
   def self.filter_groups_and_emails(user_id, names)
-    group_names = []
-    names.each do |item|
-      group_names << item if item.index('@').nil?
-    end
-    group_ids, found_groups = convert_group_names(user_id, group_names)
-    emails, errors, addresses = ZZ::EmailValidator.validate_email_list(names)
+    emails = []
     filtered_errs = []
-    if errors.length > 0
-      # could be groups, check them
-      errors.each do |err|
-        name = err[:token].downcase
-        filtered_errs << err unless found_groups.include?(name)
+    addresses = []
+    group_ids = []
+
+    if names.nil? == false
+      if names.kind_of?(Array)
+        name_array = names
+      else
+        #split the comma separated list into array removing any spaces before or after comma
+        name_array = names.split(/\s*,\s*/)
+      end
+      group_names = []
+      name_array.each do |item|
+        group_names << item if item.index('@').nil?
+      end
+      group_ids, found_groups = convert_group_names(user_id, group_names)
+      emails, errors, addresses = ZZ::EmailValidator.validate_email_list(name_array)
+      filtered_errs = []
+      if errors.length > 0
+        # could be groups, check them
+        errors.each do |err|
+          name = err[:token].downcase
+          filtered_errs << err unless found_groups.include?(name)
+        end
       end
     end
+
     return emails, filtered_errs, addresses, group_ids
   end
 

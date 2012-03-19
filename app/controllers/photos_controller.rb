@@ -2,7 +2,7 @@ require "zz_env_helpers"
 
 
 class PhotosController < ApplicationController
-  ssl_allowed :agent_create, :agent_index
+  ssl_allowed :agent_create, :agent_index, :simple_upload_fast, :agent_create, :upload_fast
   skip_before_filter :verify_authenticity_token,  :only =>   [ :agent_index, :agent_create, :upload_fast, :simple_upload_fast]
 
   # Used by the agent to create photos duh?
@@ -20,8 +20,8 @@ class PhotosController < ApplicationController
       file_size_map     = params[:size]
       capture_date_map  = params[:capture_date]
       source_map        = params[:source]
-      rotate_to_map     = params[:rotate_to]    # optional initial rotation leave null to use rotation in file
-      rotate_to_map = rotate_to_map ? rotate_to_map : {}
+      priority_map      = params[:priority] || {}    # priorities to process photos at
+      rotate_to_map     = params[:rotate_to] || {}   # optional initial rotation leave null to use rotation in file
 
       # transform the params into the api form
       create_photos = []
@@ -33,7 +33,8 @@ class PhotosController < ApplicationController
             :size => file_size_map[i_s],
             :capture_date => safe_hash_default(capture_date_map, i_s, 0),
             :source => safe_hash_default(source_map, i_s, nil),
-            :rotate_to => rotate_to_map[i_s]
+            :rotate_to => rotate_to_map[i_s],
+            :priority => priority_map[i_s]
         }
         create_photos << create_photo
       end
@@ -50,6 +51,55 @@ class PhotosController < ApplicationController
 
     json_str = Photo.to_json_lite(photos)
     render :json => json_str
+  end
+
+  # Gets the state of multiple photos
+  #
+  # This is called as (POST):
+  #
+  # /zz_api/photos/state
+  #
+  # Does not require a logged in user.
+  #
+  # Pass a hash with a key of photo_ids pointing
+  # to an array of one or more photos to check.
+  #
+  # Input:
+  #
+  # {
+  #   :photo_ids => [
+  #     photo_id_1,
+  #     ...
+  #   ]
+  # }
+  #
+  # Returns a hash of photo state, only returns info
+  # about photos that were found.  Result keys are
+  # photo_ids.  When a photo is ready to be viewed it
+  # will be in the ready state.  If the state is error the photo
+  # can technically still make it to the ready state due to retries.
+  # TODO: we need to add a final_error state that indicates the photo
+  # will not become ready.
+  #
+  # {
+  #   :photo_id_1 => {
+  #     :state => completion status of photo (assigned, uploading, loaded,
+  #                 ready, error)
+  #   }
+  #   ...
+  # }
+  def zz_api_state
+    return unless require_nothing
+
+    zz_api do
+      photo_ids = params[:photo_ids]
+      photos = Photo.select('id, state').where(:id => photo_ids).all
+      result = {}
+      photos.each do |photo|
+        result[photo.id] = { :state => photo.state }
+      end
+      result
+    end
   end
 
   # The batch photo creation process for the zz_api.
@@ -82,6 +132,7 @@ class PhotosController < ApplicationController
   #     :capture_date => date file was captured in epoch secs, should use create date if not known
   #     :source => identifier as to the upload source (such as iphone, fs.osx, etc)
   #     :rotate_to => optional initial rotation - nil if no rotate
+  #     :priority => optional processing priority see ZZ::Async::Priorities
   #     :crop_to => optional initial cropping hash - nil if no cropping
   #       {
   #       :top => fractional percent from top (i.e. 0.15 for 15%)
@@ -168,21 +219,67 @@ class PhotosController < ApplicationController
     end
   end
 
-
+  # Create and upload a single photo
+  # This call is typically called from flash and can take the user_credentials
+  # as a param to the call.  If not called this way, the user_credentials is expected
+  # to be passed via the normal means as a cookie
+  #
+  # The call expects :album_id to be passed in the url the photo submitted as a multipart
+  # form file upload.  See http://www.ietf.org/rfc/rfc1867.txt for more details.
+  #
+  # You must be logged in, and have permissions to upload to the album specified
+  #
+  # You can pass:
+  # :source => the source of the photo such as simple.osx
+  # :rotate_to => optional rotation to be applied if set
+  # :priority => optional processing priority see ZZ::Async::Priorities
+  #
+  # This call is shared between flash and the zz_api.  In the zz_api form it is called
+  # as:
+  # /zz_api/albums/:album_id/upload
+  # The non api form is:
+  # /service/albums/:album_id/upload
+  #
+  # When called via the api form we return the photo.  Will be nil
+  # if no error with a status of 200, if we encounter an error, standard error response.
+  #
+  # for zz_api flavor we return the photo
+  # {
+  #   photo, see hashed_photo
+  # }
   def simple_upload_fast
-    # because we are called via flash we don't get the user_credentials cookie set
-    # and instead it gets passed as part of the posted data so we manually extract
-    # it and then set it up as current_user
-    persistence_token = params[:user_credentials].split('::')[0]
-    user = User.find_all_by_persistence_token(persistence_token)
-    user = user[0] if user
-    self.current_user = user
-    return unless require_user && require_album(true) && require_album_contributor_role
+    if any_current_user.nil?
+      # because we are called via flash we don't get the user_credentials cookie set
+      # and instead it gets passed as part of the posted data so we manually extract
+      # it and then set it up as current_user
+      persistence_token = params[:user_credentials].split('::')[0]
+      user = User.find_all_by_persistence_token(persistence_token)
+      user = user[0] if user
+      self.current_user = user  # set the current user manually since not in cookie
+    else
+      user = any_current_user
+    end
 
-    album = @album
+    # Let in logged in automatic users as well as normal users.  This is so
+    # we can create profile photos before converting to a full user
+    return unless require_any_user && require_album(true) && require_album_contributor_role(true)
 
+    if zz_api_call?
+      zz_api do
+        photo = do_simple_upload(user, @album)
+        Photo.hash_one_photo(photo) # return the photo just created
+      end
+    else
+      photo = do_simple_upload(user, @album)
+      json_str = JSON.fast_generate(Photo.hash_one_photo(photo)) # return the photo just created
+      render :json => json_str
+    end
+  end
+
+  # common code for simple upload
+  def do_simple_upload(user, album)
     current_batch = UploadBatch.get_current_and_touch( user.id, album.id )
-
+    priority = params[:priority] || ZZ::Async::Priorities.single_photo
     photo = Photo.new_for_batch(current_batch, {
         :id => Photo.get_next_id,
         :user_id => user.id,
@@ -191,12 +288,12 @@ class PhotosController < ApplicationController
         :caption => params[:fast_local_image][0][:original_name],
         :source => params[:source],
         :rotate_to => params[:rotate_to],
+        :work_priority => priority,
         :source_guid => "simpleuploader:"+UUIDTools::UUID.random_create.to_s})
 
     photo.file_to_upload = params[:fast_local_image][0][:filepath]
     photo.save()
-    render :text=>'', :status=>200
-
+    photo
   end
 
   # Upload a file for a given photo id -
@@ -560,6 +657,11 @@ start_time = Time.now
       rotate_to         = create_photo[:rotate_to]    # optional initial rotation leave null to use rotation in file
       crop_to           = create_photo[:crop_to]      # optional initial cropping
       crop_json = crop_to ? JSON.fast_generate(crop_to) : nil
+      if photo_count == 1
+        priority = create_photo[:priority] || (zz_api_iphone? ? ZZ::Async::Priorities.iphone_single : ZZ::Async::Priorities.single_photo)
+      else
+        priority = create_photo[:priority] || (zz_api_iphone? ? ZZ::Async::Priorities.iphone_batch : ZZ::Async::Priorities.web_batch)
+      end
 
       photo = Photo.new_for_batch(current_batch,  {
                                     :id                =>   current_id,
@@ -572,6 +674,7 @@ start_time = Time.now
                                     :source_guid       =>   source_guid,
                                     :source            =>   source,
                                     :rotate_to         =>   rotate_to,
+                                    :work_priority     =>   priority,
                                     :crop_json         =>   crop_json,
                                     :caption           =>   caption ? caption : '',
                                     :image_file_size   =>   file_size,

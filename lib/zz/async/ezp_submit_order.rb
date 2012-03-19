@@ -2,7 +2,7 @@ module ZZ
   module Async
 
     class EZPSubmitOrder < Base
-      @queue = :io_bound
+      @queue = Priorities.io_queue_name(Priorities.ezp_submit_order)
 
       # only add ourselves one time
       if @retry_criteria_checks.length == 0

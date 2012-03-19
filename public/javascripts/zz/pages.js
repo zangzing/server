@@ -353,6 +353,8 @@ zz.pages.group_tab = {
                 '</div>';
     },
 
+    MESSAGE_PLACEHOLDER_TEXT: "Type a personal note",
+
     ADD_PEOPLE_DIALOG_TEMPLATE: function(){
 
         return '<div class="add-people-dialog">' +
@@ -366,7 +368,7 @@ zz.pages.group_tab = {
                         '</div>' +
                     '</div>' +
                     '<div class="to"><input class="contact-list"></div>' +
-                    '<textarea placeholder="Type a personal note" class="message"></textarea>' +
+                    '<textarea placeholder="' + this.MESSAGE_PLACEHOLDER_TEXT + '" class="message"></textarea>' +
                     '<div class="permission">Add them as: <select size="1"><option value="viewer">Viewer</option><option selected="true" value="contributor">Contributor</option></select></div>' +
                     '<a class="cancel-button black-button"><span>Cancel</span></a>' +
                     '<a class="submit-button green-button"><span>OK</span></a>' +
@@ -582,6 +584,12 @@ zz.pages.group_tab = {
                             permission: content.find('.permission select').val(),
                             emails: emails
                         };
+
+                        // in case user didn't change placeholder text...
+                        if(data.message == self.MESSAGE_PLACEHOLDER_TEXT){
+                            data.message = '';
+                        }
+
 
                         $.post('/zz_api/albums/' + zz.page.album_id + '/add_sharing_members.json', data, function(json) {
                             refresh_person_list(json);

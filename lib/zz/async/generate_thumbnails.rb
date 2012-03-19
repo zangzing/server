@@ -2,8 +2,6 @@ module ZZ
   module Async
 
     class GenerateThumbnails < Base
-        @queue = :image_processing
-
         # only add ourselves one time
         if @retry_criteria_checks.length == 0
           # plug ourselves into the retry framework
@@ -12,22 +10,27 @@ module ZZ
           end
         end
 
-        # async edit operation
-        def self.enqueue_for_edit(photo_id, queued_at_secs, response_id)
-          # on amazon (zz) we will use a high priority queue
-          queue = ZZDeployEnvironment.env.is_zz? ? :image_edit : :image_processing
-          enqueue_on_queue(queue, photo_id, queued_at_secs, response_id)
+        def self.queue_name(options)
+          queue = Priorities.cpu_queue_name(options[:priority])
         end
 
-        def self.enqueue( photo_id, queued_at_secs )
-          super( photo_id, queued_at_secs, nil )
+        # async edit operation
+        def self.enqueue_for_edit(photo_id, queued_at_secs, response_id, options = {})
+          # on amazon (zz) we will use a high priority queue
+          options[:priority] ||= Priorities.photo_edit
+          enqueue_on_queue(queue_name(options), photo_id, queued_at_secs, response_id, options)
+        end
+
+        def self.enqueue( photo_id, queued_at_secs, options = {} )
+          enqueue_on_queue(queue_name(options), photo_id, queued_at_secs, nil, options)
         end
 
         # this can be for async completion if response_id is nil
         # in that case, notify the completion when we are done
-        def self.perform( photo_id, queued_at_secs, response_id )
+        def self.perform( photo_id, queued_at_secs, response_id, options = {} )
           SystemTimer.timeout_after(ZangZingConfig.config[:thumbnail_timeout]) do
             photo = Photo.find(photo_id)
+            photo.work_priority ||= options[:priority]
             if (!response_id.nil? || photo.generate_queued_at.to_i == queued_at_secs)
               # we are the latest or async so go ahead and do it
               photo.resize_and_upload
@@ -38,7 +41,7 @@ module ZZ
           end
         end
 
-        def self.on_failure_notify_photo(e, photo_id, queued_at_secs, response_id)
+        def self.on_failure_notify_photo(e, photo_id, queued_at_secs, response_id, options = {})
           begin
             SystemTimer.timeout_after(ZangZingConfig.config[:async_job_timeout]) do
               photo = Photo.find(photo_id)

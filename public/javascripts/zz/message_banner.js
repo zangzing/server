@@ -73,13 +73,13 @@ var zz = zz || {};
     }
 
     function banner_refresh(){
-    	if( !current_banner_delegate || zz.buy.is_buy_mode_active() || $('#checkout-banner .message').is(":visible") ){
+    	if( !current_banner_delegate || !current_banner_delegate.should_show_banner() || zz.buy.is_buy_mode_active() || $('#checkout-banner .message').is(":visible") ){
     		hide_banner();
     	} else {
     		show_banner();
     		if($("#right-drawer").is(":visible")){
     			if(banner_fits()){
-    				$("#right-drawer").css("top","56px");
+    				$("#right-drawer").css("top","55px");
     			} else {
     				$("#right-drawer").css("top","154px");
     			}
@@ -92,7 +92,7 @@ var zz = zz || {};
         var hide = function(){
             $("#header-join-banner").addClass("none");
             $(".join-banner-spacer").addClass("none");
-            $("#right-drawer").css("top","56px");
+            $("#right-drawer").css("top","55px");
         };
 
 

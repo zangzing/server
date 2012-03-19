@@ -49,6 +49,7 @@ class Connector::PicasaFoldersController < Connector::PicasaController
               :album_id => params[:album_id],
               :user_id => identity.user.id,
               :upload_batch_id => current_batch.id,
+              :work_priority => params[:priority] || ZZ::Async::Priorities.import_single_album,
               :capture_date => (Time.at(entry.at_xpath('gp:timestamp', NS).text.to_i/1000) rescue nil),
               :source_guid => make_source_guid(entry.at_xpath('m:group', NS)),
               :source_thumb_url => get_photo_url(entry.at_xpath('m:group', NS), :thumb),
@@ -89,7 +90,7 @@ class Connector::PicasaFoldersController < Connector::PicasaController
       albumid = /albumid\/([0-9a-z]+)/.match(entry.at_xpath('a:id', NS).text)[1]
       zz_album = create_album(identity, entry.at_xpath('a:title', NS).text, params[:privacy])
       zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
-      fire_async('import_album', params.merge(:album_id => zz_album.id, :picasa_album_id => albumid))
+      fire_async_import_all('import_album', params.merge(:album_id => zz_album.id, :picasa_album_id => albumid))
     end
 
     identity.last_import_all = Time.now

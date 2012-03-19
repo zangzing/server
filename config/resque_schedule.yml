@@ -12,7 +12,7 @@ common: &common
   sweep_batches:
     cron: "*/1 * * * *"
     class: ZZ::Async::BatchSweeper
-    queue: io_bound
+    queue: io_090
     args:
     description: "This job sweeps the upload batches to finish them."
 

@@ -8,15 +8,29 @@ class TwitterIdentity < Identity
   def twitter_api
     unless @api
       raise InvalidToken unless self.credentials
-      begin
-        @api = TwitterConnector.new(self.credentials)
-      rescue => exception
-        raise InvalidToken if exception.kind_of?(Twitter::Unauthorized)
-        raise HttpCallFail if exception.kind_of?(SocketError)
-      end
-      raise InvalidToken unless twitter_api.client.authorized?
+      @api = TwitterConnector.new(self.credentials)
+      raise InvalidToken unless @api.client && @api.client.authorized?
     end
     return @api
+  end
+
+  # verify that the token is actually valid by checking
+  # with the remote service
+  def verify_credentials
+    return false unless has_credentials? # make sure we actually have an api token set
+    begin
+      if defined?(@api)
+        valid = twitter_api.client.authorized?
+      else
+        twitter_api   # just fetching it the first time does an authorized check
+        valid = true
+      end
+    rescue InvalidToken => ex
+      valid = false
+    rescue Exception => ex
+      valid = true    # non twitter validation error assume ok since could be network issue
+    end
+    valid
   end
 
   def post( link, message="" )

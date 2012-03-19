@@ -43,7 +43,7 @@ class InvitationsController < ApplicationController
   def send_to_email
     return unless require_user
 
-    emails, errors = ZZ::EmailValidator.validate_email_list(params[:emails])
+    emails, errors, addresses = ZZ::EmailValidator.validate_email_list(params[:emails])
 
     already_joined_emails = []
 
@@ -56,6 +56,8 @@ class InvitationsController < ApplicationController
       end
     end
 
+    EmailAnalyticsManager.log_share_message_sent(current_user, :invite_to_join, addresses, errors)
+
     render :json=>JSON.fast_generate({:already_joined => already_joined_emails})
   end
 
@@ -63,6 +65,11 @@ class InvitationsController < ApplicationController
   def show
     return unless require_no_user
 
+    # first see if an automatic user that has completed step 1
+    if any_current_user && any_current_user.completed_step == 1
+      redirect_to finish_profile_url
+      return
+    end
 
     tracked_link = TrackedLink.find_by_tracking_token(current_tracking_token)
     if tracked_link

@@ -15,6 +15,13 @@ class Notifier < ActionMailer::Base
     @photos  = @batch.photos
     @recipient = @user
     @album_url = album_pretty_url( @album )
+
+
+    @invite_friends_url = invite_friends_url
+    @join_now_url = join_url
+    @recipient_is_user = true
+
+
     vcard = Vpim::Vcard::Maker.make2 do |vc|
       vc.add_name do |name|
         name.given = @album.name
@@ -33,7 +40,7 @@ class Notifier < ActionMailer::Base
   def password_reset(user_id, template_id = nil)
     @user = User.find(user_id)
     @recipient = @user
-    @password_reset_url = edit_password_reset_url(@user.perishable_token)
+    @password_reset_url = bitly_url(edit_password_reset_url(@user.perishable_token))
     # Add a header for fast delivery
     sendgrid_headers.merge!( {'bypass_list_management' => { 'enable' => 1 }} )
 
@@ -43,10 +50,16 @@ class Notifier < ActionMailer::Base
 
 
 
-  def album_liked( user_id, album_id,  template_id = nil )
+  def album_liked( user_id, album_id, recipient_user_id, template_id = nil )
     @user      = User.find( user_id )
     @album     = Album.find( album_id )
-    @recipient = @album.user
+    @recipient = User.find(recipient_user_id)
+
+    @invite_friends_url = invite_friends_url
+    @join_now_url = join_url
+    @recipient_is_user = true
+
+
 
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
@@ -59,6 +72,12 @@ class Notifier < ActionMailer::Base
     @photo     = Photo.find( photo_id )
     @recipient = User.find( recipient_id )
 
+    @invite_friends_url = invite_friends_url
+    @join_now_url = join_url
+    @recipient_is_user = true
+
+
+
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
@@ -68,6 +87,11 @@ class Notifier < ActionMailer::Base
   def user_liked( user_id, liked_user_id,  template_id = nil )
     @user      = User.find( user_id )
     @recipient = User.find( liked_user_id )
+
+    @invite_friends_url = invite_friends_url
+    @join_now_url = join_url
+    @recipient_is_user = true
+
 
     create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
@@ -144,7 +168,7 @@ class Notifier < ActionMailer::Base
     if !rcp_user || rcp_user.automatic?
       @recipient_is_user = false
 
-      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_PHOTO_SHARE)
+      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_ALBUM_SHARE)
       @join_now_url = invitation.tracked_link.long_tracked_url
       @album_pretty_url = TrackedLink.create_tracked_link(@user, @album_pretty_url, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
       @invite_friends_url = nil
@@ -172,6 +196,10 @@ class Notifier < ActionMailer::Base
     @recipient = ( rcp_user ? rcp_user : to_address_or_id )
     @destination_link = destination_link( @recipient, album_pretty_url( @album ) )
 
+    @invite_friends_url = invite_friends_url
+    @join_now_url = join_url
+    @recipient_is_user = @recipient.is_a?(User) && !@recipient.automatic?
+
     create_message(  __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
 
@@ -197,10 +225,10 @@ class Notifier < ActionMailer::Base
     if !rcp_user || rcp_user.automatic?
       @recipient_is_user = false
 
-      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_PHOTO_SHARE)
+      invitation = Invitation.find_or_create_invitation_for_email(@user, to_address, invitation_url, TrackedLink::TYPE_CONTRIBUTOR_INVITE)
       @join_now_url = invitation.tracked_link.long_tracked_url
-      @album_pretty_url = TrackedLink.create_tracked_link(@user, @album_pretty_url, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
-      @album_pretty_url_show_add_photos_dialog = TrackedLink.create_tracked_link(@user, @album_pretty_url_show_add_photos_dialog, TrackedLink::TYPE_ALBUM_SHARE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
+      @album_pretty_url = TrackedLink.create_tracked_link(@user, @album_pretty_url, TrackedLink::TYPE_CONTRIBUTOR_INVITE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
+      @album_pretty_url_show_add_photos_dialog = TrackedLink.create_tracked_link(@user, @album_pretty_url_show_add_photos_dialog, TrackedLink::TYPE_CONTRIBUTOR_INVITE, TrackedLink::SHARED_TO_EMAIL, to_address).long_tracked_url
       @invite_friends_url = nil
 
       send_share_invite_zza_event(@user, invitation.tracked_link)
@@ -226,6 +254,7 @@ class Notifier < ActionMailer::Base
   def welcome(user_id, template_id = nil)
     @user = User.find(user_id)
     @recipient = @user
+    @joined_from_invitation = @user.received_invitations.find_by_status(Invitation::STATUS_COMPLETE)
 
     create_message(  __method__, template_id, @recipient,   { :user_id => @user.id })
   end
@@ -241,12 +270,12 @@ class Notifier < ActionMailer::Base
   end
 
   def request_contributor( user_id, album_id,  message,template_id = nil )
-      @user      = User.find( user_id )
-      @album     = Album.find( album_id )
-      @recipient = @album.user
-      @message   = message
+    @user      = User.find( user_id )
+    @album     = Album.find( album_id )
+    @recipient = @album.user
+    @message   = message
 
-      create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
+    create_message(  __method__, template_id, @recipient, { :user_id => @user.id } )
   end
 
 
@@ -281,10 +310,13 @@ class Notifier < ActionMailer::Base
   end
 
 
-  def invite_to_join(from_user_id, to_email_address, invite_url, template_id = nil)
+  def invite_to_join(from_user_id, to_email_address, invite_url, invitation_id, template_id = nil)
     @user = User.find_by_id(from_user_id)
     @recipient = to_email_address
     @invite_url = invite_url
+    invitation = Invitation.find(invitation_id)
+    send_share_invite_zza_event(@user, invitation.tracked_link)
+
     create_message( __method__, template_id,  @recipient, { :user_id => @user.id } )
   end
 
@@ -299,19 +331,26 @@ class Notifier < ActionMailer::Base
 
 
 
-private
+  private
   def send_share_invite_zza_event(user, tracked_link)
-     zza.track_event("invitation.send")
-     zza.track_event(tracked_link.send_event_name)
-  end
 
-  def zza
-    unless @zza
-      @zza = ZZ::ZZA.new
-      @zza.user_type = 1
-    end
+    # events tied to user sending the email
+    zza = ZZ::ZZA.new
+    zza.user_type = 1
+    zza.user = user.id
+    zza.zzv_id = user.zzv_id
+    zza.track_event("invitation.send")
+    zza.track_event(tracked_link.send_event_name)
 
-    return @zza
+    # events tied to user receiving email
+    # since this is an 'invite' we can assume that recipient
+    # is not a user (yet)
+    zza = ZZ::ZZA.new
+    zza.user_type = 2
+    zza.user = tracked_link.zzv_id
+    zza.zzv_id = tracked_link.zzv_id
+    zza.track_event("invitation.sent_to")
+    zza.track_event(tracked_link.sent_to_event_name)
   end
 
 

@@ -48,6 +48,7 @@ class Connector::KodakPhotosController < Connector::KodakController
             :user_id => identity.user.id,
             :album_id => params[:album_id],
             :upload_batch_id => current_batch.id,
+            :work_priority => ZZ::Async::Priorities.import_single_photo,
             :caption => p['caption'],
             :source_guid => make_source_guid(p),
             :source_thumb_url => p[PHOTO_SIZES[:thumb]],
@@ -56,7 +57,7 @@ class Connector::KodakPhotosController < Connector::KodakController
 
     )
     
-    ZZ::Async::GeneralImport.enqueue( photo.id, photo_url, :headers => api.compose_request_header )
+    queue_single_photo( photo, photo_url, :headers => api.compose_request_header )
     Photo.to_json_lite(photo)
   end
 

@@ -90,6 +90,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
                 :user_id=>identity.user.id,
                 :album_id => params[:album_id],
                 :upload_batch_id => current_batch.id,
+                :work_priority => params[:priority] || ZZ::Async::Priorities.import_single_album,
                 :caption => p[:name] || '',
                 :capture_date => p[:created_time],
                 :source_guid => make_source_guid(p),
@@ -119,7 +120,7 @@ class Connector::FacebookFoldersController < Connector::FacebookController
       album_list.each do |fb_album|
         zz_album = create_album(identity, fb_album[:name], params[:privacy])
         zz_albums << {:album_name => zz_album.name, :album_id => zz_album.id}
-        fire_async('import_folder', params.merge(:fb_album_id =>  fb_album[:id], :album_id => zz_album.id))
+        fire_async_import_all('import_folder', params.merge(:fb_album_id =>  fb_album[:id], :album_id => zz_album.id))
       end
     end
 

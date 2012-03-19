@@ -126,7 +126,7 @@
            end
         %>
 
-        <p>For every friend who joins ZangZing, you and your friend each get 250MB of free space up to 8GB.</p>
+        <p>For every friend who joins ZangZing, you and your friend each get 250MB of free space up to 10GB.</p>
         <br>
         <a href="<%=invite_friends_url%>">Invite friends to ZangZing</a>
 
@@ -152,7 +152,7 @@
                 </div>
 
             <%
-               elsif invitation.status == Invitation::STATUS_COMPLETE
+               elsif invitation.status == Invitation::STATUS_COMPLETE && invitation.invited_user # in case invited user was deleted
 
                    running_bonus_total += User::BONUS_STORAGE_MB_PER_INVITE
 
@@ -178,7 +178,7 @@
                 </div>
 
             <%
-               elsif invitation.status == Invitation::STATUS_COMPLETE_BY_OTHER
+               elsif invitation.status == Invitation::STATUS_COMPLETE_BY_OTHER && invitation.invited_user # in case invited user was deleted
             %>
 
                 <div class="invitation">
