@@ -85,7 +85,8 @@ class Subscriptions< ActiveRecord::Base
     allow = case zzemail.kind
               when Email::TRANSACTIONAL: true
               when Email::INVITES   then  want_invites_email   > NEVER
-              when Email::SOCIAL    then  want_social_email    > NEVER
+              # SUNSET when Email::SOCIAL    then  want_social_email    > NEVER
+              when Email::SOCIAL    then  false
               when Email::STATUS    then  want_status_email    > NEVER
               when Email::NEWS      then  want_news_email      > NEVER
               when Email::MARKETING then  want_marketing_email > NEVER

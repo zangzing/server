@@ -51,7 +51,10 @@
 <% if @album #this needs to be after album and user info so that it floats on top%>
   <div id="top-breadcrumb">
     <a id="back-button" class="back-button"><span>Back</span></a>
-    <a id="top-add-photos-button" class="green-add-button"><span>Add Photos</span></a>
+    <%
+        # SUNSET
+        # <a id="top-add-photos-button" class="green-add-button"><span>Add Photos</span></a>
+    %>
   </div>
 <% elsif @show_back_button %>
   <div id="top-breadcrumb">
@@ -59,9 +62,12 @@
   </div>
 <% end %>
 
-<% if @is_homepage_view && current_user == @user %>
-  <a id="inline-new-album-button" class="green-add-button"><span>New Album</span></a>
-<% end %>
+<%
+# SUNSET
+# if @is_homepage_view && current_user == @user
+#   <a id="inline-new-album-button" class="green-add-button"><span>New Album</span></a>
+# end
+%>
 
 
 
@@ -109,11 +115,14 @@
       <img id="arrow-image" src="/images/icon-down-arrow-22px.png" />
       <div class="header-button-label">Account</div>
       <ul class="context_menu dropdown" id="acct-dropdown">
-        <li id="acct-get-started-btn" >Getting Started</li>
-        <li id="acct-invite-friends-btn" >Invite Friends</li>
         <li id="acct-settings-btn">Settings</li>
-        <li id="acct-blog-btn">Blog</li>
         <li id="acct-signout-btn">Signout</li>
+        <%
+           # SUNSET
+           # <li id="acct-get-started-btn" >Getting Started</li>
+           # <li id="acct-invite-friends-btn" >Invite Friends</li>
+           # <li id="acct-blog-btn">Blog</li>
+        %>
       </ul>
 
     </div>
