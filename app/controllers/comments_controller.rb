@@ -106,6 +106,8 @@ private
     comment = Comment.new
     comment.text = sanitize(text)
     comment.user = current_user
+    comment.subject_id   = commentable.subject_id
+    comment.subject_type = commentable.subject_type
     commentable.comments << comment
     comment.save!
 
