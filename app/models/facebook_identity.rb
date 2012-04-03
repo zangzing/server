@@ -23,11 +23,14 @@ class FacebookIdentity < Identity
   def self.get_me(graph)
     me = nil
     begin
-      me = graph.get('/me')
+      #me = graph.get('/me')
+      me = graph.get('/me',{:fields=>"email,username,name,picture",:type=>"large"})
     rescue Exception => ex
     end
     me
   end
+
+
 
   # verify the credentials by calling facebook
   def verify_credentials

@@ -835,6 +835,9 @@ class UsersController < ApplicationController
         user = @new_user
         failed_create(user) unless success # raises an exception always
         just_created = true
+        if service_info && service_info[:profile_picture_url]
+          import_profile_photo( user, service_info[:profile_picture_url])
+        end
       end
     end
 
@@ -1037,13 +1040,21 @@ class UsersController < ApplicationController
       user = nil if user.automatic? # can't log in an automatic user with credentials
     end
 
+    email = me[:email]
+    raise ZZAPIError.new("Your facebook credentials are not enabled to return email") unless email
+
+    profile_picture_url = me[:picture]
+    raise ZZAPIError.new("Your facebook credentials are not enabled to return profile_picture_url") unless profile_picture_url
+
+
     result = {
         :user => user,
         :identity => identity,
         :service_user_id => service_user_id,
-        :email => me[:email],
+        :email => email,
         :username => me[:username],
-        :name => me[:name]
+        :name => me[:name],
+        :profile_picture_url => profile_picture_url
     }
   end
 
