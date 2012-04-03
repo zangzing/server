@@ -3,9 +3,8 @@ class Comment < ActiveRecord::Base
 
   attr_accessible :text
 
-  belongs_to :commentable, :counter_cache => true
+  belongs_to :commentable, :counter_cache => true, :touch => true
   belongs_to :user
-
 
   after_create  :create_comment_activity
 
@@ -53,7 +52,6 @@ class Comment < ActiveRecord::Base
       Like.find_by_photo_id(photo.id).each do |like|
         users_to_notify << like.user.id
       end
-
 
       # users who like album
       Like.find_by_album_id(photo.album.id).each do |like|
