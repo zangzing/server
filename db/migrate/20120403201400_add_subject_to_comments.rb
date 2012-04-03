@@ -21,7 +21,7 @@ class AddSubjectToComments < ActiveRecord::Migration
       ActiveRecord::Base.record_timestamps = false
       commentables = Commentable.all
       commentables.each do |commentable|
-        comments = Commentable.comments.order('created_at DESC')
+        comments = commentable.comments.order('created_at DESC')
         if comments.count > 0
           latest_comment = comments.first
           commentable.updated_at = latest_comment.created_at
