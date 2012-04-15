@@ -421,6 +421,7 @@ Server::Application.routes.draw do
   scope  '/zz_api', :defaults => { :format => 'json' } do
     #albums
     get    '/users/:user_id/albums'                    => 'albums#zz_api_albums',                    :as => :zz_api_albums
+    match  '/users/:user_id/activity'                  => 'activities#zz_api_user_activity',         :as => :zz_api_activity
     get    '/users/:user_id/my_albums'                 => 'albums#zz_api_my_albums',                 :as => :zz_api_my_albums
     get    '/users/:user_id/my_albums_public'          => 'albums#zz_api_my_albums_public',          :as => :zz_api_my_albums_public
     get    '/users/:user_id/liked_albums'              => 'albums#zz_api_liked_albums',              :as => :zz_api_liked_albums
