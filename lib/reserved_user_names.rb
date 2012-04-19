@@ -379,7 +379,7 @@ class ReservedUserNames
       "support",
       "supporthero",
       "zz_api",
-
+      "spymag"
     ].freeze
   end
 
