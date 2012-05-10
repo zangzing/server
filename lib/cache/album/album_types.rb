@@ -9,6 +9,8 @@ module Cache
       LIKED_USERS_ALBUMS_PUBLIC   = 32   # this one is always public
       MY_INVITED_ALBUMS           = 41   # the albums I am a viewer or contributor for via the ACL for the albums
       MY_INVITED_ALBUMS_PUBLIC    = 42   # the albums I am a viewer or contributor for via the ACL for the albums
+      ACTIVITY                    = 43
+      ACTIVITY_PUBLIC             = 44
     end
 
   end

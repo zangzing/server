@@ -242,6 +242,8 @@ class UsersController < ApplicationController
   #        :automatic => true if an automatic user (one that has not created an account)
   #        :auto_by_contact => true if automatic user and was created simply by referencing (i.e. we added automatic as result of group or permission operation)
   #                            if automatic is set and this is false it means we have a user that has actually sent a photo in on that address
+  #        :completed_step => the step until which the used completed the join process
+  #        :created_by_user_id => keep track of which user invited this user
   # }
   def zz_api_user_info
     return unless require_nothing
@@ -685,6 +687,21 @@ class UsersController < ApplicationController
     user_hash = user.basic_user_info_hash
     # add in extra context
     user_hash[:email] = user.email
+
+    #get identies for logged in user
+    identities = {}
+    %w( twitter facebook).each do |service|
+            raise ZZAPIError.new('The service name is not valid') unless Identity.is_valid_service_name?(service)
+
+            identity = user.send("identity_for_#{service}".to_sym)
+            verified = identity.verify_credentials
+            identities[service] = {
+                :credentials_valid => verified,
+                :has_credentials => identity.has_credentials?
+            }
+    end
+    user_hash[:identities] = identities
+
     result = {
         :user_credentials => user_credentials,
         :user_id =>  user.id,
@@ -793,17 +810,23 @@ class UsersController < ApplicationController
     create_user = !!params[:create]
     clear_buy_mode_cookie
     if password || cred_user.nil?
+      #We have a password and we do not have a user via credentials
       user_session = UserSession.new(:email => email, :password => password)
     elsif cred_user
+      # We have a user via credentials
       user_session = UserSession.new(cred_user)
     else
       raise ZZAPIError.new("You cannot log in without valid credentials or username/password", 401)
     end
+
+    # Can we save the session (is the user valid?)
     if user_session.save
       user = user_session.user
       if user.automatic? && create_user == false
+        #The user is valid but automatic
         raise ZZAPIError.new("You cannot log in with an account that is still joining", 401)
       end
+      #The user is valid, all set
       prevent_session_fixation
       user.reset_perishable_token! #reset the perishable token
       set_zzv_id_cookie(user.zzv_id)
@@ -813,6 +836,7 @@ class UsersController < ApplicationController
       raise ZZAPIError.new(user_session.errors.full_messages, 401)
     end
 
+    #Try to create user if automatic or if no-user
     may_create = (!user.nil? && user.automatic?) || user.nil?
     if may_create
       if service_info
@@ -841,6 +865,7 @@ class UsersController < ApplicationController
       end
     end
 
+    # no-user, no facebook login, only email. Try to create automatic
     if user.nil? && email.index('@')
       # not logged in, lets try to create an automatic user
       user = User.find_by_email(email)
@@ -859,6 +884,11 @@ class UsersController < ApplicationController
         user = nil  # found a real user but password was bad since we are here
       end
     end
+    #if we dont have a user by now one of these must have happened:
+    # -We were unable to find and login an existing user with username/password
+    # -We were unable to find and login an existing user with facebook/twitter
+    # -We were unable to create automatic user with an email
+    # -We were unable to create user with facebook twitter
     raise ZZAPIError.new(user_session.errors.full_messages, 401) if user.nil?
 
     # for an automatic user that already existed, always reset password and completed_step

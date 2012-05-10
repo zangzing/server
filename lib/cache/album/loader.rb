@@ -6,7 +6,8 @@ module Cache
     class Loader
       attr_accessor :user, :user_id, :cache_man, :public, :current_versions, :user_id_to_name_map,
                     :tracker, :version_tracker, :user_last_touch_at, :album_loaders,
-                    :my_album_loader, :liked_album_loader, :liked_users_album_loader, :invited_album_loader
+                    :my_album_loader, :liked_album_loader, :liked_users_album_loader, :invited_album_loader,
+                    :activity_loader
 
 
       def initialize(cache_man, user, public)
@@ -27,6 +28,8 @@ module Cache
         self.album_loaders << self.liked_users_album_loader
         self.invited_album_loader = InvitedAlbumLoader.new(self, Loader.compressed)
         self.album_loaders << self.invited_album_loader
+        self.activity_loader = ActivityLoader.new(self, Loader.compressed )
+        self.album_loaders << self.activity_loader
 
         # see what the current versions are
         self.current_versions = load_current_versions()

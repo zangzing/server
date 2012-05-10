@@ -7,6 +7,8 @@ class Comment < ActiveRecord::Base
   belongs_to :user
 
   after_create  :create_comment_activity
+  after_commit  :invalidate_album_activity
+
 
   default_scope  :order => "created_at DESC"
 
@@ -102,5 +104,9 @@ protected
     if self.commentable.subject_type == Commentable::SUBJECT_TYPE_PHOTO
       CommentActivity.create(:user => self.user, :subject => self.commentable.subject.album, :comment => self)
     end
+  end
+
+  def invalidate_album_activity
+    Cache::Album::Manager.shared.comment_added(user_id, subject_id, subject_type)
   end
 end

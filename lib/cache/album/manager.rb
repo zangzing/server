@@ -147,6 +147,36 @@ module Cache
         album_invalidate(album)
       end
 
+      # a comment has been added for an album must bust
+      # activities
+      def comment_added( user_id, subject_id, subject_type )
+
+        # collect all the invalidations into the Invalidator so
+        # we only have to invalidate once
+        invalidator = make_invalidator
+
+        # invalidate public related trackers
+        #invalidate_my_public_albums(invalidator, user_id)
+        #invalidate_public_album(invalidator, album_id)
+        #invalidate_liked_user(invalidator, user_id)
+
+        invalidator.add_tracked_user(user_id, AlbumTypes::ACTIVITY_PUBLIC)
+        invalidator.add_tracked_user(user_id, AlbumTypes::ACTIVITY)
+        invalidator.add_tracked_album(subject_id, AlbumTypes::ACTIVITY)
+        invalidator.add_tracked_album(subject_id, AlbumTypes::ACTIVITY_PUBLIC)
+
+        # now invalidate anything dependent on this users albums (except for public which is handled above)
+        #invalidate_my_albums(invalidator, user_id)
+
+        # and finally invalidate anything dependent on this specific album
+        #invalidate_liked_album(invalidator, album_id)
+        #invalidate_invited_album(invalidator, album_id)
+
+        # and now invalidate the caches and tracked items
+        invalidator.invalidate
+      end
+
+
       # a user like has been modified for the given user
       # We are changing the users we like so it doesn't really matter
       # which user change because the cache is now stale and must
