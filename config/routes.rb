@@ -12,17 +12,17 @@ Server::Application.routes.draw do
 
   #SUNSET
   #get    '/join'               => 'users#join',          :as => :join
-  get    '/join',             :to => redirect('/sunset'),  :as => :join
+  get    '/join',             :to => redirect('/'),  :as => :join
 
   #SUNSET
   #get    '/finish_profile'     => 'users#finish_profile',:as => :finish_profile
-  get    '/finish_profile'     => redirect('/sunset'),:as => :finish_profile
+  get    '/finish_profile'     => redirect('/'),:as => :finish_profile
 
   get    '/unsubscribe/:id'    => 'subscriptions#unsubscribe', :as => :unsubscribe
 
   #SUNSET
   #get    '/invitation'  => 'invitations#show', :as => :invitation  , :requirements => {:protocol => 'https'}
-  get    '/invitation'  => redirect('/sunset'), :as => :invitation  , :requirements => {:protocol => 'https'}
+  get    '/invitation'  => redirect('/'), :as => :invitation  , :requirements => {:protocol => 'https'}
 
   get    '/invite_friends'  => 'invitations#invite_friends', :as => :invite_friends
 
@@ -86,7 +86,7 @@ Server::Application.routes.draw do
     get    '/users/:user_id/invited_albums_json'            => 'albums#invited_albums_json',            :as => :invited_albums_json
     #SUNSET
    # get    '/import_all'                                    => 'albums#import_all',        :as => :import_all
-    get    '/import_all'                                    => redirect('/sunset'),        :as => :import_all
+    get    '/import_all'                                    => redirect('/'),        :as => :import_all
 
     get    '/users/:user_id/albums'                => 'albums#index'             #, :as => :user_albums  user albums defined below
     put    '/users/:user_id/invalidate_cache'      => 'albums#invalidate_cache',    :as => :invalidate_user_album_cache
@@ -107,8 +107,8 @@ Server::Application.routes.draw do
     #SUNSET
     #get    '/albums/:album_id/add_photos'          => 'albums#add_photos',          :as => :album_add_photos
     #get    '/albums/:album_id/wizard/:step'        => 'albums#wizard',              :as => :album_wizard
-    get    '/albums/:album_id/add_photos'          => redirect('/sunset'),          :as => :album_add_photos
-    get    '/albums/:album_id/wizard/:step'        => redirect('/sunset'),              :as => :album_wizard
+    get    '/albums/:album_id/add_photos'          => redirect('/'),          :as => :album_add_photos
+    get    '/albums/:album_id/wizard/:step'        => redirect('/'),              :as => :album_wizard
 
 
     post   '/albums/:album_id/set_latest_cover'    => 'albums#set_latest_cover',  :as => :set_latest_cover
@@ -142,7 +142,7 @@ Server::Application.routes.draw do
     get    '/agents/:agent_id/photos'       => 'photos#agent_index',                :as => :agent_photos
     #SUNSET
     #post   '/albums/:album_id/photos/agent_create.:format' => 'photos#agent_create',:as => :agent_create
-    post   '/albums/:album_id/photos/agent_create.:format' => redirect('/sunset'),:as => :agent_create
+    post   '/albums/:album_id/photos/agent_create.:format' => redirect('/'),:as => :agent_create
 
     get    '/photos/:id/download'           => 'photos#download',                   :as => :download_photo
     put    '/photos/:id'                    => 'photos#update',                     :as => :update_photo
