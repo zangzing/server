@@ -1,0 +1,22 @@
+/*
+Theme Name: ZangZing
+*/
+.photo-gallery li, .popular-post li {
+	margin:0 0 21px 18px;
+}
+.socials-holder .tweet-box, .socials-holder .facebook-box {
+	margin-right:-6px;
+	padding-right:0;
+}
+#sidebar .box .active  a{
+	color:#FDCA00;
+}
+#footer li.active  a{
+	color:#FECB00;
+}
+
+#sidebar .current-cat a {
+color:#FDCA00;
+}
+#searchform{padding:5px 0 0 80px;}
+.archive-title { padding-top: 20px; }
