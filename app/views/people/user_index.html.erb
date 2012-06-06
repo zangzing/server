@@ -40,12 +40,15 @@
 
 <%if @user_is_auto_follow == false %>
 <div class="viewlist two-col relative">
-<% if @user == current_user %>
-  <div class='invite-friends-box'>
-    <div class='message'>Invite friends and get extra space free.</div>
-    <a class="green-button invite-friends-button"><span>Invite Friends</span></a>
-  </div>
-<% end %>
+<% #if @user == current_user
+   #SUNSET
+  #<div class='invite-friends-box'>
+   # <div class='message'>Invite friends and get extra space free.</div>
+   # <a class="green-button invite-friends-button"><span>Invite Friends</span></a>
+  #</div>
+
+  #end
+ %>
   <ul>
     <% if @user.followers.count > 0 %>
         <li class="item">
