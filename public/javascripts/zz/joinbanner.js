@@ -63,7 +63,7 @@ var zz = zz || {};
         html = '<div class="invitation-banner">' +
                             '<div class="icon"></div>'+
                             '<div class="message ">' +
-                                '<span class="bold">ZangZing will be closing on April 30th.</span> Learn how to <a href="http://www.zangzing.com/blog">download your photos</a>.' +
+                                '<span class="bold">ZangZing will be closing on August 31st 2012.</span> Learn how to <a href="http://www.zangzing.com/blog">download your photos</a>.' +
                             '</div>' +
                        '</div>';
         //SUNSET
