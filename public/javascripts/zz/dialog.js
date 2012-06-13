@@ -71,8 +71,8 @@ zz.dialog ={};
     };
 
     zz.dialog.show_download_dialog = function(title, message, onClose) {
-            var content = $("<div id='download-dialog'><div id='msg'></div><a id='ok' class='green-button ok-button'><span>OK</span></a></div>");
-            content.find('#msg').html(title+'<br><br><span id="warning">'+message+'</span>');
+            var content = $("<div id='download-dialog'><div></div><div id='msg'></div><a id='ok' class='newgreen-button'><span>OK</span></a></div></div>");
+            content.find('#msg').html(title+'<br><br><div id="warning">'+message+'<br><a href="http://help.zangzing.com/entries/21166613-how-to-download-an-album">More Info...</a></div>');
             content.find('#ok').click(function() {
                           dialog.close();
                        });
