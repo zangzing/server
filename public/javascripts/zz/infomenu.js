@@ -147,20 +147,23 @@ zz.infomenu = {
 
          switch (action) {
            case 'download':
-               zz.dialog.show_download_dialog('Your download is being processed',
-                    'Some browsers have trouble handling simultaneous large downloads. To avoid corrupted downloads we strongly suggest you download ONE album at a time.', function(){} );
 
                ZZAt.track('infomenu.albumdownload.click');
                var url = zz.routes.path_prefix + '/albums/' + id +'/download';
                  if ($.client.os == 'Mac') {
+                     zz.dialog.show_download_dialog('Your download is being processed',
+                                         'Some browsers have trouble handling simultaneous large downloads. To avoid corrupted downloads we strongly suggest you download ONE album at a time.', function(){} );
                     document.location.href = url;
                 } else {
                     if (navigator.appVersion.indexOf('NT 5.1') != -1 && $.client.browser == 'Explorer'){
-                        window.open(url);
+                        zz.dialog.show_download_dialog('Your download is being processed',
+                                            'Some browsers have trouble handling simultaneous large downloads. To avoid corrupted downloads we strongly suggest you download ONE album at a time.', function(){ window.open(url); } );
                     } else if ($.client.browser == 'Chrome') { //on chrome on windows, using the same browser window to download causes js issues (stops pinging agent)
-                        window.open(url);
+                        zz.dialog.show_download_dialog('Your download is being processed',
+                                                                   'Some browsers have trouble handling simultaneous large downloads. To avoid corrupted downloads we strongly suggest you download ONE album at a time.', function(){ window.open(url); } );
                     } else {
-                        document.location.href = url;
+                        zz.dialog.show_download_dialog('Your download is being processed',
+                                                                 'Some browsers have trouble handling simultaneous large downloads. To avoid corrupted downloads we strongly suggest you download ONE album at a time.', function(){ document.location.href = url;} );
                     }
                 }
 
