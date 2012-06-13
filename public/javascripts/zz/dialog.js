@@ -70,6 +70,26 @@ zz.dialog ={};
         return dialog;
     };
 
+    zz.dialog.show_download_dialog = function(title, message, onClose) {
+            var content = $("<div id='download-dialog'><div id='msg'></div><a id='ok' class='green-button ok-button'><span>OK</span></a></div>");
+            content.find('#msg').html(title+'<br><br><span id="warning">'+message+'</span>');
+            content.find('#ok').click(function() {
+                          dialog.close();
+                       });
+                       content.find('#ok').keypress(function(event){
+                                       var keycode = (event.keyCode ? event.keyCode : event.which);
+                                       if(keycode == '13'){
+                                           dialog.close();
+                                           event.stopPropagation();
+                                       }
+                                       return false;
+                                   });
+            var dialog = zz.dialog.show_dialog(content, {modal: true,cancelButton: false, close: onClose});
+            content.find('#ok').focus();
+            return dialog;
+        };
+
+
     zz.dialog.show_spinner_progress_dialog = function(message, width, height) {
         if( _.isUndefined( width) ){
             var width = 300;

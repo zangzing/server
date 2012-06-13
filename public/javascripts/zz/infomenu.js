@@ -137,11 +137,6 @@ zz.infomenu = {
         $(button).zz_menu('open');
     },
 
-    show_processing_download_dialog: function() {
-                   var template = '<span class="processing-photos-dialog-content"><img src="{{src}}">Processing download...</span>'.replace('{{src}}', zz.routes.image_url('/images/loading.gif'));
-                   var dialog = zz.dialog.show_dialog(template, { width: 300, height: 100, modal: true, autoOpen: true, cancelButton: false });
-                   return dialog;
-    },
 
     album_click_handler: function(event, data) {
         var action = data.action,
@@ -165,12 +160,13 @@ zz.infomenu = {
                         document.location.href = url;
                     }
                 }
-                zz.infomenu.show_processing_download_dialog();
+               zz.dialog.show_download_dialog('Your download is being processed',
+                   'Some browsers have trouble handling simultaneous large downloads. To avoid corrupted downloads we strongly suggest you download ONE album at a time.', function(){} );
                 break;
              case 'deletephoto':
                  ZZAt.track('infomenu.albumdelete.click');
                  if (confirm('Are you sure you want to delete this album?')) {
-                     $(options.picon.element).hide('scale', {}, 300, function() {
+                     $(options.picon.element).hide('scale', {}, 5000, function() {
                          $(options.picon.element).remove();
                      });
                      zz.routes.call_delete_album(album.id);
