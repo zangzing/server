@@ -149,7 +149,7 @@ zz.infomenu = {
            case 'download':
                zz.dialog.show_download_dialog('Your download is being processed',
                     'Some browsers have trouble handling simultaneous large downloads. To avoid corrupted downloads we strongly suggest you download ONE album at a time.', function(){} );
-               setTimeout( function(){
+
                ZZAt.track('infomenu.albumdownload.click');
                var url = zz.routes.path_prefix + '/albums/' + id +'/download';
                  if ($.client.os == 'Mac') {
@@ -163,7 +163,7 @@ zz.infomenu = {
                         document.location.href = url;
                     }
                 }
-               }, 100);
+
              break;
              case 'deletephoto':
                  ZZAt.track('infomenu.albumdelete.click');
