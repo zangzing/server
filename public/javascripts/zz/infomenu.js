@@ -81,6 +81,7 @@ zz.infomenu = {
                         document.location.href = url;
                     }
                 }
+                alert('this is an alert press ok');
                 break;
 
             case 'rotatel':
