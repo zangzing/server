@@ -265,13 +265,13 @@ zz.template_cache = zz.template_cache || {};
 
                 // share button
                 var share_button = button_bar.find('.share-button');
-                share_button.click(function(){
-                    menu_open = true;
-                    zz.sharemenu.show(share_button, 'photo', o.photoId, {x: 0, y: 0}, 'frame', 'auto', function(){
-                        menu_open = false;
-                        check_hide_frame();
-                    });
-                });
+//                share_button.click(function(){
+//                    menu_open = true;
+//                    zz.sharemenu.show(share_button, 'photo', o.photoId, {x: 0, y: 0}, 'frame', 'auto', function(){
+//                        menu_open = false;
+//                        check_hide_frame();
+//                    });
+//                });
 
 
                 // like button
@@ -292,11 +292,11 @@ zz.template_cache = zz.template_cache || {};
                         count_element.text(count);
                     }
                 });
-                comment_button.click(function(){
-                    zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_cache_version_key, o.photoId);
-                    hide_frame();
-                    ZZAt.track('photo.comment.frame.click');
-                });
+//                comment_button.click(function(){
+//                    zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_cache_version_key, o.photoId);
+//                    hide_frame();
+//                    ZZAt.track('photo.comment.frame.click');
+//                });
 
 
 

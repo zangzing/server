@@ -4,21 +4,22 @@ zz.infomenu = {
 
     album_owner_template: '<ul>' +
             '<li class="download"><a href="#download">Download</a></li>' +
-            '<li class="rotater"><a href="#rotater">Right</a></li>' +
-            '<li class="rotatel"><a href="#rotatel">Left</a></li>' +
-            '<li class="setcover"><a href="#setcover">Set Cover</a></li>' +
+            //SUNSET'<li class="rotater"><a href="#rotater">Right</a></li>' +
+            //'<li class="rotatel"><a href="#rotatel">Left</a></li>' +
+            //'<li class="setcover"><a href="#setcover">Set Cover</a></li>' +
             '<li class="delete"><a href="#deletephoto">Delete</a></li>' +
             '</ul>',
 
     album_owner_template_photo_not_ready: '<ul>' +
-            '<li class="setcover"><a href="#setcover">Set Cover</a></li>' +
+            //SUNSET'<li class="setcover"><a href="#setcover">Set Cover</a></li>' +
             '<li class="delete"><a href="#deletephoto">Delete</a></li>' +
             '</ul>',
 
     photo_owner_template: '<ul>' +
             '<li class="download"><a href="#download">Download</a></li>' +
-            '<li class="rotater"><a href="#rotater">Right</a></li>' +
-            '<li class="rotatel"><a href="#rotatel">Left</a></li>' +
+            //SUNSET
+            //'<li class="rotater"><a href="#rotater">Right</a></li>' +
+            //'<li class="rotatel"><a href="#rotatel">Left</a></li>' +
             '<li class="delete"><a href="#deletephoto">Delete</a></li>' +
             '</ul>',
 
