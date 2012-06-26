@@ -93,13 +93,16 @@
   </div>
 <% end %>
 
-  <% if @album || (@user && /albums|people|activities/.match( @controller.controller_name)) %>
-      <ul id="view-buttons">
-          <li id="grid-view-button"></li>
-          <li id="people-view-button" ></li>
-          <li id="activities-view-button"></li>
-      </ul>
-  <% end %>
+  <%
+   # SUNSET
+   #  if @album || (@user && /albums|people|activities/.match( @controller.controller_name))
+   #   <ul id="view-buttons">
+   #       <li id="grid-view-button"></li>
+   #       <li id="people-view-button" ></li>
+   #       <li id="activities-view-button"></li>
+   #   </ul>
+   #end
+  %>
 
   <%if current_user && current_user.admin?%>
       <a href="/service/admin">
