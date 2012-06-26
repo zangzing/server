@@ -216,8 +216,8 @@ zz.comments = {};
 
         if(! zz.buy.is_buy_mode_active()){
             if(comments_open()){
-                //SUNSET $('#footer #comments-button').addClass('selected');
-                //open_comments_drawer(false, current_photo_id, callback);
+                $('#footer #comments-button').addClass('selected');
+                open_comments_drawer(false, current_photo_id, callback);
             }
             else{
                 callback();
@@ -617,35 +617,35 @@ zz.comments = {};
         jQuery.cookie('hide_comments', 'false', {path:'/'});
 
 
-        comments_widget = build_comments_widget(photo_id);
-
-        $('#right-drawer .header .title').html("Comments");
-        $('#right-drawer .content').html(comments_widget.element);
-        $('#right-drawer .header .close-button').unbind('click').click(function(){
-            $('#footer #comments-button').click(); //todo: this is a hack; should be a better way to wire this together
-        });
-
-
-        if(animate) {
-            $('#article').fadeOut('fast', function(){
-                $('#right-drawer').show().animate({right:0},500, function(){
-                    $('#article').css({right:382});
-                    $('#article').fadeIn('fast');
-                    callback();
-
-                    zz.pubsub.publish(EVENTS.OPEN_COMMENTS);
-
-
-                    comments_widget.set_focus();
-                });
-            });
-        }
-        else{
-            $('#right-drawer').show().css({right:0});
-            $('#article').css({right:382});
-            zz.pubsub.publish(EVENTS.OPEN_COMMENTS);
-            callback();
-        }
+//        comments_widget = build_comments_widget(photo_id);
+//
+//        $('#right-drawer .header .title').html("Comments");
+//        $('#right-drawer .content').html(comments_widget.element);
+//        $('#right-drawer .header .close-button').unbind('click').click(function(){
+//            $('#footer #comments-button').click(); //todo: this is a hack; should be a better way to wire this together
+//        });
+//
+//
+//        if(animate) {
+//            $('#article').fadeOut('fast', function(){
+//                $('#right-drawer').show().animate({right:0},500, function(){
+//                    $('#article').css({right:382});
+//                    $('#article').fadeIn('fast');
+//                    callback();
+//
+//                    zz.pubsub.publish(EVENTS.OPEN_COMMENTS);
+//
+//
+//                    comments_widget.set_focus();
+//                });
+//            });
+//        }
+//        else{
+//            $('#right-drawer').show().css({right:0});
+//            $('#article').css({right:382});
+//            zz.pubsub.publish(EVENTS.OPEN_COMMENTS);
+//            callback();
+//        }
     };
 
     function close_comments_drawer(animate, callback){
