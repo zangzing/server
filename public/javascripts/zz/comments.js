@@ -614,7 +614,7 @@ zz.comments = {};
     };
 
     function open_comments_drawer(animate, photo_id, callback){
-        jQuery.cookie('hide_comments', 'false', {path:'/'});
+        jQuery.cookie('hide_comments', 'true', {path:'/'});
 
 
 //        comments_widget = build_comments_widget(photo_id);
