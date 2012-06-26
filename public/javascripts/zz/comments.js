@@ -216,8 +216,8 @@ zz.comments = {};
 
         if(! zz.buy.is_buy_mode_active()){
             if(comments_open()){
-                $('#footer #comments-button').addClass('selected');
-                open_comments_drawer(false, current_photo_id, callback);
+                //SUNSET $('#footer #comments-button').addClass('selected');
+                //open_comments_drawer(false, current_photo_id, callback);
             }
             else{
                 callback();
