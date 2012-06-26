@@ -64,7 +64,7 @@ zz.template_cache = zz.template_cache || {};
                photo_rollover_frame = $('<div class="photo-rollover-frame">' +
                                                                 '<div class="button-bar">' +
                                                                     //SUNSET'<div class="button share-button"></div>' +
-                                                                    '<div class="button like-button zzlike" data-zzid="" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>' +
+                                                                    //SUNSET'<div class="button like-button zzlike" data-zzid="" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>' +
                                                                     //SUNSET'<div class="button comment-button"><div class="count"></div></div>' +
                                                                     '<div class="button info-button"></div>' +
                                                                     //SUNSET'<div class="button buy-button"></div>' +

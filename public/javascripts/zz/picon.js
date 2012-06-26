@@ -21,7 +21,7 @@
          caption_template  = $('<div class="photo-caption">'),
          button_bar_template = $('<div class="button-bar">'),
          buttons_template = $('<div class="buttons">'),
-         like_button_template = $('<div class="button like-button zzlike"  data-zztype="album"><div class="zzlike-icon thumbdown">'),
+         like_button_template = $('');//SUNSET<div class="button like-button zzlike"  data-zztype="album"><div class="zzlike-icon thumbdown">'),
          info_button_template = $('<div class="button info-button">'),
          share_button_template = $('');//SUNSET<div class="button share-button">');
 
