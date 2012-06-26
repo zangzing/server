@@ -472,7 +472,7 @@
 /*  Share Button
  *************************************/
 .photogrid-cell .photo-rollover-frame .button-bar .share-button{
-    background: url(/images/album_toolbar_share.png) no-repeat scroll 6px -19px transparent;
+    background: url(/images/album_toolbar_share.png) no-repeat scroll 6px -1px transparent;
 }
 
 .photogrid-cell .photo-rollover-frame .button-bar .share-button:hover{
@@ -492,7 +492,7 @@
 /*  Comment Button
  *************************************/
 .photogrid-cell .photo-rollover-frame .button-bar .comment-button{
-    background: url(/images/album_toolbar_comments.png) no-repeat scroll 6px -18px transparent;
+    background: url(/images/album_toolbar_comments.png) no-repeat scroll 6px 0px transparent;
 }
 
 
@@ -538,7 +538,9 @@
 .photogrid-cell .photo-rollover-frame .button-bar .buy-button{
     height:20px;
     top:0px;
-    background: url(/images/album_toolbar_buy.png) no-repeat scroll 6px -19px transparent;
+    /*background: url(/images/album_toolbar_buy.png) no-repeat scroll 6px -19px transparent;*/
+    background: url(/images/album_toolbar_buy.png) no-repeat scroll 6px 1px transparent;
+
 }
 
 .photogrid-cell .photo-rollover-frame .button-bar .buy-button:hover{

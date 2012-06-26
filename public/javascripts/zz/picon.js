@@ -23,7 +23,7 @@
          buttons_template = $('<div class="buttons">'),
          like_button_template = $('<div class="button like-button zzlike"  data-zztype="album"><div class="zzlike-icon thumbdown">'),
          info_button_template = $('<div class="button info-button">'),
-         share_button_template = $('<div class="button share-button">');
+         share_button_template = $('');//SUNSET<div class="button share-button">');
 
     var MAX_NAME = 50;
 

@@ -63,11 +63,11 @@ zz.template_cache = zz.template_cache || {};
 
                photo_rollover_frame = $('<div class="photo-rollover-frame">' +
                                                                 '<div class="button-bar">' +
-                                                                    '<div class="button share-button"></div>' +
+                                                                    //SUNSET'<div class="button share-button"></div>' +
                                                                     '<div class="button like-button zzlike" data-zzid="" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>' +
-                                                                    '<div class="button comment-button"><div class="count"></div></div>' +
+                                                                    //SUNSET'<div class="button comment-button"><div class="count"></div></div>' +
                                                                     '<div class="button info-button"></div>' +
-                                                                    '<div class="button buy-button"></div>' +
+                                                                    //SUNSET'<div class="button buy-button"></div>' +
                                                                 '</div>' +
                                                            '</div>');
             }
@@ -322,15 +322,16 @@ zz.template_cache = zz.template_cache || {};
                 }
 
                 var buy_button = button_bar.find('.buy-button');
-                buy_button.click(function(){
-                    ZZAt.track('photo.buy.frame.click');
-                    if(zz.buy.is_photo_selected(o.photoId)){
-                        zz.buy.activate_buy_mode();
-                    }
-                    else{
-                        zz.buy.add_selected_photo(o.json, self.element);
-                    }
-                });
+//SUNSET
+//                buy_button.click(function(){
+//                    ZZAt.track('photo.buy.frame.click');
+//                    if(zz.buy.is_photo_selected(o.photoId)){
+//                        zz.buy.activate_buy_mode();
+//                    }
+//                    else{
+//                        zz.buy.add_selected_photo(o.json, self.element);
+//                    }
+//                });
 
                 //Enable Caption Editing
                 if( o.allowEditCaption ){
