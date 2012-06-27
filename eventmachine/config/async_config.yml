@@ -3,8 +3,8 @@
 #
 common: &common
   client_timeout: 180
-  backend_timeout: 30
-  max_backend_retries: 3                # if we have a recoverable failure, retry up to this many times
+  backend_timeout: 180
+  max_backend_retries: 5                # if we have a recoverable failure, retry up to this many times
   zza_id: "dev.photos/svr"
   thin_log_file: '../log/thin.log'
   log_type: "stdout"
