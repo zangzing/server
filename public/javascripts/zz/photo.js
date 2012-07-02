@@ -63,11 +63,11 @@ zz.template_cache = zz.template_cache || {};
 
                photo_rollover_frame = $('<div class="photo-rollover-frame">' +
                                                                 '<div class="button-bar">' +
-                                                                    '<div class="button share-button"></div>' +
-                                                                    '<div class="button like-button zzlike" data-zzid="" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>' +
-                                                                    '<div class="button comment-button"><div class="count"></div></div>' +
+                                                                    //SUNSET'<div class="button share-button"></div>' +
+                                                                    //SUNSET'<div class="button like-button zzlike" data-zzid="" data-zztype="photo"><div class="zzlike-icon thumbdown"></div></div>' +
+                                                                    //SUNSET'<div class="button comment-button"><div class="count"></div></div>' +
                                                                     '<div class="button info-button"></div>' +
-                                                                    '<div class="button buy-button"></div>' +
+                                                                    //SUNSET'<div class="button buy-button"></div>' +
                                                                 '</div>' +
                                                            '</div>');
             }
@@ -265,13 +265,13 @@ zz.template_cache = zz.template_cache || {};
 
                 // share button
                 var share_button = button_bar.find('.share-button');
-                share_button.click(function(){
-                    menu_open = true;
-                    zz.sharemenu.show(share_button, 'photo', o.photoId, {x: 0, y: 0}, 'frame', 'auto', function(){
-                        menu_open = false;
-                        check_hide_frame();
-                    });
-                });
+//                share_button.click(function(){
+//                    menu_open = true;
+//                    zz.sharemenu.show(share_button, 'photo', o.photoId, {x: 0, y: 0}, 'frame', 'auto', function(){
+//                        menu_open = false;
+//                        check_hide_frame();
+//                    });
+//                });
 
 
                 // like button
@@ -292,11 +292,11 @@ zz.template_cache = zz.template_cache || {};
                         count_element.text(count);
                     }
                 });
-                comment_button.click(function(){
-                    zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_cache_version_key, o.photoId);
-                    hide_frame();
-                    ZZAt.track('photo.comment.frame.click');
-                });
+//                comment_button.click(function(){
+//                    zz.comments.show_in_dialog(zz.page.album_id, zz.page.album_cache_version_key, o.photoId);
+//                    hide_frame();
+//                    ZZAt.track('photo.comment.frame.click');
+//                });
 
 
 
@@ -322,15 +322,16 @@ zz.template_cache = zz.template_cache || {};
                 }
 
                 var buy_button = button_bar.find('.buy-button');
-                buy_button.click(function(){
-                    ZZAt.track('photo.buy.frame.click');
-                    if(zz.buy.is_photo_selected(o.photoId)){
-                        zz.buy.activate_buy_mode();
-                    }
-                    else{
-                        zz.buy.add_selected_photo(o.json, self.element);
-                    }
-                });
+//SUNSET
+//                buy_button.click(function(){
+//                    ZZAt.track('photo.buy.frame.click');
+//                    if(zz.buy.is_photo_selected(o.photoId)){
+//                        zz.buy.activate_buy_mode();
+//                    }
+//                    else{
+//                        zz.buy.add_selected_photo(o.json, self.element);
+//                    }
+//                });
 
                 //Enable Caption Editing
                 if( o.allowEditCaption ){

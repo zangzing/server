@@ -60,18 +60,25 @@ var zz = zz || {};
 
     // This goes inside of #header-join-banner
     function banner_html(){
-		    html = '<div class="picture"><div class="container"><div class="mask"><img src="'+ join_picture() +'" class="profile-photo"/></div><img class="bottom-shadow" src="/images/photo/bottom-full.png"/></div></div>' +
-		    		'<div class="header">'+join_message()+'</div>' +    
-		            '<div class="feature">' +
-		                '<form class="join-form" enctype="multipart/form-data">' +
-		                '<input type="hidden" name="follow_user_id" id="follow_user_id" value="'+ zz.page.displayed_user_id +'" />' + 
-		                '<ul>' +
-		                '<li><label for="user_email">Email address</label><input type="text" name="user[email]" id="user_email" value="" /></li>' +
-		                '<li><label for="user_password">Password</label><input type="password" name="user[password]" id="user_password" value="" maxlength="40" /></li>' +
-		                '<li><a class="submit-button newgreen-button" rel="nofollow"><span>Join</span></a></li>' +
-		                '</ul>' +
-		                '</form>' +
-		            '</div>';
+        html = '<div class="invitation-banner">' +
+                            '<div class="icon"></div>'+
+                            '<div class="message ">' +
+                                '<span class="bold">ZangZing will be closing on August 31st.</span> Learn how to <a target="_blank" href="http://help.zangzing.com/entries/21166613-how-to-download-an-album">download your photos</a>.' +
+                            '</div>' +
+                       '</div>';
+        //SUNSET
+//		    html = '<div class="picture"><div class="container"><div class="mask"><img src="'+ join_picture() +'" class="profile-photo"/></div><img class="bottom-shadow" src="/images/photo/bottom-full.png"/></div></div>' +
+//		    		'<div class="header">'+join_message()+'</div>' +
+//		            '<div class="feature">' +
+//		                '<form class="join-form" enctype="multipart/form-data">' +
+//		                '<input type="hidden" name="follow_user_id" id="follow_user_id" value="'+ zz.page.displayed_user_id +'" />' +
+//		                '<ul>' +
+//		                '<li><label for="user_email">Email address</label><input type="text" name="user[email]" id="user_email" value="" /></li>' +
+//		                '<li><label for="user_password">Password</label><input type="password" name="user[password]" id="user_password" value="" maxlength="40" /></li>' +
+//		                '<li><a class="submit-button newgreen-button" rel="nofollow"><span>Join</span></a></li>' +
+//		                '</ul>' +
+//		                '</form>' +
+//		            '</div>';
     	return html;
     	
     }

@@ -66,16 +66,19 @@
                     </span>
             </td>
           </tr>
-          <tr>
-            <td> <%= user_form.label :profile_picture %> </td>
-            <td>
-                    <span id="user_profile_picture" class="no-edit-field">
-                        <%= render :partial => 'users/profile_photo', :locals => { :user => @user }    %>
-                    </span>
-              <span id="profile-photo-picker"></span>
-              <a class="black-button" id="upload-button"><span>Upload</span></a>
-            </td>
-          </tr>
+<%
+    # SUNSET
+    #      <tr>
+    #        <td> = user_form.label :profile_picture  </td>
+    #        <td>
+    #                <span id="user_profile_picture" class="no-edit-field">
+    #                    = render :partial => 'users/profile_photo', :locals => { :user => @user }
+    #                </span>
+    #          <span id="profile-photo-picker"></span>
+    #         <a class="black-button" id="upload-button"><span>Upload</span></a>
+    #       </td>
+    #      </tr>
+%>
         </table>
       </div>
     </li>
@@ -95,7 +98,8 @@
         %>
 
         <p><span class='bold-text'><%= @user.account_plan.name %></span> &mdash; <%= @user.account_plan.description %></p>
-        <p>Premium account billing starts July 2012. <a href="/pricing" target="_blank">Learn more</a> or <a href="<%=invite_friends_url%>">invite friends</a> and we'll give you both 250MB of free space.</p>
+
+        <p>Premium account billing starts July 2012. <a href="/pricing" target="_blank">Learn more</a> or invite friends and we'll give you both 250MB of free space.</p>
 
         <div class='indented content'>
           <div class='storage-meter'>
@@ -128,8 +132,10 @@
 
         <p>For every friend who joins ZangZing, you and your friend each get 250MB of free space up to 10GB.</p>
         <br>
-        <a href="<%=invite_friends_url%>">Invite friends to ZangZing</a>
-
+        <%
+           # SUNSET
+           #<a href="=invite_friends_url">Invite friends to ZangZing</a>
+         %>
       </div>
       <div class="indented content">
         <%

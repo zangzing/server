@@ -4,21 +4,22 @@ zz.infomenu = {
 
     album_owner_template: '<ul>' +
             '<li class="download"><a href="#download">Download</a></li>' +
-            '<li class="rotater"><a href="#rotater">Right</a></li>' +
-            '<li class="rotatel"><a href="#rotatel">Left</a></li>' +
-            '<li class="setcover"><a href="#setcover">Set Cover</a></li>' +
+            //SUNSET'<li class="rotater"><a href="#rotater">Right</a></li>' +
+            //'<li class="rotatel"><a href="#rotatel">Left</a></li>' +
+            //'<li class="setcover"><a href="#setcover">Set Cover</a></li>' +
             '<li class="delete"><a href="#deletephoto">Delete</a></li>' +
             '</ul>',
 
     album_owner_template_photo_not_ready: '<ul>' +
-            '<li class="setcover"><a href="#setcover">Set Cover</a></li>' +
+            //SUNSET'<li class="setcover"><a href="#setcover">Set Cover</a></li>' +
             '<li class="delete"><a href="#deletephoto">Delete</a></li>' +
             '</ul>',
 
     photo_owner_template: '<ul>' +
             '<li class="download"><a href="#download">Download</a></li>' +
-            '<li class="rotater"><a href="#rotater">Right</a></li>' +
-            '<li class="rotatel"><a href="#rotatel">Left</a></li>' +
+            //SUNSET
+            //'<li class="rotater"><a href="#rotater">Right</a></li>' +
+            //'<li class="rotatel"><a href="#rotatel">Left</a></li>' +
             '<li class="delete"><a href="#deletephoto">Delete</a></li>' +
             '</ul>',
 
@@ -147,24 +148,36 @@ zz.infomenu = {
 
          switch (action) {
            case 'download':
+
                ZZAt.track('infomenu.albumdownload.click');
                var url = zz.routes.path_prefix + '/albums/' + id +'/download';
                  if ($.client.os == 'Mac') {
+                     zz.dialog.show_download_dialog("Your download is being processed",
+                    "Some browsers have trouble handling simultaneous large downloads. To avoid corrupted downloads we strongly suggest you download ONE album at a time.", function(){} );
                     document.location.href = url;
                 } else {
                     if (navigator.appVersion.indexOf('NT 5.1') != -1 && $.client.browser == 'Explorer'){
+                        alert( "Your download is being processed. Some browsers have trouble handling simultaneous large downloads. To avoid corrupted downloads we strongly suggest you download ONE album at a time.");
                         window.open(url);
                     } else if ($.client.browser == 'Chrome') { //on chrome on windows, using the same browser window to download causes js issues (stops pinging agent)
+                        zz.dialog.show_download_dialog("Your download is being processed",
+                        "Some browsers have trouble handling simultaneous large downloads. To avoid corrupted downloads we strongly suggest you download ONE album at a time.", function(){} );
                         window.open(url);
+                    } else if( $.client.browser == 'Explorer'){
+                        alert( "Your download is being processed, Some browsers have trouble handling simultaneous large downloads. To avoid corrupted downloads we strongly suggest you download ONE album at a time.");
+                        document.location.href = url;
                     } else {
+                        zz.dialog.show_download_dialog("Your download is being processed",
+                                           "Some browsers have trouble handling simultaneous large downloads. To avoid corrupted downloads we strongly suggest you download ONE album at a time.", function(){} );
                         document.location.href = url;
                     }
                 }
-                break;
+
+             break;
              case 'deletephoto':
                  ZZAt.track('infomenu.albumdelete.click');
                  if (confirm('Are you sure you want to delete this album?')) {
-                     $(options.picon.element).hide('scale', {}, 300, function() {
+                     $(options.picon.element).hide('scale', {}, 5000, function() {
                          $(options.picon.element).remove();
                      });
                      zz.routes.call_delete_album(album.id);
@@ -178,6 +191,4 @@ zz.infomenu = {
                 break;
         }
     }
-
-
 };
