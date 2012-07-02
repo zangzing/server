@@ -106,7 +106,6 @@
 }
 
 
-
 /*      FLASH DIALOG
  *********************************************************************/
 #flash-dialog{
@@ -134,7 +133,46 @@
   width:   80px;
 }
 
+/*      DOWNLOAD DIALOG
+ *********************************************************************/
+#download-dialog{
+    width:  400px;
+    height: 230px;
+	display: none;
+    border: 0;
+}
 
+#download-dialog #msg{
+   text-align: left;
+   color: #6A6A6C;
+   font-weight: 400;
+   position: absolute;
+   top: 30px;
+   left: 30px;
+   font-size: 14pt;
+   padding-left: 10px;
+   padding-right: 40px;
+}
+
+#download-dialog #msg #warning{
+   text-align: left;
+   font-weight: 200;
+   font-size: 12pt;
+}
+
+
+#download-dialog #ok{
+  position: absolute;
+  bottom:  25px;
+  right:   40px;
+  width:   80px;
+  height:  28px;
+}
+
+#download-dialog #dspin_here{
+  position: relative;
+  top:  195px;
+}
 
  /*       NEW SQUARE DIALOG
   *********************************************************************/

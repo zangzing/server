@@ -28,7 +28,10 @@
           <h2 id="album-header-title" class="ellipsis"><%= truncate((@album.name), :length => 40) %></h2>
           <h3>by <a href="<%= user_pretty_url @album.user %>"><%=truncate("#{@album.user.first_name} #{@album.user.last_name}", :length=>40 )%></a></h3>
           <%if !current_user || current_user!=@album.user # do not show like for self%>
-              <div id="owner-follow" class="zzlike zzlike-follow" data-zzid="<%=@album.user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
+              <% #SUNSET
+              #<div id="owner-follow" class="zzlike zzlike-follow" data-zzid="<%=@album.user.id
+              #" data-zztype="user" data-zzstyle="toolbar" ></div>
+               %>
           <%end%>
         </div>
       </div>
@@ -51,7 +54,10 @@
 <% if @album #this needs to be after album and user info so that it floats on top%>
   <div id="top-breadcrumb">
     <a id="back-button" class="back-button"><span>Back</span></a>
-    <a id="top-add-photos-button" class="green-add-button"><span>Add Photos</span></a>
+    <%
+        # SUNSET
+        # <a id="top-add-photos-button" class="green-add-button"><span>Add Photos</span></a>
+    %>
   </div>
 <% elsif @show_back_button %>
   <div id="top-breadcrumb">
@@ -59,9 +65,12 @@
   </div>
 <% end %>
 
-<% if @is_homepage_view && current_user == @user %>
-  <a id="inline-new-album-button" class="green-add-button"><span>New Album</span></a>
-<% end %>
+<%
+# SUNSET
+# if @is_homepage_view && current_user == @user
+#   <a id="inline-new-album-button" class="green-add-button"><span>New Album</span></a>
+# end
+%>
 
 
 
@@ -72,21 +81,28 @@
          <%= render :partial => 'users/profile_photo', :locals => { :user => @user }    %>
         </div>
         <div id="user-name">
-            <h2 <%=( !current_user || current_user!=@user ? 'class=with-follow' : '' )%> ><%=truncate( "#{@user.first_name} #{@user.last_name}", :length=>27)%></h2>
+            <h2  ><%=truncate( "#{@user.first_name} #{@user.last_name}", :length=>27)%></h2>
             <%if !current_user || current_user!=@user # do not show like for self%>
-                <div id="owner-follow" class="zzlike zzlike-follow" data-zzid="<%=@user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
+
+              <% #SUNSET
+               # <div id="owner-follow" class="zzlike zzlike-follow" data-zzid="<%=@user.id
+               #" data-zztype="user" data-zzstyle="toolbar" ></div>
+              %>
             <%end%>
         </div>
   </div>
 <% end %>
 
-  <% if @album || (@user && /albums|people|activities/.match( @controller.controller_name)) %>
-      <ul id="view-buttons">
-          <li id="grid-view-button"></li>
-          <li id="people-view-button" ></li>
-          <li id="activities-view-button"></li>
-      </ul>
-  <% end %>
+  <%
+   # SUNSET
+   #  if @album || (@user && /albums|people|activities/.match( @controller.controller_name))
+   #   <ul id="view-buttons">
+   #       <li id="grid-view-button"></li>
+   #       <li id="people-view-button" ></li>
+   #       <li id="activities-view-button"></li>
+   #   </ul>
+   #end
+  %>
 
   <%if current_user && current_user.admin?%>
       <a href="/service/admin">
@@ -109,11 +125,14 @@
       <img id="arrow-image" src="/images/icon-down-arrow-22px.png" />
       <div class="header-button-label">Account</div>
       <ul class="context_menu dropdown" id="acct-dropdown">
-        <li id="acct-get-started-btn" >Getting Started</li>
-        <li id="acct-invite-friends-btn" >Invite Friends</li>
         <li id="acct-settings-btn">Settings</li>
-        <li id="acct-blog-btn">Blog</li>
         <li id="acct-signout-btn">Signout</li>
+        <%
+           # SUNSET
+           # <li id="acct-get-started-btn" >Getting Started</li>
+           # <li id="acct-invite-friends-btn" >Invite Friends</li>
+           # <li id="acct-blog-btn">Blog</li>
+        %>
       </ul>
 
     </div>

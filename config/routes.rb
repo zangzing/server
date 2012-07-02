@@ -9,11 +9,21 @@ Server::Application.routes.draw do
   get    '/beta'               => 'pages#home'
   get    '/service'            => 'pages#home',          :as => :service
   get    '/signin'             => 'user_sessions#new',   :as => :signin
-  get    '/join'               => 'users#join',          :as => :join
-  get    '/finish_profile'     => 'users#finish_profile',:as => :finish_profile
+
+  #SUNSET
+  #get    '/join'               => 'users#join',          :as => :join
+  get    '/join',             :to => redirect('/'),  :as => :join
+
+  #SUNSET
+  #get    '/finish_profile'     => 'users#finish_profile',:as => :finish_profile
+  get    '/finish_profile'     => redirect('/'),:as => :finish_profile
+
   get    '/unsubscribe/:id'    => 'subscriptions#unsubscribe', :as => :unsubscribe
 
-  get    '/invitation'  => 'invitations#show', :as => :invitation  , :requirements => {:protocol => 'https'}
+  #SUNSET
+  #get    '/invitation'  => 'invitations#show', :as => :invitation  , :requirements => {:protocol => 'https'}
+  get    '/invitation'  => redirect('/'), :as => :invitation  , :requirements => {:protocol => 'https'}
+
   get    '/invite_friends'  => 'invitations#invite_friends', :as => :invite_friends
 
   # the whole site has /service in front of it except for users
@@ -74,8 +84,9 @@ Server::Application.routes.draw do
     get    '/users/:user_id/liked_albums_public_json'       => 'albums#liked_albums_public_json',       :as => :liked_albums_public_json
     get    '/users/:user_id/liked_users_public_albums_json' => 'albums#liked_users_public_albums_json', :as => :liked_users_public_albums_json
     get    '/users/:user_id/invited_albums_json'            => 'albums#invited_albums_json',            :as => :invited_albums_json
-    get    '/import_all'                                    => 'albums#import_all',        :as => :import_all
-
+    #SUNSET
+   # get    '/import_all'                                    => 'albums#import_all',        :as => :import_all
+    get    '/import_all'                                    => redirect('/'),        :as => :import_all
 
     get    '/users/:user_id/albums'                => 'albums#index'             #, :as => :user_albums  user albums defined below
     put    '/users/:user_id/invalidate_cache'      => 'albums#invalidate_cache',    :as => :invalidate_user_album_cache
@@ -92,8 +103,14 @@ Server::Application.routes.draw do
     put    '/albums/:album_id'                     => 'albums#update',              :as => :update_album
     delete '/albums/:album_id'                     => 'albums#destroy',             :as => :delete_album
     post   '/albums/:album_id/request_access'      => 'albums#request_access',      :as => :request_album_access
-    get    '/albums/:album_id/add_photos'          => 'albums#add_photos',          :as => :album_add_photos
-    get    '/albums/:album_id/wizard/:step'        => 'albums#wizard',              :as => :album_wizard
+
+    #SUNSET
+    #get    '/albums/:album_id/add_photos'          => 'albums#add_photos',          :as => :album_add_photos
+    #get    '/albums/:album_id/wizard/:step'        => 'albums#wizard',              :as => :album_wizard
+    get    '/albums/:album_id/add_photos'          => redirect('/'),          :as => :album_add_photos
+    get    '/albums/:album_id/wizard/:step'        => redirect('/'),              :as => :album_wizard
+
+
     post   '/albums/:album_id/set_latest_cover'    => 'albums#set_latest_cover',  :as => :set_latest_cover
 
     #shares
@@ -123,7 +140,10 @@ Server::Application.routes.draw do
     put    '/photos/:id/upload_fast'        => 'photos#upload_fast',                :as => :upload_photo_fast
     put   '/albums/:album_id/upload_fast'   => 'photos#simple_upload_fast',    :as => :simple_upload_photo_fast
     get    '/agents/:agent_id/photos'       => 'photos#agent_index',                :as => :agent_photos
-    post   '/albums/:album_id/photos/agent_create.:format' => 'photos#agent_create',:as => :agent_create
+    #SUNSET
+    #post   '/albums/:album_id/photos/agent_create.:format' => 'photos#agent_create',:as => :agent_create
+    post   '/albums/:album_id/photos/agent_create.:format' => redirect('/'),:as => :agent_create
+
     get    '/photos/:id/download'           => 'photos#download',                   :as => :download_photo
     put    '/photos/:id'                    => 'photos#update',                     :as => :update_photo
     put    '/photos/:id/position'           => 'photos#position',                   :as => :photo_position

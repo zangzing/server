@@ -12,7 +12,11 @@
 
     <div class="follow-button">
       <%if !current_user || current_user!=user # do not show like for self%>
-          <div class="zzlike zzlike-follow" data-zzid="<%=user.id%>" data-zztype="user" data-zzstyle="toolbar" ></div>
+        <%
+        #SUNSET
+        #  <div class="zzlike zzlike-follow" data-zzid="<%=user.id
+        #" data-zztype="user" data-zzstyle="toolbar" ></div>
+        %>
       <%end%>
     </div>
   </div>

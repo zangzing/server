@@ -1,0 +1,9 @@
+#wrapper,
+#footer,
+.photo-gallery span a {text-shadow: 1px 1px #fff;}
+.signup-content .content,
+.photo-gallery a,
+.popular-post .meta,
+.popular-post .entry-meta,
+.popular-post .entry-content { text-shadow: none; }
+.respond-form .textarea textarea { resize: none; }

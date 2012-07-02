@@ -70,6 +70,26 @@ zz.dialog ={};
         return dialog;
     };
 
+    zz.dialog.show_download_dialog = function(title, message, onClose) {
+            var content = $("<div id='download-dialog'><div></div><div id='msg'></div><button id='ok' >OK</button></div></div>");
+            content.find('#msg').html(title+"<br><br><div id='warning'>"+message+"<br><a target='_blank' href='http://help.zangzing.com/entries/21166613-how-to-download-an-album'>More Info...</a></div>");
+            content.find('#ok').click(function() {
+                          dialog.close();
+                       });
+                      content.find('#ok').keypress(function(event){
+                                      var keycode = (event.keyCode ? event.keyCode : event.which);
+                                      if(keycode == '13'){
+                                           dialog.close();
+                                           event.stopPropagation();
+                                      }
+                                      return false;
+                                   });
+            var dialog = zz.dialog.show_dialog(content, {modal: true,cancelButton: false, close: onClose});
+            content.find('#ok').focus();
+            return dialog;
+        };
+
+
     zz.dialog.show_spinner_progress_dialog = function(message, width, height) {
         if( _.isUndefined( width) ){
             var width = 300;

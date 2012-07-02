@@ -1,5 +1,16 @@
+/* SUNSET  work on icon and message done for sunset work */
+.invitation-banner .icon{
+    margin: 10px 24px;
+    float: left;
+    width: 55px;
+    height: 55px;
+    background-image: url('/images/buy/error-icon-big.png');
+}
+
 .invitation-banner .message {
-    margin: 8px auto;
+    line-height: 42px;
+    float: left;
+    margin: 18px auto;
     font-size: 16px;
     font-weight: 200;
     color: #0A0A0A;
